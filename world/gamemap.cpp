@@ -60,22 +60,28 @@ std::shared_ptr<world::Building> GameMap::getBuilding2D(utils::Vector2 pt)
 
     return result;
 }
+bool compareBuilding(std::shared_ptr<world::Building> b1,std::shared_ptr<world::Building> b2)
+{
+    return b1->getDisplayRect().y < b2->getDisplayRect().y;
+}
+
 void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
     buildings.push_back(building);
+    std::sort(buildings.begin(),buildings.end(),compareBuilding);
 }
 std::vector<std::shared_ptr<world::Building>> GameMap::getBuildings()
 {
     return buildings;
 }
-bool GameMap::canBuild(graphics::Rect buildRect,int tileWidth,int tileHeight)
+bool GameMap::canBuild(graphics::Rect buildRect)
 {
     if(buildRect.x < 0 || buildRect.y < 0)
         return false;
 
     for(auto building : buildings)
     {
-        if(building->get2DPosition(tileWidth,tileHeight).intersects(buildRect))
+        if(building->get2DPosition().intersectsNoLine(buildRect))
             return false;
     }
 

@@ -24,7 +24,7 @@ public:
     utils::Vector2 twoDToIso(utils::Vector2 pt);
 
     std::shared_ptr<world::Building> getBuilding2D(utils::Vector2 pt);
-    bool canBuild(graphics::Rect buildRect,int tileWidth,int tileHeight);
+    bool canBuild(graphics::Rect buildRect);
     void addBuilding(std::shared_ptr<world::Building> building);
     std::vector<std::shared_ptr<world::Building>> getBuildings();
 

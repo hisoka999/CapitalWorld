@@ -14,6 +14,20 @@ find_package(SDL2TTF)
 find_package(ZLIB)
 file(GLOB_RECURSE SRC . *.cpp)
 
+set (GAME_VERSION_MAJOR 0)
+set (GAME_VERSION_MINOR 2)
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${PROJECT_BINARY_DIR}/config.h"
+  )
+
+# add the binary tree to the search path for include files
+# so that we will find TutorialConfig.h
+include_directories("${PROJECT_BINARY_DIR}")
+
 
 add_executable(${PROJECT_NAME} "main.cpp" ${SRC})
 

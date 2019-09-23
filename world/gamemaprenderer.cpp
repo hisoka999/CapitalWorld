@@ -47,8 +47,8 @@ void GameMapRenderer::render(core::Renderer* renderer)
         displayRect.y = (displayRect.y * tileHeight);
         utils::Vector2 vec(displayRect.x,displayRect.y);
         auto pos = gameMap->twoDToIso(vec);
-        displayRect.x = pos.getX()- camera->getX();
-        displayRect.y = pos.getY() - camera->getY();
+        displayRect.x = pos.getX()- camera->getX()+building->getXOffset();
+        displayRect.y = pos.getY() - camera->getY()+building->getYOffset();
         groundTexture->render(renderer,building->getSourceRect(),displayRect);
     }
 }

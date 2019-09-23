@@ -23,7 +23,18 @@ struct Rect{
         width = pWidth;
         height = pHeight;
     }
-
+    bool intersectsNoLine(const Rect& target)
+    {
+        if (
+            (x + width  > target.x) &&
+            (y + height > target.y) &&
+            (x < target.x + target.width) &&
+            (y < target.y + target.height)
+            )
+                return true;
+        else
+            return false;
+    }
     bool intersects(const Rect& target)
     {
         if (

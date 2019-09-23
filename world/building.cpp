@@ -2,8 +2,15 @@
 
 namespace world {
 
+Building::Building(std::string name,std::string description, int buildPirce,int blockWidth,int blockHeight)
+    :name(name),description(description),buildPrice(buildPirce),blockWidth(blockWidth),blockHeight(blockHeight),xOffset(0),yOffset(0)
+{
+
+}
+
+
 Building::Building(std::string name,std::string description, int buildPirce)
-    :name(name),description(description),buildPrice(buildPirce)
+    :name(name),description(description),buildPrice(buildPirce),blockWidth(1),blockHeight(1),xOffset(0),yOffset(0)
 {
 
 }
@@ -47,14 +54,28 @@ void Building::setPosition(float x,float y)
     displayRect.height = sourceRect.height;
 }
 
-graphics::Rect Building::get2DPosition(int tileWidth,int tileHeight)
+graphics::Rect Building::get2DPosition()
 {
     graphics::Rect r = displayRect;
-    r.width /= tileWidth;
-    r.height /= tileHeight;
+    r.width = blockWidth;
+    r.height = blockHeight;
 
     return r;
 }
+int Building::getXOffset()
+{
+    return xOffset;
+}
+int Building::getYOffset()
+{
+    return yOffset;
+}
+void Building::setOffset(int x,int y)
+{
+    xOffset = x;
+    yOffset = y;
+}
+
 
 
 }

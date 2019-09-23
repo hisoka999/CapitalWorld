@@ -11,13 +11,15 @@
 #include "engine/utils/exceptions.h"
 #include "engine/utils/os.h"
 #include "engine/utils/logger.h"
-
+#include "engine/utils/string.h"
+#include "config.h"
 
 int main()
 {
     try
     {
-        core::GameWindow win("Capital World", 1280, 720);
+
+        core::GameWindow win(utils::string_format("CapitalWorld %d.%d",GAME_VERSION_MAJOR,GAME_VERSION_MINOR), 1280, 720);
         utils::Logger logger(utils::LogLevel::trace);
         core::Renderer ren(logger);
         graphics::TextureManager::Instance().setRenderer(&ren);

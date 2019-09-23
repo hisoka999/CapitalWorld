@@ -18,7 +18,7 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
     hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),16);
     gameMap = std::make_shared<GameMap>(100,100);
     mapRenderer = std::make_shared<GameMapRenderer>(gameMap);
-    auto playerCompany = std::make_shared<world::Company>("Player Company",100000,true);
+    auto playerCompany = std::make_shared<world::Company>("Player Company",1000000,true);
     gameState = std::make_shared<world::GameState>(playerCompany);
     renderer->setZoomFactor(6);
 
@@ -40,7 +40,14 @@ std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction a
         break;
 
         case world::BuildAction::Factory:
-        building = std::make_shared<world::Building>("Factory","A factory",100000);
+        building = std::make_shared<world::Building>("Factory","A factory",20000,3,3);
+        rect.x = 14;
+        rect.y = 1878;
+        rect.width = 184;
+        rect.height = 162;
+        building->setOffset(0,-116);
+        building->setSourceRect(rect);
+
         break;
 
     default:
@@ -120,7 +127,7 @@ void WorldScene::handleEvents(core::Input *pInput){
                 building->setPosition(cursorPosition.getX(),cursorPosition.getY());
 
                 if(building != nullptr && building->canBuild(gameState->getPlayer()->getCash())
-                        && gameMap->canBuild(building->get2DPosition(mapRenderer->getTileWidth(),mapRenderer->getTileHeight()),mapRenderer->getTileWidth(),mapRenderer->getTileHeight()))
+                        && gameMap->canBuild(building->get2DPosition()))
                 {
 
 
@@ -149,7 +156,7 @@ void WorldScene::handleEvents(core::Input *pInput){
         }
         if(pInput->isMouseMoving()){
 
-            utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion()+ utils::Vector2(renderer->getMainCamera()->getX(),renderer->getMainCamera()->getY())) - utils::Vector2(mapRenderer->getTileWidth()/2,mapRenderer->getTileHeight()/2);
+            utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion()- utils::Vector2(renderer->getMainCamera()->getX(),renderer->getMainCamera()->getY())) - utils::Vector2(mapRenderer->getTileWidth()/2,mapRenderer->getTileHeight()/2);
             float x,y = 0.0;
             x = std::round(pt.getX() / static_cast<float>(mapRenderer->getTileHeight()));
             y = std::round(pt.getY() / static_cast<float>(mapRenderer->getTileHeight()));

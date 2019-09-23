@@ -10,6 +10,7 @@ namespace world {
 class Building
 {
 public:
+    Building(std::string name,std::string description, int buildPirce,int blockWidth,int blockHeight);
     Building(std::string name,std::string description, int buildPirce);
 
     std::string getName();
@@ -22,7 +23,10 @@ public:
     graphics::Rect getSourceRect();
     void setSourceRect(graphics::Rect rect);
     void setPosition(float x,float y);
-    graphics::Rect get2DPosition(int tileWidth,int tileHeight);
+    graphics::Rect get2DPosition();
+    int getXOffset();
+    int getYOffset();
+    void setOffset(int x,int y);
 
 private:
     std::string name;
@@ -30,6 +34,8 @@ private:
     int buildPrice;
     graphics::Rect sourceRect;
     graphics::Rect displayRect;
+    int blockWidth,blockHeight;
+    int xOffset,yOffset;
 
 };
 }
