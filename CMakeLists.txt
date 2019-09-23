@@ -37,6 +37,8 @@ target_link_libraries(${PROJECT_NAME} SDL2_image)
 target_link_libraries(${PROJECT_NAME} SDL2_mixer)
 target_link_libraries(${PROJECT_NAME} SDL2_gfx)
 target_link_libraries(${PROJECT_NAME} z)
+target_link_libraries(${PROJECT_NAME} pthread)
+
 add_custom_command(TARGET CapitalWorld PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/fonts/ $<TARGET_FILE_DIR:CapitalWorld>/fonts/)

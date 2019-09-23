@@ -10,6 +10,7 @@
 #include <world/buildactions.h>
 #include <world/building.h>
 #include <world/gamestate.h>
+#include <world/updatethread.h>
 #include <map>
 
 namespace scenes {
@@ -37,6 +38,7 @@ private:
     utils::Vector2 cursorPosition;
     UI::BuildWindow buildWindow;
     std::shared_ptr<world::GameState> gameState;
+    std::unique_ptr<UpdateThread> thread;
 
 };
 }

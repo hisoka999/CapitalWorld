@@ -22,6 +22,8 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
     gameState = std::make_shared<world::GameState>(playerCompany);
     renderer->setZoomFactor(6);
 
+    thread = std::make_unique<UpdateThread>(gameState);
+
 }
 
 std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction action)

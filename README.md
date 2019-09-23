@@ -10,6 +10,7 @@ The game needs the following Libraries to build:
 * SDL2_mixer
 * SDL2_ttf
 * zlib
+* pthread
 
 # License
 All source code is released under the GNU General Public License Version 2.
