@@ -15,7 +15,7 @@ find_package(ZLIB)
 file(GLOB_RECURSE SRC . *.cpp)
 
 set (GAME_VERSION_MAJOR 0)
-set (GAME_VERSION_MINOR 2)
+set (GAME_VERSION_MINOR 1)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
