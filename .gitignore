@@ -1,2 +1,5 @@
 stuff/ 
 CMakeLists.txt.user
+.directory
+
+*.user
