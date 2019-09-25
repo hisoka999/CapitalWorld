@@ -49,10 +49,10 @@ struct Rect{
     }
     bool intersects(const utils::Vector2& v)
     {
-        if(x < v.getX()
-           && y < v.getY()
-           && x+width > v.getX()
-           && y+height > v.getY()
+        if(x <= v.getX()
+           && y <= v.getY()
+           && x+width >= v.getX()
+           && y+height >= v.getY()
            )
             return true;
         return false;

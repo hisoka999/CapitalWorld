@@ -59,6 +59,8 @@ graphics::Rect Building::get2DPosition()
     graphics::Rect r = displayRect;
     r.width = blockWidth;
     r.height = blockHeight;
+    r.x-= blockWidth;
+    r.y-=blockHeight;
 
     return r;
 }

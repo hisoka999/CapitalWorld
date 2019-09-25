@@ -10,8 +10,8 @@
 
 #include "engine/ui/Object.h"
 #include "engine/ui/Tab.h"
-#include <boost/shared_ptr.hpp>
 #include <vector>
+#include <memory>
 
 namespace UI
 {
@@ -19,18 +19,18 @@ namespace UI
 class TabBar: public UI::Object
 {
 public:
-    TabBar(Object* parent = 0);
+    TabBar(Object* parent = nullptr);
     virtual ~TabBar();
 
-    void addTab(boost::shared_ptr<Tab> tab);
+    void addTab(std::shared_ptr<Tab> tab);
     void removeTabByIndex(int index);
-    void removeTab(boost::shared_ptr<Tab> tab);
+    void removeTab(std::shared_ptr<Tab> tab);
 
     virtual void render(core::Renderer *pRender, graphics::Texture *texture);
     virtual void handleEvents(core::Input *pInput);
     virtual graphics::Rect displayRect();
 private:
-    std::vector<boost::shared_ptr<Tab>> tabs;
+    std::vector<std::shared_ptr<Tab>> tabs;
     int currentTab;
 };
 

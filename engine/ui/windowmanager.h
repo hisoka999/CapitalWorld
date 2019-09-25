@@ -31,13 +31,13 @@ public:
         messageDialog.setVisible(true);
         return &messageDialog;
     }
-    graphics::Text* getFont() {
-        return &font;
+    std::shared_ptr<graphics::Text> getFont() {
+        return font;
     }
 protected:
 private:
     graphics::Texture* texture;
-    graphics::Text font;
+    std::shared_ptr<graphics::Text> font;
 
     std::vector<Container*> containers;
 

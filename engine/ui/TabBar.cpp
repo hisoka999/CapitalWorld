@@ -34,6 +34,9 @@ void TabBar::render(core::Renderer *pRender, graphics::Texture *texture)
     int tabX = displayRect.x + 5;
     int taby = displayRect.y + 5;
     graphics::Rect tabRect;
+    graphics::Rect tabBarRect;
+    tabBarRect.x = tabX;
+
     for (auto& tab : tabs)
     {
         std::string title = tab->getTitle();
@@ -47,6 +50,8 @@ void TabBar::render(core::Renderer *pRender, graphics::Texture *texture)
         tabRect.y = taby;
         tabRect.width = w + 20;
         tabRect.height = h + 6;
+        tabBarRect.y = tabRect.height+taby;
+        tabBarRect.height = getHeight() - tabRect.height;
         //44d3d5
         if (index == currentTab)
             pRender->setDrawColor(0x44, 0xd3, 0xd5, 255);
@@ -62,6 +67,9 @@ void TabBar::render(core::Renderer *pRender, graphics::Texture *texture)
         index++;
 
     }
+    tabBarRect.width = getWidth() - 5;
+    pRender->setDrawColor(255, 255, 255, 255);
+    pRender->drawRect(tabBarRect);
 
     if (currentTab != -1)
     {
@@ -115,7 +123,7 @@ void TabBar::handleEvents(core::Input *pInput)
 
 }
 
-void TabBar::addTab(boost::shared_ptr<Tab> tab)
+void TabBar::addTab(std::shared_ptr<Tab> tab)
 {
     tabs.push_back(tab);
     if (currentTab == -1)
@@ -126,7 +134,7 @@ void TabBar::removeTabByIndex(int index)
     auto it = tabs.begin() + index;
     tabs.erase(it);
 }
-void TabBar::removeTab(boost::shared_ptr<Tab> tab)
+void TabBar::removeTab(std::shared_ptr<Tab> tab)
 {
     auto it = std::find(tabs.begin(), tabs.end(), tab);
     if (it != tabs.end())

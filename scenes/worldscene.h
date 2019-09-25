@@ -11,6 +11,7 @@
 #include <world/building.h>
 #include <world/gamestate.h>
 #include <world/updatethread.h>
+#include <ui/buildingwindow.h>
 #include <map>
 
 namespace scenes {
@@ -39,6 +40,7 @@ private:
     UI::BuildWindow buildWindow;
     std::shared_ptr<world::GameState> gameState;
     std::unique_ptr<UpdateThread> thread;
+    UI::BuildingWindow buildingWindow;
 
 };
 }

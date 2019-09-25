@@ -22,6 +22,10 @@ public:
     {
         return currentAction;
     }
+    void setCurrentAction(world::BuildAction action)
+    {
+        currentAction = action;
+    }
 
 private:
     void initUI();

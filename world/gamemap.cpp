@@ -12,12 +12,12 @@ void GameMap::initEmtryMap()
     std::fill(mapData.begin(),mapData.end(),10);
 }
 
-uint16_t GameMap::getTile(int x, int y)
+TileType GameMap::getTile(int x, int y)
 {
     return mapData[x+(y*height)];
 }
 
-uint16_t GameMap::getTile(utils::Vector2 &pos)
+TileType GameMap::getTile(utils::Vector2 &pos)
 {
     return getTile(pos.getX(),pos.getY());
 }
@@ -49,9 +49,9 @@ utils::Vector2 GameMap::twoDToIso(utils::Vector2 pt)
 std::shared_ptr<world::Building> GameMap::getBuilding2D(utils::Vector2 pt)
 {
     std::shared_ptr<world::Building> result = nullptr;
-    auto iso = twoDToIso(pt);
+    //auto iso = twoDToIso(pt);
     for(auto building : buildings){
-        if(building->getDisplayRect().intersects(iso))
+        if(building->get2DPosition().intersects(pt))
         {
             result = building;
             break;

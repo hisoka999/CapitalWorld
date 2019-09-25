@@ -1,12 +1,16 @@
 #include "engine/ui/windowmanager.h"
 #include <algorithm>
 #include "engine/ui/Window.h"
+#include "engine/graphics/TextureManager.h"
+#include "engine/utils/os.h"
 
 namespace UI {
 
 WindowManager::WindowManager(graphics::Texture* baseTexture) :
         texture(baseTexture) {
     addWindow (&messageDialog);
+
+    font = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),12);
 }
 
 WindowManager::~WindowManager() {
@@ -17,7 +21,7 @@ void WindowManager::addContainer(Container *c) {
     containers.push_back(c);
 }
 void WindowManager::addWindow(Window *win) {
-    win->setFont(&font);
+    win->setFont(font.get());
     containers.push_back(win);
 }
 

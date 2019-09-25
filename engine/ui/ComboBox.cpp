@@ -48,6 +48,7 @@ void ComboBox::handleEvents(core::Input *pInput)
         {
             mouseDown = false;
             selection = (e.button.y - ty) / 28;
+            this->fireFuncionCall("selectionChanged",selection);
         }
     }
     else

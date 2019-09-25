@@ -7,14 +7,16 @@
 #include <world/building.h>
 #include <memory>
 
+typedef uint16_t TileType;
+
 class GameMap
 {
 public:
     GameMap(size_t width,size_t height);
     void initEmtryMap();
 
-    uint16_t getTile(int x,int y);
-    uint16_t getTile(utils::Vector2& pos);
+    TileType getTile(int x,int y);
+    TileType getTile(utils::Vector2& pos);
 
     size_t getWidth();
     size_t getHeight();
@@ -30,7 +32,7 @@ public:
 
 private:
     size_t width,height;
-    std::vector<uint16_t> mapData;
+    std::vector<TileType> mapData;
     std::vector<std::shared_ptr<world::Building>> buildings;
 };
 

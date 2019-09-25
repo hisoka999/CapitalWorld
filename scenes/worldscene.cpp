@@ -12,6 +12,7 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
                          core::Scene(pRenderer, &uiTexture), sceneManager(
                                          pSceneManager)
                        ,buildWindow(0,pRenderer->getViewPort().height/2)
+                       ,buildingWindow(100,100)
 {
     cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","tiles","iso_cursor.png"));
     hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","hud_base.png"));
@@ -21,8 +22,10 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
     auto playerCompany = std::make_shared<world::Company>("Player Company",1000000,true);
     gameState = std::make_shared<world::GameState>(playerCompany);
     renderer->setZoomFactor(6);
+    uiTexture.loadTexture(renderer,utils::os::combine("images","ArkanaLook.png"));
 
     thread = std::make_unique<UpdateThread>(gameState);
+    winMgr->addWindow(&buildingWindow);
 
 }
 
@@ -109,11 +112,12 @@ void WorldScene::render(){
     cursorTexture->render(renderer,pos.getX(),pos.getY());//,mapRenderer->getTileWidth(),mapRenderer->getTileHeight());
     renderHUD();
 
+    winMgr->render(renderer);
 }
 void WorldScene::handleEvents(core::Input *pInput){
     bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
-    if(!mouseIntersectsWindow)
+    if(!mouseIntersectsWindow && !winMgr->isWindowOpen())
     {
         if(pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
         {
@@ -136,11 +140,14 @@ void WorldScene::handleEvents(core::Input *pInput){
                     gameMap->addBuilding(building);
                     gameState->getPlayer()->incCash(building->getBuildPrice()*-1);
                 }
+            }else{
+                auto building = gameMap->getBuilding2D(cursorPosition);
+                buildingWindow.open(building,gameMap->getTile(cursorPosition));
             }
 
         }else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
         {
-
+            buildWindow.setCurrentAction(world::BuildAction::None);
         }
         if(pInput->isScrollWheel())
         {
@@ -189,5 +196,6 @@ void WorldScene::handleEvents(core::Input *pInput){
     renderer->getMainCamera()->move(xOffset*5.0f,yOffset*5.0f);
 
     buildWindow.handleEvents(pInput);
+    winMgr->handleInput(pInput);
 }
 }
