@@ -6,6 +6,7 @@
 #include <engine/ui/Label.h>
 #include <engine/ui/ImageButton.h>
 #include <engine/ui/ComboBox.h>
+#include <services/productservice.h>
 
 namespace UI {
 

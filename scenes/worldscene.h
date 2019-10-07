@@ -22,6 +22,7 @@ class WorldScene :public core::Scene
 public:
     WorldScene(core::Renderer *pRenderer,
                core::SceneManager* pSceneManager);
+    ~WorldScene();
     void render();
     void handleEvents(core::Input *pInput);
 

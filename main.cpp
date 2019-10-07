@@ -13,6 +13,7 @@
 #include "engine/utils/logger.h"
 #include "engine/utils/string.h"
 #include "config.h"
+#include "services/productservice.h"
 
 int main()
 {
@@ -30,11 +31,16 @@ int main()
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
+
+        services::ProductService::Instance().loadResources("");
+        services::ProductService::Instance().loadProducts("");
         scenes::MainScene mainScene(&ren,&sceneManager);
         scenes::WorldScene worldScene(&ren,&sceneManager);
         sceneManager.addScene("main",&mainScene);
         sceneManager.addScene("world",&worldScene);
         sceneManager.setCurrentScene("main");
+
+
 
         unsigned int lastTime = ren.getTickCount();
         unsigned int frames = 0;

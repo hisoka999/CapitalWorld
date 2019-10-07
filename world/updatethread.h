@@ -9,7 +9,7 @@ class UpdateThread
 {
 public:
     UpdateThread(std::shared_ptr<world::GameState> gameState);
-
+    ~UpdateThread();
     void stop();
 
 private:

@@ -10,6 +10,10 @@ UpdateThread::UpdateThread(std::shared_ptr<world::GameState> gameState)
     thread = std::thread(&UpdateThread::update, this);
 
 }
+UpdateThread::~UpdateThread()
+{
+    thread.detach();
+}
 
 void UpdateThread::stop()
 {

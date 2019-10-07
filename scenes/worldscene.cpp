@@ -28,7 +28,10 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
     winMgr->addWindow(&buildingWindow);
 
 }
-
+WorldScene::~WorldScene()
+{
+    thread->stop();
+}
 std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction action)
 {
     std::shared_ptr<world::Building> building = nullptr;

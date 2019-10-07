@@ -1,5 +1,6 @@
 #include "farmproductiontab.h"
 
+
 namespace UI {
 
 FarmProductionTab::FarmProductionTab(UI::Object* parent)
@@ -11,8 +12,13 @@ void FarmProductionTab::initUI()
 {
     productSelectionBox = std::make_shared<UI::ComboBox>(this);
     productSelectionBox->setPos(180,28);
-    productSelectionBox->addElement("Wheet");
-    productSelectionBox->addElement("Pork");
+    auto products = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Farm);
+    for(auto& product: products)
+    {
+        productSelectionBox->addElement(product.getName());
+    }
+
+
     addObject(productSelectionBox.get());
 
     productImage = std::make_shared<UI::ImageButton>(this,100,100,0,0,true);
