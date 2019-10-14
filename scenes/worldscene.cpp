@@ -141,6 +141,7 @@ void WorldScene::handleEvents(core::Input *pInput){
 
 
                     gameMap->addBuilding(building);
+                    gameState->getPlayer()->addBuilding(building);
                     gameState->getPlayer()->incCash(building->getBuildPrice()*-1);
                 }
             }else{

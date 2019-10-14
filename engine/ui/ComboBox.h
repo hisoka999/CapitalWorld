@@ -19,6 +19,7 @@ class ComboBox : public UI::Object
         void setWidth(int width){this->width = width;}
         int getWidth(){return width;}
         void addElement(std::string elem){elements.push_back(elem);}
+        void clearElements(){elements.clear(); selection = 0;}
         virtual void handleEvents(core::Input *pInput);
         int getSelection() { return selection;}
         void setSelection(unsigned int selection){this->selection = selection;}

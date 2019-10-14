@@ -3,9 +3,17 @@
 
 #include <string>
 #include <engine/graphics/rect.h>
+#include <world/product.h>
 
 namespace world {
 
+struct ProductBalance{
+    int month;
+    int year;
+    std::string name;
+    float costs;
+    float income;
+};
 
 class Building
 {
@@ -27,6 +35,12 @@ public:
     int getXOffset();
     int getYOffset();
     void setOffset(int x,int y);
+    void addProduct(std::shared_ptr<Product> product);
+    void removeProduct(std::shared_ptr<Product> product);
+    bool hasProduct(std::shared_ptr<Product> product);
+    std::vector<std::shared_ptr<Product>> getProducts();
+    void calculateBalance(int month,int year);
+    float getCostsPerMonth(int month,int year);
 
 private:
     std::string name;
@@ -36,7 +50,8 @@ private:
     graphics::Rect displayRect;
     int blockWidth,blockHeight;
     int xOffset,yOffset;
-
+    std::vector<std::shared_ptr<Product>> products;
+    std::vector<ProductBalance> balance;
 };
 }
 #endif // BUILDING_H

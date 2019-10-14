@@ -1,4 +1,5 @@
 #include "building.h"
+#include <algorithm>
 
 namespace world {
 
@@ -77,7 +78,53 @@ void Building::setOffset(int x,int y)
     xOffset = x;
     yOffset = y;
 }
+void Building::addProduct(std::shared_ptr<Product> product)
+{
+    if(!hasProduct(product))
+        products.push_back(product);
+}
+void Building::removeProduct(std::shared_ptr<Product> product)
+{
+    auto it = std::find(products.begin(),products.end(),product);
+    if(it != products.end())
+    {
+        products.erase(it);
+    }
+}
+std::vector<std::shared_ptr<Product>> Building::getProducts()
+{
+    return products;
+}
 
-
+bool Building::hasProduct(std::shared_ptr<Product> product)
+{
+    auto it = std::find(products.begin(),products.end(),product);
+    return it != products.end();
+}
+void Building::calculateBalance(int month,int year)
+{
+    for(auto& product : products)
+    {
+        ProductBalance producBalance;
+        producBalance.name = product->getName();
+        producBalance.year = year;
+        producBalance.month = month;
+        producBalance.costs = product->calculateCostsPerMonth();
+        producBalance.income = 0;//TODO
+        balance.push_back(producBalance);
+    }
+}
+float Building::getCostsPerMonth(int month,int year)
+{
+    float result = .0f;
+    for (auto& b : balance)
+    {
+        if(b.month == month
+                && b.year == year){
+            result+=b.costs;
+        }
+    }
+    return result;
+}
 
 }

@@ -7,15 +7,15 @@
 namespace UI {
 
 BuildingWindow::BuildingWindow(int x,int y)
-    :UI::Window(x,y,600,400),tabBar(this)
+    :UI::Window(x,y,740,450),tabBar(this)
 {
     setTitle("Show Building");
     //auto baseFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),12);
     //setFont(baseFont.get());
 
     tabBar.setPos(0,0);
-    tabBar.setWidth(600-10);
-    tabBar.setHeight(400 -50);
+    tabBar.setWidth(740-10);
+    tabBar.setHeight(450 -50);
     addObject(&tabBar);
     std::shared_ptr<UI::Tab> infoTab = std::make_shared<UI::Tab>(&tabBar,"Info");
     tabBar.addTab(infoTab);
@@ -56,7 +56,10 @@ void BuildingWindow::open(std::shared_ptr<world::Building> building,TileType til
         labelGroundValue->setText("TODO");
         tabBar.removeTab(productionTab);
         //recreate tab based on Building type
-        productionTab = std::make_shared<UI::FarmProductionTab>(this);
+        auto tab = std::make_shared<UI::FarmProductionTab>(this);
+        tab->setBuilding(building);
+        productionTab = tab;
+
         tabBar.addTab(productionTab);
     }
     else

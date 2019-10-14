@@ -1,4 +1,5 @@
 #include "company.h"
+#include <algorithm>
 
 namespace world {
 
@@ -32,5 +33,26 @@ bool Company::isPLayer()
 {
     return player;
 }
+void Company::addBuilding(std::shared_ptr<Building> building)
+{
+    buildings.push_back(building);
+}
+bool Company::hasBuilding(std::shared_ptr<Building> building)
+{
+    auto it = std::find(buildings.begin(),buildings.end(),building);
+    return it != buildings.end();
+}
+void Company::updateBalance(int month,int year)
+{
+    profit = 0.0f;
+    for(auto& building : buildings)
+    {
+        building->calculateBalance(month,year);
+        profit -= building->getCostsPerMonth(month,year);
+        //@TODO add income
+    }
+    incCash(profit);
+}
+
 
 }

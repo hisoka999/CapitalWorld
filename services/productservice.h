@@ -19,10 +19,11 @@ public:
     }
 
 
-    std::vector<Product> getProductsByBuildingType(BuildingType type);
-    std::vector<Resource> getResourcesByBuildingType(BuildingType type);
-    Resource* getResourceByName(std::string name);
-    Product* getProductByName(std::string name);
+    std::vector<std::shared_ptr<Product>> getProductsByBuildingType(BuildingType type);
+    std::vector<std::shared_ptr<Resource>> getResourcesByBuildingType(BuildingType type);
+    std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(BuildingType type, std::shared_ptr<Resource> resource);
+    std::shared_ptr<Resource> getResourceByName(std::string name);
+    std::shared_ptr<Product> getProductByName(std::string name);
     void loadProducts(std::string path);
     void loadResources(std::string path);
 
@@ -36,8 +37,8 @@ private:
     static std::once_flag onceFlag;
 
 
-    std::vector <Product> products;
-    std::vector <Resource> resources;
+    std::vector <std::shared_ptr<Product>> products;
+    std::vector <std::shared_ptr<Resource>> resources;
     static void initSingleton(){
         instance = new ProductService();
     }

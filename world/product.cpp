@@ -1,7 +1,7 @@
 #include "product.h"
 
-Product::Product(std::string name,std::string image,BuildingType buildingType)
-    :name(name),image(image),buildingType(buildingType)
+Product::Product(std::string name,std::string image,BuildingType buildingType,ProductionCycle cycle)
+    :name(name),image(image),buildingType(buildingType),cycle(cycle)
 {
 
 }
@@ -13,11 +13,11 @@ std::string Product::getImage()
 {
     return image;
 }
-std::vector<Resource> Product::getResources()
+std::vector<std::shared_ptr<Resource>> Product::getResources()
 {
     return resources;
 }
-void Product::addRessource(Resource resource)
+void Product::addRessource(std::shared_ptr<Resource> resource)
 {
     resources.push_back(resource);
 }
@@ -32,7 +32,24 @@ float Product::calculateCostsPerMonth()
     float result = 0.0f;
     for(auto& res : resources)
     {
-        result+= res.getCostPerMonth();
+        result+= res->getCostPerMonth();
     }
     return result;
+}
+bool Product::needsResource(std::shared_ptr<Resource> resource)
+{
+    bool result = false;
+    for(auto& res : resources)
+    {
+        if(res->getName() == resource->getName())
+        {
+            result = true;
+            break;
+        }
+    }
+    return result;
+}
+ProductionCycle Product::getProductionCycle()
+{
+    return cycle;
 }

@@ -31,6 +31,8 @@ void UpdateThread::update()
         if(localTime->tm_mday == 1)
         {
             //update game state
+            auto company = gameState->getPlayer();
+            company->updateBalance(localTime->tm_mon,localTime->tm_year);
             std::cout<<std::asctime(localTime)<<": update game state"<<std::endl;
 
         }
