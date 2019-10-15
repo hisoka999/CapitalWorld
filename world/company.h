@@ -21,6 +21,7 @@ public:
     bool isPLayer();
     void addBuilding(std::shared_ptr<Building> building);
     bool hasBuilding(std::shared_ptr<Building> building);
+    void removeBuilding(std::shared_ptr<Building> building);
     void updateBalance(int month,int year);
 private:
     std::string name;

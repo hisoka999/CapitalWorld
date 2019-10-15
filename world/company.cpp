@@ -42,6 +42,14 @@ bool Company::hasBuilding(std::shared_ptr<Building> building)
     auto it = std::find(buildings.begin(),buildings.end(),building);
     return it != buildings.end();
 }
+void Company::removeBuilding(std::shared_ptr<Building> building)
+{
+    auto it = std::find(buildings.begin(),buildings.end(),building);
+    if(it != buildings.end()){
+        buildings.erase(it);
+    }
+}
+
 void Company::updateBalance(int month,int year)
 {
     profit = 0.0f;

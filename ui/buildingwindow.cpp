@@ -56,6 +56,7 @@ void BuildingWindow::open(std::shared_ptr<world::Building> building,TileType til
         labelGroundValue->setText("TODO");
         tabBar.removeTab(productionTab);
         //recreate tab based on Building type
+
         auto tab = std::make_shared<UI::FarmProductionTab>(this);
         tab->setBuilding(building);
         productionTab = tab;

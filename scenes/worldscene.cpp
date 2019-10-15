@@ -129,6 +129,23 @@ void WorldScene::handleEvents(core::Input *pInput){
             if(action == world::BuildAction::Destroy)
             {
                 //check if building exists and then destroy it
+                auto building = gameMap->getBuilding2D(cursorPosition);
+                if(building != nullptr)
+                {
+                    //remove it
+
+                    gameMap->removeBuilding(building);
+                    //get back cash
+                    if(gameState->getPlayer()->hasBuilding(building))
+                    {
+                        gameState->getPlayer()->removeBuilding(building);
+                        gameState->getPlayer()->incCash(building->getBuildPrice()*0.2f);
+                    }else{
+                        //if no one owns the building you have to pay for destroying it
+                        gameState->getPlayer()->incCash(building->getBuildPrice()*-1.0f);
+                    }
+
+                }
 
             }else if (action != world::BuildAction::None)
             {

@@ -28,6 +28,7 @@ public:
     std::shared_ptr<world::Building> getBuilding2D(utils::Vector2 pt);
     bool canBuild(graphics::Rect buildRect);
     void addBuilding(std::shared_ptr<world::Building> building);
+    void removeBuilding(std::shared_ptr<world::Building> building);
     std::vector<std::shared_ptr<world::Building>> getBuildings();
 
 private:

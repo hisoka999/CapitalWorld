@@ -87,3 +87,10 @@ bool GameMap::canBuild(graphics::Rect buildRect)
 
     return true;
 }
+void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
+{
+    auto it = std::find(buildings.begin(),buildings.end(),building);
+    if(it != buildings.end()){
+        buildings.erase(it);
+    }
+}

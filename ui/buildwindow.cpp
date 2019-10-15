@@ -60,7 +60,7 @@ void BuildWindow::initUI()
     auto destroyButton = new UI::ImageButton(this,50,50,0,0,false);
     destroyButton->loadImage(utils::os::combine("images","icons","caterpillar.png"));
     destroyButton->setPos(xPos,yPos);
-    addObject(transportButton);
+    addObject(destroyButton);
     destroyButton->connect("buttonClick",[&](){
        currentAction = world::BuildAction::Destroy;
     });
