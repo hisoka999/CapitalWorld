@@ -29,6 +29,10 @@ BuildingType Product::getBuildingType()
 
 float Product::calculateCostsPerMonth()
 {
+    return calculateCostsPerPiece()*cycle.amount;
+}
+float Product::calculateCostsPerPiece()
+{
     float result = 0.0f;
     for(auto& res : resources)
     {

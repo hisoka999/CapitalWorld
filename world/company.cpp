@@ -56,8 +56,11 @@ void Company::updateBalance(int month,int year)
     for(auto& building : buildings)
     {
         building->calculateBalance(month,year);
+        building->updateProduction(month,year);
+        building->autoSell(month,year);
         profit -= building->getCostsPerMonth(month,year);
-        //@TODO add income
+
+        profit+= building->getIncomePerMonth(month,year);
     }
     incCash(profit);
 }

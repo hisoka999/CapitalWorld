@@ -46,13 +46,13 @@ std::vector<std::shared_ptr<Resource>> ProductService::getResourcesByBuildingTyp
 }
 void ProductService::loadProducts(std::string path)
 {
-    ProductionCycle eggCycle(1,12,3*30);
+    ProductionCycle eggCycle(1,12,3*30,100);
 
     auto eggs = std::make_shared<Product>("Eggs","egg.png",BuildingType::Farm,eggCycle);
     eggs->addRessource(getResourceByName("Chicken"));
     products.push_back(eggs);
 
-    auto wheet = std::make_shared<Product>("Wheet","wheat.png",BuildingType::Farm,ProductionCycle(3,7,30));
+    auto wheet = std::make_shared<Product>("Wheet","wheat.png",BuildingType::Farm,ProductionCycle(3,7,30,300));
     wheet->addRessource(getResourceByName("Wheat"));
     products.push_back(wheet);
 

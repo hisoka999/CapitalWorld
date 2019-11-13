@@ -4,6 +4,7 @@
 #include <string>
 #include <engine/graphics/rect.h>
 #include <world/product.h>
+#include <world/storage.h>
 
 namespace world {
 
@@ -41,7 +42,9 @@ public:
     std::vector<std::shared_ptr<Product>> getProducts();
     void calculateBalance(int month,int year);
     float getCostsPerMonth(int month,int year);
-
+    float getIncomePerMonth(int month,int year);
+    void updateProduction(int month,int year);
+    void autoSell(int month,int year);
 private:
     std::string name;
     std::string description;
@@ -52,6 +55,7 @@ private:
     int xOffset,yOffset;
     std::vector<std::shared_ptr<Product>> products;
     std::vector<ProductBalance> balance;
+    Storage storage;
 };
 }
 #endif // BUILDING_H

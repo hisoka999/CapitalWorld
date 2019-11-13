@@ -127,4 +127,55 @@ float Building::getCostsPerMonth(int month,int year)
     return result;
 }
 
+float Building::getIncomePerMonth(int month,int year)
+{
+    float result = .0f;
+    for (auto& b : balance)
+    {
+        if(b.month == month
+                && b.year == year){
+            result+=b.income;
+        }
+    }
+    return result;
+}
+void Building::updateProduction(int month,int year)
+{
+    for(auto& product : products)
+    {
+
+        auto cycle = product->getProductionCycle();
+        if(month >= cycle.startMonth && month<= cycle.endMonth)
+        {
+            //change the amount
+            //only update amount after the end
+            storage.addEntry(product->getName(),cycle.amount);
+
+        }
+
+    }
+}
+void Building::autoSell(int month,int year)
+{
+    for(auto& product : products)
+    {
+        unsigned amount = storage.getEntry(product->getName());
+        float income = amount*product->calculateCostsPerPiece()*1.1;
+
+        //find balance
+        for (auto& b : balance)
+        {
+            if(b.name == product->getName()
+                    && b.year == year
+                    && b.month == month
+                )
+            {
+                b.income+=income;
+            }
+        }
+        storage.addEntry(product->getName(),amount*-1);
+
+    }
+}
+
 }

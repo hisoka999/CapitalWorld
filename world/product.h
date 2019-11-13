@@ -11,9 +11,10 @@ struct ProductionCycle{
     unsigned endMonth;
     //production time in days
     unsigned productionTime;
+    unsigned amount;
 
-    ProductionCycle(unsigned start,unsigned end,unsigned time)
-        :startMonth(start),endMonth(end),productionTime(time)
+    ProductionCycle(unsigned start,unsigned end,unsigned time,unsigned amount)
+        :startMonth(start),endMonth(end),productionTime(time),amount(amount)
     {
 
     }
@@ -31,6 +32,7 @@ public:
     ProductionCycle getProductionCycle();
 
     float calculateCostsPerMonth();
+    float calculateCostsPerPiece();
     BuildingType getBuildingType();
 
 private:
