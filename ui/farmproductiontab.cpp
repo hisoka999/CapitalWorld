@@ -85,7 +85,8 @@ void FarmProductionTab::initUI()
         if(!building->hasProduct(product))
         {
             building->addProduct(product);
-            //TODO refresh product list
+
+            refreshProductList();
         }
     });
     addObject(addButton.get());
@@ -99,10 +100,34 @@ void FarmProductionTab::initUI()
     addObject(helpButton.get());
     resourceSelectionChanged(0);
     productSelectionChanged(0);
+    refreshProductList();
 }
+
+void FarmProductionTab::refreshProductList()
+{
+    for(auto p: productComponents)
+    {
+        removeObject(p.get());
+    }
+    productComponents.clear();
+    if(building == nullptr)
+        return;
+    int y = 50;
+    for(auto product : building->getProducts())
+    {
+        std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product,this);
+
+        productComponents.push_back(pc);
+        pc->setPos(20,y);
+        addObject(pc.get());
+        y+=120;
+    }
+}
+
 void FarmProductionTab::setBuilding(std::shared_ptr<world::Building> building)
 {
     this->building = building;
+    refreshProductList();
 }
 
 void FarmProductionTab::resourceSelectionChanged(unsigned int selection)

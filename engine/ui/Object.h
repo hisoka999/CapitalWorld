@@ -93,6 +93,7 @@ public:
     graphics::Text *getFont();
     void setFont(graphics::Text *pFont);
     virtual graphics::Rect displayRect();
+    int getRenderOrder();
 
 protected:
     template<typename ... Args>
@@ -103,6 +104,7 @@ protected:
         }
 
     }
+    int renderOrder;
 private:
     template<typename F, typename ... Args>
     void call(F const& f, Args const&... args) {
@@ -114,6 +116,7 @@ private:
     int x, y;
     int width, height;
     Listener *listener;
+
     std::multimap<std::string, core::dispatcher_type> _callbacks;
     graphics::Text *font;
 };

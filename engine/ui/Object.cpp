@@ -9,9 +9,10 @@ Object::Object(Object *parent) :
     x = y = 0;
     width = height = 0;
     font = nullptr;
+    renderOrder = 0;
 }
 Object::Object(Object *parent, int pWidth, int pHeight) :
-        parent(parent), width(pWidth), height(pHeight), x(0), y(0) {
+        parent(parent), width(pWidth), height(pHeight), x(0), y(0),renderOrder(0) {
     this->listener = NULL;
 
     font = nullptr;
@@ -20,18 +21,12 @@ Object::Object(Object *parent, int pWidth, int pHeight) :
 Object::~Object() {
     //dtor
 }
-//void Object::connect(std::string funcName, ConnectFunc func)
-//{
-//	functions[funcName] = func;
-//}
-//void Object::fireFuncionCall(std::string funcName,Args..args)
-//{
-//	if (functions[funcName] != NULL)
-//	{
-//		ConnectFunc func = functions[funcName];
-//		func(dynamic_cast<UI::BaseObject*>(this));
-//	}
-//}
+int Object::getRenderOrder()
+{
+    return renderOrder;
+}
+
+
 void Object::render(core::Renderer *pRender, graphics::Texture *texture) {
 }
 void Object::handleEvents(core::Input *pInput) {

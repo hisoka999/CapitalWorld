@@ -8,6 +8,7 @@
 #include <engine/ui/ComboBox.h>
 #include <services/productservice.h>
 #include <world/building.h>
+#include <ui/productcomponent.h>
 
 namespace UI {
 
@@ -21,6 +22,7 @@ private:
     void initUI();
     void resourceSelectionChanged(unsigned int selection);
     void productSelectionChanged(unsigned int selection);
+    void refreshProductList();
     std::shared_ptr<world::Building> building;
     std::vector<std::shared_ptr<Product>> productList;
     std::vector<std::shared_ptr<Resource>> resourceList;
@@ -37,7 +39,7 @@ private:
     std::shared_ptr<UI::ImageButton> resourceImage;
     std::shared_ptr<UI::Button> addButton;
     std::shared_ptr<UI::Button> helpButton;
-
+    std::vector<std::shared_ptr<UI::ProductComponent>> productComponents;
 
 };
 }

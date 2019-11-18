@@ -12,6 +12,7 @@ ComboBox::ComboBox(UI::Object *parent) :
     //background = texture->subSurface(250,80,50,50);
     //border->zoomImage(width/6.0,28.0/6.0);
     mouseDown = false;
+    renderOrder= 99;
 }
 
 ComboBox::~ComboBox()
@@ -83,10 +84,10 @@ void ComboBox::render(core::Renderer *pRender, graphics::Texture *pTexture)
     SDL_Color color = { 0, 0, 0, 0 };
 
     if (mouseDown && elements.size() > 0) {
-        src.x = 250;
-        src.y = 80;
-        src.width = 50;
-        src.height = 50;
+        src.x = 9;
+        src.y = 219;
+        src.width = 2;
+        src.height = 2;
         dest.x = tx;
         dest.y = ty;
         dest.width = bgwidth;
@@ -108,6 +109,127 @@ void ComboBox::render(core::Renderer *pRender, graphics::Texture *pTexture)
         pTexture->render(pRender, src, dest);
         getFont()->render(pRender, elements[selection], color, tx + 3, ty + 3);
     }
+    graphics::Rect borderSrcRect;
+    //7,217,6,6
+    height = 28.0;
+    if(mouseDown)
+        height *= elements.size();
+
+
+    borderSrcRect.x = 7;
+    borderSrcRect.y = 217;
+    // render left edge
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx;
+        borderDestRect.y = ty;
+        borderDestRect.width = 2;
+        borderDestRect.height = 2;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+    // render right edge
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx+bgwidth-2;
+        borderDestRect.y = ty;
+        borderDestRect.width = 2;
+        borderDestRect.height = 2;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 12;
+        borderSrcRect.y = 217;
+
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+    // render left bottom edge
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx;
+        borderDestRect.y = ty+height-2;
+        borderDestRect.width = 2;
+        borderDestRect.height = 2;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 7;
+        borderSrcRect.y = 222;
+
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+
+    // render right bottom edge
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx+bgwidth-2;
+        borderDestRect.y = ty+height-2;
+        borderDestRect.width = 2;
+        borderDestRect.height = 2;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 12;
+        borderSrcRect.y = 222;
+
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+
+    // render top line
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx+2;
+        borderDestRect.y = ty;
+        borderDestRect.width = bgwidth-4;
+        borderDestRect.height = 2;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 9;
+        borderSrcRect.y = 217;
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+
+    // render bottom line
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx+2;
+        borderDestRect.y = ty+height-2;
+        borderDestRect.width = bgwidth-4;
+        borderDestRect.height = 2;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 9;
+        borderSrcRect.y = 222;
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+
+    // render left line
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx;
+        borderDestRect.y = ty+2;
+        borderDestRect.width = 2;
+        borderDestRect.height = height-4;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 7;
+        borderSrcRect.y = 219;
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+
+    // render right line
+    {
+        graphics::Rect borderDestRect;
+        borderDestRect.x = tx+bgwidth-2;
+        borderDestRect.y = ty+2;
+        borderDestRect.width = 2;
+        borderDestRect.height = height-4;
+        borderSrcRect.width= 2;
+        borderSrcRect.height=2;
+        borderSrcRect.x = 12;
+        borderSrcRect.y = 219;
+        pTexture->render(pRender,borderSrcRect,borderDestRect);
+    }
+
 //    for (int i =2; i<height;i+=2){
 //        border->draw(pRender,tx,ty+i,2,2,0,2);
 //        border->draw(pRender,tx+width-2,ty+i,2,2,0,2);

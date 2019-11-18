@@ -163,7 +163,11 @@ void WorldScene::handleEvents(core::Input *pInput){
                 }
             }else{
                 auto building = gameMap->getBuilding2D(cursorPosition);
-                buildingWindow.open(building,gameMap->getTile(cursorPosition));
+                std::shared_ptr<world::Company> company = nullptr;
+                if(gameState->getPlayer()->hasBuilding(building)){
+                    company = gameState->getPlayer();
+                }
+                buildingWindow.open(building,company,gameMap->getTile(cursorPosition));
             }
 
         }else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))

@@ -46,13 +46,17 @@ BuildingWindow::BuildingWindow(int x,int y)
 
 
 }
-void BuildingWindow::open(std::shared_ptr<world::Building> building,TileType tile)
+void BuildingWindow::open(std::shared_ptr<world::Building> building,std::shared_ptr<world::Company> company,TileType tile)
 {
     this->building = building;
     if(building != nullptr)
     {
         labelTypeValue->setText(building->getName());
-        labelOwnerValue->setText("TODO");
+        if(company != nullptr)
+        {
+            labelOwnerValue->setText(company->getName());
+        }
+
         labelGroundValue->setText("TODO");
         tabBar.removeTab(productionTab);
         //recreate tab based on Building type
