@@ -48,8 +48,7 @@ void ComboBox::handleEvents(core::Input *pInput)
                 && e.button.button == SDL_BUTTON_LEFT)
         {
             mouseDown = false;
-            selection = (e.button.y - ty) / 28;
-            this->fireFuncionCall("selectionChanged",selection);
+            setSelection((e.button.y - ty) / 28);
         }
     }
     else
@@ -241,5 +240,18 @@ void ComboBox::render(core::Renderer *pRender, graphics::Texture *pTexture)
 //    }
 
 }
+
+void ComboBox::setSelectionByText(std::string text)
+{
+    // Get index of element from iterator
+    int index = -1;
+    auto it = std::find(elements.begin(),elements.end(),text);
+    if(it != elements.end()){
+        index = std::distance(elements.begin(), it);
+        setSelection(index);
+    }
+
+}
+
 
 } // namespace UI

@@ -15,7 +15,7 @@ namespace UI {
 class FarmProductionTab : public UI::Tab
 {
 public:
-    FarmProductionTab(UI::Object* parent = nullptr);
+    FarmProductionTab(UI::Object* parent,std::shared_ptr<world::Building> building);
 
     void setBuilding(std::shared_ptr<world::Building> building);
 private:

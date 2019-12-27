@@ -40,15 +40,15 @@ std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction a
     rect.height = (float)mapRenderer->getTileHeight();
     switch(action)
     {
-        case world::BuildAction::Farm:
-        building = std::make_shared<world::Building>("Farm","A farm",10000);
+    case world::BuildAction::Farm:
+        building = std::make_shared<world::Building>("Farm","A farm",10000,world::BuildingType::Farm);
         rect.x= 754;
         rect.y = 236;
         building->setSourceRect(rect);
         break;
 
-        case world::BuildAction::Factory:
-        building = std::make_shared<world::Building>("Factory","A factory",20000,3,3);
+    case world::BuildAction::Factory:
+        building = std::make_shared<world::Building>("Factory","A factory",20000,world::BuildingType::Factory,3,3);
         rect.x = 14;
         rect.y = 1878;
         rect.width = 184;

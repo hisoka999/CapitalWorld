@@ -3,19 +3,23 @@
 
 namespace world {
 
-Building::Building(std::string name,std::string description, int buildPirce,int blockWidth,int blockHeight)
-    :name(name),description(description),buildPrice(buildPirce),blockWidth(blockWidth),blockHeight(blockHeight),xOffset(0),yOffset(0)
+Building::Building(std::string name,std::string description, int buildPirce,BuildingType type,int blockWidth,int blockHeight)
+    :name(name),type(type),description(description),buildPrice(buildPirce),blockWidth(blockWidth),blockHeight(blockHeight),xOffset(0),yOffset(0)
 {
 
 }
 
 
-Building::Building(std::string name,std::string description, int buildPirce)
-    :name(name),description(description),buildPrice(buildPirce),blockWidth(1),blockHeight(1),xOffset(0),yOffset(0)
+Building::Building(std::string name,std::string description, int buildPirce,BuildingType type)
+    :name(name),type(type),description(description),buildPrice(buildPirce),blockWidth(1),blockHeight(1),xOffset(0),yOffset(0)
 {
 
 }
 
+BuildingType Building::getType()
+{
+    return type;
+}
 
 std::string Building::getName()
 {

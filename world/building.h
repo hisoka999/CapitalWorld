@@ -16,11 +16,19 @@ struct ProductBalance{
     float income;
 };
 
+enum class BuildingType{
+    Farm,
+    Factory,
+    Shop,
+    Street,
+
+};
+
 class Building
 {
 public:
-    Building(std::string name,std::string description, int buildPirce,int blockWidth,int blockHeight);
-    Building(std::string name,std::string description, int buildPirce);
+    Building(std::string name,std::string description, int buildPirce,BuildingType type,int blockWidth,int blockHeight);
+    Building(std::string name,std::string description, int buildPirce,BuildingType type);
 
     std::string getName();
     std::string getDescription();
@@ -45,8 +53,10 @@ public:
     float getIncomePerMonth(int month,int year);
     void updateProduction(int month,int year);
     void autoSell(int month,int year);
+    BuildingType getType();
 private:
     std::string name;
+    BuildingType type;
     std::string description;
     int buildPrice;
     graphics::Rect sourceRect;

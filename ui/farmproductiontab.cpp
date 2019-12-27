@@ -3,10 +3,11 @@
 
 namespace UI {
 
-FarmProductionTab::FarmProductionTab(UI::Object* parent)
+FarmProductionTab::FarmProductionTab(UI::Object* parent,std::shared_ptr<world::Building> building)
     : UI::Tab(parent,"Production")
 {
     initUI();
+    setBuilding(building);
 }
 void FarmProductionTab::initUI()
 {
@@ -85,9 +86,10 @@ void FarmProductionTab::initUI()
         if(!building->hasProduct(product))
         {
             building->addProduct(product);
-
-            refreshProductList();
+        }else{
+            building->removeProduct(product);
         }
+        refreshProductList();
     });
     addObject(addButton.get());
 
@@ -116,11 +118,27 @@ void FarmProductionTab::refreshProductList()
     for(auto product : building->getProducts())
     {
         std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product,this);
+        pc->connect("imageClicked",[=](void){
+            std::cout<<"click: "<<product->getName()<<std::endl;
+            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->getName());
+            productSelectionBox->setSelectionByText(product->getName());
+        });
 
         productComponents.push_back(pc);
         pc->setPos(20,y);
         addObject(pc.get());
         y+=120;
+    }
+
+    if(building != nullptr)
+    {
+        auto product = productList[static_cast<size_t>(productSelectionBox->getSelection())];
+        if(!building->hasProduct(product))
+        {
+            addButton->setLabel("Add");
+        }else{
+            addButton->setLabel("Remove");
+        }
     }
 }
 
@@ -154,6 +172,16 @@ void FarmProductionTab::productSelectionChanged(unsigned int selection)
     productImage->loadImage(utils::os::combine("images","products",product->getImage()));
 
     productionCycleText->setTextF("%'d  - %'d",product->getProductionCycle().startMonth,product->getProductionCycle().endMonth);
+
+    if(building != nullptr)
+    {
+        if(!building->hasProduct(product))
+        {
+            addButton->setLabel("Add");
+        }else{
+            addButton->setLabel("Remove");
+        }
+    }
 
 }
 

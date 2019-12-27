@@ -12,6 +12,15 @@ ProductComponent::ProductComponent(std::shared_ptr<Product> product,UI::Object* 
     label = std::make_shared<UI::Label>(product->getName(),this);
     label->setPos(0,100);
     addObject(label.get());
+
+
+
+    image->connect("buttonClick",[this](){
+        this->fireFuncionCall("imageClicked");
+    });
+
+
+
 }
 void ProductComponent::render(core::Renderer *pRender, graphics::Texture *pTexture)
 {

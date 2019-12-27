@@ -15,6 +15,7 @@ public:
     virtual void render(core::Renderer *pRender, graphics::Texture *pTexture);
     virtual void handleEvents(core::Input *pInput);
 
+
 private:
     std::shared_ptr<Product> product;
     std::shared_ptr<UI::ImageButton> image;

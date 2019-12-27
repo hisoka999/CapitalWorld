@@ -22,7 +22,9 @@ class ComboBox : public UI::Object
         void clearElements(){elements.clear(); selection = 0;}
         virtual void handleEvents(core::Input *pInput);
         int getSelection() { return selection;}
-        void setSelection(unsigned int selection){this->selection = selection;}
+        void setSelection(unsigned int selection){this->selection = selection;
+                                                 this->fireFuncionCall("selectionChanged",selection);}
+        void setSelectionByText(std::string text);
     protected:
     private:
         int width;
