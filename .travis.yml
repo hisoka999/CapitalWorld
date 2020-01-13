@@ -27,3 +27,8 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+addons:
+  apt:
+    packages:
+      - cmake-data
+      - cmake
