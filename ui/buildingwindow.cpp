@@ -3,11 +3,12 @@
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
 #include <ui/farmproductiontab.h>
+#include <ui/factoryproductiontab.h>
 
 namespace UI {
 
 BuildingWindow::BuildingWindow(int x,int y)
-    :UI::Window(x,y,740,450),tabBar(this)
+    :UI::Window(x,y,740,520),tabBar(this)
 {
     setTitle("Show Building");
     //auto baseFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),12);
@@ -15,7 +16,7 @@ BuildingWindow::BuildingWindow(int x,int y)
 
     tabBar.setPos(0,0);
     tabBar.setWidth(740-10);
-    tabBar.setHeight(450 -50);
+    tabBar.setHeight(520 -50);
     addObject(&tabBar);
     std::shared_ptr<UI::Tab> infoTab = std::make_shared<UI::Tab>(&tabBar,"Info");
     tabBar.addTab(infoTab);
@@ -66,6 +67,8 @@ void BuildingWindow::open(std::shared_ptr<world::Building> building,std::shared_
         case world::BuildingType::Farm:
             productionTab = std::make_shared<UI::FarmProductionTab>(this,building);
             break;
+        case world::BuildingType::Factory:
+            productionTab = std::make_shared<UI::FactoryProductionTab>(this,building);
         }
         if(productionTab != nullptr){
             tabBar.addTab(productionTab);

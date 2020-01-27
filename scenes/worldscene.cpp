@@ -109,14 +109,15 @@ void WorldScene::render(){
     resizedTexture.render(renderer,0,0,renderer->getMainCamera()->getWidth(),renderer->getMainCamera()->getHeight(),0,0);
 
 
-    float cursorX = (cursorPosition.getX()*mapRenderer->getTileWidth()/2.f)-renderer->getMainCamera()->getX();
-    float cursorY = (cursorPosition.getY()*mapRenderer->getTileHeight())-renderer->getMainCamera()->getY();
+    float cursorX = (cursorPosition.getX()*mapRenderer->getTileWidth()/2.f);
+    float cursorY = (cursorPosition.getY()*mapRenderer->getTileHeight());
     utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX,cursorY));
     cursorTexture->render(renderer,pos.getX(),pos.getY());//,mapRenderer->getTileWidth(),mapRenderer->getTileHeight());
     renderHUD();
 
     winMgr->render(renderer);
 }
+
 void WorldScene::handleEvents(core::Input *pInput){
     bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
@@ -189,16 +190,41 @@ void WorldScene::handleEvents(core::Input *pInput){
             std::cout<<"factor: "<<factor<<std::endl;
         }
         if(pInput->isMouseMoving()){
+            float camX = renderer->getMainCamera()->getX();
+            float camY = renderer->getMainCamera()->getY();
+            if(camX<0){
+                camX = abs((int)camX);
+            }
+            else if(camX>0)
+            {
+                camX = -abs((int)camX);
+            }
+            utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion()
+                                                 //+ utils::Vector2(camX,camY)
+                                                 //-utils::Vector2(mapRenderer->getTileWidth()/4.0,mapRenderer->getTileHeight()/4.0)
+                                                 )
 
-            utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion()- utils::Vector2(renderer->getMainCamera()->getX(),renderer->getMainCamera()->getY())) - utils::Vector2(mapRenderer->getTileWidth()/2,mapRenderer->getTileHeight()/2);
+                    ;
             float x,y = 0.0;
-            x = std::round(pt.getX() / static_cast<float>(mapRenderer->getTileHeight()));
-            y = std::round(pt.getY() / static_cast<float>(mapRenderer->getTileHeight()));
+            std::cout <<"camx: "<<renderer->getMainCamera()->getX()<<" camy: "<<renderer->getMainCamera()->getY()<<std::endl;
+            std::cout <<"mouse x: "<<pInput->getMousePostion().getX()<<" mouse y: "<<pInput->getMousePostion().getY()<<std::endl;
+            std::cout <<"px: "<<pt.getX()<<" py: "<<pt.getY()<<std::endl;
+            float tx = pt.getX() / static_cast<float>(mapRenderer->getTileHeight()+1);
+            float ty = pt.getY() / static_cast<float>(mapRenderer->getTileHeight()+1);
+            x = std::floor(tx+0.5f);
+            y = std::floor(ty+0.5f);
 
-            if(y == 0.0f)
+            //if(y == 0.0f)
             std::cout <<"x: "<<x<<" y: "<<y<<std::endl;
+            std::cout <<"tx: "<<tx<<" ty: "<<ty<<std::endl;
+
+
+
 
             cursorPosition = utils::Vector2(x,y);
+            std::cout <<"x: "<<cursorPosition.getX()<<" y: "<<cursorPosition.getY()<<std::endl;
+
+
         }
     }
 

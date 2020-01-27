@@ -151,6 +151,12 @@ void Building::updateProduction(int month,int year)
         auto cycle = product->getProductionCycle();
         if(month >= cycle.startMonth && month<= cycle.endMonth)
         {
+            if(product->getBaseProducts().size() > 0)
+            {
+                // TODO check if base products exists
+                // based on transport
+
+            }
             //change the amount
             //only update amount after the end
             storage.addEntry(product->getName(),cycle.amount);
@@ -159,6 +165,12 @@ void Building::updateProduction(int month,int year)
 
     }
 }
+
+bool Building::isAutoSellActive()
+{
+    return type == BuildingType::Factory;
+}
+
 void Building::autoSell(int month,int year)
 {
     for(auto& product : products)
@@ -181,5 +193,10 @@ void Building::autoSell(int month,int year)
 
     }
 }
+Storage& Building::getStorage()
+{
+    return storage;
+}
+
 
 }

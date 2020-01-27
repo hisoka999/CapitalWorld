@@ -20,6 +20,7 @@ public:
 
 
     std::vector<std::shared_ptr<Product>> getProductsByBuildingType(BuildingType type);
+    std::vector<std::shared_ptr<Product>> getBaseProductsByBuildingType(BuildingType type);
     std::vector<std::shared_ptr<Resource>> getResourcesByBuildingType(BuildingType type);
     std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(BuildingType type, std::shared_ptr<Resource> resource);
     std::shared_ptr<Resource> getResourceByName(std::string name);

@@ -34,8 +34,8 @@ size_t GameMap::getHeight()
 utils::Vector2 GameMap::isoTo2D(utils::Vector2 pt)
 {
     float x,y = 0.0f;
-    x = (2.0f*pt.getY()+pt.getX()) / 2.0f;
-    y = (2.0f*pt.getY()-pt.getX()) / 2.0f;
+    x = ((2.0f*pt.getY())+pt.getX()) / 2.0f;
+    y = ((2.0f*pt.getY())-pt.getX()) / 2.0f;
     return utils::Vector2(x,y);
 }
 

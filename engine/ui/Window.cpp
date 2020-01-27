@@ -135,6 +135,7 @@ void Window::render(core::Renderer *pRender, graphics::Texture *pTexture)
 
 Window::~Window()
 {
+    delete closeButton;
 }
 
 graphics::Rect Window::displayRect()

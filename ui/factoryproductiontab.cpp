@@ -1,19 +1,20 @@
-#include "farmproductiontab.h"
+#include "factoryproductiontab.h"
+
 #include <engine/utils/os.h>
 
 namespace UI {
 
-FarmProductionTab::FarmProductionTab(UI::Object* parent,std::shared_ptr<world::Building> building)
+FactoryProductionTab::FactoryProductionTab(UI::Object* parent,std::shared_ptr<world::Building> building)
     : UI::Tab(parent,"Production")
 {
     initUI();
     setBuilding(building);
 }
-void FarmProductionTab::initUI()
+void FactoryProductionTab::initUI()
 {
     productSelectionBox = std::make_shared<UI::ComboBox>(this);
     productSelectionBox->setPos(490,28);
-    productList = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Farm);
+    productList = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Factory);
     productSelectionBox->connect("selectionChanged",[&](unsigned int selection){
         productSelectionChanged(selection);
     });
@@ -31,8 +32,8 @@ void FarmProductionTab::initUI()
         resourceSelectionChanged(selection);
     });
 
-    resourceList = services::ProductService::Instance().getResourcesByBuildingType(BuildingType::Farm);
-    for(auto& res : resourceList)
+    baseProductList = services::ProductService::Instance().getBaseProductsByBuildingType(BuildingType::Factory);
+    for(auto& res : baseProductList)
     {
         resourceSelectionBox->addElement(res->getName());
     }
@@ -40,13 +41,7 @@ void FarmProductionTab::initUI()
 
     addObject(resourceSelectionBox.get());
 
-    resourceImage = std::make_shared<UI::ImageButton>(this,100,100,0,0,true);
-    resourceImage->setPos(180,70);
-    addObject(resourceImage.get());
 
-    resourceNameText = std::make_shared<UI::Label>(this);
-    resourceNameText->setPos(180,180);
-    addObject(resourceNameText.get());
 
 
     productImage = std::make_shared<UI::ImageButton>(this,100,100,0,0,true);
@@ -57,12 +52,9 @@ void FarmProductionTab::initUI()
     labelCycle->setPos(295,70);
     addObject(labelCycle);
 
-    UI::Label *labelLandType = new UI::Label("Land Type:",this);
-    labelLandType->setPos(295,100);
-    addObject(labelLandType);
 
     UI::Label *labelCosts = new UI::Label("Costs:",this);
-    labelCosts->setPos(295,130);
+    labelCosts->setPos(295,100);
     addObject(labelCosts);
 
     productNameText = std::make_shared<UI::Label>(this);
@@ -70,7 +62,7 @@ void FarmProductionTab::initUI()
     addObject(productNameText.get());
 
     costsText = std::make_shared<UI::Label>(this);
-    costsText->setPos(400,130);
+    costsText->setPos(400,100);
     addObject(costsText.get());
 
     productionCycleText = std::make_shared<UI::Label>(this);
@@ -105,7 +97,7 @@ void FarmProductionTab::initUI()
     refreshProductList();
 }
 
-void FarmProductionTab::refreshProductList()
+void FactoryProductionTab::refreshProductList()
 {
     for(auto p: productComponents)
     {
@@ -142,21 +134,23 @@ void FarmProductionTab::refreshProductList()
     }
 }
 
-void FarmProductionTab::setBuilding(std::shared_ptr<world::Building> building)
+void FactoryProductionTab::setBuilding(std::shared_ptr<world::Building> building)
 {
     this->building = building;
     refreshProductList();
 }
 
-void FarmProductionTab::resourceSelectionChanged(unsigned int selection)
+void FactoryProductionTab::resourceSelectionChanged(unsigned int selection)
 {
-    auto resource = resourceList[selection];
-    resourceNameText->setText(resource->getName());
-    costsText->setText(utils::string_format("%'.2f €/m",resource->getCostPerMonth()));
-    resourceImage->loadImage(utils::os::combine("images","products",resource->getImage()));
+    if(baseProductList.size() == 0)
+        return;
+    auto resource = baseProductList[selection];
+
+
+
 
     // reload products
-    productList = services::ProductService::Instance().getProductsByTypeAndResource(BuildingType::Farm,resource);
+    productList = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Factory);
     productSelectionBox->clearElements();
     for(auto& product: productList)
     {
@@ -165,13 +159,35 @@ void FarmProductionTab::resourceSelectionChanged(unsigned int selection)
     }
     productSelectionChanged(0);
 }
-void FarmProductionTab::productSelectionChanged(unsigned int selection)
+void FactoryProductionTab::productSelectionChanged(unsigned int selection)
 {
+    if(productList.size() == 0)
+        return;
     auto product = productList[selection];
     productNameText->setText(product->getName());
     productImage->loadImage(utils::os::combine("images","products",product->getImage()));
+    costsText->setText(utils::string_format("%'.2f €/m",product->calculateCostsPerMonth()));
 
     productionCycleText->setTextF("%'d  - %'d",product->getProductionCycle().startMonth,product->getProductionCycle().endMonth);
+
+    for(auto p: resourceComponents)
+    {
+        removeObject(p.get());
+    }
+    resourceComponents.clear();
+    int y = 70;
+    for(auto product : product->getBaseProducts())
+    {
+        std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product,this);
+
+
+        resourceComponents.push_back(pc);
+        pc->setPos(180,y);
+        addObject(pc.get());
+        y+=120;
+    }
+
+
 
     if(building != nullptr)
     {

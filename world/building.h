@@ -52,8 +52,10 @@ public:
     float getCostsPerMonth(int month,int year);
     float getIncomePerMonth(int month,int year);
     void updateProduction(int month,int year);
+    bool isAutoSellActive();
     void autoSell(int month,int year);
     BuildingType getType();
+    Storage& getStorage();
 private:
     std::string name;
     BuildingType type;

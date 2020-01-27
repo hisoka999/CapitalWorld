@@ -17,6 +17,37 @@ std::vector<std::shared_ptr<Product>> ProductService::getProductsByBuildingType(
     }
     return result;
 }
+std::vector<std::shared_ptr<Product>> ProductService::getBaseProductsByBuildingType(BuildingType type)
+{
+    std::vector<std::shared_ptr<Product>> result;
+    for(auto& product : products)
+    {
+        if(product->getBuildingType() == type)
+        {
+            auto baseProducts = product->getBaseProducts();
+            for(auto& baseProduct : baseProducts)
+            {
+
+                //check if base product is in result list
+                bool isInList = false;
+                for(auto& resultProduct: result)
+                {
+                    if(resultProduct->getName() == baseProduct->getName())
+                    {
+                        isInList= true;
+                    }
+                }
+                if(!isInList)
+                {
+                    result.push_back(baseProduct);
+                }
+            }
+        }
+    }
+    return result;
+}
+
+
 std::vector<std::shared_ptr<Product>> ProductService::getProductsByTypeAndResource(BuildingType type, std::shared_ptr<Resource> resource)
 {
     std::vector<std::shared_ptr<Product>> result;
@@ -56,7 +87,14 @@ void ProductService::loadProducts(std::string path)
     wheet->addRessource(getResourceByName("Wheat"));
     products.push_back(wheet);
 
+    auto bread = std::make_shared<Product>("Bread","bread.png",BuildingType::Factory,ProductionCycle(1,12,2,100));
+    bread->addProduct(wheet);
+    bread->addProduct(eggs);
+    products.push_back(bread);
 
+    auto beer = std::make_shared<Product>("Beer","beer.png",BuildingType::Factory,ProductionCycle(1,12,2,100));
+    beer->addProduct(wheet);
+    products.push_back(beer);
 }
 void ProductService::loadResources(std::string path)
 {

@@ -100,6 +100,7 @@ void MainScene::handleEvents(core::Input *pInput)
 
 MainScene::~MainScene()
 {
+    delete container;
 }
 
 } /* namespace scenes */
