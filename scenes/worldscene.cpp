@@ -3,6 +3,8 @@
 #include <cmath>
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
+#include "world/mapgenerator.h"
+#include <random>
 
 namespace scenes {
 
@@ -17,7 +19,12 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
     cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","tiles","iso_cursor.png"));
     hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","hud_base.png"));
     hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),16);
-    gameMap = std::make_shared<GameMap>(100,100);
+    world::MapGenerator gen;
+    std::random_device r;
+
+    gameMap = gen.generateMap(100,100,r());
+
+    //gameMap = std::make_shared<GameMap>(100,100);
     mapRenderer = std::make_shared<GameMapRenderer>(gameMap);
     auto playerCompany = std::make_shared<world::Company>("Player Company",1000000,true);
     gameState = std::make_shared<world::GameState>(playerCompany);
@@ -206,17 +213,17 @@ void WorldScene::handleEvents(core::Input *pInput){
 
                     ;
             float x,y = 0.0;
-            std::cout <<"camx: "<<renderer->getMainCamera()->getX()<<" camy: "<<renderer->getMainCamera()->getY()<<std::endl;
-            std::cout <<"mouse x: "<<pInput->getMousePostion().getX()<<" mouse y: "<<pInput->getMousePostion().getY()<<std::endl;
-            std::cout <<"px: "<<pt.getX()<<" py: "<<pt.getY()<<std::endl;
+            //std::cout <<"camx: "<<renderer->getMainCamera()->getX()<<" camy: "<<renderer->getMainCamera()->getY()<<std::endl;
+            //std::cout <<"mouse x: "<<pInput->getMousePostion().getX()<<" mouse y: "<<pInput->getMousePostion().getY()<<std::endl;
+            //std::cout <<"px: "<<pt.getX()<<" py: "<<pt.getY()<<std::endl;
             float tx = pt.getX() / static_cast<float>(mapRenderer->getTileHeight()+1);
             float ty = pt.getY() / static_cast<float>(mapRenderer->getTileHeight()+1);
             x = std::floor(tx+0.5f);
             y = std::floor(ty+0.5f);
 
             //if(y == 0.0f)
-            std::cout <<"x: "<<x<<" y: "<<y<<std::endl;
-            std::cout <<"tx: "<<tx<<" ty: "<<ty<<std::endl;
+            std::cout <<"x: "<<x<<" y: "<<y<<" tile: "<<gameMap->getTile(x,y)<<std::endl;
+            //std::cout <<"tx: "<<tx<<" ty: "<<ty<<std::endl;
 
 
 

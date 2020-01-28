@@ -2,10 +2,15 @@
 #include <algorithm>
 GameMap::GameMap(size_t width,size_t height) : width(width),height(height)
 {
-    initEmtryMap();
+    initEmtyMap();
 }
 
-void GameMap::initEmtryMap()
+GameMap::GameMap(size_t width,size_t height,std::vector<TileType> mapData):width(width),height(height),mapData(mapData)
+{
+
+}
+
+void GameMap::initEmtyMap()
 {
     mapData.clear();
     mapData.resize(width*height);

@@ -18,7 +18,8 @@ public:
     int getTileHeight();
 
 private:
-    void renderTile(core::Renderer* renderer,uint16_t tile,const utils::Vector2& pos);
+    void renderTile(core::Renderer* renderer,uint16_t tile,int tileX,int tileY,const utils::Vector2& pos);
+    graphics::Rect getSourceRect(TileType tile,int tileX,int tileY);
     std::shared_ptr<GameMap> gameMap;
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;

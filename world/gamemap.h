@@ -13,7 +13,9 @@ class GameMap
 {
 public:
     GameMap(size_t width,size_t height);
-    void initEmtryMap();
+    GameMap(size_t width,size_t height,std::vector<TileType> mapData);
+
+    void initEmtyMap();
 
     TileType getTile(int x,int y);
     TileType getTile(utils::Vector2& pos);
