@@ -76,6 +76,8 @@ void BuildingWindow::open(std::shared_ptr<world::Building> building,std::shared_
     }
     else
     {
+        if(productionTab != nullptr)
+            tabBar.removeTab(productionTab);
         labelTypeValue->setText("");
         labelOwnerValue->setText("");
         labelGroundValue->setText("TODO");

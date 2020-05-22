@@ -12,8 +12,8 @@ struct ProductBalance{
     int month;
     int year;
     std::string name;
-    float costs;
-    float income;
+    double costs;
+    double income;
 };
 
 enum class BuildingType{
@@ -21,6 +21,7 @@ enum class BuildingType{
     Factory,
     Shop,
     Street,
+    House,
 
 };
 
@@ -29,6 +30,7 @@ class Building
 public:
     Building(std::string name,std::string description, int buildPirce,BuildingType type,int blockWidth,int blockHeight);
     Building(std::string name,std::string description, int buildPirce,BuildingType type);
+    Building(const Building& copy);
 
     std::string getName();
     std::string getDescription();
@@ -56,6 +58,8 @@ public:
     void autoSell(int month,int year);
     BuildingType getType();
     Storage& getStorage();
+    std::string getSubTexture();
+    void setSubTexture(const std::string& tex);
 private:
     std::string name;
     BuildingType type;
@@ -68,6 +72,7 @@ private:
     std::vector<std::shared_ptr<Product>> products;
     std::vector<ProductBalance> balance;
     Storage storage;
+    std::string subTexture;
 };
 }
 #endif // BUILDING_H

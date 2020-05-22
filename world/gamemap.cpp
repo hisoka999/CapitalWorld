@@ -17,9 +17,12 @@ void GameMap::initEmtyMap()
     std::fill(mapData.begin(),mapData.end(),10);
 }
 
-TileType GameMap::getTile(int x, int y)
+TileType GameMap::getTile(size_t x, size_t y)
 {
-    return mapData[x+(y*height)];
+    size_t pos = x+(y*height);
+    if(pos > mapData.size())
+        return 0;
+    return mapData[pos];
 }
 
 TileType GameMap::getTile(utils::Vector2 &pos)
@@ -88,6 +91,50 @@ bool GameMap::canBuild(graphics::Rect buildRect)
     {
         if(building->get2DPosition().intersectsNoLine(buildRect))
             return false;
+    }
+
+    TileType tile = getTile(buildRect.x,buildRect.y);
+
+    size_t tileX = buildRect.x;
+    size_t tileY = buildRect.y;
+    int groundLimit = 10;
+
+    if(tile< 8){
+        //render water
+        return false;
+    }else if(tile > groundLimit){
+        //render mountain
+        return true;
+
+    }else{
+        //ground
+
+        if(getTile(tileX-1,tileY) > groundLimit &&
+                getTile(tileX,tileY-1) > groundLimit){
+            return false;
+        }else if(getTile(tileX-1,tileY) > groundLimit &&
+                 getTile(tileX,tileY+1) > groundLimit){
+             return false;
+         }else if(getTile(tileX,tileY-1) > groundLimit){
+            return false;
+        }else if(getTile(tileX,tileY+1) > groundLimit){
+            return false;
+        }else if(getTile(tileX-1,tileY) > groundLimit){
+            return false;
+
+        }else if(getTile(tileX+1,tileY) > groundLimit){
+            return false;
+        }else
+        if(getTile(tileX-1,tileY-1) > groundLimit){
+            return false;
+        }else if(getTile(tileX-1,tileY+1) > groundLimit){
+            return false;
+        }else if(getTile(tileX+1,tileY+1) > groundLimit){
+            return false;
+        }else if(getTile(tileX+1,tileY-1) > groundLimit){
+            return false;
+        }
+
     }
 
     return true;

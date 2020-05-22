@@ -13,22 +13,25 @@ WorldScene::WorldScene(core::Renderer *pRenderer,
                          core::SceneManager* pSceneManager) :
                          core::Scene(pRenderer, &uiTexture), sceneManager(
                                          pSceneManager)
-                       ,buildWindow(0,pRenderer->getViewPort().height/2)
+                       ,buildWindow(0,static_cast<int>(pRenderer->getViewPort().height/2.0f))
                        ,buildingWindow(100,100)
 {
     cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","tiles","iso_cursor.png"));
-    hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","hud_base.png"));
+    hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","ui_base.png"));
     hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),16);
     world::MapGenerator gen;
     std::random_device r;
 
     gameMap = gen.generateMap(100,100,r());
+    cities = gen.getGeneratedCities();
 
     //gameMap = std::make_shared<GameMap>(100,100);
     mapRenderer = std::make_shared<GameMapRenderer>(gameMap);
     auto playerCompany = std::make_shared<world::Company>("Player Company",1000000,true);
     gameState = std::make_shared<world::GameState>(playerCompany);
     renderer->setZoomFactor(6);
+    buildWindow.setFont(hudFont.get());
+
     uiTexture.loadTexture(renderer,utils::os::combine("images","ArkanaLook.png"));
 
     thread = std::make_unique<UpdateThread>(gameState);
@@ -43,14 +46,15 @@ std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction a
 {
     std::shared_ptr<world::Building> building = nullptr;
     graphics::Rect rect;
-    rect.width = (float)mapRenderer->getTileWidth();
-    rect.height = (float)mapRenderer->getTileHeight();
+    rect.width = static_cast<float>(mapRenderer->getTileWidth());
+    rect.height = static_cast<float>(mapRenderer->getTileHeight());
     switch(action)
     {
     case world::BuildAction::Farm:
         building = std::make_shared<world::Building>("Farm","A farm",10000,world::BuildingType::Farm);
         rect.x= 754;
         rect.y = 236;
+        building->setOffset(0,-4);
         building->setSourceRect(rect);
         break;
 
@@ -60,7 +64,7 @@ std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction a
         rect.y = 1878;
         rect.width = 184;
         rect.height = 162;
-        building->setOffset(0,-116);
+        building->setOffset(0,-106);
         building->setSourceRect(rect);
 
         break;
@@ -73,15 +77,17 @@ std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction a
 
 void WorldScene::renderHUD()
 {
-    int y = renderer->getMainCamera()->getHeight() - hudTexture->getHeight();
-    hudTexture->render(renderer,0,y);
+    int y = 0;
+    int height = hudTexture->getHeight()*720/renderer->getViewPort().height/2;
+    buildWindow.setPos(0,height);
+    hudTexture->renderResized(renderer,0,y,renderer->getViewPort().width,height);
 
     //render hud text
     SDL_Color color = {0xef,0xef,0xef,0xff};
     y+=5;
-    hudFont->render(renderer,"Cash: ",color,200,y+(hudTexture->getHeight()/2));
+    hudFont->render(renderer,"Cash: ",color,318,y);
     auto playerCompany = gameState->getPlayer();
-    hudFont->render(renderer,utils::string_format("%'.2f €",playerCompany->getCash()),color,250,y+(hudTexture->getHeight()/2));
+    hudFont->render(renderer,utils::string_format("%'.2f €",playerCompany->getCash()),color,360,y);
 
     std::time_t tmpTime = std::chrono::system_clock::to_time_t(
             gameState->getTime());
@@ -94,20 +100,39 @@ void WorldScene::renderHUD()
     std::strftime(time_str, 100, date_time_format,
             std::localtime(&tmpTime));
 
-    hudFont->render(renderer,"Date: "+std::string(time_str),color,200,y+(hudTexture->getHeight()/2)+20);
-    hudFont->render(renderer,"Profit:",color,400,y+(hudTexture->getHeight()/2));
-    hudFont->render(renderer,utils::string_format("%'.2f €",playerCompany->getProfit()),color,450,y+(hudTexture->getHeight()/2));
+    hudFont->render(renderer,std::string(time_str),color,180,y);
+    hudFont->render(renderer,"Profit:",color,540,y);
+    hudFont->render(renderer,utils::string_format("%'.2f €",playerCompany->getProfit()),color,590,y);
     //render icons
     buildWindow.render(renderer,nullptr);
 }
 
 
 void WorldScene::render(){
-    int width = gameMap->getHeight()*mapRenderer->getTileWidth();
-    int height = gameMap->getWidth()* mapRenderer->getTileHeight()/2;
+    size_t width = gameMap->getHeight()*mapRenderer->getTileWidth();
+    size_t height = gameMap->getWidth()* mapRenderer->getTileHeight()/2;
     graphics::Texture mapTexture(renderer,width,height);
     renderer->setRenderTarget(mapTexture.getSDLTexture());
     mapRenderer->render(renderer);
+    for(auto city : cities)
+    {
+        city->renderCity(renderer);
+    }
+    float cursorX = (cursorPosition.getX()*mapRenderer->getTileWidth()/2.f);
+    float cursorY = (cursorPosition.getY()*mapRenderer->getTileHeight());
+    utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX,cursorY));
+    auto camera = renderer->getMainCamera();
+    int xPos = pos.getX()-camera->getX();
+
+    float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(),cursorPosition.getY()),cursorPosition.getX(),cursorPosition.getY());
+    if(tileYOffset != 0.0f){
+        std::cout<<"yOffset: "<<tileYOffset<<" tile: "<<gameMap->getTile(cursorPosition.getX(),cursorPosition.getY())<<std::endl;
+    }
+
+    int yPos = pos.getY()-(camera->getY()+tileYOffset);
+
+    cursorTexture->render(renderer,xPos,yPos);
+
     renderer->setRenderTarget(nullptr);
     graphics::Texture resizedTexture(renderer,mapTexture.getWidth()* 6.0f/renderer->getZoomFactor(),mapTexture.getHeight()* 6.0f/renderer->getZoomFactor());
     renderer->setRenderTarget(resizedTexture.getSDLTexture());
@@ -116,10 +141,7 @@ void WorldScene::render(){
     resizedTexture.render(renderer,0,0,renderer->getMainCamera()->getWidth(),renderer->getMainCamera()->getHeight(),0,0);
 
 
-    float cursorX = (cursorPosition.getX()*mapRenderer->getTileWidth()/2.f);
-    float cursorY = (cursorPosition.getY()*mapRenderer->getTileHeight());
-    utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX,cursorY));
-    cursorTexture->render(renderer,pos.getX(),pos.getY());//,mapRenderer->getTileWidth(),mapRenderer->getTileHeight());
+
     renderHUD();
 
     winMgr->render(renderer);
@@ -185,10 +207,10 @@ void WorldScene::handleEvents(core::Input *pInput){
         if(pInput->isScrollWheel())
         {
             auto wheelPosition = pInput->getMouseWheelPosition();
-            float factor = renderer->getZoomFactor()+wheelPosition.getY();
-            if(factor < 3)
+            double factor = renderer->getZoomFactor()+(wheelPosition.getY()*2.f);
+            if(factor < 2)
             {
-                factor = 3;
+                factor = 2;
             }else if (factor > 18) {
                 factor = 18;
 
@@ -199,32 +221,21 @@ void WorldScene::handleEvents(core::Input *pInput){
         if(pInput->isMouseMoving()){
             float camX = renderer->getMainCamera()->getX();
             float camY = renderer->getMainCamera()->getY();
-            if(camX<0){
-                camX = abs((int)camX);
-            }
-            else if(camX>0)
-            {
-                camX = -abs((int)camX);
-            }
+
             utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion()
-                                                 //+ utils::Vector2(camX,camY)
+                                                 + utils::Vector2(camX,camY)
                                                  //-utils::Vector2(mapRenderer->getTileWidth()/4.0,mapRenderer->getTileHeight()/4.0)
                                                  )
 
                     ;
+
             float x,y = 0.0;
-            //std::cout <<"camx: "<<renderer->getMainCamera()->getX()<<" camy: "<<renderer->getMainCamera()->getY()<<std::endl;
-            //std::cout <<"mouse x: "<<pInput->getMousePostion().getX()<<" mouse y: "<<pInput->getMousePostion().getY()<<std::endl;
-            //std::cout <<"px: "<<pt.getX()<<" py: "<<pt.getY()<<std::endl;
-            float tx = pt.getX() / static_cast<float>(mapRenderer->getTileHeight()+1);
-            float ty = pt.getY() / static_cast<float>(mapRenderer->getTileHeight()+1);
-            x = std::floor(tx+0.5f);
-            y = std::floor(ty+0.5f);
 
-            //if(y == 0.0f)
-            std::cout <<"x: "<<x<<" y: "<<y<<" tile: "<<gameMap->getTile(x,y)<<std::endl;
-            //std::cout <<"tx: "<<tx<<" ty: "<<ty<<std::endl;
+            float tx = pt.getX() / static_cast<float>(mapRenderer->getTileHeight());
+            float ty = pt.getY() / static_cast<float>(mapRenderer->getTileHeight());
 
+            x = std::floor(tx-0.5f);
+            y = std::floor(ty-0.5f);
 
 
 

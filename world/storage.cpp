@@ -2,7 +2,7 @@
 
 Storage::Storage()
 {
-
+    maximalAmount  =10000;
 }
 void Storage::addEntry(std::string product, int amount)
 {

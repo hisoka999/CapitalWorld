@@ -137,8 +137,10 @@ void TabBar::removeTabByIndex(int index)
 void TabBar::removeTab(std::shared_ptr<Tab> tab)
 {
     auto it = std::find(tabs.begin(), tabs.end(), tab);
-    if (it != tabs.end())
+    if (it != tabs.end()){
         tabs.erase(it);
+        currentTab = 0;
+    }
 }
 
 graphics::Rect TabBar::displayRect()
@@ -152,6 +154,12 @@ graphics::Rect TabBar::displayRect()
         r.y += getParent()->displayRect().y;
     }
     return r;
+}
+
+void TabBar::setCurrentTab(std::shared_ptr<Tab> tab)
+{
+    auto it = std::find(tabs.begin(), tabs.end(), tab);
+    currentTab = std::distance( tabs.begin(),it);
 }
 
 } /* namespace UI */

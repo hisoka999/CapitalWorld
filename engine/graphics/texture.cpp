@@ -17,7 +17,7 @@ Texture::Texture(core::Renderer *pRenderer, const int pWidth, const int pHeight)
             SDL_TEXTUREACCESS_TARGET, pWidth, pHeight);
     width = pWidth;
     height = pHeight;
-    if (tex == NULL)
+    if (tex == nullptr)
     {
         throw SDLException("SDL_CreateTexture");
     }
@@ -36,7 +36,7 @@ void Texture::loadTexture(core::Renderer *ren, std::string filename)
         throw SDLException("IMG_LoadTexture");
     }
     //Query the texture to get its width and height to use
-    SDL_QueryTexture(tex, NULL, NULL, &width, &height);
+    SDL_QueryTexture(tex, nullptr, nullptr, &width, &height);
 
 }
 void Texture::render(core::Renderer *ren, int x, int y)
@@ -89,7 +89,7 @@ void Texture::render(core::Renderer *ren, int x, int y, int pWidth, int pHeight,
 void Texture::renderRotated(core::Renderer *ren, const double angle,
         const int x, const int y, const int pWidth, const int pHeight)
 {
-    SDL_Point* center = NULL;
+    SDL_Point* center = nullptr;
 
     SDL_Rect dst;
     dst.x = x;
@@ -120,7 +120,7 @@ Texture::~Texture()
     SDL_DestroyTexture (tex);
 }
 
-void Texture::setColorKey(int r, int g, int b)
+void Texture::setColorKey(uint8_t r, uint8_t g, uint8_t b)
 {
     SDL_SetTextureColorMod(tex, r, g, b);
 }

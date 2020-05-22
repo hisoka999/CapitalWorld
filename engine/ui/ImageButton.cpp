@@ -10,10 +10,19 @@ ImageButton::ImageButton(UI::Object *parent, int width, int height, int x2,
     this->x2 = x2;
     this->y2 = y2;
     resized = pResized;
+    state = ButtonState::None;
+    defaultColor = {255,255,255,255};
+    clickColor = {255,255,255,255};
+    hoverColor = {255,255,255,255};
 }
 
 ImageButton::~ImageButton() {
 
+}
+
+void ImageButton::setText(std::string text)
+{
+    this->text = text;
 }
 
 void ImageButton::loadImage( std::string pFilename) {
@@ -23,50 +32,50 @@ void ImageButton::loadImage( std::string pFilename) {
 
 }
 
+void ImageButton::setDefaultColor(SDL_Color color)
+{
+    defaultColor = color;
+}
+void ImageButton::setHoverColor(SDL_Color color)
+{
+    hoverColor = color;
+}
+void ImageButton::setClickColor(SDL_Color color)
+{
+    clickColor = color;
+}
+
 void ImageButton::handleEvents(core::Input *pInput) {
     if (image == nullptr)
         return;
 
-//	SDL_Event e = pInput->getEvent();
     ButtonListener *listener =
             static_cast<UI::ButtonListener*>(this->getListener());
-    //if (!this->getListener())
-    //    return;
-//	int tx;
-//	int ty;
     graphics::Rect rect = displayRect();
     rect.width = getWidth();
     rect.height = getHeight();
 
-//	if (getParent() != NULL) {
-//		graphics::Rect displayRect = getParent()->displayRect();
-//		tx = displayRect.x + getX();
-//		ty = displayRect.y + getY();
-//	} else {
-//		tx = getX();
-//		ty = getY();
-//	}
     utils::Vector2 pos = pInput->getMousePostion();
-    if (rect.intersects(pos)
-            && pInput->isMouseButtonPressed(SDL_MOUSEBUTTONDOWN)) {
-        this->fireFuncionCall("buttonClick");
-        this->fireFuncionCall("buttonClickPara",
-                utils::Vector2(pos.getX() - rect.x, pos.getY() - rect.y));
-        if (this->getListener())
-            listener->buttonClick();
+    if (rect.intersects(pos)){
+        state = ButtonState::Hovered;
+        if(pInput->isMouseButtonPressed(SDL_MOUSEBUTTONDOWN)) {
+
+            this->fireFuncionCall("buttonClick");
+            this->fireFuncionCall("buttonClickPara",
+                    utils::Vector2(pos.getX() - rect.x, pos.getY() - rect.y));
+            if (this->getListener())
+                listener->buttonClick();
+
+            state = ButtonState::Clicked;
+        }
+    }else{
+        state = ButtonState::None;
     }
-//
-//	if (e.button.x >= tx && e.button.x <= tx + width && e.button.y >= ty
-//			&& e.button.y <= ty + height) {
-//		if (e.type == SDL_MOUSEBUTTONDOWN
-//				&& e.button.button == SDL_BUTTON_LEFT) {
-//
-//		}
-//	}
+
 }
 
 void ImageButton::render(core::Renderer *pRender, graphics::Texture *pTexture) {
-    if (image == NULL)
+    if (image == nullptr)
         return;
     graphics::Rect srcRect;
     graphics::Rect destRect;
@@ -84,13 +93,44 @@ void ImageButton::render(core::Renderer *pRender, graphics::Texture *pTexture) {
 
     }
 
-    if (this->getParent() != NULL) {
+    if (this->getParent() != nullptr) {
         graphics::Rect displayRect = getParent()->displayRect();
         destRect.x += displayRect.x;
         destRect.y += displayRect.y;
     }
 
+    switch(state){
+    case ButtonState::None:
+        image->setColorKey(defaultColor.r,defaultColor.g,defaultColor.b);
+        break;
+    case ButtonState::Hovered:
+        image->setColorKey(hoverColor.r,hoverColor.g,hoverColor.b);
+        break;
+    case ButtonState::Clicked:
+        image->setColorKey(clickColor.r,clickColor.g,clickColor.b);
+        break;
+    }
+
+
     image->render(pRender, srcRect, destRect);
+
+    int messageX = destRect.x+destRect.width+5;
+    int messageY = destRect.y+2;
+
+    SDL_Color white ={255,255,255,255};
+    switch(state){
+    case ButtonState::None:
+
+        break;
+    case ButtonState::Hovered:
+        white = hoverColor;
+        break;
+    case ButtonState::Clicked:
+        white = clickColor;
+        break;
+    }
+    getParent()->getFont()->render(pRender,text,white,messageX,messageY);
+    pRender->setDrawColor(defaultColor.r,defaultColor.g,defaultColor.b,defaultColor.a);
 }
 
 } // namespace UI

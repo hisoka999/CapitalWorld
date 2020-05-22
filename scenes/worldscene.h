@@ -12,6 +12,7 @@
 #include <world/gamestate.h>
 #include <world/updatethread.h>
 #include <ui/buildingwindow.h>
+#include <world/city.h>
 #include <map>
 
 namespace scenes {
@@ -33,6 +34,7 @@ private:
     graphics::Texture uiTexture;
     core::SceneManager *sceneManager;
     std::shared_ptr<GameMap> gameMap;
+    std::vector<std::shared_ptr<world::City>> cities;
     std::shared_ptr<GameMapRenderer> mapRenderer;
     std::shared_ptr<graphics::Texture> cursorTexture;
     std::shared_ptr<graphics::Texture> hudTexture;

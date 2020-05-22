@@ -3,23 +3,23 @@
 #include <engine/graphics/rect.h>
 #include <engine/utils/string.h>
 
-GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap): gameMap(gameMap),tileWidth(58),tileHeight(28)
+GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap): gameMap(gameMap),tileWidth(58),tileHeight(29)
 {
     groundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","tiles","iso_tiles.png"));
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),10);
 }
 
-graphics::Rect GameMapRenderer::getSourceRect(TileType tile,int tileX,int tileY)
+graphics::Rect GameMapRenderer::getSourceRect(TileType tile,size_t tileX,size_t tileY)
 {
     graphics::Rect srcRect = {0,0,static_cast<float>(tileWidth),static_cast<float>(tileHeight+2)};
 
-    int groundLimit = 14;
+    int groundLimit = 10;
 
     if(tile< 8){
         //render water
         srcRect.x = 116;
         srcRect.y = 100;
-        srcRect.height = 28;
+        srcRect.height = 29;
     }else if(tile > groundLimit){
         //render mountain
 
@@ -31,8 +31,15 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile,int tileX,int tileY)
     }else{
         //ground
         srcRect.height = 50;
-
-        if(gameMap->getTile(tileX,tileY-1) > groundLimit){
+        if(gameMap->getTile(tileX-1,tileY) > groundLimit &&
+                gameMap->getTile(tileX,tileY-1) > groundLimit){
+            srcRect.x = 754;
+            srcRect.y = 0;
+        }else if(gameMap->getTile(tileX-1,tileY) > groundLimit &&
+                 gameMap->getTile(tileX,tileY+1) > groundLimit){
+             srcRect.x = 696;
+             srcRect.y = 0;
+         }else if(gameMap->getTile(tileX,tileY-1) > groundLimit){
             srcRect.x = 290;
             srcRect.y = 0;
         }else if(gameMap->getTile(tileX,tileY+1) > groundLimit){
@@ -69,9 +76,14 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile,int tileX,int tileY)
     return srcRect;
 }
 
+float GameMapRenderer::getTileYOffset(uint16_t tile,size_t tileX,size_t tileY)
+{
+    graphics::Rect srcRect = getSourceRect(tile,tileX,tileY);
+    return tileHeight - srcRect.height;
+}
+
 void GameMapRenderer::renderTile(core::Renderer* renderer,uint16_t tile,int tileX,int tileY,const utils::Vector2& pos)
 {
-    //TODO support other tiles
     auto camera = renderer->getMainCamera();
     float xPos = pos.getX()-camera->getX();
     float yPos = pos.getY()-camera->getY();
@@ -106,18 +118,26 @@ void GameMapRenderer::render(core::Renderer* renderer)
         displayRect.x = (displayRect.x * tileWidth/2.0f) ;
         displayRect.y = (displayRect.y * tileHeight);
         utils::Vector2 vec(displayRect.x,displayRect.y);
+        TileType tile = gameMap->getTile(building->getDisplayRect().x,building->getDisplayRect().y);
+
         auto pos = gameMap->twoDToIso(vec);
+
         displayRect.x = pos.getX()- camera->getX()+building->getXOffset();
-        displayRect.y = pos.getY() - camera->getY()+building->getYOffset();
+
+        float tileYOffset = getTileYOffset(tile,building->getDisplayRect().x,building->getDisplayRect().y);
+
+
+        displayRect.y = pos.getY() + building->getYOffset() - (camera->getY() + tileYOffset);
         groundTexture->render(renderer,building->getSourceRect(),displayRect);
+
     }
 }
 
-int GameMapRenderer::getTileWidth()
+size_t GameMapRenderer::getTileWidth()
 {
     return tileWidth;
 }
-int GameMapRenderer::getTileHeight()
+size_t GameMapRenderer::getTileHeight()
 {
     return tileHeight;
 }

@@ -9,6 +9,21 @@ Building::Building(std::string name,std::string description, int buildPirce,Buil
 
 }
 
+Building::Building(const Building& copy)
+{
+    this->name = copy.name;
+    this->description = copy.description;
+    this->buildPrice = copy.buildPrice;
+    this->type = copy.type;
+    this->blockWidth = copy.blockWidth;
+    this->blockHeight = copy.blockHeight;
+    this->xOffset = copy.xOffset;
+    this->yOffset = copy.yOffset;
+    this->displayRect = copy.displayRect;
+    this->sourceRect = copy.sourceRect;
+
+}
+
 
 Building::Building(std::string name,std::string description, int buildPirce,BuildingType type)
     :name(name),type(type),description(description),buildPrice(buildPirce),blockWidth(1),blockHeight(1),xOffset(0),yOffset(0)
@@ -176,7 +191,7 @@ void Building::autoSell(int month,int year)
     for(auto& product : products)
     {
         unsigned amount = storage.getEntry(product->getName());
-        float income = amount*product->calculateCostsPerPiece()*1.1;
+        double income = amount*product->calculateCostsPerPiece()*1.1;
 
         //find balance
         for (auto& b : balance)
@@ -197,6 +212,13 @@ Storage& Building::getStorage()
 {
     return storage;
 }
-
+std::string Building::getSubTexture()
+{
+    return subTexture;
+}
+void Building::setSubTexture(const std::string& tex)
+{
+    subTexture = tex;
+}
 
 }

@@ -10,9 +10,10 @@ BuildWindow::BuildWindow(int x, int y)
     :UI::Container(),UI::Object()
 {
     currentAction = world::BuildAction::None;
-    backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","build_ui.png"));
+    backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images","BuildMenu.png"));
 
-    setPos(x,y-backgroundTexture->getHeight()/2);
+
+    setPos(x,y);
 
     setWidth(backgroundTexture->getWidth());
     setHeight(backgroundTexture->getHeight());
@@ -27,7 +28,16 @@ void BuildWindow::initUI()
 {
     int xPos = 15;
     int yPos = 50;
-    auto farmButton = new UI::ImageButton(this,50,50,0,0,false);
+    int iconSize = 32;
+    int offset = 40;
+    SDL_Color defaultColor ={255,255,255,255};
+    SDL_Color hoverColor = {0xcd,0xcd,0xcd,0xff};
+    SDL_Color clickColor = {0x33,0x33,0x33,0xff};
+    auto farmButton = new UI::ImageButton(this,iconSize,iconSize,0,0,true);
+    farmButton->setText("Farm");
+    farmButton->setClickColor(clickColor);
+    farmButton->setHoverColor(hoverColor);
+    farmButton->setDefaultColor(defaultColor);
     farmButton->loadImage(utils::os::combine("images","icons","tractor.png"));
     farmButton->setPos(xPos,yPos);
     farmButton->connect("buttonClick",[&](){
@@ -35,31 +45,47 @@ void BuildWindow::initUI()
     });
     addObject(farmButton);
 
-    yPos+=70;
-    auto factoryButton = new UI::ImageButton(this,50,50,0,0,false);
+    yPos+=offset;
+    auto factoryButton = new UI::ImageButton(this,iconSize,iconSize,0,0,false);
     factoryButton->loadImage(utils::os::combine("images","icons","factory.png"));
+    factoryButton->setText("Factory");
     factoryButton->setPos(xPos,yPos);
+    factoryButton->setClickColor(clickColor);
+    factoryButton->setHoverColor(hoverColor);
+    farmButton->setDefaultColor(defaultColor);
     addObject(factoryButton);
     factoryButton->connect("buttonClick",[&](){
        currentAction = world::BuildAction::Factory;
     });
-    yPos+=70;
+    yPos+=offset;
 
-    auto shopButton = new UI::ImageButton(this,50,50,0,0,false);
+    auto shopButton = new UI::ImageButton(this,iconSize,iconSize,0,0,false);
     shopButton->loadImage(utils::os::combine("images","icons","places.png"));
+    shopButton->setText("Shop");
+    shopButton->setClickColor(clickColor);
+    shopButton->setHoverColor(hoverColor);
+    shopButton->setDefaultColor(defaultColor);
     shopButton->setPos(xPos,yPos);
     addObject(shopButton);
-    yPos+=70;
+    yPos+=offset;
 
-    auto transportButton = new UI::ImageButton(this,50,50,0,0,false);
+    auto transportButton = new UI::ImageButton(this,iconSize,iconSize,0,0,false);
     transportButton->loadImage(utils::os::combine("images","icons","lorry.png"));
     transportButton->setPos(xPos,yPos);
+    transportButton->setText("Transport");
+    transportButton->setClickColor(clickColor);
+    transportButton->setHoverColor(hoverColor);
+    transportButton->setDefaultColor(defaultColor);
     addObject(transportButton);
-    yPos+=70;
+    yPos+=offset;
 
-    auto destroyButton = new UI::ImageButton(this,50,50,0,0,false);
+    auto destroyButton = new UI::ImageButton(this,iconSize,iconSize,0,0,false);
     destroyButton->loadImage(utils::os::combine("images","icons","caterpillar.png"));
+    destroyButton->setText("Destroy");
     destroyButton->setPos(xPos,yPos);
+    destroyButton->setClickColor(clickColor);
+    destroyButton->setHoverColor(hoverColor);
+    destroyButton->setDefaultColor(defaultColor);
     addObject(destroyButton);
     destroyButton->connect("buttonClick",[&](){
        currentAction = world::BuildAction::Destroy;

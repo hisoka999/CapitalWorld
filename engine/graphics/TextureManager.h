@@ -11,6 +11,7 @@
 #include <map>
 #include <engine/graphics/texture.h>
 #include <engine/graphics/text.h>
+#include <engine/graphics/texturemap.h>
 #include <memory>
 #include <mutex>
 
@@ -54,6 +55,20 @@ public:
 
     }
 
+    std::shared_ptr<graphics::TextureMap> loadTextureMap(std::string filename) {
+        if (renderer == nullptr) {
+            throw std::runtime_error("TextureManager has no renderer");
+        }
+        if (textureMaps.count(filename) > 0)
+            return textureMaps[filename];
+
+        auto textureMap = std::make_shared<graphics::TextureMap>();
+        textureMap->loadFromFile(filename);
+        textureMaps[filename] = textureMap;
+        return textureMaps[filename];
+    }
+
+
     void setRenderer(core::Renderer* renderer) {
         this->renderer = renderer;
     }
@@ -71,6 +86,8 @@ private:
 
     std::map<std::string, std::shared_ptr<graphics::Texture>> textures;
     std::map<std::string, std::shared_ptr<graphics::Text>> fonts;
+    std::map<std::string, std::shared_ptr<graphics::TextureMap>> textureMaps;
+
     core::Renderer* renderer = nullptr;
 
     static void initSingleton() {

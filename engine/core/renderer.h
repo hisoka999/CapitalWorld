@@ -47,7 +47,7 @@ public:
 
     void fillRect(graphics::Rect &rect);
 
-    void setDrawColor(int r, int g, int b, int a);
+    void setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 protected:
 private:

@@ -9,6 +9,13 @@
 
 namespace UI {
 
+enum class ButtonState{
+    None,
+    Clicked,
+    Hovered
+};
+
+
 class ImageButton: public UI::Object {
 public:
     /** Default constructor */
@@ -25,12 +32,21 @@ public:
     bool imageLoaded() {
         return image != NULL;
     }
+    void setText(std::string text);
+    void setDefaultColor(SDL_Color color);
+    void setHoverColor(SDL_Color color);
+    void setClickColor(SDL_Color color);
 protected:
     std::shared_ptr<graphics::Texture> image;
 private:
+    SDL_Color defaultColor;
+    SDL_Color hoverColor;
+    SDL_Color clickColor;
+    std::string text;
     int x2;
     int y2;
     bool resized;
+    ButtonState state;
 };
 
 } // namespace UI

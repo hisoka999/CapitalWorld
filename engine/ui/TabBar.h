@@ -29,6 +29,7 @@ public:
     virtual void render(core::Renderer *pRender, graphics::Texture *texture);
     virtual void handleEvents(core::Input *pInput);
     virtual graphics::Rect displayRect();
+    void setCurrentTab(std::shared_ptr<Tab> tab);
 private:
     std::vector<std::shared_ptr<Tab>> tabs;
     int currentTab;

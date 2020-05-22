@@ -55,6 +55,10 @@ Vector2 Vector2::floor()
 {
     return Vector2(std::floor(x),std::floor(y));
 }
+bool Vector2::operator==(const Vector2 &other)
+{
+    return x == other.x && y == other.y;
+}
 
 //Vector2 utils::operator +(const Vector2& orig, const Vector2& other) {
 //	return Vector2(orig.getX() + other.getX(), orig.getY() + other.getY());

@@ -14,17 +14,19 @@ public:
 
 
     void render(core::Renderer* renderer);
-    int getTileWidth();
-    int getTileHeight();
+    size_t getTileWidth();
+    size_t getTileHeight();
+    float getTileYOffset(uint16_t tile,size_t tileX,size_t tileY);
+
 
 private:
     void renderTile(core::Renderer* renderer,uint16_t tile,int tileX,int tileY,const utils::Vector2& pos);
-    graphics::Rect getSourceRect(TileType tile,int tileX,int tileY);
+    graphics::Rect getSourceRect(TileType tile,size_t tileX,size_t tileY);
     std::shared_ptr<GameMap> gameMap;
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;
-    int tileWidth;
-    int tileHeight;
+    size_t tileWidth;
+    size_t tileHeight;
 
 };
 

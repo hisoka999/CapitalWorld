@@ -17,7 +17,7 @@ public:
 
     void initEmtyMap();
 
-    TileType getTile(int x,int y);
+    TileType getTile(size_t x,size_t y);
     TileType getTile(utils::Vector2& pos);
 
     size_t getWidth();

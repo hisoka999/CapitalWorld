@@ -10,6 +10,11 @@ MapGenerator::MapGenerator()
 
 }
 
+std::vector<std::shared_ptr<world::City>> MapGenerator::getGeneratedCities()
+{
+    return cities;
+}
+
 std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width,size_t height)
 {
     generateMap(width,height,1);
@@ -31,16 +36,22 @@ std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width,size_t height,un
             double x = (double)j/((double)width);
             double y = (double)i/((double)height);
             int z = dist(gen);
-            double base = 10;
+            double base = 5;
             double noise = 20*pn.noise(base*x,base*y,0.5);
             //noise = noise-std::floor(noise );
             //noise = noise*20;
-            std::cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<" noise: "<<noise<<std::endl;
+            //std::cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<" noise: "<<noise<<std::endl;
 
             mapData[i+(j*height)]= std::floor(noise);
         }
     }
-    return std::make_shared<GameMap>(width,height,mapData);
+    auto map = std::make_shared<GameMap>(width,height,mapData);
+    utils::Vector2 cityPos(50,50);
+    auto city = std::make_shared<world::City>("Rostock",cityPos);
+    city->generate(seed,map);
+    cities.push_back(city);
+
+    return map;
 }
 
 }

@@ -23,7 +23,7 @@ class Texture
         void render(core::Renderer *ren,Rect pSrc,Rect pDest);
         void renderResized(core::Renderer *ren,int x, int y,int pWidth,int pHeight);
         void renderRotated(core::Renderer *ren,const double angle,const int x,const int y,const int pWidth,const int pHeight);
-        void setColorKey(int r,int g,int b);
+        void setColorKey(uint8_t r,uint8_t g,uint8_t b);
         int getWidth();
         int getHeight();
         SDL_Texture* getSDLTexture(){

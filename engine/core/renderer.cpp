@@ -175,7 +175,7 @@ void Renderer::drawCircle(int x, int y, int rad, SDL_Color color)
         throw SDLException("drawCircle");
     }
 }
-void Renderer::setDrawColor(int r, int g, int b, int a)
+void Renderer::setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
     SDL_SetRenderDrawColor(ren, r, g, b, a);
 }
