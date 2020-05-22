@@ -10,7 +10,7 @@ before_install:
 - echo $LC_ALL
 - if [ $TRAVIS_OS_NAME == linux ]; then ./scripts/install_dependency.sh; fi
 script:
-- if [ $TRAVIS_OS_NAME == linux ]; then mkdir ../build && cd ../build fi
+- if [ $TRAVIS_OS_NAME == linux ]; then mkdir ../build && cd ../build; fi
 - if [ $TRAVIS_OS_NAME == linux ]; then cmake ../CapitalWorld/CMakeLists.txt && make; fi
 after_success:
 - if [ $TRAVIS_OS_NAME == linux ]; then make package; fi
@@ -23,7 +23,6 @@ notifications:
   email: false
 deploy:
   provider: releases
-  api_key: "9aab48af678733c4b76f48d165a20e45426c2e96"
   file: "CapitalWorld-0.1-Linux.deb"
   skip_cleanup: true
   on:
