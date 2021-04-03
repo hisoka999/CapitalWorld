@@ -10,27 +10,31 @@
 
 #include <engine/ui/Object.h>
 #include <engine/utils/string.h>
-namespace UI {
+namespace UI
+{
 
-class Label: public Object {
-public:
-    Label(const std::string& text, Object *parent = 0);
-    Label(Object *parent);
-    virtual ~Label();
-    virtual void render(core::Renderer *pRender, graphics::Texture *pTexture);
+    class Label : public Object
+    {
+    public:
+        Label(const std::string &text, Object *parent = nullptr);
+        Label(Object *parent);
+        virtual ~Label();
+        virtual void render(core::Renderer *pRender);
 
-    std::string getText();
-    void setText(const std::string& text);
-    template<typename ... Args>
-    void setTextF(const std::string& format, Args const & ... args) {
-        setText(utils::string_format(format, args...));
-    }
+        std::string getText();
+        void setText(const std::string &text);
+        template <typename... Args>
+        void setTextF(const std::string &format, Args const &...args)
+        {
+            setText(utils::string_format(format, args...));
+        }
 
-    void setColor(SDL_Color color);
-private:
-    std::string text;
-    SDL_Color color;
-};
+        void setColor(SDL_Color color);
+
+    private:
+        std::string text;
+        SDL_Color color;
+    };
 
 } /* namespace UI */
 

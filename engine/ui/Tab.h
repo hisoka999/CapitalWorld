@@ -14,18 +14,19 @@
 namespace UI
 {
 
-class Tab: public UI::Container, public UI::Object
-{
-public:
-    Tab(UI::Object* parent, std::string title);
-    virtual ~Tab();
-    std::string getTitle();
-    void setTitle(std::string title);
-    virtual void render(core::Renderer *pRender, graphics::Texture *pTexture);
-    virtual void handleEvents(core::Input *pInput);
-private:
-    std::string title;
-};
+    class Tab : public UI::Container, public UI::Object
+    {
+    public:
+        Tab(Object *parent, const std::string &title);
+        virtual ~Tab();
+        const std::string &getTitle() const;
+        void setTitle(const std::string &title);
+        virtual void render(core::Renderer *pRender);
+        virtual void handleEvents(core::Input *pInput);
+
+    private:
+        std::string title;
+    };
 
 } /* namespace UI */
 

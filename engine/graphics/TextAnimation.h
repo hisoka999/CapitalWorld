@@ -13,10 +13,18 @@
 
 namespace graphics {
 
-class TextAnimation: public Animation<Text> {
+class TextAnimation : public Animation<Text> {
 public:
-    TextAnimation(utils::Vector2 startPosition);
+    TextAnimation(utils::Vector2 startPosition, SDL_Color color, std::string text);
     virtual ~TextAnimation();
+
+protected:
+    virtual void renderFrame(AnimationFrame<Text>& frame,
+        core::Renderer* renderer);
+
+private:
+    SDL_Color color;
+    std::string text;
 };
 
 } /* namespace graphics */

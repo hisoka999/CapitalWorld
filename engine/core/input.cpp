@@ -1,10 +1,9 @@
 #include "engine/core/input.h"
 
-namespace core
-{
+namespace core {
 
-Input::Input() :
-        mousePosition(-1, -1)
+Input::Input()
+    : mousePosition(-1, -1)
 {
     //ctor
 }
@@ -21,7 +20,7 @@ bool Input::poll()
         }
         if (isMouseMoving()) {
             mousePosition = utils::Vector2(getEvent().motion.x,
-                    getEvent().motion.y);
+                getEvent().motion.y);
         }
     }
     return retval;
@@ -36,33 +35,37 @@ bool Input::isKeyDown(SDL_Keycode key)
 {
     return pressedKeys.count(key) > 0 && pressedKeys[key];
     if (event.type == SDL_KEYDOWN && key == event.key.keysym.sym
-            && event.key.state == SDL_PRESSED)
+        && event.key.state == SDL_PRESSED)
         return true;
     return false;
 }
 bool Input::isKeyUp(SDL_Keycode key)
 {
     if (event.type == SDL_KEYUP && key == event.key.keysym.sym
-            && event.key.state == SDL_RELEASED)
+        && event.key.state == SDL_RELEASED)
         return true;
     return false;
 }
 
-bool Input::isMouseButtonPressed(Uint8 button)
+bool Input::isMouseButtonPressed(int button)
 {
     return (getEvent().button.button == button
-            && event.type == SDL_MOUSEBUTTONDOWN);
+        && event.type == SDL_MOUSEBUTTONDOWN);
 }
-bool Input::isMouseButtonUp(Uint8 button) {
+bool Input::isMouseButtonUp(int button)
+{
     return (getEvent().button.button == button
-            && event.type == SDL_MOUSEBUTTONUP);
+        && event.type == SDL_MOUSEBUTTONUP);
 }
 
 bool Input::isMouseMoving()
 {
     return (event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN);
 }
-
+bool Input::isMouseDoubleClick()
+{
+    return isMouseButtonPressed(SDL_BUTTON_LEFT) && getEvent().button.clicks >= 2;
+}
 bool Input::isScrollWheel()
 {
     return event.type == SDL_MOUSEWHEEL;
@@ -84,10 +87,12 @@ Input::~Input()
     //dtor
 }
 
-std::string Input::getTextInput() {
+std::string Input::getTextInput()
+{
     return std::string(event.edit.text);
 }
-bool Input::isTextInput() {
+bool Input::isTextInput()
+{
     return SDL_IsTextInputActive() && event.type == SDL_TEXTINPUT;
 }
 } // namespace core

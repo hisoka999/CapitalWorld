@@ -1,33 +1,48 @@
 #include "engine/ui/scrollarea.h"
 #include <algorithm>
+#include <cmath>
+#include <engine/graphics/TextureManager.h>
 #include <iostream>
 
 namespace UI {
 
 ScrollArea::ScrollArea(const unsigned int pWidth, const unsigned pHeight,
-        UI::Object* parent = 0) :
-        Object(parent), scrollWidth(0), scrollHeight(0), scrollX(0), scrollY(0), scrollPosX(
-                0), scrollPosY(0), buttonPressed(false) {
+    Object* parent = 0)
+    : Object(parent)
+    , scrollWidth(0)
+    , scrollHeight(0)
+    , scrollX(0)
+    , scrollY(0)
+    , scrollPosX(
+          0)
+    , scrollPosY(0)
+    , buttonPressed(false)
+{
     renderRect.x = 0;
     renderRect.y = 0;
     renderRect.width = pWidth;
     renderRect.height = pHeight;
     renderArea = nullptr;
+
+    uiText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 12);
 }
 
-ScrollArea::~ScrollArea() {
+ScrollArea::~ScrollArea()
+{
     //dtor
     delete renderArea;
 }
 
-void ScrollArea::reset() {
+void ScrollArea::reset()
+{
     scrollPosX = 0;
     scrollPosY = 0;
     delete renderArea;
     renderArea = nullptr;
 }
 
-void ScrollArea::render(core::Renderer *pRender, graphics::Texture *pTexture) {
+void ScrollArea::render(core::Renderer* pRender)
+{
     graphics::Rect parentRect;
     if (getParent() != nullptr)
         parentRect = getParent()->displayRect();
@@ -38,31 +53,22 @@ void ScrollArea::render(core::Renderer *pRender, graphics::Texture *pTexture) {
     int lastScrollHeight = scrollHeight;
     scrollWidth = 0;
     scrollX = 0;
-    std::for_each(objects.begin(), objects.end(), [&](Object* o)
-    {
+    for (auto o : objects) {
         graphics::Rect r = o->displayRect();
-        if(scrollWidth < r.x + r.width)
-        {
+        if (scrollWidth < r.x + r.width) {
             scrollWidth = r.x + r.width;
             scrollX = r.x;
         }
 
-        if(scrollHeight < r.y + r.height)
-        {
+        if (scrollHeight < r.y + r.height) {
             scrollHeight = r.y + r.height;
             scrollY = r.y;
         }
-
-    });
+    }
     if (scrollWidth == 0)
         scrollWidth = renderRect.width;
     if (scrollHeight == 0)
         scrollHeight = renderRect.height;
-    pTexture->render(pRender, parentRect.x + getX(),
-            parentRect.y + getY() + renderRect.height - 10, 10, 10, 82, 354);
-
-    pTexture->render(pRender, parentRect.x + getX() + renderRect.width - 10,
-            parentRect.y + getY() + renderRect.height - 10, 10, 10, 82, 354);
 
     if (lastScrollWidth != scrollWidth || lastScrollHeight != scrollHeight) {
         delete renderArea;
@@ -74,13 +80,12 @@ void ScrollArea::render(core::Renderer *pRender, graphics::Texture *pTexture) {
 
         renderArea = new graphics::Texture(pRender, scrollWidth, scrollHeight);
         SDL_SetTextureBlendMode(renderArea->getSDLTexture(),
-                SDL_BLENDMODE_BLEND);
+            SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(pRender->getRenderer(), 0, 0, 0, 0);
 
         pRender->setRenderTarget(renderArea->getSDLTexture());
-        std::for_each(objects.begin(), objects.end(), [&](Object* o)
-        {
-            o->render(pRender,pTexture);
+        std::for_each(objects.begin(), objects.end(), [&](const std::shared_ptr<Object> o) {
+            o->render(pRender);
         });
         pRender->setRenderTarget(nullptr);
     }
@@ -107,108 +112,63 @@ void ScrollArea::render(core::Renderer *pRender, graphics::Texture *pTexture) {
     destRect.y = parentRect.y + getY();
 
     renderArea->render(pRender, srcRect, destRect);
-    //render scrollbars
-    //render horizontal(wagerecht)
-    //render left edge
-    if (scrollWidth - renderRect.width > 0) {
-        srcRect.x = 82;
-        srcRect.y = 354;
-        srcRect.width = 14;
-        srcRect.height = 14;
-        destRect.width = 14;
-        destRect.height = 14;
-        destRect.x = parentRect.x + getX();
-        destRect.y = parentRect.y + renderRect.height + getY();
-        pTexture->render(pRender, srcRect, destRect);
-        //render right edge
-        srcRect.x = 64;
-        destRect.x = parentRect.x + renderRect.width - 14 + getX();
-        pTexture->render(pRender, srcRect, destRect);
-        //render bar
-        srcRect.x = 0;
-        srcRect.y = 403;
-        srcRect.width = 3;
-        srcRect.height = 5;
-        destRect.width = renderRect.width - 28;
-        destRect.height = 5;
-        destRect.x = parentRect.x + 14 + getX();
-        destRect.y = parentRect.y + renderRect.height + 4 + getY();
-        pTexture->render(pRender, srcRect, destRect);
-        //render slider
-        srcRect.x = 52;
-        srcRect.y = 384;
-        srcRect.width = 10;
-        srcRect.height = 14;
-        destRect.width = 10;
-        destRect.height = 14;
-        destRect.y = parentRect.y + renderRect.height + getY();
-        destRect.x =
-                parentRect.x + 14 + getX()
-                        + (static_cast<float>(scrollPosX)
-                                / static_cast<float>(scrollWidth
-                                        - renderRect.width - 14)
-                                * (static_cast<float>(renderRect.width) - 28.0));
-    pTexture->render(pRender, srcRect, destRect);
-    }
-    //render vertical(senkrecht)
-    //render left edge
-    if (scrollHeight - renderRect.height) {
-        srcRect.x = 18;
-        srcRect.y = 354;
-        srcRect.width = 14;
-        srcRect.height = 14;
-        destRect.width = 14;
-        destRect.height = 14;
-        destRect.x = parentRect.x + getX() + renderRect.width - 14;
-        destRect.y = parentRect.y + getY();
-        pTexture->render(pRender, srcRect, destRect);
-        //render right edge
-        srcRect.x = 34;
-        destRect.x = parentRect.x + renderRect.width - 14 + getX();
-        destRect.y = parentRect.y + renderRect.height + getY() - 14;
-        pTexture->render(pRender, srcRect, destRect);
-        //render bar
-        srcRect.x = 0;
-        srcRect.y = 399;
-        srcRect.width = 4;
-        srcRect.height = 3;
-        destRect.width = 4;
-        destRect.height = renderRect.height - 24;
-        destRect.x = parentRect.x + renderRect.width - 8 + getX();
-        destRect.y = parentRect.y + 14 + getY();
-        pTexture->render(pRender, srcRect, destRect);
-        //render slider
-        srcRect.x = 0;
-        srcRect.y = 354;
-        srcRect.width = 14;
-        srcRect.height = 10;
-        destRect.width = 14;
-        destRect.height = 10;
-        destRect.x = parentRect.x + renderRect.width - 14 + getX();
-        destRect.y = parentRect.y + 14 + getY()
-                + (static_cast<float>(scrollPosY)
-                        / static_cast<float>(scrollHeight - renderRect.height
-                                - 14)
-                        * (static_cast<float>(renderRect.height) - 28.0));
-        pTexture->render(pRender, srcRect, destRect);
+
+    pRender->setDrawColor(93, 103, 108, 255);
+    graphics::Rect borderRect;
+    borderRect.x = parentRect.x + getX();
+    borderRect.y = parentRect.y + getY();
+    borderRect.width = renderRect.width;
+    borderRect.height = renderRect.height;
+
+    pRender->drawRect(borderRect);
+    //TODO render scrollbars
+    if (renderArea->getHeight() > renderRect.height) {
+        graphics::Rect scrollbarRect;
+        scrollbarRect.width = 10;
+        scrollbarRect.x = parentRect.x + getX() + renderRect.width - scrollbarRect.width - 1;
+        scrollbarRect.y = parentRect.y + getY() + 2;
+
+        scrollbarRect.height = renderRect.height - 2;
+
+        pRender->drawRect(scrollbarRect);
+        SDL_Color uiColor = { 93, 103, 108, 255 };
+        uiText->render(pRender, "\uf0d7", uiColor, scrollbarRect.x + 2, scrollbarRect.y + scrollbarRect.height - 14);
+
+        uiText->render(pRender, "\uf0d8", uiColor, scrollbarRect.x + 2, scrollbarRect.y + 2);
     }
 }
 
-graphics::Rect ScrollArea::displayRect() {
+graphics::Rect ScrollArea::displayRect()
+{
     return renderRect;
 }
 
-void ScrollArea::handleEvents(core::Input *pInput) {
+graphics::Rect ScrollArea::eventRect()
+{
+    graphics::Rect r;
+    r.x = renderRect.x + getX();
+    r.y = renderRect.y + getY();
+    r.width = renderRect.width;
+    r.height = renderRect.height;
+    if (getParent() != nullptr) {
+        r.x += getParent()->eventRect().x;
+        r.y += getParent()->eventRect().y;
+    }
+    return r;
+}
+
+void ScrollArea::handleEvents(core::Input* pInput)
+{
+    reset();
     Container::handleEvents(pInput);
     int i = 0;
 
     graphics::Rect parentRect;
-    if (getParent() != NULL)
+    if (getParent() != nullptr)
         parentRect = getParent()->displayRect();
 
-
     if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
-        for (Object *o : objects) {
+        for (std::shared_ptr<Object> o : objects) {
             graphics::Rect r = o->displayRect();
             r.x -= scrollPosX;
             r.x += getX() + parentRect.x;
@@ -219,7 +179,6 @@ void ScrollArea::handleEvents(core::Input *pInput) {
                 break;
             }
             i++;
-
         }
         buttonPressed = true;
     } else if (pInput->isMouseButtonUp(SDL_BUTTON_LEFT)) {
@@ -227,7 +186,6 @@ void ScrollArea::handleEvents(core::Input *pInput) {
     }
     if (buttonPressed) {
         graphics::Rect destRect;
-
 
         destRect.width = 14;
         destRect.height = 14;
@@ -260,8 +218,8 @@ void ScrollArea::handleEvents(core::Input *pInput) {
         destRect.y = parentRect.y + getY();
         if (destRect.intersects(pInput->getMousePostion())) {
             if (scrollPosY > 0) {
-                scrollPosY -= round(
-                        (scrollHeight - renderRect.height - 14) / 100);
+                scrollPosY -= std::round(
+                    (scrollHeight - renderRect.height - 14) / 100);
                 if (scrollPosY < 0)
                     scrollPosY = 0;
             }
@@ -271,8 +229,8 @@ void ScrollArea::handleEvents(core::Input *pInput) {
         destRect.y = parentRect.y + renderRect.height + getY() - 14;
         if (destRect.intersects(pInput->getMousePostion())) {
             if (scrollPosY < scrollHeight - renderRect.height - 14)
-                scrollPosY += round(
-                        (scrollHeight - renderRect.height - 14) / 100);
+                scrollPosY += std::round(
+                    (scrollHeight - renderRect.height - 14) / 100);
         }
         //render bar
 
@@ -288,40 +246,34 @@ void ScrollArea::handleEvents(core::Input *pInput) {
         destRect.height = 10;
         destRect.x = parentRect.x + renderRect.width - 14 + getX();
         destRect.y = parentRect.y + 14 + getY();
-
-
     }
-
 
     graphics::Rect r = renderRect;
     r.x = getX() + parentRect.x;
     r.y = getY() + parentRect.y;
     if (pInput->isScrollWheel()) {
         if (!r.intersects(pInput->getMousePostion()))
-                return;
+            return;
         utils::Vector2 pos = pInput->getMouseWheelPosition();
         if (scrollWidth - renderRect.width > 0) {
             if ((scrollPosX + (pos.getY() * 5) >= 0 && pos.getY() == -1)
-                    || (pos.getY() == 1
-                            && scrollPosX < scrollWidth - renderRect.width - 14)) {
+                || (pos.getY() == 1
+                    && scrollPosX < scrollWidth - renderRect.width - 14)) {
                 scrollPosX += pos.getY() * 5;
                 std::cout << "wheel x: " << pos.getX() << " y: " << pos.getY()
-                        << " scrollPosX: " << scrollPosX << std::endl;
+                          << " scrollPosX: " << scrollPosX << std::endl;
             }
         } else {
             if ((scrollPosY + (pos.getY() * 5) >= 0 && pos.getY() == -1)
-                    || (pos.getY() == 1
-                            && scrollPosY
-                                    < scrollHeight - renderRect.height - 14)) {
+                || (pos.getY() == 1
+                    && scrollPosY
+                        < scrollHeight - renderRect.height - 14)) {
                 scrollPosY += pos.getY() * 5;
                 std::cout << "wheel y: " << pos.getY() << " x: " << pos.getX()
-                        << " scrollPosY: " << scrollPosY << std::endl;
+                          << " scrollPosY: " << scrollPosY << std::endl;
             }
-
         }
     }
-
 }
 
 } // namespace UI
-

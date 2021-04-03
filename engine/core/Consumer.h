@@ -9,7 +9,6 @@
 #define CORE_CONSUMER_H_
 
 #include <engine/core/Message.h>
-#include <boost/shared_ptr.hpp>
 
 namespace core
 {

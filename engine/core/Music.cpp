@@ -10,43 +10,50 @@
 
 namespace core {
 
-Music::Music() :
-        _data(NULL) {
-
+Music::Music()
+    : _data(nullptr)
+{
 }
 
-Music::~Music() {
+Music::~Music()
+{
     Mix_FreeMusic(_data);
-    _data = NULL;
+    _data = nullptr;
 }
 
 } /* namespace core */
 
-void core::Music::loadMusic(std::string filename) {
+void core::Music::loadMusic(std::string filename)
+{
     _data = Mix_LoadMUS(filename.c_str());
-    if (_data == NULL) {
+    if (_data == nullptr) {
         throw std::runtime_error(
-                std::string("failed to load music: ")
-                        + std::string(Mix_GetError()));
+            std::string("failed to load music: ")
+            + std::string(Mix_GetError()));
     }
 }
 
-void core::Music::play(int repeat) {
+void core::Music::play(int repeat)
+{
     Mix_PlayMusic(_data, repeat);
 }
 
-void core::Music::pause() {
+void core::Music::pause()
+{
     Mix_PauseMusic();
 }
 
-void core::Music::resume() {
+void core::Music::resume()
+{
     Mix_ResumeMusic();
 }
 
-void core::Music::stop() {
+void core::Music::stop()
+{
     Mix_HaltMusic();
 }
 
-bool core::Music::isMusicPlaying() {
+bool core::Music::isMusicPlaying()
+{
     return Mix_PlayingMusic() == 1;
 }

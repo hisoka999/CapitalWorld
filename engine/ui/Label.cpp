@@ -7,44 +7,58 @@
 
 #include "engine/ui/Label.h"
 
-namespace UI {
+namespace UI
+{
 
-Label::Label(const std::string& text, Object *parent) :
-        UI::Object(parent), text(text) {
-    color =
-    {	255,255,255,255};
-
-}
-Label::Label(Object *parent) :
-        UI::Object(parent), text("") {
-    color =
-    {	255,255,255,255};
-}
-
-void Label::render(core::Renderer *pRender, graphics::Texture *pTexture) {
-    int x = getX();
-    int y = getY();
-    if (getParent() != NULL) {
-        graphics::Rect rect = getParent()->displayRect();
-        x += rect.x;
-        y += rect.y;
+    Label::Label(const std::string &text, Object *parent)
+        : UI::Object(parent), text(text)
+    {
+        color = {255, 255, 255, 255};
     }
-    getFont()->render(pRender, text, color, x, y);
-}
+    Label::Label(Object *parent)
+        : UI::Object(parent), text("")
+    {
+        color = {255, 255, 255, 255};
+    }
 
-std::string Label::getText() {
-    return text;
-}
-void Label::setText(const std::string& text) {
-    this->text = text;
-}
+    void Label::render(core::Renderer *pRender)
+    {
+        int x = getX();
+        int y = getY();
+        if (getParent() != nullptr)
+        {
+            graphics::Rect rect = getParent()->displayRect();
+            x += rect.x;
+            y += rect.y;
+        }
+        getFont()->render(pRender, text, color, x, y);
+    }
 
-void Label::setColor(SDL_Color color) {
-    this->color = color;
-}
+    std::string Label::getText()
+    {
+        return text;
+    }
+    void Label::setText(const std::string &text)
+    {
+        this->text = text;
 
-Label::~Label() {
-    // TODO Auto-generated destructor stub
-}
+        if (getFont() != nullptr)
+        {
+            int w, h = 0;
+            getFont()->size(text, &w, &h);
+            setWidth(w);
+            setHeight(h);
+        }
+    }
+
+    void Label::setColor(SDL_Color color)
+    {
+        this->color = color;
+    }
+
+    Label::~Label()
+    {
+        // TODO Auto-generated destructor stub
+    }
 
 } /* namespace UI */

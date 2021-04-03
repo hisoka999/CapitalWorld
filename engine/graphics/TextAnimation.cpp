@@ -9,12 +9,20 @@
 
 namespace graphics {
 
-TextAnimation::TextAnimation(utils::Vector2 startPosition) : Animation<graphics::Text>(startPosition) {
+TextAnimation::TextAnimation(utils::Vector2 startPosition, SDL_Color color, std::string text)
+    : Animation<graphics::Text>(startPosition)
+    , color(color)
+    , text(text)
+{
     // TODO Auto-generated constructor stub
-
 }
-
-TextAnimation::~TextAnimation() {
+void TextAnimation::renderFrame(AnimationFrame<Text>& frame,
+    core::Renderer* renderer)
+{
+    frame.data->render(renderer, text, color, currentPosition.getX(), currentPosition.getY());
+}
+TextAnimation::~TextAnimation()
+{
     // TODO Auto-generated destructor stub
 }
 

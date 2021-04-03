@@ -24,6 +24,8 @@ class Texture
         void renderResized(core::Renderer *ren,int x, int y,int pWidth,int pHeight);
         void renderRotated(core::Renderer *ren,const double angle,const int x,const int y,const int pWidth,const int pHeight);
         void setColorKey(uint8_t r,uint8_t g,uint8_t b);
+        void setBlendMode(SDL_BlendMode blendMode);
+        void setAlphaColor(core::Renderer* ren,uint8_t r,uint8_t g,uint8_t b);
         int getWidth();
         int getHeight();
         SDL_Texture* getSDLTexture(){
@@ -32,6 +34,7 @@ class Texture
     protected:
     private:
         SDL_Texture *tex;
+        SDL_Surface* surface;
         int width;
         int height;
 };

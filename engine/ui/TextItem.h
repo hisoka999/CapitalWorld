@@ -10,23 +10,27 @@
 
 #include <engine/ui/Object.h>
 
-namespace UI {
+namespace UI
+{
 
-class TextItem: public Object {
-public:
-    TextItem(Object *parent, int pWidth, int pHeight);
-    virtual ~TextItem();
-    std::string getText();
-    void setText(const std::string& text);
+    class TextItem : public Object
+    {
+    public:
+        TextItem(Object *parent, int pWidth, int pHeight);
+        virtual ~TextItem();
+        std::string getText();
+        void setText(const std::string &text);
 
-    void render(core::Renderer *pRender, graphics::Texture *texture);
-    void handleEvents(core::Input *pInput);
-    void setFont(const std::string& fontname, unsigned int font_size);
-    void setColor(int r, int g, int b);
-private:
-    std::string text;
-    SDL_Color color;
-};
+        void render(core::Renderer *pRender);
+        void handleEvents(core::Input *pInput);
+        void setFont(const std::string &fontname, unsigned int font_size);
+        void setColor(int r, int g, int b);
+
+    private:
+        std::string text;
+        SDL_Color color;
+        bool isSelected;
+    };
 
 } /* namespace UI */
 

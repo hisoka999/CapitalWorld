@@ -9,7 +9,6 @@
 #define CORE_SCENEMANAGER_H_
 
 #include "engine/core/input.h"
-#include "Scene.h"
 #include <map>
 #include <string>
 #include <memory>
@@ -18,43 +17,33 @@
 namespace core
 {
 
-class SceneManager
-{
-public:
-    static SceneManager& Instance() {
-        std::call_once(onceFlag, [] {
-            initSingleton();
-        });
+    class Scene;
 
-        return *(instance);
-    }
+    class SceneManager
+    {
+    public:
+        static SceneManager &Instance()
+        {
+            static SceneManager instance;
+            return instance;
+        }
 
+        void render();
+        void handleEvents(core::Input *pInput);
 
+        void addScene(std::string name, const std::shared_ptr<Scene> &scene);
+        void setCurrentScene(std::string name);
+        const std::shared_ptr<Scene> &getScene(std::string name);
+        void update();
+        const std::shared_ptr<Scene> &getCurrentScene();
 
-    SceneManager();
-    virtual ~SceneManager();
+    private:
+        SceneManager();
+        virtual ~SceneManager();
 
-    void render();
-    void handleEvents(core::Input* pInput);
-
-    void addScene(std::string name, core::Scene* scene);
-    void setCurrentScene(std::string name);
-    Scene* getScene(std::string name);
-    void update();
-    Scene * getCurrentScene();
-private:
-    std::map<std::string, Scene*> scenes;
-    std::string currentScene;
-
-    static SceneManager* instance;
-    static std::once_flag onceFlag;
-
-    static void initSingleton() {
-        instance = new SceneManager();
-    }
-
-
-};
+        std::map<std::string, std::shared_ptr<Scene>> scenes;
+        std::string currentScene;
+    };
 
 } /* namespace core */
 
