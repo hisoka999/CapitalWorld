@@ -10,13 +10,13 @@ before_install:
   - echo $LC_ALL
   - if [ $TRAVIS_OS_NAME == linux ]; then ./scripts/install_dependency.sh; fi
 script:
-  - if [ $TRAVIS_OS_NAME == linux ]; then 
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     mkdir build; 
     cmake -S . -B build;
     cmake --build build --config release --target CapitalWorld ;
-  fi
+    fi
 after_success:
-  - if [ $TRAVIS_OS_NAME == linux ]; then cd build/ && make package; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then cd build && make package; fi
 #- if [ $TRAVIS_BRANCH == $TRAVIS_TAG ]; then ./scripts/deploy.sh release github website triggers; fi
 branches:
   only:
