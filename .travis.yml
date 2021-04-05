@@ -12,10 +12,10 @@ before_install:
 script:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     pwd;
-    mkdir build; 
+    mkdir -p build && cd build; 
     pwd;
-    cmake -S `pwd` -B `pwd`/build;
-    cmake --build `pwd`/build --config release --target CapitalWorld ;
+    cmake ..;
+    cmake --build . --config release --target CapitalWorld ;
     fi
 after_success:
   - if [ $TRAVIS_OS_NAME == linux ]; then cd `pwd`/build && make package; fi
