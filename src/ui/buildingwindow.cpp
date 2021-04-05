@@ -4,6 +4,7 @@
 #include <engine/utils/os.h>
 #include "../ui/farmproductiontab.h"
 #include "../ui/factoryproductiontab.h"
+#include "../ui/storagetab.h"
 
 namespace UI
 {
@@ -58,8 +59,10 @@ namespace UI
 
             labelGroundValue->setText("TODO");
             tabBar->removeTab(productionTab);
+            tabBar->removeTab(storageTab);
             //recreate tab based on Building type
             productionTab = nullptr;
+            storageTab = nullptr;
             switch (building->getType())
             {
             case world::BuildingType::Farm:
@@ -71,12 +74,17 @@ namespace UI
             if (productionTab != nullptr)
             {
                 tabBar->addTab(productionTab);
+                storageTab = std::make_shared<UI::StorageTab>(tabBar.get(), building);
+                tabBar->addTab(storageTab);
             }
         }
         else
         {
             if (productionTab != nullptr)
+            {
                 tabBar->removeTab(productionTab);
+                tabBar->removeTab(storageTab);
+            }
             labelTypeValue->setText("");
             labelOwnerValue->setText("");
             labelGroundValue->setText("TODO");

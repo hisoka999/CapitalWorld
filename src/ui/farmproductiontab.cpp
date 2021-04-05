@@ -32,6 +32,8 @@ namespace UI
 
         resourceSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
         resourceSelectionBox->setPos(180, 28);
+        resourceSelectionBox->setWidth(120);
+
         resourceSelectionBox->connect("selectionChanged", [&](unsigned int selection) {
             resourceSelectionChanged(selection);
         });

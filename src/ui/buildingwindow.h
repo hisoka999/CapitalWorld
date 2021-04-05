@@ -26,6 +26,7 @@ namespace UI
         std::shared_ptr<UI::Label> labelOwnerValue;
         std::shared_ptr<UI::Label> labelGroundValue;
         std::shared_ptr<UI::Tab> productionTab;
+        std::shared_ptr<UI::Tab> storageTab;
     };
 
 }

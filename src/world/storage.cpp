@@ -2,16 +2,16 @@
 
 Storage::Storage()
 {
-    maximalAmount  =10000;
+    maximalAmount = 10000;
 }
 void Storage::addEntry(std::string product, int amount)
 {
     int usage = static_cast<int>(usedStorage());
     int newAmount = amount;
-    if(usage + amount > static_cast<int>(maximalAmount)){
+    if (usage + amount > static_cast<int>(maximalAmount))
+    {
         newAmount = static_cast<int>(maximalAmount) - usage;
     }
-
 
     if (entries.count(product) == 0 && newAmount > 0)
     {
@@ -19,11 +19,12 @@ void Storage::addEntry(std::string product, int amount)
         entry.amount = static_cast<unsigned>(newAmount);
         entry.product = product;
         entries[product] = entry;
-    }else
+    }
+    else
     {
-        if(entries[product].amount - newAmount >= 0)
+        if (entries[product].amount - newAmount >= 0)
         {
-            entries[product].amount+=newAmount;
+            entries[product].amount += newAmount;
         }
         //count storage usage
     }
@@ -31,11 +32,21 @@ void Storage::addEntry(std::string product, int amount)
 unsigned Storage::usedStorage()
 {
     unsigned usage = 0;
-    for(auto it = entries.begin();it != entries.end();it++)
+    for (auto it = entries.begin(); it != entries.end(); it++)
     {
         usage += it->second.amount;
     }
     return usage;
+}
+
+std::vector<std::string> Storage::getStoredProducts()
+{
+    std::vector<std::string> result;
+    for (auto it = entries.begin(); it != entries.end(); it++)
+    {
+        result.push_back(it->first);
+    }
+    return result;
 }
 
 unsigned Storage::getEntry(std::string product)

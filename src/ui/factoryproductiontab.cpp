@@ -15,6 +15,7 @@ namespace UI
     {
         productSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
         productSelectionBox->setPos(490, 28);
+        productSelectionBox->setWidth(100);
         productList = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Factory);
         productSelectionBox->connect("selectionChanged", [&](unsigned int selection) {
             productSelectionChanged(selection);
@@ -32,6 +33,7 @@ namespace UI
 
         resourceSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
         resourceSelectionBox->setPos(180, 28);
+        resourceSelectionBox->setWidth(100);
         resourceSelectionBox->connect("selectionChanged", [&](unsigned int selection) {
             resourceSelectionChanged(selection);
         });

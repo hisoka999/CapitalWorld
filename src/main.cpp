@@ -21,6 +21,7 @@ int main()
     {
 
         auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
+        win.open(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "captialworld");
         utils::Logger logger(utils::LogLevel::trace);
         core::Renderer ren(logger);
         graphics::TextureManager::Instance().setRenderer(&ren);

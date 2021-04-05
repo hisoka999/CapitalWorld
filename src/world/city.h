@@ -49,6 +49,8 @@ namespace world
         void fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft);
         bool existsNode(std::shared_ptr<TreeNode> node, utils::Vector2 &pos);
         void updateObjectList();
+        void updateStreetTextures();
+
         utils::Vector2 position;
         std::string name;
         long numberOfCitizen;
