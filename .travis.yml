@@ -13,13 +13,12 @@ script:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     pwd;
     mkdir build; 
-    cd ..;
     pwd;
-    cmake -S . -B build;
-    cmake --build build --config release --target CapitalWorld ;
+    cmake -S `pwd` -B `pwd`/build;
+    cmake --build `pwd`/build --config release --target CapitalWorld ;
     fi
 after_success:
-  - if [ $TRAVIS_OS_NAME == linux ]; then cd build && make package; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then cd `pwd`/build && make package; fi
 #- if [ $TRAVIS_BRANCH == $TRAVIS_TAG ]; then ./scripts/deploy.sh release github website triggers; fi
 branches:
   only:
