@@ -61,7 +61,7 @@ find_package(ZLIB)
 
 INCLUDE_DIRECTORIES()
 file(GLOB_RECURSE SRC
-    engine/*
+   # engine/*
     src/*.cpp)
 
 set (GAME_VERSION_MAJOR 0)
@@ -74,19 +74,29 @@ configure_file (
   "${PROJECT_BINARY_DIR}/config.h"
   )
 
-  set (MAGIC_ENUM_ROOT "deps")
-  set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/${MAGIC_ENUM_ROOT}/magic_enum/include" )
+#   set (MAGIC_ENUM_ROOT "deps")
+#   set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/${MAGIC_ENUM_ROOT}/magic_enum/include" )
   
-  include(magic_enum)
-  message(${MAGIC_ENUM_SRC})
+#   include(magic_enum)
+#   message(${MAGIC_ENUM_SRC})
 
+  set (ENGINE_ROOT "deps")
+  set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
+
+  message(${ENGINE_SRC})
+option(ENGINE_TESTS off)
+include(engine)
+fetch_engine(
+${PROJECT_SOURCE_DIR}/cmake
+${PROJECT_BINARY_DIR}/engine
+)
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${MAGIC_ENUM_SRC})
+include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${MAGIC_ENUM_SRC} ${ENGINE_SRC})
 
 
-add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC})
-
+add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
+target_link_libraries(${PROJECT_NAME} sgl)
 if(MINGW)
     IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
         message("debug mode")
@@ -107,6 +117,7 @@ if( UNIX)
   target_link_libraries(${PROJECT_NAME} SDL2_gfx)
   target_link_libraries(${PROJECT_NAME} pthread)
 endif()
+
 
 add_custom_command(TARGET CapitalWorld PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory

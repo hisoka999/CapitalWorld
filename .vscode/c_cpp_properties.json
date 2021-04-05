@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/src/",
-                "${workspaceFolder}/engine/",
+                "${workspaceFolder}/build/engine/engine-src/**",
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/build/deps/magic_enum/include",
                 "/usr/include/**",
