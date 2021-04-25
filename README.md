@@ -6,11 +6,11 @@ The game needs the following Libraries to build:
 
 * SDL2
 * SDL2_image
-* SDL2_gfx
+* SDL2_gfx (linux)
 * SDL2_mixer
 * SDL2_ttf
-* zlib
-* pthread
+* zlib (linux)
+* pthread (linux)
 
 # License
 All source code is released under the GNU General Public License Version 2.
@@ -25,4 +25,8 @@ mkdir build/ && cd build/ && cmake ../
 make
 ```
 ## Windows and Mac
+### Windows
+It is adviced to install a current version of VisualStudio to build the game. The game needs an c++17 compatible compiler.
+
+### macOS
 The way to build the game should work the same as on Linux.
