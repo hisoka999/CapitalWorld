@@ -104,58 +104,6 @@ bool GameMap::canBuild(graphics::Rect buildRect)
         //render water
         return false;
     }
-    else if (tile > groundLimit)
-    {
-        //render mountain
-        return true;
-    }
-    else
-    {
-        //ground
-
-        if (getTile(tileX - 1, tileY) > groundLimit &&
-            getTile(tileX, tileY - 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX - 1, tileY) > groundLimit &&
-                 getTile(tileX, tileY + 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX, tileY - 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX, tileY + 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX - 1, tileY) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX + 1, tileY) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX - 1, tileY - 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX - 1, tileY + 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX + 1, tileY + 1) > groundLimit)
-        {
-            return false;
-        }
-        else if (getTile(tileX + 1, tileY - 1) > groundLimit)
-        {
-            return false;
-        }
-    }
 
     return true;
 }

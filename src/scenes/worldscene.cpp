@@ -22,7 +22,7 @@ namespace scenes
         world::MapGenerator gen;
         std::random_device r;
 
-        gameMap = gen.generateMap(100, 100, r());
+        gameMap = gen.generateMap(1000, 1000, r());
         cities = gen.getGeneratedCities();
 
         //gameMap = std::make_shared<GameMap>(100,100);
@@ -200,8 +200,9 @@ namespace scenes
             {
                 auto wheelPosition = pInput->getMouseWheelPosition();
                 float factor = renderer->getZoomFactor() + (wheelPosition.getY() / 5.f);
+                if (factor >= 0.2)
+                    renderer->setZoomFactor(factor);
 
-                renderer->setZoomFactor(factor);
                 std::cout << "factor: " << factor << std::endl;
             }
             if (pInput->isMouseMoving())

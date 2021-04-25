@@ -94,6 +94,7 @@ namespace world
                 break;
             }
         }
+        return isBordering;
     }
 
     void City::generate(unsigned int seed, std::shared_ptr<GameMap> gameMap)
@@ -165,7 +166,6 @@ namespace world
                         break;
                     }
                     house->setPosition(housePosition.getX(), housePosition.getY());
-                    std::cout << "house x = " << housePosition.getX() << " y = " << housePosition.getY() << std::endl;
                 } while (!isBorderingStreet(house) && stopKey < 10);
                 stopKey++;
             }
@@ -181,7 +181,7 @@ namespace world
         int height = 28;
         auto street = std::make_shared<Building>("Street", "", 100, BuildingType::Street);
         //todo change position, or move to new class
-        street->setSourceRect(graphics::Rect(1044, 0, 64, 32));
+        street->setSourceRect(groundTexture->getSourceRect("street1"));
         street->setOffset(0, 0);
         utils::Vector2 streetPosition = node->position;
         street->setPosition(streetPosition.getX(), streetPosition.getY());
@@ -190,7 +190,8 @@ namespace world
 
         auto street2 = std::make_shared<Building>("Street", "", 100, BuildingType::Street);
         //todo change position, or move to new class
-        street2->setSourceRect(graphics::Rect(1044, 0, 64, 32));
+
+        street2->setSourceRect(groundTexture->getSourceRect("street1"));
         street2->setOffset(0, 0);
         streetPosition = node->position;
         switch (node->direction)
@@ -338,7 +339,7 @@ namespace world
 
         if (root->children.size() > 0)
         {
-            if (noDirectionGen(gen) <= 10)
+            if (noDirectionGen(gen) <= 5)
             {
                 std::cout << " no direction " << std::endl;
                 return;

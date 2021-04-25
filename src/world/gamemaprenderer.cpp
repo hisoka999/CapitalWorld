@@ -33,20 +33,20 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
 
 float GameMapRenderer::getTileYOffset(uint16_t tile, size_t tileX, size_t tileY)
 {
-    graphics::Rect srcRect = getSourceRect(tile, tileX, tileY);
+    const graphics::Rect &srcRect = getSourceRect(tile, tileX, tileY);
     return tileHeight - srcRect.height;
 }
 
 void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos)
 {
-    auto camera = renderer->getMainCamera();
+    const auto &camera = renderer->getMainCamera();
     float xPos = pos.getX() - camera->getX();
     float yPos = pos.getY() - camera->getY();
 
-    float width = static_cast<float>(tileWidth) * renderer->getZoomFactor();
-    float height = static_cast<float>(tileHeight) * renderer->getZoomFactor();
+    float width = float(tileWidth) * renderer->getZoomFactor();
+    float height = float(tileHeight) * renderer->getZoomFactor();
 
-    graphics::Rect srcRect = getSourceRect(tile, tileX, tileY);
+    const graphics::Rect &srcRect = getSourceRect(tile, tileX, tileY);
     graphics::Rect destRect = {std::round((pos.getX() * renderer->getZoomFactor()) - camera->getX()), std::round(((pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor()) - camera->getY()), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
     graphics::Rect realRect = {(pos.getX() * renderer->getZoomFactor()), (pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor(), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
 
@@ -57,24 +57,48 @@ void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int ti
     groundTexture->render(renderer, srcRect, destRect);
 }
 
+utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 input)
+{
+    const utils::Vector2 &pt = gameMap->isoTo2D(input);
+
+    float x, y = 0.0;
+
+    float tx = pt.getX() / static_cast<float>(getTileHeight() * zoomFactor);
+    float ty = pt.getY() / static_cast<float>(getTileHeight() * zoomFactor);
+
+    x = std::floor(tx);
+    y = std::floor(ty);
+
+    return utils::Vector2(x, y);
+}
+
 void GameMapRenderer::render(core::Renderer *renderer)
 {
+    auto camera = renderer->getMainCamera();
+    auto viewPort = camera->getViewPortRect();
+
+    //todo testcode
+    auto start = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.x, viewPort.y));
+    auto end = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.height, viewPort.width));
+
+    //int startX = start.getX();
+    //int startY = start.getY();
+
     SDL_Color color = {0, 0, 0, 255};
-    for (size_t j = 0; j < gameMap->getWidth(); ++j)
+    for (size_t j = 0; j < end.getY() + start.getY(); ++j)
     {
-        for (size_t i = 0; i < gameMap->getHeight(); ++i)
+        for (size_t i = 0; i < end.getX() + start.getX(); ++i)
         {
             float x = static_cast<float>(i) * tileWidth / 2.0f;
             float y = static_cast<float>(j) * tileHeight;
             utils::Vector2 vec(x, y);
-            auto iso = gameMap->twoDToIso(vec);
+            const auto &iso = gameMap->twoDToIso(vec);
 
             renderTile(renderer, gameMap->getTile(i, j), i, j, iso);
 
             //debugText->render(renderer,utils::string_format("%d/%d",i,j),color,iso.getX()+5,iso.getY()+5);
         }
     }
-    auto camera = renderer->getMainCamera();
 
     for (auto &building : gameMap->getBuildings())
     {

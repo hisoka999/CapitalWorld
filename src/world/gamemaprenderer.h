@@ -19,6 +19,7 @@ public:
 
 private:
     void renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos);
+    utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
     graphics::Rect getSourceRect(TileType tile, size_t tileX, size_t tileY);
     std::shared_ptr<GameMap> gameMap;
     std::shared_ptr<graphics::Texture> groundTexture;
