@@ -100,7 +100,11 @@ namespace world
     {
         this->gameMap = gameMap;
         std::mt19937 gen(seed);
-        std::uniform_int_distribution<long> peopleGen(1000, 1000000);
+
+        std::uniform_int_distribution<long> xPositionGen(0, gameMap->getWidth());
+        std::uniform_int_distribution<long> yPositionGen(0, gameMap->getHeight());
+
+        std::uniform_int_distribution<long> peopleGen(100000, 1000000);
 
         std::uniform_int_distribution<long> houseGen(1, 4);
 
@@ -109,12 +113,19 @@ namespace world
         std::cout << "numberOfCitizen = " << numberOfCitizen << std::endl;
         std::cout << "numberOfBuildings = " << numberOfBuildings << std::endl;
 
+        graphics::Rect buildRect = {position.getX(), position.getY(), 1, 1};
+
+        while (!gameMap->canBuild(buildRect))
+        {
+            position = utils::Vector2(xPositionGen(gen), yPositionGen(gen));
+            buildRect = {position.getX(), position.getY(), 1, 1};
+        }
         utils::Vector2 startPosition = position;
 
         std::uniform_int_distribution<int> directionGen(1, 4);
 
-        int width = 58;
-        int height = 28;
+        int width = 64;
+        int height = 32;
 
         generateStreetTree(seed);
         fillStreetsByTree(root);
@@ -170,8 +181,8 @@ namespace world
         int height = 28;
         auto street = std::make_shared<Building>("Street", "", 100, BuildingType::Street);
         //todo change position, or move to new class
-        street->setSourceRect(graphics::Rect(1044, 0, 58, 63));
-        street->setOffset(0, 63 - height);
+        street->setSourceRect(graphics::Rect(1044, 0, 64, 32));
+        street->setOffset(0, 0);
         utils::Vector2 streetPosition = node->position;
         street->setPosition(streetPosition.getX(), streetPosition.getY());
         street->setSubTexture("street1");
@@ -179,8 +190,8 @@ namespace world
 
         auto street2 = std::make_shared<Building>("Street", "", 100, BuildingType::Street);
         //todo change position, or move to new class
-        street2->setSourceRect(graphics::Rect(1044, 0, 58, 63));
-        street2->setOffset(0, 63 - height);
+        street2->setSourceRect(graphics::Rect(1044, 0, 64, 32));
+        street2->setOffset(0, 0);
         streetPosition = node->position;
         switch (node->direction)
         {
@@ -219,9 +230,9 @@ namespace world
             auto posNorth = pos;
             posNorth.y -= 1;
             auto posEast = pos;
-            posEast.x -= 1;
+            posEast.x += 1;
             auto posWest = pos;
-            posWest.x += 1;
+            posWest.x -= 1;
             auto posSouth = pos;
             posSouth.y += 1;
 
@@ -236,15 +247,43 @@ namespace world
                 if (street->get2DPosition().intersectsNoLine(posWest))
                     isBorderingWest = true;
             }
-            if (isBorderingSouth && isBorderingEast && !isBorderingNorth && !isBorderingWest)
+            if (isBorderingEast && isBorderingSouth && isBorderingNorth && isBorderingWest)
+            {
+                sourceStreet->setSubTexture("street_cross_center");
+            }
+            else if (isBorderingEast && isBorderingSouth && !isBorderingNorth && isBorderingWest)
+            {
+                sourceStreet->setSubTexture("street_cross_up_right");
+            }
+            else if (isBorderingEast && isBorderingSouth && isBorderingNorth && !isBorderingWest)
+            {
+                sourceStreet->setSubTexture("street_cross_up_left");
+            }
+            else if (isBorderingEast && !isBorderingSouth && isBorderingNorth && isBorderingWest)
+            {
+                sourceStreet->setSubTexture("street_cross_down_left");
+            }
+            else if (!isBorderingEast && isBorderingSouth && isBorderingNorth && isBorderingWest)
+            {
+                sourceStreet->setSubTexture("street_cross_down_right");
+            }
+            else if (isBorderingSouth && isBorderingEast && !isBorderingNorth && !isBorderingWest)
             {
                 sourceStreet->setSubTexture("street_corner_up");
             }
-            else if (isBorderingNorth && isBorderingEast && !isBorderingWest && !isBorderingSouth)
+            else if (isBorderingNorth && !isBorderingEast && isBorderingWest && !isBorderingSouth)
             {
                 sourceStreet->setSubTexture("street_corner_left");
             }
-            else if (isBorderingEast && isBorderingWest)
+            else if (!isBorderingNorth && !isBorderingEast && isBorderingWest && isBorderingSouth)
+            {
+                sourceStreet->setSubTexture("street_corner_right");
+            }
+            else if (isBorderingNorth && isBorderingEast && !isBorderingWest && !isBorderingSouth)
+            {
+                sourceStreet->setSubTexture("street_corner_down");
+            }
+            else if (isBorderingEast || isBorderingWest)
             {
                 sourceStreet->setSubTexture("street2");
             }
@@ -258,8 +297,8 @@ namespace world
     {
         root = std::make_shared<TreeNode>(position, 0);
         std::mt19937 gen(seed);
-        long numberOfBuildings = static_cast<long>(std::round(static_cast<float>(numberOfCitizen) / 1000.0f));
-        numberOfBuildings /= 2;
+        long numberOfBuildings = long(std::round(float(numberOfCitizen) / 1000.0f));
+        numberOfBuildings /= 2.0;
         fillNode(gen, root, &numberOfBuildings);
     }
 
@@ -289,6 +328,7 @@ namespace world
 
         if ((*nodesLeft) == 0)
             return;
+        std::cout << "nodes left: " << *nodesLeft << std::endl;
 
         std::uniform_int_distribution<int> directionGen(base, 4);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
@@ -300,6 +340,7 @@ namespace world
         {
             if (noDirectionGen(gen) <= 10)
             {
+                std::cout << " no direction " << std::endl;
                 return;
             }
         }
@@ -328,7 +369,7 @@ namespace world
 
             if (i != node->direction)
             {
-                std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
+                //std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
 
                 //first check if you can build a street
                 graphics::Rect buildRect{streetPosition.getX(), streetPosition.getY(), 1, 1};
@@ -385,8 +426,8 @@ namespace world
 
     void City::renderCity(core::Renderer *renderer)
     {
-        int tileWidth = 58;
-        int tileHeight = 28;
+        int tileWidth = 64;
+        int tileHeight = 32;
         auto camera = renderer->getMainCamera();
 
         for (auto &building : objects)

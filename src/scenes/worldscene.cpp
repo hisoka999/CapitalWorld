@@ -16,7 +16,7 @@ namespace scenes
                                       pSceneManager),
           buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100)
     {
-        cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "tiles", "iso_cursor.png"));
+        cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
         world::MapGenerator gen;
@@ -29,7 +29,7 @@ namespace scenes
         mapRenderer = std::make_shared<GameMapRenderer>(gameMap);
         auto playerCompany = std::make_shared<world::Company>("Player Company", 1000000, true);
         gameState = std::make_shared<world::GameState>(playerCompany);
-        renderer->setZoomFactor(6);
+        renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
 
         uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
@@ -51,19 +51,19 @@ namespace scenes
         {
         case world::BuildAction::Farm:
             building = std::make_shared<world::Building>("Farm", "A farm", 10000, world::BuildingType::Farm);
-            rect.x = 754;
-            rect.y = 236;
-            building->setOffset(0, -4);
+            rect.x = 0;
+            rect.y = 128;
+            building->setOffset(0, 0);
             building->setSourceRect(rect);
             break;
 
         case world::BuildAction::Factory:
             building = std::make_shared<world::Building>("Factory", "A factory", 20000, world::BuildingType::Factory, 3, 3);
-            rect.x = 14;
-            rect.y = 1878;
-            rect.width = 184;
-            rect.height = 162;
-            building->setOffset(0, -106);
+            rect.x = 0;
+            rect.y = 160;
+            rect.width = 128;
+            rect.height = 128;
+            building->setOffset(0, 0);
             building->setSourceRect(rect);
 
             break;
@@ -120,11 +120,11 @@ namespace scenes
         float cursorY = (cursorPosition.getY() * mapRenderer->getTileHeight());
         utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX, cursorY));
         auto camera = renderer->getMainCamera();
-        int xPos = (pos.getX() * renderer->getZoomFactor()) - camera->getX();
+        float xPos = (pos.getX() * renderer->getZoomFactor()) - camera->getX();
 
         float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
 
-        int yPos = ((pos.getY() - tileYOffset) * renderer->getZoomFactor()) - (camera->getY());
+        float yPos = ((pos.getY() - tileYOffset) * renderer->getZoomFactor()) - (camera->getY());
 
         cursorTexture->renderResized(renderer, xPos, yPos, cursorTexture->getWidth() * renderer->getZoomFactor(), cursorTexture->getHeight() * renderer->getZoomFactor());
 
@@ -196,7 +196,7 @@ namespace scenes
             if (pInput->isScrollWheel())
             {
                 auto wheelPosition = pInput->getMouseWheelPosition();
-                float factor = renderer->getZoomFactor() + (wheelPosition.getY() / 10.f);
+                float factor = renderer->getZoomFactor() + (wheelPosition.getY() / 5.f);
 
                 renderer->setZoomFactor(factor);
                 std::cout << "factor: " << factor << std::endl;
@@ -206,11 +206,7 @@ namespace scenes
                 float camX = renderer->getMainCamera()->getX();
                 float camY = renderer->getMainCamera()->getY();
 
-                utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion() + utils::Vector2(camX, camY)
-                                                     //-utils::Vector2(mapRenderer->getTileWidth()/4.0,mapRenderer->getTileHeight()/4.0)
-                )
-
-                    ;
+                utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion() + utils::Vector2(camX, camY));
 
                 float x, y = 0.0;
 
@@ -221,7 +217,24 @@ namespace scenes
                 y = std::floor(ty - 0.5f);
 
                 cursorPosition = utils::Vector2(x, y);
-                std::cout << "x: " << cursorPosition.getX() << " y: " << cursorPosition.getY() << std::endl;
+                //std::cout << "x: " << cursorPosition.getX() << " y: " << cursorPosition.getY() << std::endl;
+
+                auto building = createBuilding(buildWindow.getCurrentAction());
+                if (building != nullptr)
+                    building->setPosition(cursorPosition.getX(), cursorPosition.getY());
+                cursorTexture->setBlendMode(SDL_BLENDMODE_ADD);
+                if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                {
+                    cursorTexture->setColorKey(0, 255, 0);
+                }
+                else if (building != nullptr)
+                {
+                    cursorTexture->setColorKey(255, 0, 0);
+                }
+                else
+                {
+                    cursorTexture->setColorKey(255, 255, 255);
+                }
             }
         }
 

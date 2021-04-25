@@ -4,93 +4,28 @@
 #include <engine/utils/string.h>
 
 GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
-    : gameMap(gameMap), tileWidth(58), tileHeight(29)
+    : gameMap(gameMap), tileWidth(64), tileHeight(32)
 {
-    groundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "tiles", "iso_tiles.png"));
+    groundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "landscape.png"));
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 10);
 }
 
 graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_t tileY)
 {
-    graphics::Rect srcRect = {0, 0, static_cast<float>(tileWidth), static_cast<float>(tileHeight + 2)};
+    graphics::Rect srcRect = {0, 0, static_cast<float>(tileWidth), static_cast<float>(tileHeight)};
 
     int groundLimit = 10;
 
     if (tile < 8)
     {
         //render water
-        srcRect.x = 116;
-        srcRect.y = 100;
-        srcRect.height = 29;
-    }
-    else if (tile > groundLimit)
-    {
-        //render mountain
-
-        srcRect.height = 46;
-        srcRect.x = 986;
-        srcRect.y = 100;
+        srcRect.x = 64;
+        srcRect.y = 0;
     }
     else
     {
-        //ground
-        srcRect.height = 50;
-        if (gameMap->getTile(tileX - 1, tileY) > groundLimit && gameMap->getTile(tileX, tileY - 1) > groundLimit)
-        {
-            srcRect.x = 754;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX - 1, tileY) > groundLimit && gameMap->getTile(tileX, tileY + 1) > groundLimit)
-        {
-            srcRect.x = 696;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX, tileY - 1) > groundLimit)
-        {
-            srcRect.x = 290;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX, tileY + 1) > groundLimit)
-        {
-            srcRect.x = 348;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX - 1, tileY) > groundLimit)
-        {
-            srcRect.x = 232;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX + 1, tileY) > groundLimit)
-        {
-            srcRect.x = 406;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX - 1, tileY - 1) > groundLimit)
-        {
-            srcRect.x = 464;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX - 1, tileY + 1) > groundLimit)
-        {
-            srcRect.x = 580;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX + 1, tileY + 1) > groundLimit)
-        {
-            srcRect.x = 640;
-            srcRect.y = 0;
-        }
-        else if (gameMap->getTile(tileX + 1, tileY - 1) > groundLimit)
-        {
-            srcRect.x = 522;
-            srcRect.y = 0;
-        }
-        else
-        {
-            srcRect.height = tileHeight + 2;
-            srcRect.x = 0;
-            srcRect.y = 0;
-        }
+        srcRect.x = 0;
+        srcRect.y = 0;
     }
 
     return srcRect;
@@ -112,7 +47,7 @@ void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int ti
     float height = static_cast<float>(tileHeight) * renderer->getZoomFactor();
 
     graphics::Rect srcRect = getSourceRect(tile, tileX, tileY);
-    graphics::Rect destRect = {(pos.getX() * renderer->getZoomFactor()) - camera->getX(), ((pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor()) - camera->getY(), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
+    graphics::Rect destRect = {std::round((pos.getX() * renderer->getZoomFactor()) - camera->getX()), std::round(((pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor()) - camera->getY()), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
     graphics::Rect realRect = {(pos.getX() * renderer->getZoomFactor()), (pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor(), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
 
     if (!realRect.intersects(camera->getViewPortRect()))
@@ -152,13 +87,13 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
         auto pos = gameMap->twoDToIso(vec);
 
-        displayRect.x = ((pos.getX() + building->getXOffset()) * renderer->getZoomFactor()) - camera->getX();
+        displayRect.x = std::round(((pos.getX() + building->getXOffset()) * renderer->getZoomFactor()) - camera->getX());
         displayRect.width = displayRect.width * renderer->getZoomFactor();
         displayRect.height = displayRect.height * renderer->getZoomFactor();
 
         float tileYOffset = getTileYOffset(tile, building->getDisplayRect().x, building->getDisplayRect().y);
 
-        displayRect.y = ((pos.getY() + building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset);
+        displayRect.y = std::round(((pos.getY() + building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset));
         groundTexture->render(renderer, building->getSourceRect(), displayRect);
     }
 }
