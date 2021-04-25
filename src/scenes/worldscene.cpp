@@ -58,7 +58,7 @@ namespace scenes
             break;
 
         case world::BuildAction::Factory:
-            building = std::make_shared<world::Building>("Factory", "A factory", 20000, world::BuildingType::Factory, 3, 3);
+            building = std::make_shared<world::Building>("Factory", "A factory", 20000, world::BuildingType::Factory, 3, 1);
             rect.x = 0;
             rect.y = 160;
             rect.width = 128;
@@ -146,7 +146,9 @@ namespace scenes
                 if (action == world::BuildAction::Destroy)
                 {
                     //check if building exists and then destroy it
-                    auto building = gameMap->getBuilding2D(cursorPosition);
+                    const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+
+                    auto building = gameMap->getBuilding2D(sourceBuilding);
                     if (building != nullptr)
                     {
                         //remove it
@@ -180,7 +182,8 @@ namespace scenes
                 }
                 else
                 {
-                    auto building = gameMap->getBuilding2D(cursorPosition);
+                    const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+                    auto building = gameMap->getBuilding2D(sourceBuilding);
                     std::shared_ptr<world::Company> company = nullptr;
                     if (gameState->getPlayer()->hasBuilding(building))
                     {

@@ -61,7 +61,7 @@ namespace world
         void autoSell(int month, int year);
         BuildingType getType();
         Storage &getStorage();
-        std::string getSubTexture();
+        const std::string &getSubTexture();
         void setSubTexture(const std::string &tex);
 
     private:

@@ -199,7 +199,7 @@ namespace world
     {
         return storage;
     }
-    std::string Building::getSubTexture()
+    const std::string &Building::getSubTexture()
     {
         return subTexture;
     }

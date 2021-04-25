@@ -26,7 +26,7 @@ public:
     utils::Vector2 isoTo2D(utils::Vector2 pt);
     utils::Vector2 twoDToIso(utils::Vector2 pt);
 
-    std::shared_ptr<world::Building> getBuilding2D(utils::Vector2 pt);
+    std::shared_ptr<world::Building> getBuilding2D(const graphics::Rect &sourceBuilding);
     bool canBuild(graphics::Rect buildRect);
     void addBuilding(std::shared_ptr<world::Building> building);
     void removeBuilding(std::shared_ptr<world::Building> building);

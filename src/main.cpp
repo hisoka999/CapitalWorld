@@ -28,7 +28,7 @@ int main()
         core::Input input;
         auto &sceneManager = core::SceneManager::Instance();
 
-        ren.open(&win, true);
+        ren.open(&win, false);
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
