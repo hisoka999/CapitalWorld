@@ -221,7 +221,6 @@ namespace scenes
                 y = std::floor(ty - 0.5f);
 
                 cursorPosition = utils::Vector2(x, y);
-                //std::cout << "x: " << cursorPosition.getX() << " y: " << cursorPosition.getY() << std::endl;
 
                 auto building = createBuilding(buildWindow.getCurrentAction());
                 if (building != nullptr)
