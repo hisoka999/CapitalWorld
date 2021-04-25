@@ -22,7 +22,7 @@ namespace scenes
         world::MapGenerator gen;
         std::random_device r;
 
-        gameMap = gen.generateMap(1000, 1000, r());
+        gameMap = gen.generateMap(500, 500, r());
         cities = gen.getGeneratedCities();
 
         //gameMap = std::make_shared<GameMap>(100,100);

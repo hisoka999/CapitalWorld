@@ -22,6 +22,12 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
         srcRect.x = 64;
         srcRect.y = 0;
     }
+    else if (tile > 12)
+    {
+        //render trees
+        srcRect.x = 192;
+        srcRect.y = 0;
+    }
     else
     {
         srcRect.x = 0;
@@ -81,13 +87,13 @@ void GameMapRenderer::render(core::Renderer *renderer)
     auto start = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.x, viewPort.y));
     auto end = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.height, viewPort.width));
 
-    //int startX = start.getX();
-    //int startY = start.getY();
+    int startX = start.getX() - (end.getX() / 2);
+    int startY = start.getY() - (end.getX() / 2);
 
     SDL_Color color = {0, 0, 0, 255};
-    for (size_t j = 0; j < end.getY() + start.getY(); ++j)
+    for (size_t j = std::max(startY, 0); j < end.getY() + start.getY(); ++j)
     {
-        for (size_t i = 0; i < end.getX() + start.getX(); ++i)
+        for (size_t i = std::max(startX, 0); i < end.getX() + start.getX(); ++i)
         {
             float x = static_cast<float>(i) * tileWidth / 2.0f;
             float y = static_cast<float>(j) * tileHeight;
