@@ -31,11 +31,15 @@ namespace scenes
         gameState = std::make_shared<world::GameState>(playerCompany);
         renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
+        buildWindow.setVisible(true);
 
         uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
         winMgr->addWindow(&buildingWindow);
+
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow);
+        winMgr->addContainer(hud.get());
     }
     WorldScene::~WorldScene()
     {
@@ -78,30 +82,8 @@ namespace scenes
     {
         int y = 0;
         int height = hudTexture->getHeight() * 720 / renderer->getViewPort().height / 2;
-        buildWindow.setPos(0, height);
+        buildWindow.setPos(0, height + 50);
         hudTexture->renderResized(renderer, 0, y, renderer->getViewPort().width, height);
-
-        //render hud text
-        SDL_Color color = {0xef, 0xef, 0xef, 0xff};
-        y += 5;
-        hudFont->render(renderer, "Cash: ", color, 318, y);
-        auto playerCompany = gameState->getPlayer();
-        hudFont->render(renderer, utils::string_format("%'.2f €", playerCompany->getCash()), color, 360, y);
-
-        std::time_t tmpTime = std::chrono::system_clock::to_time_t(
-            gameState->getTime());
-
-        char date_time_format[] = "%d.%m.%Y";
-
-        char time_str[100];
-
-        std::strftime(time_str, 100, date_time_format,
-                      std::localtime(&tmpTime));
-
-        hudFont->render(renderer, std::string(time_str), color, 180, y);
-        hudFont->render(renderer, "Profit:", color, 540, y);
-        hudFont->render(renderer, utils::string_format("%'.2f €", playerCompany->getProfit()), color, 590, y);
-        //render icons
         buildWindow.render(renderer);
     }
 
@@ -137,7 +119,12 @@ namespace scenes
     {
         bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
-        if (!mouseIntersectsWindow && !winMgr->isWindowOpen())
+        int y = 0;
+        int height = hudTexture->getHeight() * 720 / renderer->getViewPort().height / 2;
+
+        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
+
+        if (!mouseIntersectsWindow && !winMgr->isWindowOpen() && !hudRect.intersects(pInput->getMousePostion()))
         {
             if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
             {
@@ -221,6 +208,7 @@ namespace scenes
                 y = std::floor(ty - 0.5f);
 
                 cursorPosition = utils::Vector2(x, y);
+                std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
                 auto building = createBuilding(buildWindow.getCurrentAction());
                 if (building != nullptr)
@@ -241,27 +229,93 @@ namespace scenes
             }
         }
 
-        float yOffset = 0;
-        float xOffset = 0;
-        if (pInput->isKeyDown(SDLK_w))
+        if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
         {
-            yOffset = -1.0f;
+            direction.bottom = true;
+            direction.top = false;
         }
-        else if (pInput->isKeyDown(SDLK_s))
+        else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
         {
-            yOffset = 1.0f;
+            direction.top = true;
+            direction.bottom = false;
         }
-        if (pInput->isKeyDown(SDLK_a))
+        else
         {
-            xOffset = -1.0f;
+            direction.top = false;
+            direction.bottom = false;
         }
-        else if (pInput->isKeyDown(SDLK_d))
+
+        if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
         {
-            xOffset = 1.0f;
+            direction.left = true;
+            direction.right = false;
         }
-        renderer->getMainCamera()->move(xOffset * 5.0f, yOffset * 5.0f);
+        else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
+        {
+            direction.left = false;
+            direction.right = true;
+        }
+        else
+        {
+            direction.left = false;
+            direction.right = false;
+        }
+
+        if (utils::areSame(pInput->getMousePostion().getX(), 0.f))
+        {
+            direction.left = true;
+            direction.right = false;
+        }
+        else if (renderer->getMainCamera()->getWidth() - pInput->getMousePostion().getX() <= 5)
+        {
+            direction.left = false;
+            direction.right = true;
+        }
+
+        if (utils::areSame(pInput->getMousePostion().getY(), 0.f))
+        {
+            direction.top = true;
+            direction.bottom = false;
+        }
+        else if (renderer->getMainCamera()->getHeight() - pInput->getMousePostion().getY() <= 5)
+        {
+            direction.top = false;
+            direction.bottom = true;
+        }
 
         buildWindow.handleEvents(pInput);
         winMgr->handleInput(pInput);
+    }
+
+    void WorldScene::update()
+    {
+        float speed = renderer->getTimeDelta() / 1000.f * 400.f;
+
+        float moveX = 0.f;
+        float moveY = 0.f;
+
+        if (direction.top)
+        {
+            //if (viewPort.y > 0)
+            moveY -= speed;
+        }
+        else if (direction.bottom)
+        {
+            moveY += speed;
+        }
+
+        if (direction.left)
+        {
+            //if (viewPort.x > 0)
+            moveX -= speed;
+        }
+        else if (direction.right)
+        {
+            moveX += speed;
+        }
+        if (moveX != 0.0f || moveY != 0.0f)
+            renderer->getMainCamera()->move(moveX, moveY);
+
+        hud->update();
     }
 }

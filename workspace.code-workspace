@@ -72,7 +72,11 @@
 			"cinttypes": "cpp",
 			"typeindex": "cpp",
 			"typeinfo": "cpp",
-			"variant": "cpp"
+			"variant": "cpp",
+			"executor": "cpp",
+			"io_context": "cpp",
+			"netfwd": "cpp",
+			"timer": "cpp"
 		}
 	}
 }

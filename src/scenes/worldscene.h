@@ -12,11 +12,20 @@
 #include "../world/gamestate.h"
 #include "../world/updatethread.h"
 #include "../ui/buildingwindow.h"
+#include "../ui/hudcontainer.h"
 #include "../world/city.h"
 #include <map>
 
 namespace scenes
 {
+
+    struct MovementDirection
+    {
+        bool left = false;
+        bool right = false;
+        bool top = false;
+        bool bottom = false;
+    };
 
     class WorldScene : public core::Scene
     {
@@ -26,6 +35,7 @@ namespace scenes
         ~WorldScene();
         void render();
         void handleEvents(core::Input *pInput);
+        virtual void update();
 
     private:
         void renderHUD();
@@ -43,6 +53,8 @@ namespace scenes
         std::shared_ptr<world::GameState> gameState;
         std::unique_ptr<UpdateThread> thread;
         UI::BuildingWindow buildingWindow;
+        std::shared_ptr<UI::HUDContainer> hud;
+        MovementDirection direction;
     };
 }
 #endif // WORLDSCENE_H

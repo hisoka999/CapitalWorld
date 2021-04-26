@@ -53,6 +53,7 @@ int main()
         bool run = true;
         while (run && mainScene->isRunning())
         {
+            ren.setDrawColor(0, 0, 0, 255);
             ren.clear();
             try
             {
@@ -85,7 +86,7 @@ int main()
                         delay--;
                 }
             }
-
+            sceneManager.update();
             text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
             ren.renderPresent();
 

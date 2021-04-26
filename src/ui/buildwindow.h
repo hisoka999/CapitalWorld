@@ -1,7 +1,7 @@
 #ifndef BUILDWINDOW_H
 #define BUILDWINDOW_H
 
-#include <engine/ui/Container.h>
+#include <engine/ui/Window.h>
 
 #include <engine/graphics/texture.h>
 #include <memory>
@@ -10,7 +10,7 @@
 namespace UI
 {
 
-    class BuildWindow : public UI::Container, public UI::Object
+    class BuildWindow : public UI::Window
     {
     public:
         BuildWindow(int x, int y);
