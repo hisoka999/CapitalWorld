@@ -3,7 +3,7 @@
 #include <engine/utils/os.h>
 #include <engine/ui/iconbutton.h>
 #include <iostream>
-
+#include "../translate.h"
 namespace UI
 {
     BuildWindow::BuildWindow(int x, int y)
@@ -11,7 +11,7 @@ namespace UI
     {
         currentAction = world::BuildAction::None;
         backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "BuildMenu.png"));
-        setTitle("Build");
+        setTitle(_("Build"));
         setPos(x, y);
         setFont("fonts/Audiowide-Regular.ttf", 14);
 
@@ -32,7 +32,7 @@ namespace UI
         SDL_Color hoverColor = {0xcd, 0xcd, 0xcd, 0xff};
         SDL_Color clickColor = {0x33, 0x33, 0x33, 0xff};
         auto farmButton = std::make_shared<UI::IconButton>(this);
-        farmButton->setLabel("Farm");
+        farmButton->setLabel(_("Farm"));
         farmButton->setIconText("\uf4d8");
 
         farmButton->setHoverColor(hoverColor);
@@ -47,7 +47,7 @@ namespace UI
         yPos += offset;
         auto factoryButton = std::make_shared<UI::IconButton>(this);
         factoryButton->setIconText("\uf472");
-        factoryButton->setLabel("Factory");
+        factoryButton->setLabel(_("Factory"));
         factoryButton->setPos(xPos, yPos);
         factoryButton->setStaticWidth(120);
         //factoryButton->setClickColor(clickColor);
