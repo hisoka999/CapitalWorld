@@ -83,6 +83,7 @@ namespace scenes
         int y = 0;
         int height = hudTexture->getHeight() * 720 / renderer->getViewPort().height / 2;
         buildWindow.setPos(0, height + 50);
+        hudTexture->setBlendMode(SDL_BLENDMODE_ADD);
         hudTexture->renderResized(renderer, 0, y, renderer->getViewPort().width, height);
         buildWindow.render(renderer);
     }
@@ -120,7 +121,7 @@ namespace scenes
         bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
         int y = 0;
-        int height = hudTexture->getHeight() * 720 / renderer->getViewPort().height / 2;
+        int height = 50;
 
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
 
