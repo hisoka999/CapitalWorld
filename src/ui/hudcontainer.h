@@ -26,6 +26,7 @@ namespace UI
         std::shared_ptr<UI::Button> playButton;
         std::shared_ptr<UI::Button> pauseButton;
         std::shared_ptr<UI::Button> doubleSpeed;
+        std::shared_ptr<UI::Button> fullSpeed;
         std::shared_ptr<UI::IconButton> cashButton;
         std::shared_ptr<UI::IconButton> profitButton;
         std::shared_ptr<UI::IconButton> buildButton;

@@ -2,6 +2,7 @@
 #include <ctime>
 #include <iostream>
 #include <engine/utils/os.h>
+#include "../messages.h"
 
 UpdateThread::UpdateThread(std::shared_ptr<world::GameState> gameState)
     : gameState(gameState), running(false), speed(300)
@@ -65,6 +66,10 @@ void UpdateThread::update()
                 auto company = gameState->getPlayer();
                 company->updateBalance(localTime->tm_mon, localTime->tm_year);
                 std::cout << std::asctime(localTime) << ": update game state" << std::endl;
+
+                auto &msgSystem = core::MessageSystem<MessageTypes>::get();
+                std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
+                msgSystem.sendMessage(msg);
             }
         }
     }

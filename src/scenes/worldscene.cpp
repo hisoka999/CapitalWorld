@@ -202,11 +202,11 @@ namespace scenes
 
                 float x, y = 0.0;
 
-                float tx = pt.getX() / static_cast<float>(mapRenderer->getTileHeight() * renderer->getZoomFactor());
-                float ty = pt.getY() / static_cast<float>(mapRenderer->getTileHeight() * renderer->getZoomFactor());
+                float tx = pt.getX() / float(mapRenderer->getTileHeight() * renderer->getZoomFactor());
+                float ty = pt.getY() / float(mapRenderer->getTileHeight() * renderer->getZoomFactor());
 
-                x = std::floor(tx - 0.5f);
-                y = std::floor(ty - 0.5f);
+                x = std::round(tx - 0.5f);
+                y = std::round(ty - 0.5f);
 
                 cursorPosition = utils::Vector2(x, y);
                 std::cout << "mouse position x: " << x << " y:" << y << std::endl;

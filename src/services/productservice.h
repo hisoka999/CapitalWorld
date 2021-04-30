@@ -4,20 +4,18 @@
 #include "../world/product.h"
 #include <memory>
 #include <mutex>
+#include <engine/utils/json/jsonservice.h>
 
 namespace services
 {
 
-    class ProductService
+    class ProductService : public utils::json::JSONService<Product>
     {
     public:
         static ProductService &Instance()
         {
-            std::call_once(onceFlag, [] {
-                initSingleton();
-            });
-
-            return *(instance);
+            static ProductService instance;
+            return instance;
         }
 
         std::vector<std::shared_ptr<Product>> getProductsByBuildingType(BuildingType type);
@@ -29,21 +27,17 @@ namespace services
         void loadProducts(std::string path);
         void loadResources(std::string path);
 
+    protected:
+        virtual std::shared_ptr<Product> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object);
+
     private:
         ProductService() = default;
         ~ProductService() = default;
         ProductService(const ProductService &) = delete;
         ProductService &operator=(const ProductService &) = delete;
 
-        static ProductService *instance;
-        static std::once_flag onceFlag;
-
         std::vector<std::shared_ptr<Product>> products;
         std::vector<std::shared_ptr<Resource>> resources;
-        static void initSingleton()
-        {
-            instance = new ProductService();
-        }
     };
 
 }

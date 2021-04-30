@@ -1,0 +1,77 @@
+[
+    {
+        "name": "Chicken",
+        "type": "Resource",
+        "texture": "chicken.png",
+        "bulding": "Farm",
+        "costs": 20
+    },
+    {
+        "name": "Wheet",
+        "type": "Resource",
+        "texture": "wheet.png",
+        "bulding": "Farm",
+        "costs": 10
+    },
+    {
+        "name": "Eggs",
+        "type": "Product",
+        "texture": "egg.png",
+        "bulding": "Farm",
+        "baseResources": [
+            "Chicken"
+        ],
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 90,
+            "amount": 100
+        }
+    },
+    {
+        "name": "Wheet",
+        "type": "Product",
+        "texture": "wheet.png",
+        "bulding": "Farm",
+        "baseResources": [
+            "Wheet"
+        ],
+        "productionCycle": {
+            "start": 3,
+            "end": 7,
+            "time": 30,
+            "amount": 300
+        }
+    },
+    {
+        "name": "Bread",
+        "type": "Product",
+        "texture": "bread.png",
+        "bulding": "Factory",
+        "baseResources": [
+            "Wheet",
+            "Eggs"
+        ],
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 2,
+            "amount": 100
+        }
+    },
+    {
+        "name": "Beer",
+        "type": "Product",
+        "texture": "beer.png",
+        "bulding": "Factory",
+        "baseResources": [
+            "Wheet"
+        ],
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 2,
+            "amount": 100
+        }
+    }
+]

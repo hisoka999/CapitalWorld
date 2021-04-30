@@ -28,7 +28,7 @@ namespace UI
                       std::localtime(&tmpTime));
 
         //render time
-        int xLeft = 320;
+        int xLeft = 370;
         int yLeft = 10;
         SDL_Color color = {100, 200, 0, 255};
 
@@ -44,7 +44,7 @@ namespace UI
         playButton->setFont("fonts/fa-solid-900.ttf", 20);
         playButton->setLabel("\uf04b");
         playButton->setColor(utils::color::WHITE);
-        playButton->setPos(450, 0);
+        playButton->setPos(500, 0);
         playButton->setBorderless(true);
         playButton->connect(UI::Button::buttonClickCallback(), [&] {
             updateThread->start();
@@ -54,7 +54,7 @@ namespace UI
         pauseButton = std::make_shared<UI::Button>();
         pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
         pauseButton->setLabel("\uf04c");
-        pauseButton->setPos(480, 0);
+        pauseButton->setPos(530, 0);
         pauseButton->setColor(utils::color::WHITE);
         pauseButton->setBorderless(true);
         pauseButton->connect(UI::Button::buttonClickCallback(), [&] {
@@ -65,7 +65,7 @@ namespace UI
         doubleSpeed = std::make_shared<UI::Button>();
         doubleSpeed->setFont("fonts/fa-solid-900.ttf", 20);
         doubleSpeed->setLabel("\uf04e");
-        doubleSpeed->setPos(510, 0);
+        doubleSpeed->setPos(560, 0);
         doubleSpeed->setBorderless(true);
         doubleSpeed->setColor(utils::color::WHITE);
         doubleSpeed->connect(UI::Button::buttonClickCallback(), [&] {
@@ -73,6 +73,18 @@ namespace UI
             updateThread->setSpeed(100);
         });
         addObject(doubleSpeed);
+
+        fullSpeed = std::make_shared<UI::Button>();
+        fullSpeed->setFont("fonts/fa-solid-900.ttf", 20);
+        fullSpeed->setLabel("\uf050");
+        fullSpeed->setPos(590, 0);
+        fullSpeed->setBorderless(true);
+        fullSpeed->setColor(utils::color::WHITE);
+        fullSpeed->connect(UI::Button::buttonClickCallback(), [&] {
+            updateThread->start();
+            updateThread->setSpeed(50);
+        });
+        addObject(fullSpeed);
 
         int xLeft = 50;
         int yLeft = 0;

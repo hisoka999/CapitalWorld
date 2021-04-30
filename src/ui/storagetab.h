@@ -16,14 +16,18 @@ namespace UI
     {
     public:
         StorageTab(UI::Object *parent, std::shared_ptr<world::Building> building);
+        virtual ~StorageTab();
 
         void setBuilding(std::shared_ptr<world::Building> building);
+        virtual void render(core::Renderer *render);
 
     private:
         void initUI();
         std::shared_ptr<world::Building> building;
         std::shared_ptr<graphics::Texture> cellTexture;
-        };
+        int msgRef = -1;
+        bool refreshUI = false;
+    };
 }
 
 #endif // STORAGETAB_H
