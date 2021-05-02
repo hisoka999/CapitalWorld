@@ -75,8 +75,11 @@ utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 inp
     float ty = pt.getY() / static_cast<float>(getTileHeight() * zoomFactor);
 
     x = std::floor(tx);
+    if (x > gameMap->getWidth())
+        x = gameMap->getWidth();
     y = std::floor(ty);
-
+    if (y > gameMap->getHeight())
+        y = gameMap->getHeight();
     return utils::Vector2(x, y);
 }
 
@@ -93,10 +96,11 @@ void GameMapRenderer::render(core::Renderer *renderer)
     int startY = start.getY() - (end.getX() / 2);
 
     SDL_Color color = {0, 0, 0, 255};
-    for (size_t j = std::max(startY, 0); j < end.getY() + start.getY(); ++j)
+    for (size_t j = std::max(startY, 0); j < std::max(end.getY() + start.getY(), float(gameMap->getHeight())); ++j)
     {
-        for (size_t i = std::max(startX, 0); i < end.getX() + start.getX(); ++i)
+        for (size_t i = std::max(startX, 0); i < std::max(end.getX() + start.getX(), float(gameMap->getWidth())); ++i)
         {
+
             float x = static_cast<float>(i) * tileWidth / 2.0f;
             float y = static_cast<float>(j) * tileHeight;
             utils::Vector2 vec(x, y);
@@ -125,7 +129,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
         float tileYOffset = getTileYOffset(tile, building->getDisplayRect().x, building->getDisplayRect().y);
 
-        displayRect.y = std::round(((pos.getY() + building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset));
+        displayRect.y = std::round(((pos.getY() - building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset));
 
         if (!building->getSubTexture().empty())
         {

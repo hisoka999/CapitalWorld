@@ -77,7 +77,18 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
     buildings.push_back(building);
     building->update(this);
-    std::sort(buildings.begin(), buildings.end(), compareBuilding);
+    //std::sort(buildings.begin(), buildings.end(), compareBuilding);
+    std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2) {
+        utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
+        auto v11 = twoDToIso(v1);
+
+        utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
+        auto v22 = twoDToIso(v2);
+
+        return v11.getY() < v22.getY();
+        //  o1->get2DPosition().x > o2->get2DPosition().x
+        ;
+    });
 }
 const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() const
 {

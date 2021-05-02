@@ -4,6 +4,7 @@
 #include <vector>
 #include "../world/building.h"
 #include "../world/gamemap.h"
+#include "../world/buildings/street.h"
 #include <memory>
 #include <engine/core/renderer.h>
 #include <engine/graphics/texturemap.h>
@@ -48,8 +49,6 @@ namespace world
         void fillStreetsByTree(std::shared_ptr<TreeNode> node);
         void fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft);
         bool existsNode(std::shared_ptr<TreeNode> node, utils::Vector2 &pos);
-        void updateObjectList();
-        void updateStreetTextures();
 
         utils::Vector2 position;
         std::string name;
@@ -58,8 +57,7 @@ namespace world
         std::shared_ptr<GameMap> gameMap;
         std::shared_ptr<graphics::TextureMap> groundTexture;
         std::vector<std::shared_ptr<Building>> buildings;
-        std::vector<std::shared_ptr<Building>> streets;
-        std::vector<std::shared_ptr<Building>> objects;
+        std::vector<std::shared_ptr<world::buildings::Street>> streets;
         std::shared_ptr<TreeNode> root;
     };
 }

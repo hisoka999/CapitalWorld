@@ -23,7 +23,7 @@ namespace scenes
         world::MapGenerator gen;
         std::random_device r;
 
-        gameMap = gen.generateMap(500, 500, r());
+        gameMap = gen.generateMap(100, 100, r());
         cities = gen.getGeneratedCities();
 
         //gameMap = std::make_shared<GameMap>(100,100);
@@ -195,9 +195,16 @@ namespace scenes
             if (pInput->isScrollWheel())
             {
                 auto wheelPosition = pInput->getMouseWheelPosition();
-                float factor = renderer->getZoomFactor() + (wheelPosition.getY() / 5.f);
+                float offset = (wheelPosition.getY() / 5.f);
+                float factor = renderer->getZoomFactor() + offset;
                 if (factor >= 0.2)
+                {
                     renderer->setZoomFactor(factor);
+                    float camX = renderer->getMainCamera()->getX();
+                    float camY = renderer->getMainCamera()->getY();
+                    renderer->getMainCamera()->reset();
+                    renderer->getMainCamera()->move(camX * (1.f + offset), camY * (1.f + offset));
+                }
 
                 std::cout << "factor: " << factor << std::endl;
             }

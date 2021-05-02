@@ -173,22 +173,56 @@ namespace world
                 buildings.push_back(house);
         }
 
-        updateObjectList();
+        std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2) {
+            utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
+            auto v11 = gameMap->twoDToIso(v1);
+
+            utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
+            auto v22 = gameMap->twoDToIso(v2);
+
+            return v11.getY() < v22.getY();
+            //  o1->get2DPosition().x > o2->get2DPosition().x
+            ;
+        });
+
+        std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2) {
+            utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
+            auto v11 = gameMap->twoDToIso(v1);
+
+            utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
+            auto v22 = gameMap->twoDToIso(v2);
+
+            return v11.getY() < v22.getY();
+            //  o1->get2DPosition().x > o2->get2DPosition().x
+            ;
+        });
+
+        for (auto &street : streets)
+        {
+            gameMap->addBuilding(street);
+        }
+        for (auto &street : buildings)
+        {
+            gameMap->addBuilding(street);
+        }
     }
 
     void City::fillStreetsByTree(std::shared_ptr<TreeNode> node)
     {
         int height = 28;
-        auto street = std::make_shared<Building>("Street", "", 100, BuildingType::Street);
+        auto street = std::make_shared<world::buildings::Street>();
         //todo change position, or move to new class
         street->setSourceRect(groundTexture->getSourceRect("street1"));
         street->setOffset(0, 0);
         utils::Vector2 streetPosition = node->position;
+
         street->setPosition(streetPosition.getX(), streetPosition.getY());
         street->setSubTexture("street1");
-        streets.push_back(street);
 
-        auto street2 = std::make_shared<Building>("Street", "", 100, BuildingType::Street);
+        if (!isBlocked(street->get2DPosition(), gameMap))
+            streets.push_back(street);
+
+        auto street2 = std::make_shared<world::buildings::Street>();
         //todo change position, or move to new class
 
         street2->setSourceRect(groundTexture->getSourceRect("street1"));
@@ -212,88 +246,15 @@ namespace world
 
         street2->setPosition(streetPosition.getX(), streetPosition.getY());
         street2->setSubTexture("street1");
-        streets.push_back(street2);
+        if (!isBlocked(street2->get2DPosition(), gameMap))
+            streets.push_back(street2);
 
         for (auto child : node->children)
         {
             fillStreetsByTree(child);
         }
     }
-    void City::updateStreetTextures()
-    {
-        for (auto &sourceStreet : streets)
-        {
-            bool isBorderingNorth = false;
-            bool isBorderingSouth = false;
-            bool isBorderingEast = false;
-            bool isBorderingWest = false;
-            auto pos = sourceStreet->get2DPosition();
-            auto posNorth = pos;
-            posNorth.y -= 1;
-            auto posEast = pos;
-            posEast.x += 1;
-            auto posWest = pos;
-            posWest.x -= 1;
-            auto posSouth = pos;
-            posSouth.y += 1;
 
-            for (auto &street : streets)
-            {
-                if (street->get2DPosition().intersectsNoLine(posNorth))
-                    isBorderingNorth = true;
-                if (street->get2DPosition().intersectsNoLine(posSouth))
-                    isBorderingSouth = true;
-                if (street->get2DPosition().intersectsNoLine(posEast))
-                    isBorderingEast = true;
-                if (street->get2DPosition().intersectsNoLine(posWest))
-                    isBorderingWest = true;
-            }
-            if (isBorderingEast && isBorderingSouth && isBorderingNorth && isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street_cross_center");
-            }
-            else if (isBorderingEast && isBorderingSouth && !isBorderingNorth && isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street_cross_up_right");
-            }
-            else if (isBorderingEast && isBorderingSouth && isBorderingNorth && !isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street_cross_up_left");
-            }
-            else if (isBorderingEast && !isBorderingSouth && isBorderingNorth && isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street_cross_down_left");
-            }
-            else if (!isBorderingEast && isBorderingSouth && isBorderingNorth && isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street_cross_down_right");
-            }
-            else if (isBorderingSouth && isBorderingEast && !isBorderingNorth && !isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street_corner_up");
-            }
-            else if (isBorderingNorth && !isBorderingEast && isBorderingWest && !isBorderingSouth)
-            {
-                sourceStreet->setSubTexture("street_corner_left");
-            }
-            else if (!isBorderingNorth && !isBorderingEast && isBorderingWest && isBorderingSouth)
-            {
-                sourceStreet->setSubTexture("street_corner_right");
-            }
-            else if (isBorderingNorth && isBorderingEast && !isBorderingWest && !isBorderingSouth)
-            {
-                sourceStreet->setSubTexture("street_corner_down");
-            }
-            else if (isBorderingEast || isBorderingWest)
-            {
-                sourceStreet->setSubTexture("street2");
-            }
-            else
-            {
-                sourceStreet->setSubTexture("street1");
-            }
-        }
-    }
     void City::generateStreetTree(unsigned int seed)
     {
         root = std::make_shared<TreeNode>(position, 0);
@@ -404,55 +365,10 @@ namespace world
         }
     }
 
-    void City::updateObjectList()
-    {
-        objects.clear();
-        objects.insert(objects.end(), streets.begin(), streets.end());
-
-        objects.insert(objects.end(), buildings.begin(), buildings.end());
-
-        std::sort(objects.begin(), objects.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2) {
-            utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-            auto v11 = gameMap->twoDToIso(v1);
-
-            utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-            auto v22 = gameMap->twoDToIso(v2);
-
-            return v11.getY() < v22.getY();
-            //  o1->get2DPosition().x > o2->get2DPosition().x
-            ;
-        });
-        updateStreetTextures();
-    }
-
     void City::renderCity(core::Renderer *renderer)
     {
-        int tileWidth = 64;
-        int tileHeight = 32;
-        auto camera = renderer->getMainCamera();
 
-        for (auto &building : objects)
-        {
-            auto displayRect = building->getDisplayRect();
-
-            displayRect.x = (displayRect.x * tileWidth / 2.0f);
-            displayRect.y = (displayRect.y * tileHeight);
-
-            utils::Vector2 vec(displayRect.x, displayRect.y);
-            auto pos = gameMap->twoDToIso(vec);
-            displayRect.x = pos.getX() * renderer->getZoomFactor();
-            displayRect.y = pos.getY() * renderer->getZoomFactor();
-            displayRect.width *= renderer->getZoomFactor();
-            displayRect.height *= renderer->getZoomFactor();
-            if (!displayRect.intersects(camera->getViewPortRect()))
-                continue;
-
-            displayRect.x = ((pos.getX() - building->getXOffset()) * renderer->getZoomFactor()) - camera->getX();
-            displayRect.y = ((pos.getY() - building->getYOffset()) * renderer->getZoomFactor()) - camera->getY();
-            //groundTexture->render(renderer,building->getSourceRect(),displayRect);
-
-            groundTexture->render(building->getSubTexture(), displayRect, renderer);
-        }
+        //render the city name
     }
 
 }
