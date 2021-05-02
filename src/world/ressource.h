@@ -7,18 +7,18 @@
 class Resource
 {
 public:
-    Resource(std::string name, std::string image, float costPerMonth, BuildingType buildingType);
+    Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType);
 
     std::string getName();
     std::string getImage();
     float getCostPerMonth();
-    BuildingType getBuildingType();
+    world::BuildingType getBuildingType();
 
 private:
     std::string name;
     std::string image;
     float costPerMonth;
-    BuildingType buildingType;
+    world::BuildingType buildingType;
 };
 
 #endif // RESSOURCE_H

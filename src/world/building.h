@@ -5,6 +5,9 @@
 #include <engine/graphics/rect.h>
 #include "../world/product.h"
 #include "../world/storage.h"
+#include "buildingtypes.h"
+
+class GameMap;
 
 namespace world
 {
@@ -16,16 +19,6 @@ namespace world
         std::string name;
         double costs;
         double income;
-    };
-
-    enum class BuildingType
-    {
-        Farm,
-        Factory,
-        Shop,
-        Street,
-        House,
-
     };
 
     class Building
@@ -41,8 +34,8 @@ namespace world
 
         bool canBuild(float money);
 
-        graphics::Rect getDisplayRect();
-        graphics::Rect getSourceRect();
+        graphics::Rect &getDisplayRect();
+        graphics::Rect &getSourceRect();
         void setSourceRect(graphics::Rect rect);
         void setPosition(float x, float y);
         graphics::Rect get2DPosition();
@@ -63,6 +56,8 @@ namespace world
         Storage &getStorage();
         const std::string &getSubTexture();
         void setSubTexture(const std::string &tex);
+
+        virtual void update(GameMap *gameMap){};
 
     private:
         std::string name;

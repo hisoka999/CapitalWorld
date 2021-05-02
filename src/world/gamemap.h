@@ -30,7 +30,7 @@ public:
     bool canBuild(graphics::Rect buildRect);
     void addBuilding(std::shared_ptr<world::Building> building);
     void removeBuilding(std::shared_ptr<world::Building> building);
-    std::vector<std::shared_ptr<world::Building>> getBuildings();
+    const std::vector<std::shared_ptr<world::Building>> &getBuildings() const;
 
 private:
     size_t width, height;

@@ -1,9 +1,8 @@
 #include "product.h"
 
-Product::Product(std::string name,std::string image,BuildingType buildingType,ProductionCycle cycle)
-    :name(name),image(image),buildingType(buildingType),cycle(cycle)
+Product::Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle)
+    : name(name), image(image), buildingType(buildingType), cycle(cycle)
 {
-
 }
 std::string Product::getName()
 {
@@ -27,25 +26,25 @@ void Product::addRessource(std::shared_ptr<Resource> resource)
     resources.push_back(resource);
 }
 
-BuildingType Product::getBuildingType()
+world::BuildingType Product::getBuildingType()
 {
     return buildingType;
 }
 
 float Product::calculateCostsPerMonth()
 {
-    return calculateCostsPerPiece()*cycle.amount;
+    return calculateCostsPerPiece() * cycle.amount;
 }
 float Product::calculateCostsPerPiece()
 {
     float result = 0.0f;
-    for(auto& res : resources)
+    for (auto &res : resources)
     {
-        result+= res->getCostPerMonth();
+        result += res->getCostPerMonth();
     }
-    for(auto &pro : products)
+    for (auto &pro : products)
     {
-        result+= pro->calculateCostsPerPiece();
+        result += pro->calculateCostsPerPiece();
     }
 
     return result;
@@ -53,9 +52,9 @@ float Product::calculateCostsPerPiece()
 bool Product::needsResource(std::shared_ptr<Resource> resource)
 {
     bool result = false;
-    for(auto& res : resources)
+    for (auto &res : resources)
     {
-        if(res->getName() == resource->getName())
+        if (res->getName() == resource->getName())
         {
             result = true;
             break;
@@ -71,9 +70,9 @@ void Product::addProduct(std::shared_ptr<Product> product)
 bool Product::needsProduct(std::shared_ptr<Product> product)
 {
     bool result = false;
-    for(auto& res : products)
+    for (auto &res : products)
     {
-        if(res->getName() == product->getName())
+        if (res->getName() == product->getName())
         {
             result = true;
             break;
@@ -81,7 +80,6 @@ bool Product::needsProduct(std::shared_ptr<Product> product)
     }
     return result;
 }
-
 
 ProductionCycle Product::getProductionCycle()
 {

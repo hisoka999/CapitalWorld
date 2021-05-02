@@ -18,10 +18,10 @@ namespace services
             return instance;
         }
 
-        std::vector<std::shared_ptr<Product>> getProductsByBuildingType(BuildingType type);
-        std::vector<std::shared_ptr<Product>> getBaseProductsByBuildingType(BuildingType type);
-        std::vector<std::shared_ptr<Resource>> getResourcesByBuildingType(BuildingType type);
-        std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(BuildingType type, std::shared_ptr<Resource> resource);
+        std::vector<std::shared_ptr<Product>> getProductsByBuildingType(world::BuildingType type);
+        std::vector<std::shared_ptr<Product>> getBaseProductsByBuildingType(world::BuildingType type);
+        std::vector<std::shared_ptr<Resource>> getResourcesByBuildingType(world::BuildingType type);
+        std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(world::BuildingType type, std::shared_ptr<Resource> resource);
         std::shared_ptr<Resource> getResourceByName(std::string name);
         std::shared_ptr<Product> getProductByName(std::string name);
         void loadProducts(std::string path);

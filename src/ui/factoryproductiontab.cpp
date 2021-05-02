@@ -16,7 +16,7 @@ namespace UI
         productSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
         productSelectionBox->setPos(490, 28);
         productSelectionBox->setWidth(100);
-        productList = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Factory);
+        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory);
         productSelectionBox->connect("selectionChanged", [&](unsigned int selection) {
             productSelectionChanged(selection);
         });
@@ -42,7 +42,7 @@ namespace UI
             return var;
         });
 
-        baseProductList = services::ProductService::Instance().getBaseProductsByBuildingType(BuildingType::Factory);
+        baseProductList = services::ProductService::Instance().getBaseProductsByBuildingType(world::BuildingType::Factory);
         for (auto &res : baseProductList)
         {
             resourceSelectionBox->addElement(res->getName());
@@ -155,7 +155,7 @@ namespace UI
         auto resource = baseProductList[selection];
 
         // reload products
-        productList = services::ProductService::Instance().getProductsByBuildingType(BuildingType::Factory);
+        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory);
         productSelectionBox->clearElements();
         for (auto &product : productList)
         {

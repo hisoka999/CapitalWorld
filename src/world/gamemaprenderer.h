@@ -6,6 +6,7 @@
 #include <engine/core/renderer.h>
 #include <engine/graphics/texture.h>
 #include <engine/graphics/TextureManager.h>
+#include <engine/graphics/texturemap.h>
 
 class GameMapRenderer
 {
@@ -24,6 +25,7 @@ private:
     std::shared_ptr<GameMap> gameMap;
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;
+    std::shared_ptr<graphics::TextureMap> textureMap;
     size_t tileWidth;
     size_t tileHeight;
 };

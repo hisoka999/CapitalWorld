@@ -41,7 +41,7 @@ namespace world
         void renderCity(core::Renderer *renderer);
 
     private:
-        bool isBlocked(graphics::Rect rect, std::shared_ptr<GameMap> gameMap);
+        bool isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap);
         bool isOverlapStreet(std::shared_ptr<Building> &building);
         bool isBorderingStreet(std::shared_ptr<Building> &building);
         void generateStreetTree(unsigned int seed);

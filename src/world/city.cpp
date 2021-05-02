@@ -16,7 +16,7 @@ namespace world
         groundTexture = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.tm"));
     }
 
-    bool City::isBlocked(graphics::Rect rect, std::shared_ptr<GameMap> gameMap)
+    bool City::isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap)
     {
         bool blocked = false;
 

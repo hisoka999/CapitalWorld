@@ -23,7 +23,7 @@ struct ProductionCycle
 class Product
 {
 public:
-    Product(std::string name, std::string image, BuildingType buildingType, ProductionCycle cycle);
+    Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle);
     std::string getName();
     std::string getImage();
     std::vector<std::shared_ptr<Resource>> getResources();
@@ -37,12 +37,12 @@ public:
 
     float calculateCostsPerMonth();
     float calculateCostsPerPiece();
-    BuildingType getBuildingType();
+    world::BuildingType getBuildingType();
 
 private:
     std::string name;
     std::string image;
-    BuildingType buildingType;
+    world::BuildingType buildingType;
     std::vector<std::shared_ptr<Resource>> resources;
     std::vector<std::shared_ptr<Product>> products;
     ProductionCycle cycle;

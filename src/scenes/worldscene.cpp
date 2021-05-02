@@ -1,5 +1,6 @@
 #include "worldscene.h"
 #include "../world/mapgenerator.h"
+#include "../world/buildings/street.h"
 #include <chrono>
 #include <cmath>
 #include <engine/utils/os.h>
@@ -72,6 +73,13 @@ namespace scenes
 
             break;
 
+        case world::BuildAction::Street:
+            building = std::make_shared<world::buildings::Street>();
+            rect.x = 0;
+            rect.y = 128;
+            building->setOffset(0, 0);
+            building->setSourceRect(rect);
+            break;
         default:
             break;
         }
@@ -121,7 +129,7 @@ namespace scenes
         bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
         int y = 0;
-        int height = 50;
+        float height = 50;
 
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
 

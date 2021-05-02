@@ -92,7 +92,7 @@ namespace UI
         streetButton->setHoverColor(hoverColor);
         streetButton->setColor(defaultColor);
         streetButton->setStaticWidth(120);
-        streetButton->disable();
+
         addObject(streetButton);
         streetButton->connect("buttonClick", [&]() {
             currentAction = world::BuildAction::Street;

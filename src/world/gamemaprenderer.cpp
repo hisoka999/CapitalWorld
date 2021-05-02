@@ -8,6 +8,8 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
 {
     groundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "landscape.png"));
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 10);
+
+    textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.tm"));
 }
 
 graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_t tileY)
@@ -124,7 +126,15 @@ void GameMapRenderer::render(core::Renderer *renderer)
         float tileYOffset = getTileYOffset(tile, building->getDisplayRect().x, building->getDisplayRect().y);
 
         displayRect.y = std::round(((pos.getY() + building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset));
-        groundTexture->render(renderer, building->getSourceRect(), displayRect);
+
+        if (!building->getSubTexture().empty())
+        {
+            textureMap->render(building->getSubTexture(), displayRect, renderer);
+        }
+        else
+        {
+            groundTexture->render(renderer, building->getSourceRect(), displayRect);
+        }
     }
 }
 

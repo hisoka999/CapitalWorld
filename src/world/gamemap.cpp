@@ -76,9 +76,10 @@ bool compareBuilding(std::shared_ptr<world::Building> b1, std::shared_ptr<world:
 void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
     buildings.push_back(building);
+    building->update(this);
     std::sort(buildings.begin(), buildings.end(), compareBuilding);
 }
-std::vector<std::shared_ptr<world::Building>> GameMap::getBuildings()
+const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() const
 {
     return buildings;
 }
@@ -113,5 +114,39 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
     if (it != buildings.end())
     {
         buildings.erase(it);
+    }
+
+    auto pos = building->get2DPosition();
+    auto posNorth = pos;
+    posNorth.y -= 1;
+    auto posEast = pos;
+    posEast.x += 1;
+    auto posWest = pos;
+    posWest.x -= 1;
+    auto posSouth = pos;
+    posSouth.y += 1;
+
+    //find parent buildings
+    for (auto &street : getBuildings())
+    {
+        if (street->getType() != world::BuildingType::Street)
+            continue;
+
+        if (street->get2DPosition().intersectsNoLine(posNorth))
+        {
+            street->update(this);
+        }
+        if (street->get2DPosition().intersectsNoLine(posSouth))
+        {
+            street->update(this);
+        }
+        if (street->get2DPosition().intersectsNoLine(posEast))
+        {
+            street->update(this);
+        }
+        if (street->get2DPosition().intersectsNoLine(posWest))
+        {
+            street->update(this);
+        }
     }
 }

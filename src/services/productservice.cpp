@@ -3,7 +3,7 @@
 namespace services
 {
 
-    std::vector<std::shared_ptr<Product>> ProductService::getProductsByBuildingType(BuildingType type)
+    std::vector<std::shared_ptr<Product>> ProductService::getProductsByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Product>> result;
         for (auto &product : products)
@@ -15,7 +15,7 @@ namespace services
         }
         return result;
     }
-    std::vector<std::shared_ptr<Product>> ProductService::getBaseProductsByBuildingType(BuildingType type)
+    std::vector<std::shared_ptr<Product>> ProductService::getBaseProductsByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Product>> result;
         for (auto &product : products)
@@ -45,7 +45,7 @@ namespace services
         return result;
     }
 
-    std::vector<std::shared_ptr<Product>> ProductService::getProductsByTypeAndResource(BuildingType type, std::shared_ptr<Resource> resource)
+    std::vector<std::shared_ptr<Product>> ProductService::getProductsByTypeAndResource(world::BuildingType type, std::shared_ptr<Resource> resource)
     {
         std::vector<std::shared_ptr<Product>> result;
         for (auto &product : products)
@@ -58,7 +58,7 @@ namespace services
         return result;
     }
 
-    std::vector<std::shared_ptr<Resource>> ProductService::getResourcesByBuildingType(BuildingType type)
+    std::vector<std::shared_ptr<Resource>> ProductService::getResourcesByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Resource>> result;
         for (auto &res : resources)
@@ -75,35 +75,35 @@ namespace services
     {
         ProductionCycle eggCycle(1, 12, 3 * 30, 100);
 
-        auto eggs = std::make_shared<Product>("Eggs", "egg.png", BuildingType::Farm, eggCycle);
+        auto eggs = std::make_shared<Product>("Eggs", "egg.png", world::BuildingType::Farm, eggCycle);
         eggs->addRessource(getResourceByName("Chicken"));
         products.push_back(eggs);
 
-        auto wheet = std::make_shared<Product>("Wheet", "wheat.png", BuildingType::Farm, ProductionCycle(3, 7, 30, 300));
+        auto wheet = std::make_shared<Product>("Wheet", "wheat.png", world::BuildingType::Farm, ProductionCycle(3, 7, 30, 300));
         wheet->addRessource(getResourceByName("Wheat"));
         products.push_back(wheet);
 
-        auto bread = std::make_shared<Product>("Bread", "bread.png", BuildingType::Factory, ProductionCycle(1, 12, 2, 100));
+        auto bread = std::make_shared<Product>("Bread", "bread.png", world::BuildingType::Factory, ProductionCycle(1, 12, 2, 100));
         bread->addProduct(wheet);
         bread->addProduct(eggs);
         products.push_back(bread);
 
-        auto beer = std::make_shared<Product>("Beer", "beer.png", BuildingType::Factory, ProductionCycle(1, 12, 2, 100));
+        auto beer = std::make_shared<Product>("Beer", "beer.png", world::BuildingType::Factory, ProductionCycle(1, 12, 2, 100));
         beer->addProduct(wheet);
         products.push_back(beer);
     }
     void ProductService::loadResources(std::string path)
     {
-        auto chicken = std::make_shared<Resource>("Chicken", "chicken.png", 20, BuildingType::Farm);
+        auto chicken = std::make_shared<Resource>("Chicken", "chicken.png", 20, world::BuildingType::Farm);
         resources.push_back(chicken);
 
-        auto wheet = std::make_shared<Resource>("Wheat", "wheat.png", 10, BuildingType::Farm);
+        auto wheet = std::make_shared<Resource>("Wheat", "wheat.png", 10, world::BuildingType::Farm);
         resources.push_back(wheet);
     }
 
     std::shared_ptr<Product> ProductService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
     {
-        }
+    }
 
     std::shared_ptr<Resource> ProductService::getResourceByName(std::string name)
     {

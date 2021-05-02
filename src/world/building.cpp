@@ -51,11 +51,11 @@ namespace world
         return buildPrice <= money;
     }
 
-    graphics::Rect Building::getDisplayRect()
+    graphics::Rect &Building::getDisplayRect()
     {
         return displayRect;
     }
-    graphics::Rect Building::getSourceRect()
+    graphics::Rect &Building::getSourceRect()
     {
         return sourceRect;
     }
