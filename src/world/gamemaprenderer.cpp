@@ -123,7 +123,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
         auto pos = gameMap->twoDToIso(vec);
 
-        displayRect.x = std::round(((pos.getX() + building->getXOffset()) * renderer->getZoomFactor()) - camera->getX());
+        displayRect.x = std::round(((pos.getX() - building->getXOffset()) * renderer->getZoomFactor()) - camera->getX());
         displayRect.width = displayRect.width * renderer->getZoomFactor();
         displayRect.height = displayRect.height * renderer->getZoomFactor();
 

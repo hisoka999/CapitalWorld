@@ -10,6 +10,7 @@ namespace world
         Shop,
         Street,
         House,
+        Transport
 
     };
 };

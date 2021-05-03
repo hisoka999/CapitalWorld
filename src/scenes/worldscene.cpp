@@ -63,12 +63,13 @@ namespace scenes
             break;
 
         case world::BuildAction::Factory:
-            building = std::make_shared<world::Building>("Factory", "A factory", 20000, world::BuildingType::Factory, 3, 1);
+            building = std::make_shared<world::Building>("Factory", "A factory", 20000, world::BuildingType::Factory, 2, 1);
             rect.x = 0;
             rect.y = 160;
             rect.width = 128;
             rect.height = 128;
-            building->setOffset(0, 0);
+            building->setOffset(64 / 2, 32 / 2);
+            //building->setOffset(0, 0);
             building->setSourceRect(rect);
 
             break;
@@ -78,6 +79,15 @@ namespace scenes
             rect.x = 0;
             rect.y = 128;
             building->setOffset(0, 0);
+            building->setSourceRect(rect);
+            break;
+        case world::BuildAction::Transport:
+            building = std::make_shared<world::Building>("Transport Office", "A factory", 50000, world::BuildingType::Transport, 2, 2);
+            rect.x = 128;
+            rect.y = 160;
+            rect.width = 128;
+            rect.height = 128;
+            building->setOffset(64 / 2, 32 / 2);
             building->setSourceRect(rect);
             break;
         default:

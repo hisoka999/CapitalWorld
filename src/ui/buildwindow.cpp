@@ -74,19 +74,22 @@ namespace UI
         auto transportButton = std::make_shared<UI::IconButton>(this);
         transportButton->setIconText("\uf0d1");
         transportButton->setPos(xPos, yPos);
-        transportButton->setLabel("Transport");
+        transportButton->setLabel(_("Transport"));
         //transportButton->setClickColor(clickColor);
         transportButton->setHoverColor(hoverColor);
         transportButton->setColor(defaultColor);
         transportButton->setStaticWidth(120);
-        transportButton->disable();
+        transportButton->connect("buttonClick", [&]() {
+            currentAction = world::BuildAction::Transport;
+        });
+
         addObject(transportButton);
 
         yPos += offset;
 
         auto streetButton = std::make_shared<UI::IconButton>(this);
         streetButton->setIconText("\uf018");
-        streetButton->setLabel("Street");
+        streetButton->setLabel(_("Street"));
         streetButton->setPos(xPos, yPos);
         //destroyButton->setClickColor(clickColor);
         streetButton->setHoverColor(hoverColor);

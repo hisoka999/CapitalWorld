@@ -99,7 +99,7 @@ bool GameMap::canBuild(graphics::Rect buildRect)
     if (buildRect.x < 0 || buildRect.y < 0)
         return false;
 
-    for (auto building : buildings)
+    for (auto &building : buildings)
     {
         if (building->get2DPosition().intersectsNoLine(buildRect))
             return false;
