@@ -6,7 +6,7 @@
 #include <engine/utils/os.h>
 #include <iostream>
 #include <random>
-
+#include "../translate.h"
 namespace world
 {
 
@@ -133,7 +133,7 @@ namespace world
 
         for (auto street : streets)
         {
-            auto house = std::make_shared<Building>("House", "", 100, BuildingType::House);
+            auto house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);
             //change it in the real version
             int houseId = houseGen(gen);

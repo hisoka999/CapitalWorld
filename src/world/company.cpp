@@ -66,4 +66,22 @@ namespace world
         incCash(profit);
     }
 
+    std::vector<std::shared_ptr<Building>> Company::findProductionBuildings()
+    {
+        std::vector<std::shared_ptr<Building>> productionBuildings;
+        for (auto &building : buildings)
+        {
+            if (building->getProducts().size() > 0)
+            {
+                productionBuildings.push_back(building);
+            }
+        }
+        return productionBuildings;
+    }
+
+    int Company::getMaxBuildingIndex()
+    {
+        return buildings.size();
+    }
+
 }

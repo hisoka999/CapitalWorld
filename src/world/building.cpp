@@ -4,14 +4,15 @@
 namespace world
 {
 
-    Building::Building(std::string name, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight)
-        : name(name), type(type), description(description), buildPrice(buildPirce), blockWidth(blockWidth), blockHeight(blockHeight), xOffset(0), yOffset(0)
+    Building::Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight)
+        : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPirce), blockWidth(blockWidth), blockHeight(blockHeight), xOffset(0), yOffset(0)
     {
     }
 
     Building::Building(const Building &copy)
     {
         this->name = copy.name;
+        this->displayName = copy.displayName;
         this->description = copy.description;
         this->buildPrice = copy.buildPrice;
         this->type = copy.type;
@@ -23,8 +24,8 @@ namespace world
         this->sourceRect = copy.sourceRect;
     }
 
-    Building::Building(std::string name, std::string description, int buildPirce, BuildingType type)
-        : name(name), type(type), description(description), buildPrice(buildPirce), blockWidth(1), blockHeight(1), xOffset(0), yOffset(0)
+    Building::Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type)
+        : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPirce), blockWidth(1), blockHeight(1), xOffset(0), yOffset(0)
     {
     }
 
@@ -40,6 +41,11 @@ namespace world
     std::string Building::getDescription()
     {
         return description;
+    }
+
+    const std::string &Building::getDisplayName() const
+    {
+        return displayName;
     }
     int Building::getBuildPrice()
     {

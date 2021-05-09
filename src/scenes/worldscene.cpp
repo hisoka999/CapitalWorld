@@ -7,7 +7,7 @@
 #include <engine/utils/string.h>
 #include <iostream>
 #include <random>
-
+#include "../translate.h"
 namespace scenes
 {
 
@@ -52,10 +52,12 @@ namespace scenes
         graphics::Rect rect;
         rect.width = static_cast<float>(mapRenderer->getTileWidth());
         rect.height = static_cast<float>(mapRenderer->getTileHeight());
+        int nextIndex = gameState->getPlayer()->getMaxBuildingIndex() + 1;
+        std::string index = std::to_string(nextIndex);
         switch (action)
         {
         case world::BuildAction::Farm:
-            building = std::make_shared<world::Building>("Farm", "A farm", 10000, world::BuildingType::Farm);
+            building = std::make_shared<world::Building>("Farm", _("Farm") + " " + index, "A farm", 10000, world::BuildingType::Farm);
             rect.x = 0;
             rect.y = 128;
             building->setOffset(0, 0);
@@ -63,7 +65,7 @@ namespace scenes
             break;
 
         case world::BuildAction::Factory:
-            building = std::make_shared<world::Building>("Factory", "A factory", 20000, world::BuildingType::Factory, 2, 1);
+            building = std::make_shared<world::Building>("Factory", _("Factory") + " " + index, "A factory", 20000, world::BuildingType::Factory, 2, 1);
             rect.x = 0;
             rect.y = 160;
             rect.width = 128;
@@ -82,7 +84,7 @@ namespace scenes
             building->setSourceRect(rect);
             break;
         case world::BuildAction::Transport:
-            building = std::make_shared<world::Building>("Transport Office", "A factory", 50000, world::BuildingType::Transport, 2, 2);
+            building = std::make_shared<world::Building>("Transport Office", _("Transport Office") + " " + index, "A factory", 50000, world::BuildingType::Transport, 2, 2);
             rect.x = 128;
             rect.y = 160;
             rect.width = 128;

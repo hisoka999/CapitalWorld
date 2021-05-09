@@ -1,12 +1,12 @@
 #include "street.h"
 #include "../gamemap.h"
-
+#include "../../translate.h"
 namespace world
 {
     namespace buildings
     {
         Street::Street()
-            : Building("Street", "Street", 1000, BuildingType::Street, 1, 1)
+            : Building("Street", _("Street"), "Street", 1000, BuildingType::Street, 1, 1)
 
         {
         }

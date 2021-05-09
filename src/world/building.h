@@ -24,12 +24,13 @@ namespace world
     class Building
     {
     public:
-        Building(std::string name, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight);
-        Building(std::string name, std::string description, int buildPirce, BuildingType type);
+        Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight);
+        Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type);
         Building(const Building &copy);
 
         std::string getName();
         std::string getDescription();
+        const std::string &getDisplayName() const;
         int getBuildPrice();
 
         bool canBuild(float money);
@@ -61,6 +62,7 @@ namespace world
 
     private:
         std::string name;
+        std::string displayName;
         BuildingType type;
         std::string description;
         int buildPrice;

@@ -51,7 +51,7 @@ namespace UI
         this->building = building;
         if (building != nullptr)
         {
-            labelTypeValue->setText(building->getName());
+            labelTypeValue->setText(building->getDisplayName());
             if (company != nullptr)
             {
                 labelOwnerValue->setText(company->getName());
