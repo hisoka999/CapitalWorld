@@ -3,7 +3,7 @@
 
 #include <engine/core/Scene.h>
 #include <engine/core/SceneManager.h>
-#include "../world/gamemap.h"
+#include <world/gamemap.h>
 #include "../world/gamemaprenderer.h"
 #include "../ui/buildwindow.h"
 #include "../world/company.h"

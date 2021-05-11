@@ -107,13 +107,14 @@ void GameMapRenderer::render(core::Renderer *renderer)
             const auto &iso = gameMap->twoDToIso(vec);
 
             renderTile(renderer, gameMap->getTile(i, j), i, j, iso);
-
-            //debugText->render(renderer,utils::string_format("%d/%d",i,j),color,iso.getX()+5,iso.getY()+5);
         }
     }
 
-    for (auto &building : gameMap->getBuildings())
+    for (auto &tmp : gameMap->getBuildings())
     {
+        auto &building = tmp.second;
+        if (tmp.second == nullptr)
+            continue;
         auto displayRect = building->getDisplayRect();
 
         displayRect.x = (displayRect.x * tileWidth / 2.0f);

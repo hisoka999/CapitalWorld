@@ -342,7 +342,21 @@ namespace scenes
             moveX += speed;
         }
         if (moveX != 0.0f || moveY != 0.0f)
+        {
             renderer->getMainCamera()->move(moveX, moveY);
+            moveX = 0;
+            moveY = 0;
+            // if (renderer->getMainCamera()->getX() < 0)
+            // {
+            //     moveX = renderer->getMainCamera()->getX() * -1;
+            // }
+
+            if (renderer->getMainCamera()->getY() < 0)
+            {
+                moveY = renderer->getMainCamera()->getY() * -1;
+            }
+            renderer->getMainCamera()->move(moveX, moveY);
+        }
 
         hud->update();
     }

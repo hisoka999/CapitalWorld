@@ -1,12 +1,12 @@
 #ifndef GAMEMAPRENDERER_H
 #define GAMEMAPRENDERER_H
 
-#include "../world/gamemap.h"
 #include <memory>
 #include <engine/core/renderer.h>
 #include <engine/graphics/texture.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/graphics/texturemap.h>
+#include "world/gamemap.h"
 
 class GameMapRenderer
 {

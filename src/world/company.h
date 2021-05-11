@@ -2,7 +2,7 @@
 #define COMPANY_H
 
 #include <string>
-#include "../world/building.h"
+#include <world/building.h>
 #include <vector>
 #include <memory>
 

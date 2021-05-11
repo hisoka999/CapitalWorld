@@ -4,11 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/src/",
-                "${workspaceFolder}/build/engine/engine-src/**",
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/build/deps/magic_enum/include",
-                "/usr/include/**",
-                "/usr/include/SDL2"
+                "${workspaceFolder}/",
+                "${workspaceFolder}/build/engine/engine-src/",
+                "/usr/include/SDL2/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",
@@ -16,7 +14,14 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64",
             "configurationProvider": "ms-vscode.cmake-tools",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/src/"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
         }
     ],
     "version": 4

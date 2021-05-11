@@ -56,8 +56,12 @@ namespace UI
             {
                 labelOwnerValue->setText(company->getName());
             }
+            else
+            {
+                labelOwnerValue->setText("");
+            }
 
-            labelGroundValue->setText("TODO");
+            labelGroundValue->setText("Grass");
             tabBar->removeTab(productionTab);
             tabBar->removeTab(storageTab);
             //recreate tab based on Building type

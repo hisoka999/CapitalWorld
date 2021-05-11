@@ -74,14 +74,28 @@ configure_file (
   "${PROJECT_BINARY_DIR}/config.h"
   )
 
-#   set (MAGIC_ENUM_ROOT "deps")
-#   set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/${MAGIC_ENUM_ROOT}/magic_enum/include" )
-  
-#   include(magic_enum)
-#   message(${MAGIC_ENUM_SRC})
+set (ENGINE_ROOT "deps")
+set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 
-  set (ENGINE_ROOT "deps")
-  set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
+if( UNIX)
+    option(GAME_TESTS "Build the tests" ON)
+    if(GAME_TESTS)
+
+        include(googletest)
+        include(GoogleTest)
+        fetch_googletest(
+            ${PROJECT_SOURCE_DIR}/cmake
+            ${PROJECT_BINARY_DIR}/googletest
+            )
+        enable_testing() 
+        add_subdirectory(test)
+        #add_executable(SimpleTest )
+
+
+    endif()
+endif()
+
+
 
   message(${ENGINE_SRC})
 option(ENGINE_TESTS off)
@@ -92,7 +106,7 @@ ${PROJECT_BINARY_DIR}/engine
 )
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${MAGIC_ENUM_SRC} ${ENGINE_SRC})
+include_directories("${PROJECT_BINARY_DIR}" "src/" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${MAGIC_ENUM_SRC} ${ENGINE_SRC})
 
 
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
@@ -129,6 +143,7 @@ add_custom_command(TARGET CapitalWorld PRE_BUILD
 INSTALL(TARGETS CapitalWorld DESTINATION capitalworld)
 INSTALL(DIRECTORY fonts DESTINATION capitalworld )
 INSTALL(DIRECTORY images DESTINATION capitalworld )
+INSTALL(DIRECTORY locale DESTINATION capitalworld )
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsdl2-2.0-0 (>= 2.0), libsdl2-ttf-2.0-0 (>= 2.0), libsdl2-image-2.0-0 (>= 2.0), libsdl2-gfx-2.0-0 (>= 2.0), libsdl2-mixer-2.0-0 (>= 2.0)")
 set(CPACK_PACKAGE_VERSION "${GAME_VERSION_MAJOR}.${GAME_VERSION_MINOR}")
 SET(CPACK_GENERATOR "DEB")
@@ -136,4 +151,3 @@ SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Stefan Lüdtke") #required
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Capital World is a 2d isometric economy simulation game.")
 set(CPACK_DEBIAN_PACKAGE_SECTION "games")
 INCLUDE(CPack)
-

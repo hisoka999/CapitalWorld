@@ -17,7 +17,7 @@ namespace world
 
     std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height)
     {
-        generateMap(width, height, 1);
+        return generateMap(width, height, 1);
     }
     std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, unsigned int seed)
     {

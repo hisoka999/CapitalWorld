@@ -10,7 +10,7 @@
 #include <functional>
 #include <iostream>
 #include <vector>
-//#include "../translate.h"
+#include "translate.h"
 #include <engine/utils/os.h>
 
 namespace scenes
@@ -29,7 +29,7 @@ namespace scenes
                 auto btnStart = std::make_shared<UI::Button>();
                 btnStart->setFont("fonts/Audiowide-Regular.ttf", 14);
                 btnStart->setColor(white);
-                btnStart->setLabel("New Game");
+                btnStart->setLabel(_("New Game"));
                 btnStart->setPos(450, 350);
                 btnStart->setStaticWidth(150);
                 container->addObject(btnStart);
@@ -39,7 +39,7 @@ namespace scenes
                 auto btnLoadGame = std::make_shared<UI::Button>();
                 btnLoadGame->setFont("fonts/Audiowide-Regular.ttf", 14);
                 btnLoadGame->setColor(white);
-                btnLoadGame->setLabel("Load Game");
+                btnLoadGame->setLabel(_("Load Game"));
                 btnLoadGame->setPos(450, 400);
                 btnLoadGame->setStaticWidth(150);
                 btnLoadGame->disable();
@@ -51,7 +51,7 @@ namespace scenes
                 auto btnExit = std::make_shared<UI::Button>();
                 btnExit->setFont("fonts/Audiowide-Regular.ttf", 14);
                 btnExit->setColor(white);
-                btnExit->setLabel("Exit Game");
+                btnExit->setLabel(_("Exit Game"));
                 btnExit->setPos(450, 450);
                 btnExit->setStaticWidth(150);
 

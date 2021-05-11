@@ -12,7 +12,7 @@ namespace world
         public:
             Street();
             virtual void update(GameMap *gameMap);
-            void updateWithParent(const GameMap *gameMap, Street *sourceStreet, const unsigned level);
+            void updateWithParent(GameMap *gameMap, Street *sourceStreet, const unsigned level);
         };
 
     };

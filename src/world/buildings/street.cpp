@@ -16,7 +16,7 @@ namespace world
             updateWithParent(gameMap, nullptr, 1);
         }
 
-        void Street::updateWithParent(const GameMap *gameMap, Street *sourceStreet, const unsigned level)
+        void Street::updateWithParent(GameMap *gameMap, Street *sourceStreet, const unsigned level)
         {
             bool isBorderingNorth = false;
             bool isBorderingSouth = false;
@@ -31,37 +31,64 @@ namespace world
             posWest.x -= 1;
             auto posSouth = pos;
             posSouth.y += 1;
-            std::shared_ptr<Street> northStreet = nullptr;
-            std::shared_ptr<Street> southStreet = nullptr;
-            std::shared_ptr<Street> eastStreet = nullptr;
-            std::shared_ptr<Street> westStreet = nullptr;
+            Street *northStreet = nullptr;
+            Street *southStreet = nullptr;
+            Street *eastStreet = nullptr;
+            Street *westStreet = nullptr;
 
-            for (auto &street : gameMap->getBuildings())
+            auto northBuilding = gameMap->getBuilding(pos.x, pos.y - 1);
+            auto southBuilding = gameMap->getBuilding(pos.x, pos.y + 1);
+            auto eastBuilding = gameMap->getBuilding(pos.x + 1, pos.y);
+            auto westBuilding = gameMap->getBuilding(pos.x - 1, pos.y);
+
+            if (northBuilding != nullptr && northBuilding->getType() == BuildingType::Street)
             {
-                if (street->getType() != BuildingType::Street)
-                    continue;
-
-                if (street->get2DPosition().intersectsNoLine(posNorth))
-                {
-                    isBorderingNorth = true;
-                    northStreet = std::dynamic_pointer_cast<Street>(street);
-                }
-                if (street->get2DPosition().intersectsNoLine(posSouth))
-                {
-                    isBorderingSouth = true;
-                    southStreet = std::dynamic_pointer_cast<Street>(street);
-                }
-                if (street->get2DPosition().intersectsNoLine(posEast))
-                {
-                    isBorderingEast = true;
-                    eastStreet = std::dynamic_pointer_cast<Street>(street);
-                }
-                if (street->get2DPosition().intersectsNoLine(posWest))
-                {
-                    westStreet = std::dynamic_pointer_cast<Street>(street);
-                    isBorderingWest = true;
-                }
+                northStreet = static_cast<Street *>(northBuilding);
+                isBorderingNorth = true;
             }
+
+            if (southBuilding != nullptr && southBuilding->getType() == BuildingType::Street)
+            {
+                southStreet = static_cast<Street *>(southBuilding);
+                isBorderingSouth = true;
+            }
+            if (eastBuilding != nullptr && eastBuilding->getType() == BuildingType::Street)
+            {
+                eastStreet = static_cast<Street *>(eastBuilding);
+                isBorderingEast = true;
+            }
+            if (westBuilding != nullptr && westBuilding->getType() == BuildingType::Street)
+            {
+                westStreet = static_cast<Street *>(westBuilding);
+                isBorderingWest = true;
+            }
+            // for (auto &tmp : gameMap->getBuildings())
+            // {
+
+            //     if (street->getType() != BuildingType::Street)
+            //         continue;
+
+            //     if (street->get2DPosition().intersectsNoLine(posNorth))
+            //     {
+            //         isBorderingNorth = true;
+            //         northStreet = static_cast<Street>(street);
+            //     }
+            //     if (street->get2DPosition().intersectsNoLine(posSouth))
+            //     {
+            //         isBorderingSouth = true;
+            //         southStreet = static_cast<Street>(street);
+            //     }
+            //     if (street->get2DPosition().intersectsNoLine(posEast))
+            //     {
+            //         isBorderingEast = true;
+            //         eastStreet = static_cast<Street>(street);
+            //     }
+            //     if (street->get2DPosition().intersectsNoLine(posWest))
+            //     {
+            //         westStreet = static_cast<Street>(street);
+            //         isBorderingWest = true;
+            //     }
+            // }
             if (isBorderingEast && isBorderingSouth && isBorderingNorth && isBorderingWest)
             {
                 setSubTexture("street_cross_center");

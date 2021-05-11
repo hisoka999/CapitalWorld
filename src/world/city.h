@@ -1,10 +1,10 @@
 #ifndef CITY_H
 #define CITY_H
-
+#pragma once
 #include <vector>
-#include "../world/building.h"
-#include "../world/gamemap.h"
-#include "../world/buildings/street.h"
+#include <world/building.h>
+#include <world/gamemap.h>
+#include <world/buildings/street.h>
 #include <memory>
 #include <engine/core/renderer.h>
 #include <engine/graphics/texturemap.h>
