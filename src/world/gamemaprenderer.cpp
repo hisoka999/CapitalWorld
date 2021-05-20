@@ -110,10 +110,10 @@ void GameMapRenderer::render(core::Renderer *renderer)
         }
     }
 
-    for (auto &tmp : gameMap->getBuildings())
+    for (auto &building : gameMap->getBuildings())
     {
-        auto &building = tmp.second;
-        if (tmp.second == nullptr)
+
+        if (building == nullptr)
             continue;
         auto displayRect = building->getDisplayRect();
 

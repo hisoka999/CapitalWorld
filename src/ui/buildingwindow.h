@@ -8,6 +8,8 @@
 #include <engine/ui/Label.h>
 #include "../world/gamemap.h"
 
+class GameMap;
+
 namespace UI
 {
 
@@ -16,7 +18,7 @@ namespace UI
     public:
         BuildingWindow(int x, int y);
 
-        void open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile);
+        void open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile, GameMap *gameMap);
 
     private:
         std::shared_ptr<UI::TabBar> tabBar;

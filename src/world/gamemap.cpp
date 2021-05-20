@@ -7,13 +7,18 @@ GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
 
 GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData) : width(width), height(height), mapData(mapData)
 {
+    buildings.resize(width * height);
+    std::fill(buildings.begin(), buildings.end(), nullptr);
 }
 
 void GameMap::initEmtyMap()
 {
     mapData.clear();
+    buildings.clear();
     mapData.resize(width * height);
+    buildings.resize(width * height);
     std::fill(mapData.begin(), mapData.end(), 10);
+    std::fill(buildings.begin(), buildings.end(), nullptr);
 }
 
 const TileType GameMap::getTile(const size_t x, const size_t y) const
@@ -59,11 +64,11 @@ std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &so
     //auto iso = twoDToIso(pt);
     for (auto building : buildings)
     {
-        if (building.second == nullptr)
+        if (building == nullptr)
             continue;
-        if (building.second->get2DPosition().intersectsNoLine(sourceBuilding))
+        if (building->get2DPosition().intersectsNoLine(sourceBuilding))
         {
-            result = building.second;
+            result = building;
             break;
         }
     }
@@ -79,28 +84,26 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
     int x = building->get2DPosition().x;
     int y = building->get2DPosition().y;
-    size_t pos = make_pos(x, y);
+    size_t pos = x + (y * height);
     buildings[pos] = building;
     //buildings.push_back(building);
     building->update(this);
 }
-const std::map<size_t, std::shared_ptr<world::Building>> &GameMap::getBuildings() const
+const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() const
 {
     return buildings;
 }
 
-world::Building *GameMap::getBuilding(const int x, const int y)
+const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const int y)
 {
-    auto pos = make_pos(x, y);
+    size_t pos = x + (y * height);
 
-    if (buildings.count(pos) > 0)
-        return buildings[pos].get();
-    return nullptr;
+    return buildings[pos];
 }
 
 const size_t GameMap::make_pos(const uint16_t x, const uint16_t y) const
 {
-    return (y << 16) + x;
+    return x + (y * height);
 }
 bool GameMap::canBuild(graphics::Rect buildRect)
 {
@@ -109,9 +112,9 @@ bool GameMap::canBuild(graphics::Rect buildRect)
 
     for (auto &building : buildings)
     {
-        if (building.second == nullptr)
+        if (building == nullptr)
             continue;
-        if (building.second->get2DPosition().intersectsNoLine(buildRect))
+        if (building->get2DPosition().intersectsNoLine(buildRect))
             return false;
     }
 
@@ -133,8 +136,8 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
 {
     auto pos = building->get2DPosition();
 
-    const size_t posInMap = make_pos(uint16_t(pos.x), uint16_t(pos.y));
-    buildings.erase(posInMap);
+    size_t posInMap = pos.x + (pos.y * height);
+    buildings[posInMap] = nullptr;
 
     auto posNorth = pos;
     posNorth.y -= 1;
@@ -148,7 +151,7 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
     //find parent buildings
     for (auto &tmp : buildings)
     {
-        auto street = tmp.second;
+        auto street = tmp;
         if (street->getType() != world::BuildingType::Street)
             continue;
 
@@ -170,7 +173,7 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
         }
     }
 }
-std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType)
+std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType)
 {
 
     auto pos = startBuilding->get2DPosition();
@@ -179,34 +182,41 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(std::sh
 
     auto northBuilding = getBuilding(pos.x, pos.y - 1);
     auto southBuilding = getBuilding(pos.x, pos.y + 1);
-    auto eastBuilding = getBuilding(pos.x + 1, pos.y);
+    auto eastBuilding = getBuilding(pos.x + pos.width, pos.y);
     auto westBuilding = getBuilding(pos.x - 1, pos.y);
 
-    if (northBuilding != nullptr && northBuilding->getType() == buildingType)
+    auto isType = [&](world::BuildingType type)
     {
-        result.push_back(std::shared_ptr<world::Building>(northBuilding));
+        if (inverseType)
+            return type != buildingType;
+
+        return type == buildingType;
+    };
+
+    if (northBuilding != nullptr && isType(northBuilding->getType()))
+    {
+        result.push_back(northBuilding);
     }
 
-    if (southBuilding != nullptr && southBuilding->getType() == buildingType)
+    if (southBuilding != nullptr && isType(southBuilding->getType()))
     {
-        result.push_back(std::shared_ptr<world::Building>(southBuilding));
+        result.push_back(southBuilding);
     }
-    if (eastBuilding != nullptr && eastBuilding->getType() == buildingType)
+    if (eastBuilding != nullptr && isType(eastBuilding->getType()))
     {
-        result.push_back(std::shared_ptr<world::Building>(eastBuilding));
+        result.push_back(eastBuilding);
     }
-    if (westBuilding != nullptr && westBuilding->getType() == buildingType)
+    if (westBuilding != nullptr && isType(westBuilding->getType()))
     {
-        result.push_back(std::shared_ptr<world::Building>(westBuilding));
+        result.push_back(westBuilding);
     }
     return result;
 }
 
-void GameMap::findStreets(std::shared_ptr<world::Building> &startBuilding, std::vector<std::shared_ptr<world::Building>> &streets, std::shared_ptr<world::Building> &excludeStreet)
+void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding, std::vector<std::shared_ptr<world::Building>> &streets, const std::shared_ptr<world::Building> &excludeStreet)
 {
-    auto borderingStreets = borderingBuilding(startBuilding, world::BuildingType::Street, false);
 
-    for (auto &street : borderingStreets)
+    for (auto street : borderingBuilding(startBuilding, world::BuildingType::Street, false))
     {
         if (excludeStreet != nullptr && excludeStreet == street)
             continue;
@@ -221,15 +231,14 @@ void GameMap::findStreets(std::shared_ptr<world::Building> &startBuilding, std::
     }
 }
 
-std::vector<std::shared_ptr<world::Building>> GameMap::findProductionBuildings(std::shared_ptr<world::Building> &startBuilding)
+std::vector<std::shared_ptr<world::Building>> GameMap::findProductionBuildings(const std::shared_ptr<world::Building> &startBuilding)
 {
     //Schritt 1 Suche Straße neben dem Startgebäude
     auto startPos = startBuilding->get2DPosition();
-    auto streets = borderingBuilding(startBuilding, world::BuildingType::Street, false);
 
     std::vector<std::shared_ptr<world::Building>> allStreets;
     // Schritt 2 suche alle Strassen zur Startstrasse
-    for (auto &street : streets)
+    for (auto street : borderingBuilding(startBuilding, world::BuildingType::Street, false))
     {
         allStreets.push_back(street);
         findStreets(street, allStreets, street);
@@ -245,7 +254,7 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findProductionBuildings(s
         for (auto &b : borderBuildings)
         {
             //std::cout << "b x: " << b->get2DPosition().x << " y: " << b->get2DPosition().y << std::endl;
-            if (b != startBuilding)
+            if (b != startBuilding && b->getProducts().size() > 0)
             {
                 targets.push_back(b);
             }

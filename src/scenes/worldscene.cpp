@@ -1,6 +1,7 @@
 #include "worldscene.h"
 #include "../world/mapgenerator.h"
 #include "../world/buildings/street.h"
+#include "world/buildings/transportoffice.h"
 #include <chrono>
 #include <cmath>
 #include <engine/utils/os.h>
@@ -84,7 +85,7 @@ namespace scenes
             building->setSourceRect(rect);
             break;
         case world::BuildAction::Transport:
-            building = std::make_shared<world::Building>("Transport Office", _("Transport Office") + " " + index, "A factory", 50000, world::BuildingType::Transport, 2, 2);
+            building = std::make_shared<world::buildings::TransportOffice>("Transport Office", _("Transport Office") + " " + index, "A factory", 50000, world::BuildingType::Transport, 2, 2);
             rect.x = 128;
             rect.y = 160;
             rect.width = 128;
@@ -197,7 +198,7 @@ namespace scenes
                     {
                         company = gameState->getPlayer();
                     }
-                    buildingWindow.open(building, company, gameMap->getTile(cursorPosition));
+                    buildingWindow.open(building, company, gameMap->getTile(cursorPosition), gameMap.get());
                 }
             }
             else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))

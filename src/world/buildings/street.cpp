@@ -31,10 +31,10 @@ namespace world
             posWest.x -= 1;
             auto posSouth = pos;
             posSouth.y += 1;
-            Street *northStreet = nullptr;
-            Street *southStreet = nullptr;
-            Street *eastStreet = nullptr;
-            Street *westStreet = nullptr;
+            std::shared_ptr<Street> northStreet = nullptr;
+            std::shared_ptr<Street> southStreet = nullptr;
+            std::shared_ptr<Street> eastStreet = nullptr;
+            std::shared_ptr<Street> westStreet = nullptr;
 
             auto northBuilding = gameMap->getBuilding(pos.x, pos.y - 1);
             auto southBuilding = gameMap->getBuilding(pos.x, pos.y + 1);
@@ -43,23 +43,23 @@ namespace world
 
             if (northBuilding != nullptr && northBuilding->getType() == BuildingType::Street)
             {
-                northStreet = static_cast<Street *>(northBuilding);
+                northStreet = std::dynamic_pointer_cast<Street>(northBuilding);
                 isBorderingNorth = true;
             }
 
             if (southBuilding != nullptr && southBuilding->getType() == BuildingType::Street)
             {
-                southStreet = static_cast<Street *>(southBuilding);
+                southStreet = std::dynamic_pointer_cast<Street>(southBuilding);
                 isBorderingSouth = true;
             }
             if (eastBuilding != nullptr && eastBuilding->getType() == BuildingType::Street)
             {
-                eastStreet = static_cast<Street *>(eastBuilding);
+                eastStreet = std::dynamic_pointer_cast<Street>(eastBuilding);
                 isBorderingEast = true;
             }
             if (westBuilding != nullptr && westBuilding->getType() == BuildingType::Street)
             {
-                westStreet = static_cast<Street *>(westBuilding);
+                westStreet = std::dynamic_pointer_cast<Street>(westBuilding);
                 isBorderingWest = true;
             }
             // for (auto &tmp : gameMap->getBuildings())

@@ -4,6 +4,7 @@
 #include <engine/utils/os.h>
 #include "../ui/farmproductiontab.h"
 #include "../ui/factoryproductiontab.h"
+#include "../ui/routestab.h"
 #include "../ui/storagetab.h"
 
 namespace UI
@@ -46,7 +47,7 @@ namespace UI
         labelGroundValue->setPos(100, 45);
         infoTab->addObject(labelGroundValue);
     }
-    void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile)
+    void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile, GameMap *gameMap)
     {
         this->building = building;
         if (building != nullptr)
@@ -74,6 +75,9 @@ namespace UI
                 break;
             case world::BuildingType::Factory:
                 productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building);
+                break;
+            case world::BuildingType::Transport:
+                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap);
             }
             if (productionTab != nullptr)
             {
