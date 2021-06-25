@@ -19,9 +19,11 @@ namespace UI
         virtual void handleEvents(core::Input *pInput);
 
     private:
+        void fillProductListByBuilding(std::shared_ptr<world::Building> &building);
         void initUI();
         std::shared_ptr<world::buildings::TransportRoute> route;
         GameMap *gameMap;
         std::shared_ptr<world::Building> parentBuilding;
+        std::shared_ptr<UI::ComboBox<std::shared_ptr<Product>>> productList;
     };
 };

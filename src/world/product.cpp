@@ -16,7 +16,7 @@ std::vector<std::shared_ptr<Resource>> Product::getResources()
 {
     return resources;
 }
-std::vector<std::shared_ptr<Product>> Product::getBaseProducts()
+std::vector<std::shared_ptr<ProductRequirement>> Product::getBaseProducts()
 {
     return products;
 }
@@ -44,7 +44,7 @@ float Product::calculateCostsPerPiece()
     }
     for (auto &pro : products)
     {
-        result += pro->calculateCostsPerPiece();
+        result += pro->product->calculateCostsPerPiece();
     }
 
     return result;
@@ -63,16 +63,18 @@ bool Product::needsResource(std::shared_ptr<Resource> resource)
     return result;
 }
 
-void Product::addProduct(std::shared_ptr<Product> product)
+void Product::addProduct(std::shared_ptr<Product> product, int amount)
 {
-    products.push_back(product);
+    ProductRequirement r = {product, amount};
+    std::shared_ptr requirement = std::make_shared<ProductRequirement>(r);
+    products.push_back(requirement);
 }
 bool Product::needsProduct(std::shared_ptr<Product> product)
 {
     bool result = false;
     for (auto &res : products)
     {
-        if (res->getName() == product->getName())
+        if (res->product->getName() == product->getName())
         {
             result = true;
             break;

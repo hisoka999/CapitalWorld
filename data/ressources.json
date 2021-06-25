@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Chicken",
+        "type": "Resource",
+        "texture": "chicken.png",
+        "building": "Farm",
+        "costs": 20
+    },
+    {
+        "name": "Wheet",
+        "type": "Resource",
+        "texture": "wheat.png",
+        "building": "Farm",
+        "costs": 10
+    }
+]

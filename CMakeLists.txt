@@ -76,7 +76,9 @@ configure_file (
 
 set (ENGINE_ROOT "deps")
 set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
-
+set (MAGIC_ENUM_ROOT "deps")
+set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/engine/engine-build/${MAGIC_ENUM_ROOT}/magic_enum/magic_enum-src/include/" )
+#message(${MAGIC_ENUM_SRC})
 if( UNIX)
     option(GAME_TESTS "Build the tests" ON)
     if(GAME_TESTS)
@@ -104,15 +106,17 @@ fetch_engine(
 ${PROJECT_SOURCE_DIR}/cmake
 ${PROJECT_BINARY_DIR}/engine
 )
+
+message( ${MAGIC_ENUM_SRC})
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}" "src/" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${MAGIC_ENUM_SRC} ${ENGINE_SRC})
+include_directories("${PROJECT_BINARY_DIR}" "src/" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${ENGINE_SRC} ${MAGIC_ENUM_SRC})
 
 
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
 target_link_libraries(${PROJECT_NAME} sgl)
 if(MINGW)
-    IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    IF(CMAKE_BUILD_TYPE MATCHES DEBUG) 
         message("debug mode")
         target_link_libraries(${PROJECT_NAME} SDL2)
     else()

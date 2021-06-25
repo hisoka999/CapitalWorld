@@ -1,21 +1,35 @@
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
-#project(magic_enum NONE)
-
-include(ExternalProject)
+#project(engine NONE)
 
 
-ExternalProject_Add(
-  magic_enum
-  SOURCE_DIR "${MAGIC_ENUM_ROOT}/magic_enum"
-  BINARY_DIR "${MAGIC_ENUM_ROOT}/magic_enum-build"
-  GIT_REPOSITORY
-    https://github.com/neargye/magic_enum.git
-  GIT_TAG
-    v0.7.0
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND ""
-  INSTALL_COMMAND ""
-  TEST_COMMAND ""
-  )
+
+  macro(fetch_magic_enum _download_module_path _download_root)
+    set(MAGIC_ENUM_DOWNLOAD_ROOT ${_download_root})
+    configure_file(
+        ${_download_module_path}/magic_enum-download.cmake
+        ${_download_root}/CMakeLists.txt
+        @ONLY
+        )
+    unset(MAGIC_ENUM_DOWNLOAD_ROOT)
+
+    execute_process(
+        COMMAND
+            "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+        WORKING_DIRECTORY
+            ${_download_root}
+        )
+    execute_process(
+        COMMAND
+            "${CMAKE_COMMAND}" --build .
+        WORKING_DIRECTORY
+            ${_download_root}
+        )
+
+    # # adds the targers: gtest, gtest_main, gmock, gmock_main
+    add_subdirectory(
+        ${_download_root}/magic_enum-src
+        ${_download_root}/magic_enum-build
+        )
+endmacro()

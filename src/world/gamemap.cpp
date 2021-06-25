@@ -94,7 +94,7 @@ const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() con
     return buildings;
 }
 
-const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const int y)
+const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const int y) const
 {
     size_t pos = x + (y * height);
 
@@ -152,6 +152,8 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
     for (auto &tmp : buildings)
     {
         auto street = tmp;
+        if (tmp == nullptr)
+            continue;
         if (street->getType() != world::BuildingType::Street)
             continue;
 
@@ -180,10 +182,10 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const s
 
     std::vector<std::shared_ptr<world::Building>> result;
 
-    auto northBuilding = getBuilding(pos.x, pos.y - 1);
-    auto southBuilding = getBuilding(pos.x, pos.y + 1);
-    auto eastBuilding = getBuilding(pos.x + pos.width, pos.y);
-    auto westBuilding = getBuilding(pos.x - 1, pos.y);
+    auto northBuilding = getBuilding2D({pos.x, pos.y - 1, pos.width, pos.height});
+    auto southBuilding = getBuilding2D({pos.x, pos.y + pos.height, pos.width, pos.height});
+    auto eastBuilding = getBuilding2D({pos.x + pos.width, pos.y, pos.width, pos.height});
+    auto westBuilding = getBuilding2D({pos.x - 1, pos.y, pos.width, pos.height});
 
     auto isType = [&](world::BuildingType type)
     {

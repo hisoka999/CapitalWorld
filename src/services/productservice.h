@@ -20,17 +20,14 @@ namespace services
 
         std::vector<std::shared_ptr<Product>> getProductsByBuildingType(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> getBaseProductsByBuildingType(world::BuildingType type);
-        std::vector<std::shared_ptr<Resource>> getResourcesByBuildingType(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(world::BuildingType type, std::shared_ptr<Resource> resource);
-        std::shared_ptr<Resource> getResourceByName(std::string name);
         std::shared_ptr<Product> getProductByName(std::string name);
-        void loadProducts(std::string path);
-        void loadResources(std::string path);
 
     protected:
         virtual std::shared_ptr<Product> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object);
 
     private:
+        ProductionCycle convertJsonObject2Cycle(const std::shared_ptr<utils::JSON::Object> &object);
         ProductService() = default;
         ~ProductService() = default;
         ProductService(const ProductService &) = delete;

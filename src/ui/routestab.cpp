@@ -45,7 +45,7 @@ namespace UI
 
             routeComp->setY(yoffset);
             scrollArea->addObject(routeComp);
-            yoffset += 50;
+            yoffset += routeComp->getHeight() + 10;
         }
     }
 

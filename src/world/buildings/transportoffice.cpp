@@ -33,5 +33,19 @@ namespace world
             std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>(tmp);
             routes.push_back(route);
         }
+
+        void TransportOffice::updateProduction(int month, int year)
+        {
+            for (auto &route : routes)
+            {
+                if (!route->active || route->product == nullptr)
+                    continue;
+                auto &startStorage = route->startBuilding->getStorage();
+                auto &endStorage = route->startBuilding->getStorage();
+                int amount = startStorage.getEntry(route->product->getName());
+                startStorage.addEntry(route->product->getName(), amount * -1);
+                endStorage.addEntry(route->product->getName(), amount);
+            }
+        }
     }
 }

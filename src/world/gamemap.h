@@ -32,7 +32,7 @@ public:
     void addBuilding(std::shared_ptr<world::Building> building);
     void removeBuilding(std::shared_ptr<world::Building> building);
     const std::vector<std::shared_ptr<world::Building>> &getBuildings() const;
-    const std::shared_ptr<world::Building> &getBuilding(const int x, const int y);
+    const std::shared_ptr<world::Building> &getBuilding(const int x, const int y) const;
     std::vector<std::shared_ptr<world::Building>> findProductionBuildings(const std::shared_ptr<world::Building> &startBuilding);
 
 private:

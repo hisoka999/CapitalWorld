@@ -50,7 +50,7 @@ namespace world
         void calculateBalance(int month, int year);
         float getCostsPerMonth(int month, int year);
         float getIncomePerMonth(int month, int year);
-        void updateProduction(int month, int year);
+        virtual void updateProduction(int month, int year);
         bool isAutoSellActive();
         void autoSell(int month, int year);
         BuildingType getType();

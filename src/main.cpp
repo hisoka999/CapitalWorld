@@ -13,6 +13,7 @@
 #include "scenes/MainScene.h"
 #include "scenes/worldscene.h"
 #include "services/productservice.h"
+#include "services/ressourceservice.h"
 #include <iostream>
 #include "engine/utils/localisation.h"
 int main()
@@ -34,9 +35,9 @@ int main()
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
+        services::RessourceService::Instance().loadData("data/ressources.json");
+        services::ProductService::Instance().loadData("data/products.json");
 
-        services::ProductService::Instance().loadResources("");
-        services::ProductService::Instance().loadProducts("");
         auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
         auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
         sceneManager.addScene("main", mainScene);
@@ -100,9 +101,9 @@ int main()
     {
         std::cerr << "SDL Exception: " << e.what() << std::endl;
     }
-    catch (std::exception &e)
-    {
-        std::cerr << "unkown standard exception: " << e.what() << std::endl;
-    }
+    // catch (std::exception &e)
+    // {
+    //     std::cerr << "unkown standard exception: " << e.what() << std::endl;
+    // }
     return 0;
 }

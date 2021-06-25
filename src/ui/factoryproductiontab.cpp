@@ -17,30 +17,26 @@ namespace UI
         productSelectionBox->setPos(490, 28);
         productSelectionBox->setWidth(100);
         productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory);
-        productSelectionBox->connect("selectionChanged", [&](unsigned int selection) {
-            productSelectionChanged(selection);
-        });
+        productSelectionBox->connect("selectionChanged", [&](unsigned int selection)
+                                     { productSelectionChanged(selection); });
 
         for (auto &product : productList)
         {
             productSelectionBox->addElement(product->getName());
         }
-        productSelectionBox->setElementFunction([&](std::string var) {
-            return var;
-        });
+        productSelectionBox->setElementFunction([&](std::string var)
+                                                { return var; });
 
         addObject(productSelectionBox);
 
         resourceSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
         resourceSelectionBox->setPos(180, 28);
         resourceSelectionBox->setWidth(100);
-        resourceSelectionBox->connect("selectionChanged", [&](unsigned int selection) {
-            resourceSelectionChanged(selection);
-        });
+        resourceSelectionBox->connect("selectionChanged", [&](unsigned int selection)
+                                      { resourceSelectionChanged(selection); });
 
-        resourceSelectionBox->setElementFunction([&](std::string var) {
-            return var;
-        });
+        resourceSelectionBox->setElementFunction([&](std::string var)
+                                                 { return var; });
 
         baseProductList = services::ProductService::Instance().getBaseProductsByBuildingType(world::BuildingType::Factory);
         for (auto &res : baseProductList)
@@ -78,18 +74,19 @@ namespace UI
         addButton->setLabel("Add");
         addButton->setStaticWidth(90);
         addButton->setPos(180, 380);
-        addButton->connect(UI::Button::buttonClickCallback(), [&]() {
-            auto product = productList[static_cast<size_t>(productSelectionBox->getSelection())];
-            if (!building->hasProduct(product))
-            {
-                building->addProduct(product);
-            }
-            else
-            {
-                building->removeProduct(product);
-            }
-            refreshProductList();
-        });
+        addButton->connect(UI::Button::buttonClickCallback(), [&]()
+                           {
+                               auto product = productList[static_cast<size_t>(productSelectionBox->getSelection())];
+                               if (!building->hasProduct(product))
+                               {
+                                   building->addProduct(product);
+                               }
+                               else
+                               {
+                                   building->removeProduct(product);
+                               }
+                               refreshProductList();
+                           });
         addObject(addButton);
 
         helpButton = std::make_shared<UI::Button>(this);
@@ -116,11 +113,12 @@ namespace UI
         for (auto product : building->getProducts())
         {
             std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
-            pc->connect("imageClicked", [=](void) {
-                std::cout << "click: " << product->getName() << std::endl;
-                resourceSelectionBox->setSelectionByText(product->getResources().at(0)->getName());
-                productSelectionBox->setSelectionByText(product->getName());
-            });
+            pc->connect("imageClicked", [=](void)
+                        {
+                            std::cout << "click: " << product->getName() << std::endl;
+                            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->getName());
+                            productSelectionBox->setSelectionByText(product->getName());
+                        });
 
             productComponents.push_back(pc);
             pc->setPos(20, y);
@@ -182,7 +180,7 @@ namespace UI
         int y = 70;
         for (auto product : product->getBaseProducts())
         {
-            std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
+            std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product->product, this);
 
             resourceComponents.push_back(pc);
             pc->setPos(180, y);

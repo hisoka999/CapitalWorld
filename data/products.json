@@ -1,26 +1,12 @@
 [
     {
-        "name": "Chicken",
-        "type": "Resource",
-        "texture": "chicken.png",
-        "bulding": "Farm",
-        "costs": 20
-    },
-    {
-        "name": "Wheet",
-        "type": "Resource",
-        "texture": "wheet.png",
-        "bulding": "Farm",
-        "costs": 10
-    },
-    {
         "name": "Eggs",
         "type": "Product",
         "texture": "egg.png",
-        "bulding": "Farm",
-        "baseResources": [
-            "Chicken"
-        ],
+        "building": "Farm",
+        "baseResources": {
+            "Chicken": 100
+        },
         "productionCycle": {
             "start": 1,
             "end": 12,
@@ -31,11 +17,11 @@
     {
         "name": "Wheet",
         "type": "Product",
-        "texture": "wheet.png",
-        "bulding": "Farm",
-        "baseResources": [
-            "Wheet"
-        ],
+        "texture": "wheat.png",
+        "building": "Farm",
+        "baseResources": {
+            "Wheet": 300
+        },
         "productionCycle": {
             "start": 3,
             "end": 7,
@@ -47,11 +33,11 @@
         "name": "Bread",
         "type": "Product",
         "texture": "bread.png",
-        "bulding": "Factory",
-        "baseResources": [
-            "Wheet",
-            "Eggs"
-        ],
+        "building": "Factory",
+        "baseProducts": {
+            "Wheet": 70,
+            "Eggs": 30
+        },
         "productionCycle": {
             "start": 1,
             "end": 12,
@@ -63,10 +49,10 @@
         "name": "Beer",
         "type": "Product",
         "texture": "beer.png",
-        "bulding": "Factory",
-        "baseResources": [
-            "Wheet"
-        ],
+        "building": "Factory",
+        "baseProducts": {
+            "Wheet": 100
+        },
         "productionCycle": {
             "start": 1,
             "end": 12,

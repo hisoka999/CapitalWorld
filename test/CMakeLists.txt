@@ -22,7 +22,8 @@ macro(package_add_test TESTNAME)
 
 
     message("TEST_SRC = ${TEST_SRC}" )
-    include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src/ ${ENGINE_SRC})
+    message("MAGIC_ENUM_SRC = ${MAGIC_ENUM_SRC}" )
+    include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src/ ${ENGINE_SRC} ${MAGIC_ENUM_SRC})
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME}  ${TEST_SRC} ${ARGN})
     # link the Google test infrastructure, mocking library, and a default main fuction to

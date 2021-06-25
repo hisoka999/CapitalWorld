@@ -168,12 +168,24 @@ namespace world
             {
                 if (product->getBaseProducts().size() > 0)
                 {
-                    // TODO check if base products exists
-                    // based on transport
+                    bool requirementsFullfilled = true;
+                    for (auto &base : product->getBaseProducts())
+                    {
+                        int amount = storage.getEntry(base->product->getName());
+                        if (amount < base->amount)
+                        {
+                            requirementsFullfilled = false;
+                        }
+                    }
+                    if (requirementsFullfilled)
+                    {
+                        for (auto &base : product->getBaseProducts())
+                        {
+                            storage.addEntry(base->product->getName(), base->amount * -1);
+                        }
+                        storage.addEntry(product->getName(), cycle.amount);
+                    }
                 }
-                //change the amount
-                //only update amount after the end
-                storage.addEntry(product->getName(), cycle.amount);
             }
         }
     }

@@ -6,6 +6,7 @@
                 "${workspaceFolder}/src/",
                 "${workspaceFolder}/",
                 "${workspaceFolder}/build/engine/engine-src/",
+                "${workspaceFolder}/build/engine/engine-build/deps/magic_enum/magic_enum-src/include/",
                 "/usr/include/SDL2/"
             ],
             "defines": [],

@@ -1,4 +1,7 @@
 #include "productservice.h"
+#include "ressourceservice.h"
+#include "magic_enum.hpp"
+#include <algorithm>
 
 namespace services
 {
@@ -6,7 +9,7 @@ namespace services
     std::vector<std::shared_ptr<Product>> ProductService::getProductsByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Product>> result;
-        for (auto &product : products)
+        for (auto &product : getData())
         {
             if (product->getBuildingType() == type)
             {
@@ -18,7 +21,7 @@ namespace services
     std::vector<std::shared_ptr<Product>> ProductService::getBaseProductsByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Product>> result;
-        for (auto &product : products)
+        for (auto &product : getData())
         {
             if (product->getBuildingType() == type)
             {
@@ -30,14 +33,14 @@ namespace services
                     bool isInList = false;
                     for (auto &resultProduct : result)
                     {
-                        if (resultProduct->getName() == baseProduct->getName())
+                        if (resultProduct->getName() == baseProduct->product->getName())
                         {
                             isInList = true;
                         }
                     }
                     if (!isInList)
                     {
-                        result.push_back(baseProduct);
+                        result.push_back(baseProduct->product);
                     }
                 }
             }
@@ -48,7 +51,7 @@ namespace services
     std::vector<std::shared_ptr<Product>> ProductService::getProductsByTypeAndResource(world::BuildingType type, std::shared_ptr<Resource> resource)
     {
         std::vector<std::shared_ptr<Product>> result;
-        for (auto &product : products)
+        for (auto &product : getData())
         {
             if (product->getBuildingType() == type && product->needsResource(resource))
             {
@@ -58,67 +61,44 @@ namespace services
         return result;
     }
 
-    std::vector<std::shared_ptr<Resource>> ProductService::getResourcesByBuildingType(world::BuildingType type)
-    {
-        std::vector<std::shared_ptr<Resource>> result;
-        for (auto &res : resources)
-        {
-            if (res->getBuildingType() == type)
-            {
-                result.push_back(res);
-            }
-        }
-
-        return result;
-    }
-    void ProductService::loadProducts(std::string path)
-    {
-        ProductionCycle eggCycle(1, 12, 3 * 30, 100);
-
-        auto eggs = std::make_shared<Product>("Eggs", "egg.png", world::BuildingType::Farm, eggCycle);
-        eggs->addRessource(getResourceByName("Chicken"));
-        products.push_back(eggs);
-
-        auto wheet = std::make_shared<Product>("Wheet", "wheat.png", world::BuildingType::Farm, ProductionCycle(3, 7, 30, 300));
-        wheet->addRessource(getResourceByName("Wheat"));
-        products.push_back(wheet);
-
-        auto bread = std::make_shared<Product>("Bread", "bread.png", world::BuildingType::Factory, ProductionCycle(1, 12, 2, 100));
-        bread->addProduct(wheet);
-        bread->addProduct(eggs);
-        products.push_back(bread);
-
-        auto beer = std::make_shared<Product>("Beer", "beer.png", world::BuildingType::Factory, ProductionCycle(1, 12, 2, 100));
-        beer->addProduct(wheet);
-        products.push_back(beer);
-    }
-    void ProductService::loadResources(std::string path)
-    {
-        auto chicken = std::make_shared<Resource>("Chicken", "chicken.png", 20, world::BuildingType::Farm);
-        resources.push_back(chicken);
-
-        auto wheet = std::make_shared<Resource>("Wheat", "wheat.png", 10, world::BuildingType::Farm);
-        resources.push_back(wheet);
-    }
-
     std::shared_ptr<Product> ProductService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
     {
+        std::string name = object->getStringValue("name");
+        std::string texture = object->getStringValue("texture");
+        world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(object->getStringValue("building")).value();
+
+        ProductionCycle cycle = convertJsonObject2Cycle(object->getObjectValue("productionCycle"));
+        auto product = std::make_shared<Product>(name, texture, type, cycle);
+        auto attrs = object->getAttributes();
+        if (std::find(attrs.begin(), attrs.end(), std::string("baseResources")) != attrs.end())
+
+            for (auto attr : object->getObjectValue("baseResources")->getAttributes())
+            {
+                product->addRessource(RessourceService::Instance().getResourceByName(attr));
+            }
+        if (std::find(attrs.begin(), attrs.end(), std::string("baseProducts")) != attrs.end())
+        {
+            for (auto attr : object->getObjectValue("baseProducts")->getAttributes())
+            {
+                product->addProduct(getProductByName(attr), object->getObjectValue("baseProducts")->getIntValue(attr));
+            }
+            return product;
+        }
     }
 
-    std::shared_ptr<Resource> ProductService::getResourceByName(std::string name)
+    ProductionCycle ProductService::convertJsonObject2Cycle(const std::shared_ptr<utils::JSON::Object> &object)
     {
-        for (auto &res : resources)
-        {
-            if (res->getName() == name)
-            {
-                return res;
-            }
-        }
-        return nullptr;
+        int start = object->getIntValue("start");
+        int end = object->getIntValue("end");
+        int time = object->getIntValue("time");
+        int amount = object->getIntValue("amount");
+        auto cycle = ProductionCycle(start, end, time, amount);
+        return cycle;
     }
+
     std::shared_ptr<Product> ProductService::getProductByName(std::string name)
     {
-        for (auto &product : products)
+        for (auto &product : getData())
         {
             if (product->getName() == name)
             {
@@ -127,5 +107,4 @@ namespace services
         }
         return nullptr;
     }
-
 }

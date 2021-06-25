@@ -24,6 +24,7 @@ namespace world
             const std::vector<std::shared_ptr<TransportRoute>> &getAllRoutes();
             std::vector<std::shared_ptr<TransportRoute>> &getActiveRoutes();
             void addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity);
+            void updateProduction(int month, int year);
 
         private:
             std::vector<std::shared_ptr<TransportRoute>> routes;
