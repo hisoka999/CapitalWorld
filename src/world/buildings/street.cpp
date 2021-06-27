@@ -36,10 +36,10 @@ namespace world
             std::shared_ptr<Street> eastStreet = nullptr;
             std::shared_ptr<Street> westStreet = nullptr;
 
-            auto northBuilding = gameMap->getBuilding(pos.x, pos.y - 1);
-            auto southBuilding = gameMap->getBuilding(pos.x, pos.y + 1);
-            auto eastBuilding = gameMap->getBuilding(pos.x + 1, pos.y);
-            auto westBuilding = gameMap->getBuilding(pos.x - 1, pos.y);
+            auto &northBuilding = gameMap->getBuilding(pos.x, pos.y - 1);
+            auto &southBuilding = gameMap->getBuilding(pos.x, pos.y + 1);
+            auto &eastBuilding = gameMap->getBuilding(pos.x + 1, pos.y);
+            auto &westBuilding = gameMap->getBuilding(pos.x - 1, pos.y);
 
             if (northBuilding != nullptr && northBuilding->getType() == BuildingType::Street)
             {

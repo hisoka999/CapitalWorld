@@ -14,36 +14,35 @@
 #include <engine/ui/Container.h>
 #include <vector>
 #include <memory>
-
+#include <ui/SettingsWindow.h>
 
 namespace scenes
 {
 
-class MainScene: public core::Scene
-{
-public:
-        MainScene(core::Renderer *pRenderer, core::SceneManager* pSceneManager);
-        virtual ~MainScene();
-        void render();
-        void handleEvents(core::Input *pInput);
-        bool isRunning()
+        class MainScene : public core::Scene
         {
-                return running;
-        }
+        public:
+                MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager);
+                virtual ~MainScene();
+                void render();
+                void handleEvents(core::Input *pInput);
+                bool isRunning()
+                {
+                        return running;
+                }
 
-private:
-        bool running;
-        core::SceneManager* sceneManager;
-        UI::Container* container;
-        graphics::Texture uiTexture;
-        graphics::Texture bgTexture;
+        private:
+                bool running;
+                core::SceneManager *sceneManager;
+                UI::Container *container;
+                graphics::Texture uiTexture;
+                graphics::Texture bgTexture;
+                SettingsWindow settingsWindow;
 
-
-
-        void exitGame();
-        void startGame();
-        void loadGame();
-};
+                void exitGame();
+                void startGame();
+                void loadGame();
+        };
 
 } /* namespace scenes */
 

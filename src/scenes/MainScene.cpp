@@ -12,12 +12,13 @@
 #include <vector>
 #include "translate.h"
 #include <engine/utils/os.h>
+#include <engine/core/gamewindow.h>
 
 namespace scenes
 {
 
         MainScene::MainScene(core::Renderer *pRenderer,
-                             core::SceneManager *pSceneManager) : core::Scene(pRenderer), running(true), sceneManager(pSceneManager)
+                             core::SceneManager *pSceneManager) : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow()
         {
                 uiTexture.loadTexture(renderer, "images/ArkanaLook.png");
 
@@ -27,37 +28,53 @@ namespace scenes
                 SDL_Color white =
                     {255, 255, 255, 0};
                 auto btnStart = std::make_shared<UI::Button>();
-                btnStart->setFont("fonts/Audiowide-Regular.ttf", 14);
+                btnStart->setFont("fonts/arial.ttf", 14);
                 btnStart->setColor(white);
                 btnStart->setLabel(_("New Game"));
                 btnStart->setPos(450, 350);
                 btnStart->setStaticWidth(150);
                 container->addObject(btnStart);
 
-                btnStart->connect(UI::Button::buttonClickCallback(), [&]() { startGame(); });
+                btnStart->connect(UI::Button::buttonClickCallback(), [&]()
+                                  { startGame(); });
 
                 auto btnLoadGame = std::make_shared<UI::Button>();
-                btnLoadGame->setFont("fonts/Audiowide-Regular.ttf", 14);
+                btnLoadGame->setFont("fonts/arial.ttf", 14);
                 btnLoadGame->setColor(white);
                 btnLoadGame->setLabel(_("Load Game"));
                 btnLoadGame->setPos(450, 400);
                 btnLoadGame->setStaticWidth(150);
                 btnLoadGame->disable();
 
-                btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]() { loadGame(); });
+                btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]()
+                                     { loadGame(); });
 
                 container->addObject(btnLoadGame);
 
+                auto btnSettings = std::make_shared<UI::Button>();
+                btnSettings->setFont("fonts/arial.ttf", 14);
+                btnSettings->setColor(white);
+                btnSettings->setLabel(_("Settings"));
+                btnSettings->setPos(450, 450);
+                btnSettings->setStaticWidth(150);
+
+                btnSettings->connect(UI::Button::buttonClickCallback(), [&]()
+                                     { settingsWindow.setVisible(true); });
+
+                container->addObject(btnSettings);
+
                 auto btnExit = std::make_shared<UI::Button>();
-                btnExit->setFont("fonts/Audiowide-Regular.ttf", 14);
+                btnExit->setFont("fonts/arial.ttf", 14);
                 btnExit->setColor(white);
                 btnExit->setLabel(_("Exit Game"));
-                btnExit->setPos(450, 450);
+                btnExit->setPos(450, 500);
                 btnExit->setStaticWidth(150);
 
-                btnExit->connect(UI::Button::buttonClickCallback(), [&]() { exitGame(); });
+                btnExit->connect(UI::Button::buttonClickCallback(), [&]()
+                                 { exitGame(); });
 
                 container->addObject(btnExit);
+                winMgr->addWindow(&settingsWindow);
         }
         void MainScene::render()
         {
@@ -66,6 +83,7 @@ namespace scenes
                                         renderer->getMainCamera()->getHeight());
 
                 container->render(renderer);
+                winMgr->render(renderer);
         }
 
         void MainScene::exitGame()
@@ -87,6 +105,7 @@ namespace scenes
         void MainScene::handleEvents(core::Input *pInput)
         {
                 container->handleEvents(pInput);
+                winMgr->handleInput(pInput);
         }
 
         MainScene::~MainScene()

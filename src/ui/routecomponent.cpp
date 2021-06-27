@@ -78,6 +78,10 @@ namespace UI
                                 {
                                     route->startBuilding = b;
                                     fillProductListByBuilding(b);
+                                    if (route->startBuilding != nullptr && route->startBuilding->getProducts().size() > 0)
+                                    {
+                                        route->product = route->startBuilding->getProducts()[0];
+                                    }
                                 });
 
         finishBuildings->setElementFunction(elemFunction);
@@ -87,6 +91,11 @@ namespace UI
         {
             finishBuildings->setSelectionByText(route->endBuilding);
         }
+        else if (productionBuildings.size() > 0)
+        {
+            route->endBuilding = productionBuildings[0];
+        }
+
         if (route->product != nullptr)
         {
             productList->setSelectionByText(route->product);

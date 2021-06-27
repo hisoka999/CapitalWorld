@@ -24,8 +24,8 @@ namespace world
     class Building
     {
     public:
-        Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight);
-        Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type);
+        Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type, int blockWidth, int blockHeight);
+        Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type);
         Building(const Building &copy);
 
         std::string getName();

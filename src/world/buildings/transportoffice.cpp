@@ -38,10 +38,10 @@ namespace world
         {
             for (auto &route : routes)
             {
-                if (!route->active || route->product == nullptr)
+                if (!route->active || route->product == nullptr || route->endBuilding == nullptr)
                     continue;
                 auto &startStorage = route->startBuilding->getStorage();
-                auto &endStorage = route->startBuilding->getStorage();
+                auto &endStorage = route->endBuilding->getStorage();
                 int amount = startStorage.getEntry(route->product->getName());
                 startStorage.addEntry(route->product->getName(), amount * -1);
                 endStorage.addEntry(route->product->getName(), amount);

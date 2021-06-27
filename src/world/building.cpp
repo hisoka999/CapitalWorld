@@ -4,8 +4,8 @@
 namespace world
 {
 
-    Building::Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight)
-        : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPirce), blockWidth(blockWidth), blockHeight(blockHeight), xOffset(0), yOffset(0)
+    Building::Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type, int blockWidth, int blockHeight)
+        : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPrice), blockWidth(blockWidth), blockHeight(blockHeight), xOffset(0), yOffset(0)
     {
     }
 
@@ -24,8 +24,8 @@ namespace world
         this->sourceRect = copy.sourceRect;
     }
 
-    Building::Building(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type)
-        : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPirce), blockWidth(1), blockHeight(1), xOffset(0), yOffset(0)
+    Building::Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type)
+        : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPrice), blockWidth(1), blockHeight(1), xOffset(0), yOffset(0)
     {
     }
 
@@ -184,7 +184,12 @@ namespace world
                             storage.addEntry(base->product->getName(), base->amount * -1);
                         }
                         storage.addEntry(product->getName(), cycle.amount);
+                        updateProduction(month, year);
                     }
+                }
+                else if (product->getResources().size() > 0)
+                {
+                    storage.addEntry(product->getName(), cycle.amount);
                 }
             }
         }
@@ -200,7 +205,7 @@ namespace world
         for (auto &product : products)
         {
             unsigned amount = storage.getEntry(product->getName());
-            double income = amount * product->calculateCostsPerPiece() * 1.1;
+            double income = amount * product->calculateCostsPerPiece() * 1.5;
 
             //find balance
             for (auto &b : balance)
