@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-26 22:28+0200\n"
+"POT-Creation-Date: 2021-06-30 16:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,10 +21,92 @@ msgstr ""
 msgid "Build"
 msgstr ""
 
-#: src/ui/buildwindow.cpp:50
+#: src/ui/SettingsWindow.cpp:40
+msgid "Cancel"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:69
+msgid "Exit Game"
+msgstr ""
+
+#: src/ui/buildwindow.cpp:50 src/scenes/worldscene.cpp:69
 msgid "Factory"
 msgstr ""
 
-#: src/ui/buildwindow.cpp:35
+#: src/ui/buildwindow.cpp:35 src/scenes/worldscene.cpp:61
 msgid "Farm"
+msgstr ""
+
+#: src/ui/SettingsWindow.cpp:100
+msgid "Fullscreen"
+msgstr ""
+
+#: src/ui/buildingwindow.cpp:36
+msgid "Ground: "
+msgstr ""
+
+#: src/world/city.cpp:136
+msgid "House"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:44
+msgid "Load Game"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:33
+msgid "New Game"
+msgstr ""
+
+#: src/ui/buildingwindow.cpp:32
+msgid "Owner: "
+msgstr ""
+
+#: src/ui/routecomponent.cpp:51
+msgid "Product:"
+msgstr ""
+
+#: src/ui/SettingsWindow.cpp:96
+msgid "Resolution"
+msgstr ""
+
+#: src/ui/SettingsWindow.cpp:25
+msgid "Save"
+msgstr ""
+
+#. fullscreen->setText(_("Fullscreen"));
+#: src/ui/SettingsWindow.cpp:44 src/scenes/MainScene.cpp:57
+msgid "Settings"
+msgstr ""
+
+#: src/ui/buildingwindow.cpp:17
+msgid "Show Building"
+msgstr ""
+
+#: src/ui/routecomponent.cpp:49
+msgid "Start: "
+msgstr ""
+
+#: src/ui/buildwindow.cpp:92 src/world/buildings/street.cpp:9
+msgid "Street"
+msgstr ""
+
+#: src/ui/routecomponent.cpp:50
+msgid "Target: "
+msgstr ""
+
+#: src/ui/buildwindow.cpp:77
+msgid "Transport"
+msgstr ""
+
+#: src/scenes/worldscene.cpp:88
+msgid "Transport Office"
+msgstr ""
+
+#. fill info tab
+#: src/ui/buildingwindow.cpp:28
+msgid "Type: "
+msgstr ""
+
+#: src/ui/routecomponent.cpp:53
+msgid "is active"
 msgstr ""

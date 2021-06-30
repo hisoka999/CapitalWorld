@@ -11,7 +11,7 @@ namespace UI
         : updateThread(updateThread), gameState(gameState), buildWindow(buildWindow)
     {
         glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
-        uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
+        uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
         initUI();
     }
 
@@ -46,10 +46,11 @@ namespace UI
         playButton->setColor(utils::color::WHITE);
         playButton->setPos(500, 0);
         playButton->setBorderless(true);
-        playButton->connect(UI::Button::buttonClickCallback(), [&] {
-            updateThread->start();
-            updateThread->setSpeed(300);
-        });
+        playButton->connect(UI::Button::buttonClickCallback(), [&]
+                            {
+                                updateThread->start();
+                                updateThread->setSpeed(300);
+                            });
         addObject(playButton);
         pauseButton = std::make_shared<UI::Button>();
         pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
@@ -57,9 +58,8 @@ namespace UI
         pauseButton->setPos(530, 0);
         pauseButton->setColor(utils::color::WHITE);
         pauseButton->setBorderless(true);
-        pauseButton->connect(UI::Button::buttonClickCallback(), [&] {
-            updateThread->pause();
-        });
+        pauseButton->connect(UI::Button::buttonClickCallback(), [&]
+                             { updateThread->pause(); });
         addObject(pauseButton);
 
         doubleSpeed = std::make_shared<UI::Button>();
@@ -68,10 +68,11 @@ namespace UI
         doubleSpeed->setPos(560, 0);
         doubleSpeed->setBorderless(true);
         doubleSpeed->setColor(utils::color::WHITE);
-        doubleSpeed->connect(UI::Button::buttonClickCallback(), [&] {
-            updateThread->start();
-            updateThread->setSpeed(100);
-        });
+        doubleSpeed->connect(UI::Button::buttonClickCallback(), [&]
+                             {
+                                 updateThread->start();
+                                 updateThread->setSpeed(100);
+                             });
         addObject(doubleSpeed);
 
         fullSpeed = std::make_shared<UI::Button>();
@@ -80,10 +81,11 @@ namespace UI
         fullSpeed->setPos(590, 0);
         fullSpeed->setBorderless(true);
         fullSpeed->setColor(utils::color::WHITE);
-        fullSpeed->connect(UI::Button::buttonClickCallback(), [&] {
-            updateThread->start();
-            updateThread->setSpeed(50);
-        });
+        fullSpeed->connect(UI::Button::buttonClickCallback(), [&]
+                           {
+                               updateThread->start();
+                               updateThread->setSpeed(50);
+                           });
         addObject(fullSpeed);
 
         int xLeft = 50;
@@ -116,10 +118,11 @@ namespace UI
         buildButton->setLabel(" ");
         buildButton->setPos(10, yLeft);
         buildButton->setBorderless(true);
-        buildButton->connect("buttonClick", [&]() {
-            std::cout << "build button clicked" << std::endl;
-            buildWindow->setVisible(true);
-        });
+        buildButton->connect("buttonClick", [&]()
+                             {
+                                 std::cout << "build button clicked" << std::endl;
+                                 buildWindow->setVisible(true);
+                             });
         addObject(buildButton);
     }
 

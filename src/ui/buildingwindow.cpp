@@ -6,6 +6,7 @@
 #include "../ui/factoryproductiontab.h"
 #include "../ui/routestab.h"
 #include "../ui/storagetab.h"
+#include "translate.h"
 
 namespace UI
 {
@@ -13,9 +14,8 @@ namespace UI
     BuildingWindow::BuildingWindow(int x, int y)
         : UI::Window(x, y, 840, 520)
     {
-        setTitle("Show Building");
-        //auto baseFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts","arial.ttf"),12);
-        //setFont(baseFont.get());
+        setTitle(_("Show Building"));
+
         tabBar = std::make_shared<UI::TabBar>(this);
         tabBar->setPos(0, 0);
         tabBar->setWidth(740 - 10);
@@ -25,15 +25,15 @@ namespace UI
         tabBar->addTab(infoTab);
 
         //fill info tab
-        std::shared_ptr<UI::Label> labelName = std::make_shared<UI::Label>("Type: ", infoTab.get());
+        std::shared_ptr<UI::Label> labelName = std::make_shared<UI::Label>(_("Type: "), infoTab.get());
         labelName->setPos(5, 5);
         infoTab->addObject(labelName);
 
-        std::shared_ptr<UI::Label> labelOwner = std::make_shared<UI::Label>("Owner: ", infoTab.get());
+        std::shared_ptr<UI::Label> labelOwner = std::make_shared<UI::Label>(_("Owner: "), infoTab.get());
         labelOwner->setPos(5, 25);
         infoTab->addObject(labelOwner);
 
-        std::shared_ptr<UI::Label> labelGround = std::make_shared<UI::Label>("Ground: ", infoTab.get());
+        std::shared_ptr<UI::Label> labelGround = std::make_shared<UI::Label>(_("Ground: "), infoTab.get());
         labelGround->setPos(5, 45);
         infoTab->addObject(labelGround);
 
