@@ -7,9 +7,9 @@
 namespace UI
 {
     BuildWindow::BuildWindow(int x, int y)
-        : UI::Window(x, y, 180, 300)
+        : UI::Window(x, y, 180, 300), cursor(nullptr)
     {
-        currentAction = world::BuildAction::None;
+        setCurrentAction(world::BuildAction::None);
         backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "BuildMenu.png"));
         setTitle(_("Build"));
         setPos(x, y);
@@ -39,9 +39,8 @@ namespace UI
         farmButton->setColor(defaultColor);
         farmButton->setPos(xPos, yPos);
         farmButton->setStaticWidth(120);
-        farmButton->connect("buttonClick", [&]() {
-            currentAction = world::BuildAction::Farm;
-        });
+        farmButton->connect("buttonClick", [&]()
+                            { setCurrentAction(world::BuildAction::Farm); });
         addObject(farmButton);
 
         yPos += offset;
@@ -54,9 +53,8 @@ namespace UI
         factoryButton->setHoverColor(hoverColor);
         factoryButton->setColor(defaultColor);
         addObject(factoryButton);
-        factoryButton->connect("buttonClick", [&]() {
-            currentAction = world::BuildAction::Factory;
-        });
+        factoryButton->connect("buttonClick", [&]()
+                               { setCurrentAction(world::BuildAction::Factory); });
         yPos += offset;
 
         auto shopButton = std::make_shared<UI::IconButton>(this);
@@ -79,9 +77,8 @@ namespace UI
         transportButton->setHoverColor(hoverColor);
         transportButton->setColor(defaultColor);
         transportButton->setStaticWidth(120);
-        transportButton->connect("buttonClick", [&]() {
-            currentAction = world::BuildAction::Transport;
-        });
+        transportButton->connect("buttonClick", [&]()
+                                 { setCurrentAction(world::BuildAction::Transport); });
 
         addObject(transportButton);
 
@@ -97,9 +94,8 @@ namespace UI
         streetButton->setStaticWidth(120);
 
         addObject(streetButton);
-        streetButton->connect("buttonClick", [&]() {
-            currentAction = world::BuildAction::Street;
-        });
+        streetButton->connect("buttonClick", [&]()
+                              { setCurrentAction(world::BuildAction::Street); });
 
         yPos += offset;
 
@@ -112,9 +108,8 @@ namespace UI
         destroyButton->setColor(defaultColor);
         destroyButton->setStaticWidth(120);
         addObject(destroyButton);
-        destroyButton->connect("buttonClick", [&]() {
-            currentAction = world::BuildAction::Destroy;
-        });
+        destroyButton->connect("buttonClick", [&]()
+                               { setCurrentAction(world::BuildAction::Destroy); });
     }
 
     void BuildWindow::render(core::Renderer *pRender)
@@ -125,6 +120,28 @@ namespace UI
     void BuildWindow::handleEvents(core::Input *pInput)
     {
         UI::Window::handleEvents(pInput);
+    }
+
+    void BuildWindow::setCurrentAction(world::BuildAction action)
+    {
+        currentAction = action;
+
+        if (cursor != nullptr)
+            SDL_FreeCursor(cursor);
+        switch (action)
+        {
+        case world::BuildAction::None:
+            cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+
+            break;
+        case world::BuildAction::Destroy:
+            cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
+            break;
+        default:
+            cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+            break;
+        }
+        SDL_SetCursor(cursor);
     }
 
 }

@@ -22,15 +22,13 @@ namespace UI
         {
             return currentAction;
         }
-        void setCurrentAction(world::BuildAction action)
-        {
-            currentAction = action;
-        }
+        void setCurrentAction(world::BuildAction action);
 
     private:
         void initUI();
         std::shared_ptr<graphics::Texture> backgroundTexture;
         world::BuildAction currentAction;
+        SDL_Cursor *cursor;
     };
 
 }
