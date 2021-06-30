@@ -108,36 +108,42 @@ void GameMapRenderer::render(core::Renderer *renderer)
             const auto &iso = gameMap->twoDToIso(vec);
 
             renderTile(renderer, gameMap->getTile(i, j), i, j, iso);
+        }
+    }
+    for (size_t j = std::max(startY, 0); j < std::max(end.getY() + start.getY(), float(gameMap->getHeight())); ++j)
+    {
+        for (size_t i = std::max(startX, 0); i < std::max(end.getX() + start.getX(), float(gameMap->getWidth())); ++i)
+        {
+            if (i > gameMap->getWidth() - 1 || j > gameMap->getHeight() - 1)
+                continue;
 
+            const std::shared_ptr<world::Building> &building = gameMap->getBuilding(i, j);
+            if (building == nullptr)
+                continue;
+            auto displayRect = building->getDisplayRect();
+
+            displayRect.x = (displayRect.x * tileWidth / 2.0f);
+            displayRect.y = (displayRect.y * tileHeight);
+            utils::Vector2 vec(displayRect.x, displayRect.y);
+            TileType tile = gameMap->getTile(building->getDisplayRect().x, building->getDisplayRect().y);
+
+            auto pos = gameMap->twoDToIso(vec);
+
+            displayRect.x = std::round(((pos.getX() - building->getXOffset()) * renderer->getZoomFactor()) - camera->getX());
+            displayRect.width = displayRect.width * renderer->getZoomFactor();
+            displayRect.height = displayRect.height * renderer->getZoomFactor();
+
+            float tileYOffset = getTileYOffset(tile, building->getDisplayRect().x, building->getDisplayRect().y);
+
+            displayRect.y = std::round(((pos.getY() - building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset));
+
+            if (!building->getSubTexture().empty())
             {
-                const std::shared_ptr<world::Building> &building = gameMap->getBuilding(i, j);
-                if (building == nullptr)
-                    continue;
-                auto displayRect = building->getDisplayRect();
-
-                displayRect.x = (displayRect.x * tileWidth / 2.0f);
-                displayRect.y = (displayRect.y * tileHeight);
-                utils::Vector2 vec(displayRect.x, displayRect.y);
-                TileType tile = gameMap->getTile(building->getDisplayRect().x, building->getDisplayRect().y);
-
-                auto pos = gameMap->twoDToIso(vec);
-
-                displayRect.x = std::round(((pos.getX() - building->getXOffset()) * renderer->getZoomFactor()) - camera->getX());
-                displayRect.width = displayRect.width * renderer->getZoomFactor();
-                displayRect.height = displayRect.height * renderer->getZoomFactor();
-
-                float tileYOffset = getTileYOffset(tile, building->getDisplayRect().x, building->getDisplayRect().y);
-
-                displayRect.y = std::round(((pos.getY() - building->getYOffset()) * renderer->getZoomFactor()) - (camera->getY() + tileYOffset));
-
-                if (!building->getSubTexture().empty())
-                {
-                    textureMap->render(building->getSubTexture(), displayRect, renderer);
-                }
-                else
-                {
-                    groundTexture->render(renderer, building->getSourceRect(), displayRect);
-                }
+                textureMap->render(building->getSubTexture(), displayRect, renderer);
+            }
+            else
+            {
+                groundTexture->render(renderer, building->getSourceRect(), displayRect);
             }
         }
     }

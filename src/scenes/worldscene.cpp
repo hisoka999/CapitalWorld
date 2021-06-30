@@ -122,15 +122,21 @@ namespace scenes
         }
         float cursorX = (cursorPosition.getX() * mapRenderer->getTileWidth() / 2.f);
         float cursorY = (cursorPosition.getY() * mapRenderer->getTileHeight());
-        utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX, cursorY));
         auto camera = renderer->getMainCamera();
-        float xPos = (pos.getX() * renderer->getZoomFactor()) - camera->getX();
+        for (float y = 0; y < cursorBuildingRect.height; y++)
+        {
+            for (float x = 0; x < cursorBuildingRect.width; x++)
+            {
+                utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX + (x * mapRenderer->getTileWidth() / 2.f), cursorY + (y * mapRenderer->getTileHeight())));
+                float xPos = (pos.getX() * renderer->getZoomFactor()) - camera->getX();
 
-        float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
+                float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
 
-        float yPos = ((pos.getY() - tileYOffset) * renderer->getZoomFactor()) - (camera->getY());
+                float yPos = ((pos.getY() - tileYOffset) * renderer->getZoomFactor()) - (camera->getY());
 
-        cursorTexture->renderResized(renderer, xPos, yPos, cursorTexture->getWidth() * renderer->getZoomFactor(), cursorTexture->getHeight() * renderer->getZoomFactor());
+                cursorTexture->renderResized(renderer, xPos, yPos, cursorTexture->getWidth() * renderer->getZoomFactor(), cursorTexture->getHeight() * renderer->getZoomFactor());
+            }
+        }
 
         renderHUD();
 
@@ -242,17 +248,21 @@ namespace scenes
                 auto building = createBuilding(buildWindow.getCurrentAction());
                 if (building != nullptr)
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
+
                 cursorTexture->setBlendMode(SDL_BLENDMODE_ADD);
                 if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
                 {
+                    cursorBuildingRect = building->get2DPosition();
                     cursorTexture->setColorKey(0, 255, 0);
                 }
                 else if (building != nullptr)
                 {
+                    cursorBuildingRect = building->get2DPosition();
                     cursorTexture->setColorKey(255, 0, 0);
                 }
                 else
                 {
+                    cursorBuildingRect = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
                     cursorTexture->setColorKey(255, 255, 255);
                 }
             }

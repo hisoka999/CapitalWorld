@@ -49,6 +49,7 @@ namespace scenes
         std::shared_ptr<graphics::Texture> hudTexture;
         std::shared_ptr<graphics::Text> hudFont;
         utils::Vector2 cursorPosition;
+        graphics::Rect cursorBuildingRect;
         UI::BuildWindow buildWindow;
         std::shared_ptr<world::GameState> gameState;
         std::unique_ptr<UpdateThread> thread;
