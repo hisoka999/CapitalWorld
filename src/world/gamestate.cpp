@@ -2,7 +2,8 @@
 
 namespace world
 {
-    GameState::GameState(std::shared_ptr<Company> player) : timeState(TimeState::Normal), player(player)
+    GameState::GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities)
+        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities)
     {
         std::tm ttm = std::tm();
         //Unix Time starts at the year 1900
@@ -28,9 +29,19 @@ namespace world
         return time;
     }
 
-    std::shared_ptr<world::Company> GameState::getPlayer()
+    const std::shared_ptr<world::Company> &GameState::getPlayer() const
     {
         return player;
+    }
+
+    const std::shared_ptr<GameMap> &GameState::getGameMap() const
+    {
+        return gameMap;
+    }
+
+    const std::vector<std::shared_ptr<world::City>> &GameState::getCities() const
+    {
+        return cities;
     }
 
 }

@@ -98,6 +98,9 @@ const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const 
 {
     size_t pos = x + (y * height);
 
+    if (pos < 0)
+        pos = 0;
+
     return buildings[pos];
 }
 
@@ -110,12 +113,16 @@ bool GameMap::canBuild(graphics::Rect buildRect)
     if (buildRect.x < 0 || buildRect.y < 0)
         return false;
 
-    for (auto &building : buildings)
+    for (int y = buildRect.y - buildRect.height; y <= buildRect.y + buildRect.height; ++y)
     {
-        if (building == nullptr)
-            continue;
-        if (building->get2DPosition().intersectsNoLine(buildRect))
-            return false;
+        for (int x = buildRect.x - buildRect.width; x <= buildRect.x + buildRect.width; ++x)
+        {
+            auto &building = getBuilding(x, y);
+            if (building == nullptr)
+                continue;
+            if (building->get2DPosition().intersectsNoLine(buildRect))
+                return false;
+        }
     }
 
     TileType tile = getTile(buildRect.x, buildRect.y);

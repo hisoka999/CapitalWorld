@@ -13,24 +13,19 @@ namespace scenes
 {
 
     WorldScene::WorldScene(core::Renderer *pRenderer,
-                           core::SceneManager *pSceneManager)
+                           core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState)
+
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100)
+          buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100), gameState(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
-        world::MapGenerator gen;
-        std::random_device r;
-
-        gameMap = gen.generateMap(100, 100, r());
-        cities = gen.getGeneratedCities();
 
         //gameMap = std::make_shared<GameMap>(100,100);
-        mapRenderer = std::make_shared<GameMapRenderer>(gameMap);
-        auto playerCompany = std::make_shared<world::Company>("Player Company", 1000000, true);
-        gameState = std::make_shared<world::GameState>(playerCompany);
+        mapRenderer = std::make_shared<GameMapRenderer>(gameState->getGameMap());
+
         renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
         buildWindow.setVisible(true);
@@ -111,7 +106,8 @@ namespace scenes
 
     void WorldScene::render()
     {
-
+        auto &gameMap = gameState->getGameMap();
+        auto &cities = gameState->getCities();
         size_t width = gameMap->getHeight() * mapRenderer->getTileWidth();
         size_t height = gameMap->getWidth() * mapRenderer->getTileHeight() / 2;
 
@@ -145,6 +141,7 @@ namespace scenes
 
     void WorldScene::handleEvents(core::Input *pInput)
     {
+        auto &gameMap = gameState->getGameMap();
         bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
         int y = 0;

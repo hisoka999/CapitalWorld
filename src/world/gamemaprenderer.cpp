@@ -90,34 +90,42 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
     //todo testcode
     auto start = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.x, viewPort.y));
-    auto end = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.height, viewPort.width));
+    //auto end = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.width, viewPort.height));
+
+    float tempEndX = viewPort.width / (renderer->getZoomFactor() * getTileHeight() / 2.f);
+    float tempEndY = viewPort.height / (renderer->getZoomFactor() * getTileHeight() / 2.f);
+
+    utils::Vector2 end(tempEndX, tempEndY);
 
     int startX = start.getX() - (end.getX() / 2);
     int startY = start.getY() - (end.getX() / 2);
 
     SDL_Color color = {0, 0, 0, 255};
-    for (size_t j = std::max(startY, 0); j < std::max(end.getY() + start.getY(), float(gameMap->getHeight())); ++j)
+    size_t endY = std::min(end.getY() + start.getY(), float(gameMap->getHeight()));
+    size_t endX = std::min(end.getX() + start.getX(), float(gameMap->getWidth()));
+
+    for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
-        for (size_t i = std::max(startX, 0); i < std::max(end.getX() + start.getX(), float(gameMap->getWidth())); ++i)
+        for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
         {
-            if (i > gameMap->getWidth() - 1 || j > gameMap->getHeight() - 1)
+            if (tempX > gameMap->getWidth() - 1 || tempY > gameMap->getHeight() - 1)
                 continue;
-            float x = static_cast<float>(i) * tileWidth / 2.0f;
-            float y = static_cast<float>(j) * tileHeight;
+            float x = static_cast<float>(tempX) * tileWidth / 2.0f;
+            float y = static_cast<float>(tempY) * tileHeight;
             utils::Vector2 vec(x, y);
             const auto &iso = gameMap->twoDToIso(vec);
 
-            renderTile(renderer, gameMap->getTile(i, j), i, j, iso);
+            renderTile(renderer, gameMap->getTile(tempX, tempY), tempX, tempY, iso);
         }
     }
-    for (size_t j = std::max(startY, 0); j < std::max(end.getY() + start.getY(), float(gameMap->getHeight())); ++j)
+    for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
-        for (size_t i = std::max(startX, 0); i < std::max(end.getX() + start.getX(), float(gameMap->getWidth())); ++i)
+        for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
         {
-            if (i > gameMap->getWidth() - 1 || j > gameMap->getHeight() - 1)
+            if (tempX > gameMap->getWidth() - 1 || tempY > gameMap->getHeight() - 1)
                 continue;
 
-            const std::shared_ptr<world::Building> &building = gameMap->getBuilding(i, j);
+            const std::shared_ptr<world::Building> &building = gameMap->getBuilding(tempX, tempY);
             if (building == nullptr)
                 continue;
             auto displayRect = building->getDisplayRect();

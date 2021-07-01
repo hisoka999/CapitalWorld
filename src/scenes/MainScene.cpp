@@ -95,7 +95,7 @@ namespace scenes
         {
                 std::cout << "start game" << std::endl;
 
-                sceneManager->setCurrentScene("world");
+                sceneManager->setCurrentScene("newGameScene");
         }
 
         void MainScene::loadGame()

@@ -12,6 +12,7 @@
 #include "engine/utils/string.h"
 #include "scenes/MainScene.h"
 #include "scenes/worldscene.h"
+#include "scenes/NewGameScene.h"
 #include "services/productservice.h"
 #include "services/ressourceservice.h"
 #include <iostream>
@@ -39,9 +40,11 @@ int main()
         services::ProductService::Instance().loadData("data/products.json");
 
         auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
-        auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
+        //auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
+        auto newGameScene = std::make_shared<scenes::NewGameScene>(&ren, &sceneManager);
         sceneManager.addScene("main", mainScene);
-        sceneManager.addScene("world", worldScene);
+        //sceneManager.addScene("world", worldScene);
+        sceneManager.addScene("newGameScene", newGameScene);
         sceneManager.setCurrentScene("main");
 
         unsigned int lastTime = ren.getTickCount();

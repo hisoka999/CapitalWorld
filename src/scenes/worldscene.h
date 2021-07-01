@@ -31,7 +31,7 @@ namespace scenes
     {
     public:
         WorldScene(core::Renderer *pRenderer,
-                   core::SceneManager *pSceneManager);
+                   core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState);
         ~WorldScene();
         void render();
         void handleEvents(core::Input *pInput);
@@ -42,8 +42,7 @@ namespace scenes
         std::shared_ptr<world::Building> createBuilding(world::BuildAction action);
         graphics::Texture uiTexture;
         core::SceneManager *sceneManager;
-        std::shared_ptr<GameMap> gameMap;
-        std::vector<std::shared_ptr<world::City>> cities;
+
         std::shared_ptr<GameMapRenderer> mapRenderer;
         std::shared_ptr<graphics::Texture> cursorTexture;
         std::shared_ptr<graphics::Texture> hudTexture;
