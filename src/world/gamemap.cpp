@@ -34,16 +34,16 @@ TileType GameMap::getTile(utils::Vector2 &pos)
     return getTile(pos.getX(), pos.getY());
 }
 
-size_t GameMap::getWidth()
+const size_t GameMap::getWidth() const
 {
     return width;
 }
-size_t GameMap::getHeight()
+const size_t GameMap::getHeight() const
 {
     return height;
 }
 
-utils::Vector2 GameMap::isoTo2D(utils::Vector2 pt)
+const utils::Vector2 GameMap::isoTo2D(const utils::Vector2 &pt)
 {
     float x, y = 0.0f;
     x = ((2.0f * pt.getY()) + pt.getX()) / 2.0f;
@@ -51,7 +51,7 @@ utils::Vector2 GameMap::isoTo2D(utils::Vector2 pt)
     return utils::Vector2(x, y);
 }
 
-utils::Vector2 GameMap::twoDToIso(utils::Vector2 pt)
+const utils::Vector2 GameMap::twoDToIso(const utils::Vector2 &pt)
 {
     float x, y = 0.0f;
     x = pt.getX() - pt.getY();
@@ -62,14 +62,18 @@ std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &so
 {
     std::shared_ptr<world::Building> result = nullptr;
     //auto iso = twoDToIso(pt);
-    for (auto building : buildings)
+    for (int y = sourceBuilding.y - sourceBuilding.height; y <= sourceBuilding.y + sourceBuilding.height; ++y)
     {
-        if (building == nullptr)
-            continue;
-        if (building->get2DPosition().intersectsNoLine(sourceBuilding))
+        for (int x = sourceBuilding.x - sourceBuilding.width; x <= sourceBuilding.x + sourceBuilding.width; ++x)
         {
-            result = building;
-            break;
+            auto &building = getBuilding(x, y);
+            if (building == nullptr)
+                continue;
+            if (building->get2DPosition().intersectsNoLine(sourceBuilding))
+            {
+                result = building;
+                break;
+            }
         }
     }
 
@@ -96,10 +100,13 @@ const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() con
 
 const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const int y) const
 {
-    size_t pos = x + (y * height);
-
-    if (pos < 0)
-        pos = 0;
+    int x2 = x;
+    int y2 = y;
+    if (x2 < 0)
+        x2 = 0;
+    if (y2 < 0)
+        y2 = 0;
+    size_t pos = x2 + (y2 * height);
 
     return buildings[pos];
 }

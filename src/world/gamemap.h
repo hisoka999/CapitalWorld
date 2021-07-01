@@ -21,11 +21,11 @@ public:
     const TileType getTile(const size_t x, const size_t y) const;
     TileType getTile(utils::Vector2 &pos);
 
-    size_t getWidth();
-    size_t getHeight();
+    const size_t getWidth() const;
+    const size_t getHeight() const;
 
-    utils::Vector2 isoTo2D(utils::Vector2 pt);
-    utils::Vector2 twoDToIso(utils::Vector2 pt);
+    const utils::Vector2 isoTo2D(const utils::Vector2 &pt);
+    const utils::Vector2 twoDToIso(const utils::Vector2 &pt);
 
     std::shared_ptr<world::Building> getBuilding2D(const graphics::Rect &sourceBuilding);
     bool canBuild(graphics::Rect buildRect);

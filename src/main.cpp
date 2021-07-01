@@ -65,8 +65,11 @@ int main()
             {
                 while (input.poll())
                 {
-                    if (input.isKeyDown(SDLK_ESCAPE) || input.isQuit())
+                    if (input.isQuit())
                         run = false;
+                    else if (input.isKeyDown(SDLK_ESCAPE))
+                        sceneManager.setCurrentScene("main");
+
                     sceneManager.handleEvents(&input);
                 }
             }

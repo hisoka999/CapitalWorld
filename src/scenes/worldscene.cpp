@@ -146,6 +146,7 @@ namespace scenes
 
         int y = 0;
         float height = 50;
+        mapRenderer->clearCache();
 
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
 
@@ -364,6 +365,7 @@ namespace scenes
                 moveY = renderer->getMainCamera()->getY() * -1;
             }
             renderer->getMainCamera()->move(moveX, moveY);
+            mapRenderer->clearCache();
         }
 
         hud->update();

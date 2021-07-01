@@ -10,6 +10,7 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 10);
 
     textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.tm"));
+    cacheTexture = nullptr;
 }
 
 graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_t tileY)
@@ -45,6 +46,11 @@ float GameMapRenderer::getTileYOffset(uint16_t tile, size_t tileX, size_t tileY)
     return tileHeight - srcRect.height;
 }
 
+void GameMapRenderer::clearCache()
+{
+    cacheTexture = nullptr;
+}
+
 void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos)
 {
     const auto &camera = renderer->getMainCamera();
@@ -55,7 +61,12 @@ void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int ti
     float height = float(tileHeight) * renderer->getZoomFactor();
 
     const graphics::Rect &srcRect = getSourceRect(tile, tileX, tileY);
-    graphics::Rect destRect = {std::round((pos.getX() * renderer->getZoomFactor()) - camera->getX()), std::round(((pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor()) - camera->getY()), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
+    graphics::Rect destRect;
+    destRect.x = std::round((pos.getX() * renderer->getZoomFactor()) - camera->getX());
+    destRect.y = std::round(((pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor()) - camera->getY());
+    destRect.width = std::round(srcRect.width * renderer->getZoomFactor());
+    destRect.height = std::round(srcRect.height * renderer->getZoomFactor());
+
     graphics::Rect realRect = {(pos.getX() * renderer->getZoomFactor()), (pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor(), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
 
     if (!realRect.intersects(camera->getViewPortRect()))
@@ -80,6 +91,7 @@ utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 inp
     y = std::floor(ty);
     if (y > gameMap->getHeight())
         y = gameMap->getHeight();
+
     return utils::Vector2(x, y);
 }
 
@@ -88,6 +100,14 @@ void GameMapRenderer::render(core::Renderer *renderer)
     auto camera = renderer->getMainCamera();
     auto viewPort = camera->getViewPortRect();
 
+    if (cacheTexture != nullptr)
+    {
+        cacheTexture->render(renderer, 0, 0);
+        return;
+    }
+    cacheTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
+
+    renderer->setRenderTarget(cacheTexture->getSDLTexture());
     //todo testcode
     auto start = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.x, viewPort.y));
     //auto end = convertVec2(renderer->getZoomFactor(), utils::Vector2(viewPort.width, viewPort.height));
@@ -98,11 +118,11 @@ void GameMapRenderer::render(core::Renderer *renderer)
     utils::Vector2 end(tempEndX, tempEndY);
 
     int startX = start.getX() - (end.getX() / 2);
-    int startY = start.getY() - (end.getX() / 2);
+    int startY = start.getY() - (end.getY() / 2);
 
     SDL_Color color = {0, 0, 0, 255};
-    size_t endY = std::min(end.getY() + start.getY(), float(gameMap->getHeight()));
-    size_t endX = std::min(end.getX() + start.getX(), float(gameMap->getWidth()));
+    size_t endY = std::min(end.getY() / 1.5f + start.getY(), float(gameMap->getHeight()));
+    size_t endX = std::min(end.getX() / 1.5f + start.getX(), float(gameMap->getWidth()));
 
     for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
@@ -118,6 +138,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
             renderTile(renderer, gameMap->getTile(tempX, tempY), tempX, tempY, iso);
         }
     }
+
     for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
         for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
@@ -155,6 +176,9 @@ void GameMapRenderer::render(core::Renderer *renderer)
             }
         }
     }
+
+    renderer->setRenderTarget(nullptr);
+    cacheTexture->render(renderer, 0, 0);
 }
 
 size_t GameMapRenderer::getTileWidth()

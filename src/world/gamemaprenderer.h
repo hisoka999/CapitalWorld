@@ -17,6 +17,7 @@ public:
     size_t getTileWidth();
     size_t getTileHeight();
     float getTileYOffset(uint16_t tile, size_t tileX, size_t tileY);
+    void clearCache();
 
 private:
     void renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos);
@@ -26,6 +27,8 @@ private:
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;
     std::shared_ptr<graphics::TextureMap> textureMap;
+
+    std::shared_ptr<graphics::Texture> cacheTexture;
     size_t tileWidth;
     size_t tileHeight;
 };

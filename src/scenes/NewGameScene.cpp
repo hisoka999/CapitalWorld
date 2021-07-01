@@ -26,7 +26,7 @@ namespace scenes
 
         auto startButton = std::make_shared<UI::Button>();
         startButton->setPos(viewPort.width - 150, viewPort.height - 50);
-        startButton->setFont("fonts/Audiowide-Regular.ttf", 14);
+        startButton->setFont("fonts/arial.ttf", 14);
         startButton->setLabel(_("Start Game"));
 
         startButton->connect(UI::Button::buttonClickCallback(), [&]()
@@ -35,8 +35,10 @@ namespace scenes
 
         auto backButton = std::make_shared<UI::Button>();
         backButton->setPos(viewPort.width - 250, viewPort.height - 50);
-        backButton->setFont("fonts/Audiowide-Regular.ttf", 14);
+        backButton->setFont("fonts/arial.ttf", 14);
         backButton->setLabel(_("Back"));
+        backButton->connect(UI::Button::buttonClickCallback(), [&]()
+                            { sceneManager->setCurrentScene("main"); });
 
         buttonList->addObject(backButton);
         winMgr->addContainer(buttonList.get());
@@ -46,14 +48,14 @@ namespace scenes
         int y = 300;
 
         auto nameLabel = std::make_shared<UI::Label>(nullptr);
-        nameLabel->setFont("fonts/Audiowide-Regular.ttf", 14);
-        nameLabel->setText(_("Playername: "));
+        nameLabel->setFont("fonts/arial.ttf", 14);
+        nameLabel->setText(_("Companyname: "));
         nameLabel->setPos(20, y);
         container->addObject(nameLabel);
 
         auto nameEdit = std::make_shared<UI::TextItem>(nullptr, 200, 25);
         nameEdit->setPos(200, y);
-        nameEdit->setFont("fonts/Audiowide-Regular.ttf", 14);
+        nameEdit->setFont("fonts/arial.ttf", 14);
         playerName = "Player";
         nameEdit->setText(playerName);
 
@@ -64,14 +66,14 @@ namespace scenes
 
         y += yOffset;
         auto seedLabel = std::make_shared<UI::Label>(nullptr);
-        seedLabel->setFont("fonts/Audiowide-Regular.ttf", 14);
+        seedLabel->setFont("fonts/arial.ttf", 14);
         seedLabel->setText(_("Seed: "));
         seedLabel->setPos(20, y);
         container->addObject(seedLabel);
 
         auto seedEdit = std::make_shared<UI::TextItem>(nullptr, 200, 25);
         seedEdit->setPos(200, y);
-        seedEdit->setFont("fonts/Audiowide-Regular.ttf", 14);
+        seedEdit->setFont("fonts/arial.ttf", 14);
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 
         seedEdit->setText(std::to_string(seed));
@@ -82,13 +84,13 @@ namespace scenes
 
         y += yOffset;
         auto numberOfPlayersLabel = std::make_shared<UI::Label>(nullptr);
-        numberOfPlayersLabel->setFont("fonts/Audiowide-Regular.ttf", 14);
+        numberOfPlayersLabel->setFont("fonts/arial.ttf", 14);
         numberOfPlayersLabel->setText(_("Number of Companies: "));
         numberOfPlayersLabel->setPos(20, y);
         container->addObject(numberOfPlayersLabel);
 
         auto numberOfPlayersCombobox = std::make_shared<UI::ComboBox<int>>();
-        numberOfPlayersCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
+        numberOfPlayersCombobox->setFont("fonts/arial.ttf", 14);
         numberOfPlayersCombobox->addElement(2);
         numberOfPlayersCombobox->addElement(4);
         numberOfPlayersCombobox->addElement(8);
@@ -106,13 +108,13 @@ namespace scenes
 
         y += yOffset;
         auto systemSizeLabel = std::make_shared<UI::Label>(nullptr);
-        systemSizeLabel->setFont("fonts/Audiowide-Regular.ttf", 14);
-        systemSizeLabel->setText(_("Size of the System: "));
+        systemSizeLabel->setFont("fonts/arial.ttf", 14);
+        systemSizeLabel->setText(_("Map size: "));
         systemSizeLabel->setPos(20, y);
         container->addObject(systemSizeLabel);
 
         auto systemSizeCombobox = std::make_shared<UI::ComboBox<WorldSize>>();
-        systemSizeCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
+        systemSizeCombobox->setFont("fonts/arial.ttf", 14);
         systemSizeCombobox->connect("valueChanged", [&](WorldSize size)
                                     { worldSize = size; });
         constexpr auto &worldSizes = magic_enum::enum_values<WorldSize>();
@@ -131,13 +133,13 @@ namespace scenes
 
         y += yOffset;
         auto difficultyLabel = std::make_shared<UI::Label>(nullptr);
-        difficultyLabel->setFont("fonts/Audiowide-Regular.ttf", 14);
+        difficultyLabel->setFont("fonts/arial.ttf", 14);
         difficultyLabel->setText(_("Difficultiy: "));
         difficultyLabel->setPos(20, y);
         container->addObject(difficultyLabel);
 
         auto difficultyCombobox = std::make_shared<UI::ComboBox<Difficulty>>();
-        difficultyCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
+        difficultyCombobox->setFont("fonts/arial.ttf", 14);
         constexpr auto &difficulties = magic_enum::enum_values<Difficulty>();
         for (auto &value : difficulties)
         {
@@ -169,7 +171,7 @@ namespace scenes
         //     raceIcon->setPos(i * 100, 5);
         //     scrollArea->addObject(raceIcon);
         //     auto raceName = std::make_shared<UI::Label>(scrollArea.get());
-        //     raceName->setFont("fonts/Audiowide-Regular.ttf", 14);
+        //     raceName->setFont("fonts/arial.ttf", 14);
         //     raceName->setPos(i * 100, 170);
         //     raceName->setText(race->getName());
         //     if (i == 0)
@@ -208,10 +210,10 @@ namespace scenes
                                  renderer->getMainCamera()->getWidth(),
                                  renderer->getMainCamera()->getHeight());
 
-        graphics::Texture texture(renderer, renderer->getMainCamera()->getWidth(),
-                                  renderer->getMainCamera()->getHeight());
+        // graphics::Texture texture(renderer, renderer->getMainCamera()->getWidth(),
+        //                           renderer->getMainCamera()->getHeight());
 
-        renderer->setRenderTarget(texture.getSDLTexture());
+        //        renderer->setRenderTarget(texture.getSDLTexture());
         renderer->setDrawColor(12, 21, 24, 155);
         graphics::Rect bounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
         utils::Vector2 lineStart(bounds.x, 440);
@@ -222,8 +224,8 @@ namespace scenes
         renderer->drawLine(lineStart, lineEnd);
         renderer->drawRect(bounds);
         renderer->setRenderTarget(nullptr);
-        texture.setBlendMode(SDL_BLENDMODE_BLEND);
-        texture.render(renderer, 0, 0);
+        // texture.setBlendMode(SDL_BLENDMODE_BLEND);
+        // texture.render(renderer, 0, 0);
 
         winMgr->render(renderer);
     }
