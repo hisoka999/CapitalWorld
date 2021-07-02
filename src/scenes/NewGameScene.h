@@ -36,6 +36,7 @@ namespace scenes
         std::shared_ptr<UI::TextItem> seedEdit;
         unsigned long seed;
         WorldSize worldSize;
+        Difficulty difficulty;
         std::string playerName;
         int numberOfCompanys;
         int numberOfCities;

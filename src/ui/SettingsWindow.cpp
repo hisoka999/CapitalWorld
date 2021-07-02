@@ -106,7 +106,7 @@ SettingsWindow::SettingsWindow()
     mainArea->addObject(cancelButton);
     mainArea->addObject(saveButton);
 
-    graphics::Rect bounds = {10, 10, mainArea->getWidth(), mainArea->getHeight()};
+    graphics::Rect bounds = {10, 10, float(mainArea->getWidth()), float(mainArea->getHeight())};
 
     layout->updateLayout(bounds);
     mainArea->reset();

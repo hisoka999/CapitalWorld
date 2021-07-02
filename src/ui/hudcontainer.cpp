@@ -4,6 +4,7 @@
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/color.h>
 #include <engine/utils/string.h>
+#include <engine/ui/StringHint.h>
 
 namespace UI
 {
@@ -99,6 +100,8 @@ namespace UI
         cashButton->setColor(utils::color::WHITE);
         cashButton->setPos(xLeft, yLeft);
         cashButton->setBorderless(true);
+        cashButton->setHint(std::make_shared<UI::StringHint>());
+
         xLeft += 170;
         profitButton = std::make_shared<UI::IconButton>();
         profitButton->setFont("fonts/arial.ttf", 12);
@@ -130,5 +133,11 @@ namespace UI
     {
         cashButton->setLabel(utils::string_format("%'.2f €", gameState->getPlayer()->getCash()));
         profitButton->setLabel(utils::string_format("%'.2f €", gameState->getPlayer()->getProfit()));
+
+        //cashButton->getHint()->setHintText(utils::string_format("Income Balance\n Cash: %'.2f € \nProfit: %'.2f €", gameState->getPlayer()->getCash(), gameState->getPlayer()->getProfit()));
+        std::string hintText = "Income Balance\n";
+        hintText += utils::string_format("Cash: %'.2f €", gameState->getPlayer()->getCash()) + "\n";
+        hintText += utils::string_format("Profit: %'.2f €", gameState->getPlayer()->getProfit());
+        cashButton->getHint()->setHintText(hintText);
     }
 }

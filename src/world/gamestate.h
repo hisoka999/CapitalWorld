@@ -8,6 +8,7 @@
 #include <chrono>
 #include <memory>
 #include <vector>
+#include "constants.h"
 
 namespace world
 {
@@ -23,7 +24,7 @@ namespace world
     class GameState
     {
     public:
-        GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities);
+        GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty);
 
         void setTimeState(TimeState state);
         void increaseTime();
@@ -31,6 +32,7 @@ namespace world
         const std::shared_ptr<world::Company> &getPlayer() const;
         const std::shared_ptr<GameMap> &getGameMap() const;
         const std::vector<std::shared_ptr<world::City>> &getCities() const;
+        const Difficulty getDifficulty() const;
 
     private:
         std::chrono::system_clock::time_point time;
@@ -39,6 +41,7 @@ namespace world
         TimeState timeState;
         std::shared_ptr<GameMap> gameMap;
         std::vector<std::shared_ptr<world::City>> cities;
+        Difficulty difficulty;
     };
 }
 #endif // GAMESTATE_H

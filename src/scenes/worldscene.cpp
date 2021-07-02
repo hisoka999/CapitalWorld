@@ -146,7 +146,7 @@ namespace scenes
 
         int y = 0;
         float height = 50;
-        mapRenderer->clearCache();
+        //
 
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
 
@@ -191,6 +191,7 @@ namespace scenes
                         gameMap->addBuilding(building);
                         gameState->getPlayer()->addBuilding(building);
                         gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
+                        mapRenderer->clearCache();
                     }
                 }
                 else
@@ -212,15 +213,16 @@ namespace scenes
             if (pInput->isScrollWheel())
             {
                 auto wheelPosition = pInput->getMouseWheelPosition();
-                float offset = (wheelPosition.getY() / 5.f);
+                float offset = (wheelPosition.getY() / 10.f);
                 float factor = renderer->getZoomFactor() + offset;
-                if (factor >= 0.2)
+                if (factor >= 0.4f)
                 {
                     renderer->setZoomFactor(factor);
                     float camX = renderer->getMainCamera()->getX();
                     float camY = renderer->getMainCamera()->getY();
                     renderer->getMainCamera()->reset();
                     renderer->getMainCamera()->move(camX * (1.f + offset), camY * (1.f + offset));
+                    mapRenderer->clearCache();
                 }
 
                 std::cout << "factor: " << factor << std::endl;
@@ -241,7 +243,7 @@ namespace scenes
                 y = std::round(ty - 0.5f);
 
                 cursorPosition = utils::Vector2(x, y);
-                std::cout << "mouse position x: " << x << " y:" << y << std::endl;
+                //std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
                 auto building = createBuilding(buildWindow.getCurrentAction());
                 if (building != nullptr)
@@ -365,9 +367,15 @@ namespace scenes
                 moveY = renderer->getMainCamera()->getY() * -1;
             }
             renderer->getMainCamera()->move(moveX, moveY);
-            mapRenderer->clearCache();
         }
+    }
+
+    void WorldScene::fixedUpdate(u_int32_t delta)
+    {
 
         hud->update();
+
+        if (direction.isMoving())
+            mapRenderer->clearCache();
     }
 }

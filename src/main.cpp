@@ -48,7 +48,10 @@ int main()
         sceneManager.setCurrentScene("main");
 
         unsigned int lastTime = ren.getTickCount();
+        unsigned int lastUpdateTime = ren.getTickCount();
+
         unsigned int frames = 0;
+
         unsigned int fps = 0;
         graphics::Text text;
         text.openFont(utils::os::combine("fonts", "arial.ttf"), 22);
@@ -94,6 +97,11 @@ int main()
                     if (delay > 0)
                         delay--;
                 }
+            }
+            if (ren.getTickCount() - lastUpdateTime >= 40)
+            {
+                sceneManager.fixedUpdate(40);
+                lastUpdateTime = ren.getTickCount();
             }
             sceneManager.update();
             text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);

@@ -25,6 +25,11 @@ namespace scenes
         bool right = false;
         bool top = false;
         bool bottom = false;
+
+        bool isMoving()
+        {
+            return left || right || top || bottom;
+        }
     };
 
     class WorldScene : public core::Scene
@@ -36,6 +41,7 @@ namespace scenes
         void render();
         void handleEvents(core::Input *pInput);
         virtual void update();
+        virtual void fixedUpdate(u_int32_t delta);
 
     private:
         void renderHUD();

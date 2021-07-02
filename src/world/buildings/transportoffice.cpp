@@ -14,7 +14,7 @@ namespace world
             return routes;
         }
 
-        std::vector<std::shared_ptr<TransportRoute>> &TransportOffice::getActiveRoutes()
+        std::vector<std::shared_ptr<TransportRoute>> TransportOffice::getActiveRoutes()
         {
             std::vector<std::shared_ptr<TransportRoute>> result;
             for (auto route : routes)

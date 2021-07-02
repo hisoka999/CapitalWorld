@@ -71,19 +71,21 @@ namespace services
         auto product = std::make_shared<Product>(name, texture, type, cycle);
         auto attrs = object->getAttributes();
         if (std::find(attrs.begin(), attrs.end(), std::string("baseResources")) != attrs.end())
-
+        {
             for (auto attr : object->getObjectValue("baseResources")->getAttributes())
             {
                 product->addRessource(RessourceService::Instance().getResourceByName(attr));
             }
+        }
         if (std::find(attrs.begin(), attrs.end(), std::string("baseProducts")) != attrs.end())
         {
             for (auto attr : object->getObjectValue("baseProducts")->getAttributes())
             {
                 product->addProduct(getProductByName(attr), object->getObjectValue("baseProducts")->getIntValue(attr));
             }
-            return product;
         }
+
+        return product;
     }
 
     ProductionCycle ProductService::convertJsonObject2Cycle(const std::shared_ptr<utils::JSON::Object> &object)

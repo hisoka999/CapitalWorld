@@ -85,7 +85,7 @@ namespace scenes
         y += yOffset;
         auto numberOfPlayersLabel = std::make_shared<UI::Label>(nullptr);
         numberOfPlayersLabel->setFont("fonts/arial.ttf", 14);
-        numberOfPlayersLabel->setText(_("Number of Companies: "));
+        numberOfPlayersLabel->setText(_("number of companies: "));
         numberOfPlayersLabel->setPos(20, y);
         container->addObject(numberOfPlayersLabel);
 
@@ -110,7 +110,7 @@ namespace scenes
         numberOfCities = 4;
         auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
         numberOfCitiesLabel->setFont("fonts/arial.ttf", 14);
-        numberOfCitiesLabel->setText(_("Number of Companies: "));
+        numberOfCitiesLabel->setText(_("number of cities: "));
         numberOfCitiesLabel->setPos(20, y);
         container->addObject(numberOfCitiesLabel);
 
@@ -170,12 +170,16 @@ namespace scenes
         {
             difficultyCombobox->addElement(value);
         }
-        difficultyCombobox->setSelectionByText(Difficulty::Normal);
+        difficulty = Difficulty::Normal;
+        difficultyCombobox->setSelectionByText(difficulty);
 
         difficultyCombobox->setPos(200, y);
         difficultyCombobox->setWidth(200);
         difficultyCombobox->setElementFunction([](Difficulty val) -> std::string
                                                { return std::string(magic_enum::enum_name(val)); });
+
+        difficultyCombobox->connect("valueChanged", [&](Difficulty diff)
+                                    { difficulty = diff; });
         container->addObject(difficultyCombobox);
         winMgr->addContainer(container.get());
         graphics::Rect bounds = {10, 450, 1280, 400};
@@ -281,7 +285,7 @@ namespace scenes
         auto gameMap = gen.generateMap(size, size, numberOfCities, seed);
         auto cities = gen.getGeneratedCities();
         auto player = std::make_shared<world::Company>(playerName, 1000000, true);
-        auto gameState = std::make_shared<world::GameState>(player, gameMap, cities);
+        auto gameState = std::make_shared<world::GameState>(player, gameMap, cities, difficulty);
 
         auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
         sceneManager->addScene("world", starMapScene);
