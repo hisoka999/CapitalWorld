@@ -107,6 +107,8 @@ const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const 
     if (y2 < 0)
         y2 = 0;
     size_t pos = x2 + (y2 * height);
+    if (pos > buildings.size())
+        return nullptr;
 
     return buildings[pos];
 }

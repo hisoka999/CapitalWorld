@@ -9,6 +9,7 @@ namespace core
 namespace UI
 {
     class ScrollArea;
+    class TextItem;
 };
 
 namespace scenes
@@ -22,6 +23,7 @@ namespace scenes
         void render();
         void update();
         void handleEvents(core::Input *pInput);
+        virtual void load();
 
     private:
         void startGame();
@@ -31,9 +33,11 @@ namespace scenes
         std::shared_ptr<UI::Container> container;
         std::shared_ptr<UI::Container> buttonList;
         std::shared_ptr<UI::ScrollArea> scrollArea;
-        unsigned seed;
+        std::shared_ptr<UI::TextItem> seedEdit;
+        unsigned long seed;
         WorldSize worldSize;
         std::string playerName;
         int numberOfCompanys;
+        int numberOfCities;
     };
 }; // namespace scenes

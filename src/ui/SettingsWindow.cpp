@@ -13,7 +13,7 @@ SettingsWindow::SettingsWindow()
     addObject(mainArea);
 
     auto layout = std::make_shared<UI::layout::GridLayout>(mainArea.get(), 2);
-    layout->setPadding(utils::Vector2(10, 10));
+    layout->setPadding(utils::Vector2(20, 10));
 
     uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
 

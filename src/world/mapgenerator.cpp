@@ -15,11 +15,11 @@ namespace world
         return cities;
     }
 
-    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height)
+    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities)
     {
-        return generateMap(width, height, 1);
+        return generateMap(width, height, 1, numberOfCities);
     }
-    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, unsigned int seed)
+    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities, unsigned long seed)
     {
         std::cout << "seed: " << seed << std::endl;
         utils::PerlinNoise pn(seed);
@@ -47,10 +47,16 @@ namespace world
             }
         }
         auto map = std::make_shared<GameMap>(width, height, mapData);
-        utils::Vector2 cityPos(50, 50);
-        auto city = std::make_shared<world::City>("Rostock", cityPos);
-        city->generate(seed, map);
-        cities.push_back(city);
+
+        std::uniform_int_distribution<long> xPositionGen(0, width);
+        std::uniform_int_distribution<long> yPositionGen(0, height);
+        for (int i = 0; i < numberOfCities; i++)
+        {
+            utils::Vector2 cityPos(xPositionGen(gen), yPositionGen(gen));
+            auto city = std::make_shared<world::City>("Rostock", cityPos); //TODO change name
+            city->generate(seed, map);
+            cities.push_back(city);
+        }
 
         return map;
     }

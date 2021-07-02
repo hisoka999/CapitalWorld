@@ -71,10 +71,10 @@ namespace scenes
         seedLabel->setPos(20, y);
         container->addObject(seedLabel);
 
-        auto seedEdit = std::make_shared<UI::TextItem>(nullptr, 200, 25);
+        seedEdit = std::make_shared<UI::TextItem>(nullptr, 200, 25);
         seedEdit->setPos(200, y);
         seedEdit->setFont("fonts/arial.ttf", 14);
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        seed = std::chrono::system_clock::now().time_since_epoch().count();
 
         seedEdit->setText(std::to_string(seed));
         seedEdit->connect("textChanged", [&](std::string data)
@@ -105,6 +105,31 @@ namespace scenes
         numberOfPlayersCombobox->connect("valueChanged", [&](int size)
                                          { numberOfCompanys = size; });
         container->addObject(numberOfPlayersCombobox);
+
+        //numberOfCities
+        numberOfCities = 4;
+        auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
+        numberOfCitiesLabel->setFont("fonts/arial.ttf", 14);
+        numberOfCitiesLabel->setText(_("Number of Companies: "));
+        numberOfCitiesLabel->setPos(20, y);
+        container->addObject(numberOfCitiesLabel);
+
+        auto numberOfCitiesCombobox = std::make_shared<UI::ComboBox<int>>();
+        numberOfCitiesCombobox->setFont("fonts/arial.ttf", 14);
+        numberOfCitiesCombobox->addElement(2);
+        numberOfCitiesCombobox->addElement(4);
+        numberOfCitiesCombobox->addElement(8);
+        //numberOfCitiesCombobox->addElement(16);
+        //numberOfCitiesCombobox->addElement(32);
+        numberOfCitiesCombobox->setPos(200, y);
+        numberOfCitiesCombobox->setSelectionByText(numberOfCities);
+        numberOfCitiesCombobox->setWidth(200);
+        numberOfCitiesCombobox->setElementFunction([](int val)
+                                                   { return std::to_string(val); });
+
+        numberOfCitiesCombobox->connect("valueChanged", [&](int size)
+                                        { numberOfCities = size; });
+        container->addObject(numberOfCitiesCombobox);
 
         y += yOffset;
         auto systemSizeLabel = std::make_shared<UI::Label>(nullptr);
@@ -239,6 +264,13 @@ namespace scenes
         winMgr->handleInput(pInput);
     }
 
+    void NewGameScene::load()
+    {
+        seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+        seedEdit->setText(std::to_string(seed));
+    }
+
     void NewGameScene::startGame()
     {
         std::cout << "start game" << std::endl;
@@ -246,7 +278,7 @@ namespace scenes
 
         int size = 100 * static_cast<int>(worldSize);
 
-        auto gameMap = gen.generateMap(size, size, seed);
+        auto gameMap = gen.generateMap(size, size, numberOfCities, seed);
         auto cities = gen.getGeneratedCities();
         auto player = std::make_shared<world::Company>(playerName, 1000000, true);
         auto gameState = std::make_shared<world::GameState>(player, gameMap, cities);

@@ -13,8 +13,8 @@ namespace world
     public:
         MapGenerator();
 
-        std::shared_ptr<GameMap> generateMap(size_t width, size_t height);
-        std::shared_ptr<GameMap> generateMap(size_t width, size_t height, unsigned int seed);
+        std::shared_ptr<GameMap> generateMap(size_t width, size_t height, int numberOfCities);
+        std::shared_ptr<GameMap> generateMap(size_t width, size_t height, int numberOfCities, unsigned long seed);
         std::vector<std::shared_ptr<world::City>> getGeneratedCities();
 
     private:
