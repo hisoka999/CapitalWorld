@@ -18,6 +18,8 @@ namespace world
         std::string getName();
         float getCash();
         float getProfit();
+        float getCosts();
+        float getIncome();
         void incCash(float value);
         bool isPLayer();
         void addBuilding(std::shared_ptr<Building> building);
@@ -31,6 +33,8 @@ namespace world
         std::string name;
         float cash;
         float profit;
+        float income;
+        float costs;
         bool player;
         std::vector<std::shared_ptr<world::Building>> buildings;
     };

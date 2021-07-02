@@ -5,7 +5,7 @@ namespace world
 {
 
     Company::Company(std::string name, float cash, bool player)
-        : name(name), cash(cash), profit(0), player(player)
+        : name(name), cash(cash), profit(0), player(player), income(0), costs(0)
     {
     }
     Company::~Company()
@@ -23,6 +23,16 @@ namespace world
     float Company::getProfit()
     {
         return profit;
+    }
+
+    float Company::getCosts()
+    {
+        return costs;
+    }
+
+    float Company::getIncome()
+    {
+        return income;
     }
     void Company::incCash(float value)
     {
@@ -53,16 +63,20 @@ namespace world
     void Company::updateBalance(int month, int year)
     {
         profit = 0.0f;
+        costs = 0;
+        income = 0;
         for (auto &building : buildings)
         {
             building->calculateBalance(month, year);
             building->updateProduction(month, year);
             if (building->isAutoSellActive())
                 building->autoSell(month, year);
-            profit -= building->getCostsPerMonth(month, year);
 
-            profit += building->getIncomePerMonth(month, year);
+            costs += building->getCostsPerMonth(month, year);
+
+            income += building->getIncomePerMonth(month, year);
         }
+        profit = income - costs;
         incCash(profit);
     }
 

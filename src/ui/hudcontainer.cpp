@@ -137,6 +137,8 @@ namespace UI
         //cashButton->getHint()->setHintText(utils::string_format("Income Balance\n Cash: %'.2f € \nProfit: %'.2f €", gameState->getPlayer()->getCash(), gameState->getPlayer()->getProfit()));
         std::string hintText = "Income Balance\n";
         hintText += utils::string_format("Cash: %'.2f €", gameState->getPlayer()->getCash()) + "\n";
+        hintText += utils::string_format("Income: %'.2f €", gameState->getPlayer()->getIncome()) + "\n";
+        hintText += utils::string_format("Costs:  %'.2f €", gameState->getPlayer()->getCosts()) + "\n";
         hintText += utils::string_format("Profit: %'.2f €", gameState->getPlayer()->getProfit());
         cashButton->getHint()->setHintText(hintText);
     }
