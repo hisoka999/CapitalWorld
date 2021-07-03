@@ -47,6 +47,11 @@ namespace world
     {
         return displayName;
     }
+
+    void Building::setDisplayName(const std::string name)
+    {
+        displayName = name;
+    }
     int Building::getBuildPrice()
     {
         return buildPrice;

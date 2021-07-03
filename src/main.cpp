@@ -15,6 +15,7 @@
 #include "scenes/NewGameScene.h"
 #include "services/productservice.h"
 #include "services/ressourceservice.h"
+#include "services/buildingservice.h"
 #include <iostream>
 #include "engine/utils/localisation.h"
 int main()
@@ -38,6 +39,7 @@ int main()
         ren.setMainCamera(&mainCamera);
         services::RessourceService::Instance().loadData("data/ressources.json");
         services::ProductService::Instance().loadData("data/products.json");
+        services::BuildingService::Instance().loadData("data/buildings.json");
 
         auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
         //auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);

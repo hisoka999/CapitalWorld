@@ -40,7 +40,10 @@ namespace UI
         farmButton->setPos(xPos, yPos);
         farmButton->setStaticWidth(120);
         farmButton->connect("buttonClick", [&]()
-                            { setCurrentAction(world::BuildAction::Farm); });
+                            {
+                                setCurrentAction(world::BuildAction::Build);
+                                currentBuildingType = world::BuildingType::Farm;
+                            });
         addObject(farmButton);
 
         yPos += offset;
@@ -54,7 +57,10 @@ namespace UI
         factoryButton->setColor(defaultColor);
         addObject(factoryButton);
         factoryButton->connect("buttonClick", [&]()
-                               { setCurrentAction(world::BuildAction::Factory); });
+                               {
+                                   setCurrentAction(world::BuildAction::Build);
+                                   currentBuildingType = world::BuildingType::Factory;
+                               });
         yPos += offset;
 
         auto shopButton = std::make_shared<UI::IconButton>(this);
@@ -66,6 +72,12 @@ namespace UI
         shopButton->setColor(defaultColor);
         shopButton->setPos(xPos, yPos);
         shopButton->disable();
+        shopButton->connect("buttonClick", [&]()
+                            {
+                                setCurrentAction(world::BuildAction::Build);
+                                currentBuildingType = world::BuildingType::Shop;
+                            });
+
         addObject(shopButton);
         yPos += offset;
 
@@ -78,7 +90,10 @@ namespace UI
         transportButton->setColor(defaultColor);
         transportButton->setStaticWidth(120);
         transportButton->connect("buttonClick", [&]()
-                                 { setCurrentAction(world::BuildAction::Transport); });
+                                 {
+                                     setCurrentAction(world::BuildAction::Build);
+                                     currentBuildingType = world::BuildingType::Transport;
+                                 });
 
         addObject(transportButton);
 
@@ -95,7 +110,10 @@ namespace UI
 
         addObject(streetButton);
         streetButton->connect("buttonClick", [&]()
-                              { setCurrentAction(world::BuildAction::Street); });
+                              {
+                                  setCurrentAction(world::BuildAction::Build);
+                                  currentBuildingType = world::BuildingType::Street;
+                              });
 
         yPos += offset;
 
@@ -120,6 +138,11 @@ namespace UI
     void BuildWindow::handleEvents(core::Input *pInput)
     {
         UI::Window::handleEvents(pInput);
+    }
+
+    world::BuildingType BuildWindow::getCurrentBuildingType()
+    {
+        return currentBuildingType;
     }
 
     void BuildWindow::setCurrentAction(world::BuildAction action)

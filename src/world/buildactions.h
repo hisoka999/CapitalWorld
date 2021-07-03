@@ -6,12 +6,8 @@ namespace world
 
     enum class BuildAction
     {
-        Farm,
-        Factory,
-        Shop,
-        Transport,
+        Build,
         Destroy,
-        Street,
         None
     };
 

@@ -1,0 +1,68 @@
+[
+    {
+        "name": "Transport Office",
+        "displayName": "Transport Office",
+        "displayName_de": "Transportbüro",
+        "buildingClass": "TransportOffice",
+        "description": "TODO",
+        "description_de": "TODO Deutsch",
+        "type": "Transport",
+        "buildCosts": 50000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 128,
+            "y": 160,
+            "width": 128,
+            "height": 128
+        },
+        "offset": {
+            "x": 32,
+            "y": 16
+        }
+    },
+    {
+        "name": "Farm",
+        "displayName": "Farm",
+        "displayName_de": "Farm",
+        "buildingClass": "Building",
+        "description": "TODO",
+        "description_de": "TODO Deutsch",
+        "type": "Farm",
+        "buildCosts": 10000,
+        "block_width": 1,
+        "block_height": 1,
+        "sourceRect": {
+            "x": 0,
+            "y": 128,
+            "width": 64,
+            "height": 32
+        },
+        "offset": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    {
+        "name": "Factory",
+        "displayName": "Factory",
+        "displayName_de": "Fabrik",
+        "buildingClass": "Building",
+        "description": "TODO",
+        "description_de": "TODO Deutsch",
+        "type": "Factory",
+        "buildCosts": 20000,
+        "block_width": 2,
+        "block_height": 1,
+        "sourceRect": {
+            "x": 0,
+            "y": 160,
+            "width": 128,
+            "height": 128
+        },
+        "offset": {
+            "x": 32,
+            "y": 16
+        }
+    }
+]

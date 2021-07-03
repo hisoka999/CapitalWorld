@@ -45,7 +45,7 @@ namespace scenes
 
     private:
         void renderHUD();
-        std::shared_ptr<world::Building> createBuilding(world::BuildAction action);
+        std::shared_ptr<world::Building> createBuilding(world::BuildingType type);
         graphics::Texture uiTexture;
         core::SceneManager *sceneManager;
 

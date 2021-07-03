@@ -6,6 +6,7 @@
 #include <engine/graphics/texture.h>
 #include <memory>
 #include "../world/buildactions.h"
+#include "world/buildingtypes.h"
 
 namespace UI
 {
@@ -22,12 +23,14 @@ namespace UI
         {
             return currentAction;
         }
+        world::BuildingType getCurrentBuildingType();
         void setCurrentAction(world::BuildAction action);
 
     private:
         void initUI();
         std::shared_ptr<graphics::Texture> backgroundTexture;
         world::BuildAction currentAction;
+        world::BuildingType currentBuildingType;
         SDL_Cursor *cursor;
     };
 

@@ -32,7 +32,6 @@ namespace world
     private:
         std::string name;
         float cash;
-        float profit;
         float income;
         float costs;
         bool player;

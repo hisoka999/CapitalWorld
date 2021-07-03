@@ -5,7 +5,7 @@ namespace world
 {
 
     Company::Company(std::string name, float cash, bool player)
-        : name(name), cash(cash), profit(0), player(player), income(0), costs(0)
+        : name(name), cash(cash), player(player), income(0), costs(0)
     {
     }
     Company::~Company()
@@ -22,7 +22,7 @@ namespace world
     }
     float Company::getProfit()
     {
-        return profit;
+        return income - costs;
     }
 
     float Company::getCosts()
@@ -62,7 +62,6 @@ namespace world
 
     void Company::updateBalance(int month, int year)
     {
-        profit = 0.0f;
         costs = 0;
         income = 0;
         for (auto &building : buildings)
@@ -76,8 +75,7 @@ namespace world
 
             income += building->getIncomePerMonth(month, year);
         }
-        profit = income - costs;
-        incCash(profit);
+        incCash(income - costs);
     }
 
     std::vector<std::shared_ptr<Building>> Company::findProductionBuildings()

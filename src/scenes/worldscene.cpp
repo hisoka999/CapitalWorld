@@ -2,6 +2,7 @@
 #include "../world/mapgenerator.h"
 #include "../world/buildings/street.h"
 #include "world/buildings/transportoffice.h"
+#include "services/buildingservice.h"
 #include <chrono>
 #include <cmath>
 #include <engine/utils/os.h>
@@ -42,7 +43,7 @@ namespace scenes
     {
         thread->stop();
     }
-    std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildAction action)
+    std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildingType type)
     {
         std::shared_ptr<world::Building> building = nullptr;
         graphics::Rect rect;
@@ -50,46 +51,18 @@ namespace scenes
         rect.height = static_cast<float>(mapRenderer->getTileHeight());
         int nextIndex = gameState->getPlayer()->getMaxBuildingIndex() + 1;
         std::string index = std::to_string(nextIndex);
-        switch (action)
+        switch (type)
         {
-        case world::BuildAction::Farm:
-            building = std::make_shared<world::Building>("Farm", _("Farm") + " " + index, "A farm", 10000, world::BuildingType::Farm);
-            rect.x = 0;
-            rect.y = 128;
-            building->setOffset(0, 0);
-            building->setSourceRect(rect);
-            break;
 
-        case world::BuildAction::Factory:
-            building = std::make_shared<world::Building>("Factory", _("Factory") + " " + index, "A factory", 20000, world::BuildingType::Factory, 2, 1);
-            rect.x = 0;
-            rect.y = 160;
-            rect.width = 128;
-            rect.height = 128;
-            building->setOffset(64 / 2, 32 / 2);
-            //building->setOffset(0, 0);
-            building->setSourceRect(rect);
-
-            break;
-
-        case world::BuildAction::Street:
+        case world::BuildingType::Street:
             building = std::make_shared<world::buildings::Street>();
             rect.x = 0;
             rect.y = 128;
             building->setOffset(0, 0);
             building->setSourceRect(rect);
             break;
-        case world::BuildAction::Transport:
-            building = std::make_shared<world::buildings::TransportOffice>("Transport Office", _("Transport Office") + " " + index, "A factory", 50000, world::BuildingType::Transport, 2, 2);
-            rect.x = 128;
-            rect.y = 160;
-            rect.width = 128;
-            rect.height = 128;
-            building->setOffset(64 / 2, 32 / 2);
-            building->setSourceRect(rect);
-            break;
         default:
-            break;
+            building = services::BuildingService::Instance().create(type);
         }
         return building;
     }
@@ -180,9 +153,9 @@ namespace scenes
                         }
                     }
                 }
-                else if (action != world::BuildAction::None)
+                else if (action == world::BuildAction::Build)
                 {
-                    auto building = createBuilding(action);
+                    auto building = createBuilding(buildWindow.getCurrentBuildingType());
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
                     if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
@@ -245,7 +218,7 @@ namespace scenes
                 cursorPosition = utils::Vector2(x, y);
                 //std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
-                auto building = createBuilding(buildWindow.getCurrentAction());
+                auto building = (buildWindow.getCurrentAction() == world::BuildAction::Build) ? createBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
                 if (building != nullptr)
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 

@@ -21,6 +21,14 @@ namespace world
         double income;
     };
 
+    enum class BuildingClass
+    {
+        Building,
+        TransportOffice,
+        Street,
+        Farm
+    };
+
     class Building
     {
     public:
@@ -31,6 +39,7 @@ namespace world
         std::string getName();
         std::string getDescription();
         const std::string &getDisplayName() const;
+        void setDisplayName(const std::string name);
         int getBuildPrice();
 
         bool canBuild(float money);
