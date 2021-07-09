@@ -18,11 +18,43 @@
 #include "services/buildingservice.h"
 #include <iostream>
 #include "engine/utils/localisation.h"
+#include <magic_enum.hpp>
+
+template <size_t SIZE>
+void writeEnumArray(std::array<std::string_view, SIZE> names, std::ofstream &stream)
+{
+    for (auto name : names)
+    {
+        stream << "msgid \"" << name << "\"\n";
+        stream << "msgstr \"\"\n\n";
+    }
+}
+
+void generateEnumPot(std::string fileName)
+{
+    std::ofstream os(fileName, std::ios::trunc | std::ios::out);
+    std::cout << "test file: " << fileName << std::endl;
+
+    writeEnumArray(magic_enum::enum_names<world::BuildingType>(), os);
+    writeEnumArray(magic_enum::enum_names<world::CityType>(), os);
+    writeEnumArray(magic_enum::enum_names<world::BalanceAccount>(), os);
+    writeEnumArray(magic_enum::enum_names<WorldSize>(), os);
+    writeEnumArray(magic_enum::enum_names<Difficulty>(), os);
+
+    os.flush();
+    os.close();
+}
+
 int main()
 {
     try
     {
+        //#ifdef NDEBUG
+        std::string fileName = "locale/enum.pot";
+        generateEnumPot(fileName);
+        //#endif
         Localisation::Instance().detectLanguage("capitalworld");
+        Localisation::Instance().detectLanguage("enum");
 
         setlocale(LC_ALL, "");
         auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
@@ -66,6 +98,7 @@ int main()
         {
             ren.setDrawColor(0, 0, 0, 255);
             ren.clear();
+            bool saveScreenshot = false;
             try
             {
                 while (input.poll())
@@ -74,6 +107,10 @@ int main()
                         run = false;
                     else if (input.isKeyDown(SDLK_ESCAPE))
                         sceneManager.setCurrentScene("main");
+                    else if (input.isKeyDown(SDLK_p))
+                    {
+                        saveScreenshot = true;
+                    }
 
                     sceneManager.handleEvents(&input);
                 }
@@ -89,16 +126,16 @@ int main()
                 lastTime = ren.getTickCount();
                 fps = frames;
                 frames = 0;
-                if (fps > 300)
-                {
-                    delay++;
-                    std::cout << "delay => " << delay << std::endl;
-                }
-                else
-                {
-                    if (delay > 0)
-                        delay--;
-                }
+                // if (fps > 300)
+                // {
+                //     delay++;
+                //     std::cout << "delay => " << delay << std::endl;
+                // }
+                // else
+                // {
+                //     if (delay > 0)
+                //         delay--;
+                // }
             }
             if (ren.getTickCount() - lastUpdateTime >= 40)
             {
@@ -108,6 +145,25 @@ int main()
             sceneManager.update();
             text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
             ren.renderPresent();
+
+            if (saveScreenshot)
+            {
+
+                SDL_Surface *surf = SDL_CreateRGBSurface(0, win.getWidth(), win.getHeight(), 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+                SDL_RenderReadPixels(ren.getRenderer(), NULL, SDL_PIXELFORMAT_ARGB8888, surf->pixels, surf->pitch);
+
+                if (surf != 0)
+                {
+                    std::string fileName = utils::os::get_pref_dir("", "captialworld") + "screenshot_" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count()) + ".bmp";
+                    std::cout << "screenshot: " << fileName << std::endl;
+                    SDL_SaveBMP(surf, fileName.c_str());
+                    SDL_FreeSurface(surf);
+                }
+                else
+                {
+                    throw SDLException("SDL_GetWindowSurface");
+                }
+            }
 
             //win.delay(delay);
             ren.calcDelta();

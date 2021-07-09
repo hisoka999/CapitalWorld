@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de\n"
+
+msgid "Farm"
+msgstr "Farm"
+
+msgid "Factory"
+msgstr "Fabrik"
+
+msgid "Shop"
+msgstr "Laden"
+
+msgid "Street"
+msgstr "Straße"
+
+msgid "House"
+msgstr "Haus"
+
+msgid "Transport"
+msgstr "Transport"
+
+msgid "Village"
+msgstr "Dorf"
+
+msgid "SmallTown"
+msgstr "Kleinstadt"
+
+msgid "City"
+msgstr "Stadt"
+
+msgid "Metropolis"
+msgstr "Metropole"
+
+msgid "Production"
+msgstr "Produktion"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Sales"
+msgstr "Verkauf"
+
+msgid "Small"
+msgstr "Klein"
+
+msgid "Medium"
+msgstr "Mittel"
+
+msgid "Big"
+msgstr "Groß"
+
+msgid "Huge"
+msgstr "Riesig"
+
+msgid "Easy"
+msgstr "Einfach"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Hard"
+msgstr "Schwer"

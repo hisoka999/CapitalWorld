@@ -12,6 +12,14 @@ class GameMap;
 namespace world
 {
 
+    enum class BalanceAccount
+    {
+        Production,
+        Transport,
+        Import,
+        Sales,
+    };
+
     struct ProductBalance
     {
         int month;
@@ -19,6 +27,7 @@ namespace world
         std::string name;
         double costs;
         double income;
+        BalanceAccount account;
     };
 
     enum class BuildingClass
@@ -60,6 +69,7 @@ namespace world
         float getCostsPerMonth(int month, int year);
         float getIncomePerMonth(int month, int year);
         virtual void updateProduction(int month, int year);
+        void addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount);
         bool isAutoSellActive();
         void autoSell(int month, int year);
         BuildingType getType();

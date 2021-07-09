@@ -33,6 +33,7 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
     }
     else
     {
+        //grass
         srcRect.x = 0;
         srcRect.y = 0;
     }
@@ -54,18 +55,19 @@ void GameMapRenderer::clearCache()
 void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos)
 {
     const auto &camera = renderer->getMainCamera();
-    float xPos = pos.getX() - camera->getX();
-    float yPos = pos.getY() - camera->getY();
+    // float xPos = pos.getX() - camera->getX();
+    // float yPos = pos.getY() - camera->getY();
 
-    float width = float(tileWidth) * renderer->getZoomFactor();
-    float height = float(tileHeight) * renderer->getZoomFactor();
+    // float width = float(tileWidth) * renderer->getZoomFactor();
+    // float height = float(tileHeight) * renderer->getZoomFactor();
+    float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
     const graphics::Rect &srcRect = getSourceRect(tile, tileX, tileY);
     graphics::Rect destRect;
-    destRect.x = std::round((pos.getX() * renderer->getZoomFactor()) - camera->getX());
-    destRect.y = std::round(((pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor()) - camera->getY());
-    destRect.width = std::round(srcRect.width * renderer->getZoomFactor());
-    destRect.height = std::round(srcRect.height * renderer->getZoomFactor());
+    destRect.x = (pos.getX() * factor) - camera->getX();
+    destRect.y = ((pos.getY() + (tileHeight - srcRect.height)) * factor) - camera->getY();
+    destRect.width = srcRect.width * factor;
+    destRect.height = srcRect.height * factor;
 
     graphics::Rect realRect = {(pos.getX() * renderer->getZoomFactor()), (pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor(), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
 

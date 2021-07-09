@@ -14,9 +14,30 @@ namespace services
             if (building->getType() == type)
             {
                 index++;
-                std::shared_ptr<world::Building> clone = std::make_shared<world::Building>(*building);
+                std::shared_ptr<world::Building> clone;
+                if (type == world::BuildingType::Transport)
+                {
+                    clone = std::make_shared<world::buildings::TransportOffice>(*(std::dynamic_pointer_cast<world::buildings::TransportOffice>(building)));
+                }
+                else
+                {
+                    clone = std::make_shared<world::Building>(*building);
+                }
+
                 clone->setDisplayName(building->getDisplayName() + " " + std::to_string(index));
                 return clone;
+            }
+        }
+        return nullptr;
+    }
+
+    std::shared_ptr<world::Building> BuildingService::find(world::BuildingType type)
+    {
+        for (auto &building : getData())
+        {
+            if (building->getType() == type)
+            {
+                return building;
             }
         }
         return nullptr;
@@ -55,6 +76,7 @@ namespace services
             break;
         case world::BuildingClass::TransportOffice:
             building = std::make_shared<world::buildings::TransportOffice>(name, displayName, description, buildCosts, type, width, height);
+            break;
         case world::BuildingClass::Street:
         default:
             break;

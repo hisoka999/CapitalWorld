@@ -20,6 +20,7 @@ namespace world
         {
         public:
             TransportOffice(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight);
+            TransportOffice(TransportOffice &copy);
 
             const std::vector<std::shared_ptr<TransportRoute>> &getAllRoutes();
             std::vector<std::shared_ptr<TransportRoute>> getActiveRoutes();

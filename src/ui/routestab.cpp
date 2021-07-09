@@ -39,6 +39,8 @@ namespace UI
         scrollArea->reset();
 
         int yoffset = 0;
+        if (building == nullptr)
+            return;
         for (auto &route : building->getAllRoutes())
         {
             std::shared_ptr<RouteComponent> routeComp = std::make_shared<RouteComponent>(scrollArea.get(), route, gameMap, building);

@@ -17,6 +17,7 @@ namespace services
         }
 
         std::shared_ptr<world::Building> create(world::BuildingType type);
+        std::shared_ptr<world::Building> find(world::BuildingType type);
         void init();
 
     protected:

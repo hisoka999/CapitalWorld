@@ -1,0 +1,63 @@
+msgid "Farm"
+msgstr ""
+
+msgid "Factory"
+msgstr ""
+
+msgid "Shop"
+msgstr ""
+
+msgid "Street"
+msgstr ""
+
+msgid "House"
+msgstr ""
+
+msgid "Transport"
+msgstr ""
+
+msgid "Village"
+msgstr ""
+
+msgid "SmallTown"
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "Metropolis"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+msgid "Transport"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Sales"
+msgstr ""
+
+msgid "Small"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Big"
+msgstr ""
+
+msgid "Huge"
+msgstr ""
+
+msgid "Easy"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Hard"
+msgstr ""
+

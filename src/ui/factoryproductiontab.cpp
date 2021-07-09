@@ -1,12 +1,13 @@
 #include "factoryproductiontab.h"
 
 #include <engine/utils/os.h>
+#include "translate.h"
 
 namespace UI
 {
 
     FactoryProductionTab::FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building)
-        : UI::Tab(parent, "Production")
+        : UI::Tab(parent, _("Production"))
     {
         initUI();
         setBuilding(building);
@@ -50,11 +51,11 @@ namespace UI
         productImage->setPos(490, 70);
         addObject(productImage);
 
-        std::shared_ptr<UI::Label> labelCycle = std::make_shared<UI::Label>("Production Cycle:", this);
+        std::shared_ptr<UI::Label> labelCycle = std::make_shared<UI::Label>(_("Production Cycle:"), this);
         labelCycle->setPos(295, 70);
         addObject(labelCycle);
 
-        std::shared_ptr<UI::Label> labelCosts = std::make_shared<UI::Label>("Costs:", this);
+        std::shared_ptr<UI::Label> labelCosts = std::make_shared<UI::Label>(_("Costs:"), this);
         labelCosts->setPos(295, 100);
         addObject(labelCosts);
 
@@ -71,7 +72,7 @@ namespace UI
         addObject(productionCycleText);
 
         addButton = std::make_shared<UI::Button>(this);
-        addButton->setLabel("Add");
+        addButton->setLabel(_("Add"));
         addButton->setStaticWidth(90);
         addButton->setPos(180, 380);
         addButton->connect(UI::Button::buttonClickCallback(), [&]()
@@ -90,7 +91,7 @@ namespace UI
         addObject(addButton);
 
         helpButton = std::make_shared<UI::Button>(this);
-        helpButton->setLabel("Help");
+        helpButton->setLabel(_("Help"));
         helpButton->setStaticWidth(90);
         helpButton->setPos(180, 420);
         helpButton->disable();
@@ -192,11 +193,11 @@ namespace UI
         {
             if (!building->hasProduct(product))
             {
-                addButton->setLabel("Add");
+                addButton->setLabel(_("Add"));
             }
             else
             {
-                addButton->setLabel("Remove");
+                addButton->setLabel(_("Remove"));
             }
         }
     }

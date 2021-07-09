@@ -70,10 +70,22 @@ namespace scenes
     void WorldScene::renderHUD()
     {
         int y = 0;
-        int height = hudTexture->getHeight() * 720 / renderer->getViewPort().height / 2;
+        int height = 40;
         buildWindow.setPos(0, height + 50);
-        hudTexture->setBlendMode(SDL_BLENDMODE_ADD);
-        hudTexture->renderResized(renderer, 0, y, renderer->getViewPort().width, height);
+        //hudTexture->setBlendMode(SDL_BLENDMODE_ADD);
+        //hudTexture->renderResized(renderer, 0, y, renderer->getViewPort().width, height);
+
+        renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
+        renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
+        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
+        renderer->fillRect(hudRect);
+
+        renderer->setDrawColor(0xff, 0xff, 0xff, 128);
+        utils::Vector2 start(0, height);
+        utils::Vector2 end(renderer->getViewPort().width, height);
+        renderer->drawLine(start, end);
+        renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
+
         buildWindow.render(renderer);
     }
 
@@ -91,19 +103,22 @@ namespace scenes
         }
         float cursorX = (cursorPosition.getX() * mapRenderer->getTileWidth() / 2.f);
         float cursorY = (cursorPosition.getY() * mapRenderer->getTileHeight());
+
+        float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+
         auto camera = renderer->getMainCamera();
         for (float y = 0; y < cursorBuildingRect.height; y++)
         {
             for (float x = 0; x < cursorBuildingRect.width; x++)
             {
                 utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX + (x * mapRenderer->getTileWidth() / 2.f), cursorY + (y * mapRenderer->getTileHeight())));
-                float xPos = (pos.getX() * renderer->getZoomFactor()) - camera->getX();
+                float xPos = (pos.getX() * factor) - camera->getX();
 
                 float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
 
-                float yPos = ((pos.getY() - tileYOffset) * renderer->getZoomFactor()) - (camera->getY());
+                float yPos = ((pos.getY() - tileYOffset) * factor) - (camera->getY());
 
-                cursorTexture->renderResized(renderer, xPos, yPos, cursorTexture->getWidth() * renderer->getZoomFactor(), cursorTexture->getHeight() * renderer->getZoomFactor());
+                cursorTexture->renderResized(renderer, xPos, yPos, cursorTexture->getWidth() * factor, cursorTexture->getHeight() * factor);
             }
         }
 
@@ -218,7 +233,7 @@ namespace scenes
                 cursorPosition = utils::Vector2(x, y);
                 //std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
-                auto building = (buildWindow.getCurrentAction() == world::BuildAction::Build) ? createBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
+                auto building = (buildWindow.getCurrentAction() == world::BuildAction::Build) ? services::BuildingService::Instance().find(buildWindow.getCurrentBuildingType()) : nullptr;
                 if (building != nullptr)
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 

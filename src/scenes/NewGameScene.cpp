@@ -153,7 +153,7 @@ namespace scenes
         systemSizeCombobox->setPos(200, y);
         systemSizeCombobox->setWidth(200);
         systemSizeCombobox->setElementFunction([](WorldSize val) -> std::string
-                                               { return std::string(magic_enum::enum_name(val)); });
+                                               { return _(std::string(magic_enum::enum_name(val))); });
         container->addObject(systemSizeCombobox);
 
         y += yOffset;
@@ -176,7 +176,7 @@ namespace scenes
         difficultyCombobox->setPos(200, y);
         difficultyCombobox->setWidth(200);
         difficultyCombobox->setElementFunction([](Difficulty val) -> std::string
-                                               { return std::string(magic_enum::enum_name(val)); });
+                                               { return _(std::string(magic_enum::enum_name(val))); });
 
         difficultyCombobox->connect("valueChanged", [&](Difficulty diff)
                                     { difficulty = diff; });

@@ -129,13 +129,14 @@ namespace world
     {
         for (auto &product : products)
         {
-            ProductBalance producBalance;
-            producBalance.name = product->getName();
-            producBalance.year = year;
-            producBalance.month = month;
-            producBalance.costs = product->calculateCostsPerMonth();
-            producBalance.income = 0; //TODO
-            balance.push_back(producBalance);
+            ProductBalance productBalance;
+            productBalance.name = product->getName();
+            productBalance.year = year;
+            productBalance.month = month;
+            productBalance.costs = product->calculateCostsPerMonth();
+            productBalance.income = 0; //TODO
+            productBalance.account = BalanceAccount::Production;
+            balance.push_back(productBalance);
         }
     }
     float Building::getCostsPerMonth(int month, int year)
@@ -200,6 +201,30 @@ namespace world
         }
     }
 
+    void Building::addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount)
+    {
+
+        bool found = false;
+        for (auto &b : balance)
+        {
+            if (b.name == productName && b.year == year && b.month == month && b.account == account)
+            {
+                b.costs += amount;
+            }
+        }
+        if (!found)
+        {
+            ProductBalance productBalance;
+            productBalance.name = productName;
+            productBalance.year = year;
+            productBalance.month = month;
+            productBalance.costs = amount;
+            productBalance.income = 0;
+            productBalance.account = account;
+            balance.push_back(productBalance);
+        }
+    }
+
     bool Building::isAutoSellActive()
     {
         return type == BuildingType::Factory;
@@ -215,7 +240,7 @@ namespace world
             //find balance
             for (auto &b : balance)
             {
-                if (b.name == product->getName() && b.year == year && b.month == month)
+                if (b.name == product->getName() && b.year == year && b.month == month && b.account == BalanceAccount::Production)
                 {
                     b.income += income;
                 }
