@@ -243,6 +243,7 @@ namespace scenes
         //                           renderer->getMainCamera()->getHeight());
 
         //        renderer->setRenderTarget(texture.getSDLTexture());
+        renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
         renderer->setDrawColor(12, 21, 24, 155);
         graphics::Rect bounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
         utils::Vector2 lineStart(bounds.x, 440);
@@ -253,7 +254,7 @@ namespace scenes
         renderer->drawLine(lineStart, lineEnd);
         renderer->drawRect(bounds);
         renderer->setRenderTarget(nullptr);
-        // texture.setBlendMode(SDL_BLENDMODE_BLEND);
+        renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
         // texture.render(renderer, 0, 0);
 
         winMgr->render(renderer);

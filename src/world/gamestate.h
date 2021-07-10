@@ -9,6 +9,7 @@
 #include <memory>
 #include <vector>
 #include "constants.h"
+#include <engine/utils/time/date.h>
 
 namespace world
 {
@@ -28,7 +29,7 @@ namespace world
 
         void setTimeState(TimeState state);
         void increaseTime();
-        std::chrono::system_clock::time_point getTime();
+        utils::time::Date &getTime();
         const std::shared_ptr<world::Company> &getPlayer() const;
         const std::shared_ptr<GameMap> &getGameMap() const;
         const std::vector<std::shared_ptr<world::City>> &getCities() const;
@@ -36,7 +37,7 @@ namespace world
         std::string toJsonString();
 
     private:
-        std::chrono::system_clock::time_point time;
+        utils::time::Date time;
         std::vector<std::shared_ptr<world::Company>> companies;
         std::shared_ptr<Company> player;
         TimeState timeState;

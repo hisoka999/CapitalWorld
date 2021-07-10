@@ -9,9 +9,7 @@
             "options": {
                 "cwd": "${workspaceRoot}/build"
             },
-            "windows": {
-                "command": "cmake --build ${workspaceRoot}/build --config release --target CapitalWorld",
-            },
+            "command": "cmake --build ${workspaceRoot}/build --config release --target CapitalWorld",
         },
         {
             "label": "cmake_debug",
@@ -19,9 +17,7 @@
             "options": {
                 "cwd": "${workspaceRoot}/build"
             },
-            "windows": {
-                "command": "cmake --build ${workspaceRoot}/build --config debug --target CapitalWorld",
-            },
+            "command": "cmake --build ${workspaceRoot}/build --config debug --target CapitalWorld",
         },
     ]
 }

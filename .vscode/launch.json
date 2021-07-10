@@ -15,7 +15,7 @@
             "linux": {
                 "program": "${workspaceFolder}/build/CapitalWorld",
                 "type": "cppdbg",
-                "MIMode": "gdb",
+                //"MIMode": "gdb",
             },
             "args": [],
             "stopAtEntry": false,

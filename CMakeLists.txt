@@ -74,6 +74,8 @@ configure_file (
   "${PROJECT_BINARY_DIR}/config.h"
   )
 
+
+
 set (ENGINE_ROOT "deps")
 set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 set (MAGIC_ENUM_ROOT "deps")
@@ -112,7 +114,16 @@ if (WIN32)
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
     
 endif()
-
+# Let's set compiler-specific flags
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    # G++
+    add_compile_options(-Wall -Wextra)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    # MSVC
+    target_compile_options(${PROJECT_NAME} PRIVATE /EHsc /MTd /W2 /c)
+    # Set the DLLEXPORT variable to export symbols
+    target_compile_definitions(${PROJECT_NAME} PRIVATE WIN_EXPORT)
+endif()
 message( ${MAGIC_ENUM_SRC})
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
@@ -143,12 +154,16 @@ if(MINGW)
         target_link_libraries(${PROJECT_NAME} mingw32 SDL2main SDL2 -mwindows)
     ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
 endif()
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_ttf)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_image)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_mixer)
-if( UNIX)
-  target_link_libraries(${PROJECT_NAME} SDL2_gfx)
-  target_link_libraries(${PROJECT_NAME} pthread)
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_ttf)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_image)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_mixer)
+elseif(UNIX)
+    target_link_libraries(${PROJECT_NAME} SDL2_ttf)
+    target_link_libraries(${PROJECT_NAME} SDL2_image)
+    target_link_libraries(${PROJECT_NAME} SDL2_mixer)
+    target_link_libraries(${PROJECT_NAME} SDL2_gfx)
+    target_link_libraries(${PROJECT_NAME} pthread)
 endif()
 
 

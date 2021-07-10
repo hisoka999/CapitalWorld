@@ -58,14 +58,13 @@ void UpdateThread::update()
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(speed));
             gameState->increaseTime();
-            std::time_t tmpTime = std::chrono::system_clock::to_time_t(gameState->getTime());
-            std::tm *localTime = localtime(&tmpTime);
-            if (localTime->tm_mday == 1)
+            auto time = gameState->getTime();
+            if (time.getDay() == 1)
             {
                 //update game state
                 auto company = gameState->getPlayer();
-                company->updateBalance(localTime->tm_mon, localTime->tm_year);
-                std::cout << std::asctime(localTime) << ": update game state" << std::endl;
+                company->updateBalance(time.getMonth(), time.getYear());
+                std::cout << time.format() << ": update game state" << std::endl;
 
                 auto &msgSystem = core::MessageSystem<MessageTypes>::get();
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);

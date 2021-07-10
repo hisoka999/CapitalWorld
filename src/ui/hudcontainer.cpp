@@ -18,15 +18,6 @@ namespace UI
 
     void HUDContainer::render(core::Renderer *renderer)
     {
-        std::time_t tmpTime = std::chrono::system_clock::to_time_t(
-            gameState->getTime());
-
-        const char date_time_format[] = "%d.%m.%Y";
-        // time(&tmpTime);
-        char time_str[100];
-        std::tm *timeinfo = std::localtime(&tmpTime);
-
-        std::strftime(time_str, 100, date_time_format, timeinfo);
 
         //render time
         int xLeft = 370;
@@ -35,7 +26,8 @@ namespace UI
 
         glyphText->render(renderer, "\uf017", color, xLeft, yLeft);
         xLeft += 25;
-        uiText->render(renderer, std::string(time_str), color, xLeft, yLeft + 3);
+        auto format = gameState->getTime().format();
+        uiText->render(renderer, format, color, xLeft, yLeft + 3);
         UI::Container::render(renderer);
     }
 
@@ -91,7 +83,6 @@ namespace UI
 
         int xLeft = 50;
         int yLeft = 0;
-        SDL_Color color = {255, 255, 0, 255};
         //cash
         cashButton = std::make_shared<UI::IconButton>();
         cashButton->setFont("fonts/arial.ttf", 12);

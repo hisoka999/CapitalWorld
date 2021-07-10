@@ -5,20 +5,9 @@ namespace world
 {
 
     GameState::GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty)
-        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty)
+        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty), time(1900, 0, 1)
     {
-        std::tm *ttm;
-        std::time_t ttime;
-        //Unix Time starts at the year 1900
-        std::time(&ttime);
-        ttm = std::localtime(&ttime);
-        ttm->tm_year = 100;
-        ttm->tm_mon = 0;
-        ttm->tm_mday = 1;
-        ttm->tm_wday = 1;
-        ttm->tm_yday = 1;
 
-        time = std::chrono::system_clock::from_time_t(std::mktime(ttm));
         companies.push_back(player);
     }
     void GameState::setTimeState(TimeState state)
@@ -27,10 +16,10 @@ namespace world
     }
     void GameState::increaseTime()
     {
-        time = time + std::chrono::hours(24);
+        time.addDay(1);
     }
 
-    std::chrono::system_clock::time_point GameState::getTime()
+    utils::time::Date &GameState::getTime()
     {
         return time;
     }
@@ -58,13 +47,7 @@ namespace world
     std::string GameState::toJsonString()
     {
         std::shared_ptr<utils::JSON::Object> jsonGameState = std::make_shared<utils::JSON::Object>();
-        std::time_t tmpTime = std::chrono::system_clock::to_time_t(
-            time);
 
-        std::tm *tm = std::gmtime(&tmpTime);
-        jsonGameState->setAttribute("time_year", tm->tm_year);
-        jsonGameState->setAttribute("time_month", tm->tm_mon);
-        jsonGameState->setAttribute("time_day", tm->tm_mday);
         jsonGameState->setAttribute("player", player->toJson());
 
         return jsonGameState->toJsonString();
