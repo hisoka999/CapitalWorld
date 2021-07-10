@@ -6,6 +6,7 @@
 #include "../world/product.h"
 #include "../world/storage.h"
 #include "buildingtypes.h"
+#include <engine/utils/json/object.h>
 
 class GameMap;
 
@@ -78,6 +79,8 @@ namespace world
         void setSubTexture(const std::string &tex);
 
         virtual void update(GameMap *gameMap){};
+
+        std::shared_ptr<utils::JSON::Object> toJson();
 
     private:
         std::string name;

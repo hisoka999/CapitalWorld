@@ -33,6 +33,7 @@ namespace world
         const std::shared_ptr<GameMap> &getGameMap() const;
         const std::vector<std::shared_ptr<world::City>> &getCities() const;
         const Difficulty getDifficulty() const;
+        std::string toJsonString();
 
     private:
         std::chrono::system_clock::time_point time;

@@ -105,8 +105,8 @@ int main()
                 {
                     if (input.isQuit())
                         run = false;
-                    else if (input.isKeyDown(SDLK_ESCAPE))
-                        sceneManager.setCurrentScene("main");
+                    // else if (input.isKeyDown(SDLK_ESCAPE))
+                    //     sceneManager.setCurrentScene("main");
                     else if (input.isKeyDown(SDLK_p))
                     {
                         saveScreenshot = true;

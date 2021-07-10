@@ -5,6 +5,7 @@
 #include <world/building.h>
 #include <vector>
 #include <memory>
+#include <engine/utils/json/object.h>
 
 namespace world
 {
@@ -28,6 +29,8 @@ namespace world
         void updateBalance(int month, int year);
         std::vector<std::shared_ptr<Building>> findProductionBuildings();
         int getMaxBuildingIndex();
+
+        std::shared_ptr<utils::JSON::Object> toJson();
 
     private:
         std::string name;

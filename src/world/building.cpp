@@ -261,4 +261,15 @@ namespace world
         subTexture = tex;
     }
 
+    std::shared_ptr<utils::JSON::Object> Building::toJson()
+    {
+        std::shared_ptr<utils::JSON::Object> myBuilding = std::make_shared<utils::JSON::Object>();
+        myBuilding->setAttribute("name", getName());
+        myBuilding->setAttribute("displayName", getDisplayName());
+        myBuilding->setAttribute("pos_x", get2DPosition().x);
+        myBuilding->setAttribute("pos_y", get2DPosition().y);
+
+        return myBuilding;
+    }
+
 }

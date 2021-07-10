@@ -18,7 +18,7 @@ namespace scenes
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100), gameState(gameState)
+          buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
@@ -38,9 +38,14 @@ namespace scenes
 
         hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow);
         winMgr->addContainer(hud.get());
+        winMgr->addWindow(&optionsWindow);
     }
     WorldScene::~WorldScene()
     {
+        setlocale(LC_ALL, "C");
+
+        std::cout << gameState->toJsonString();
+
         thread->stop();
     }
     std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildingType type)
@@ -77,7 +82,7 @@ namespace scenes
 
         renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
-        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
+        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, float(height)};
         renderer->fillRect(hudRect);
 
         renderer->setDrawColor(0xff, 0xff, 0xff, 128);
@@ -286,6 +291,12 @@ namespace scenes
         {
             direction.left = false;
             direction.right = false;
+        }
+
+        if (pInput->isKeyDown(SDLK_ESCAPE))
+        {
+            optionsWindow.setPos(renderer->getViewPort().width / 2, renderer->getViewPort().height / 2);
+            optionsWindow.setVisible(true);
         }
 
         if (utils::areSame(pInput->getMousePostion().getX(), 0.f))

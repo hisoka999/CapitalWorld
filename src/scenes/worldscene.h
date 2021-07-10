@@ -4,16 +4,17 @@
 #include <engine/core/Scene.h>
 #include <engine/core/SceneManager.h>
 #include <world/gamemap.h>
-#include "../world/gamemaprenderer.h"
-#include "../ui/buildwindow.h"
-#include "../world/company.h"
-#include "../world/buildactions.h"
-#include "../world/building.h"
-#include "../world/gamestate.h"
-#include "../world/updatethread.h"
-#include "../ui/buildingwindow.h"
-#include "../ui/hudcontainer.h"
-#include "../world/city.h"
+#include "world/gamemaprenderer.h"
+#include "ui/buildwindow.h"
+#include "ui/optionswindow.h"
+#include "world/company.h"
+#include "world/buildactions.h"
+#include "world/building.h"
+#include "world/gamestate.h"
+#include "world/updatethread.h"
+#include "ui/buildingwindow.h"
+#include "ui/hudcontainer.h"
+#include "world/city.h"
 #include <map>
 
 namespace scenes
@@ -56,6 +57,7 @@ namespace scenes
         utils::Vector2 cursorPosition;
         graphics::Rect cursorBuildingRect;
         UI::BuildWindow buildWindow;
+        UI::OptionsWindow optionsWindow;
         std::shared_ptr<world::GameState> gameState;
         std::unique_ptr<UpdateThread> thread;
         UI::BuildingWindow buildingWindow;

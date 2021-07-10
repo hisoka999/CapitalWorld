@@ -96,4 +96,23 @@ namespace world
         return buildings.size();
     }
 
+    std::shared_ptr<utils::JSON::Object> Company::toJson()
+    {
+        std::shared_ptr<utils::JSON::Object> obj = std::make_shared<utils::JSON::Object>();
+        obj->setAttribute("name", getName());
+        obj->setAttribute("cash", getCash());
+        obj->setAttribute("maxBuildingIndex", getMaxBuildingIndex());
+
+        utils::JSON::JsonArray jsonBuildings;
+        for (auto &building : buildings)
+        {
+
+            utils::JSON::JsonValue jbuilding = building->toJson();
+            jsonBuildings.push_back(jbuilding);
+        }
+        obj->setArrayAttribute("buildings", jsonBuildings);
+
+        return obj;
+    }
+
 }
