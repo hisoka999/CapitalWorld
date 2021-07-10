@@ -6,15 +6,49 @@
     "configurations": [
         {
             "name": "(gdb) Starten",
-            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/CapitalWorld",
+            "type": "cppvsdbg",
+            "windows": {
+                "program": "${workspaceFolder}\\build\\Debug\\CapitalWorld.exe",
+                //"MIMode": "cppvsdbg",
+            },
+            "linux": {
+                "program": "${workspaceFolder}/build/CapitalWorld",
+                "type": "cppdbg",
+                "MIMode": "gdb",
+            },
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
+            "preLaunchTask": "cmake_debug",
+            "setupCommands": [
+                {
+                    "description": "Automatische Strukturierung und Einrückung für \"gdb\" aktivieren",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(Release) Starten",
+            "request": "launch",
+            "type": "cppvsdbg",
+            "windows": {
+                "program": "${workspaceFolder}\\build\\Release\\CapitalWorld.exe",
+                //"MIMode": "cppvsdbg",
+            },
+            "linux": {
+                "program": "${workspaceFolder}/build/CapitalWorld",
+                "type": "cppdbg",
+                "MIMode": "gdb",
+            },
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
             "preLaunchTask": "cmake",
             "setupCommands": [
                 {

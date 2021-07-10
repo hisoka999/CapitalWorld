@@ -5,14 +5,18 @@ namespace world
     GameState::GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty)
         : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty)
     {
-        std::tm ttm = std::tm();
+        std::tm *ttm;
+        std::time_t ttime;
         //Unix Time starts at the year 1900
-        ttm.tm_year = 10;
-        ttm.tm_mon = 0;
-        ttm.tm_mday = 1;
+        std::time(&ttime);
+        ttm = std::localtime(&ttime);
+        ttm->tm_year = 100;
+        ttm->tm_mon = 0;
+        ttm->tm_mday = 1;
+        ttm->tm_wday = 1;
+        ttm->tm_yday = 1;
 
-        std::time_t ttime = std::mktime(&ttm);
-        time = std::chrono::system_clock::from_time_t(ttime);
+        time = std::chrono::system_clock::from_time_t(std::mktime(ttm));
         companies.push_back(player);
     }
     void GameState::setTimeState(TimeState state)

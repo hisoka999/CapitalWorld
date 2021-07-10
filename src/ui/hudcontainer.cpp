@@ -22,11 +22,11 @@ namespace UI
             gameState->getTime());
 
         const char date_time_format[] = "%d.%m.%Y";
-
+        // time(&tmpTime);
         char time_str[100];
+        std::tm *timeinfo = std::localtime(&tmpTime);
 
-        std::strftime(time_str, 100, date_time_format,
-                      std::localtime(&tmpTime));
+        std::strftime(time_str, 100, date_time_format, timeinfo);
 
         //render time
         int xLeft = 370;
@@ -131,15 +131,15 @@ namespace UI
 
     void HUDContainer::update()
     {
-        cashButton->setLabel(utils::string_format("%'.2f €", gameState->getPlayer()->getCash()));
-        profitButton->setLabel(utils::string_format("%'.2f €", gameState->getPlayer()->getProfit()));
+        cashButton->setLabel(utils::string_format(u8"%.2f €", gameState->getPlayer()->getCash()));
+        profitButton->setLabel(utils::string_format(u8"%.2f €", gameState->getPlayer()->getProfit()));
 
         //cashButton->getHint()->setHintText(utils::string_format("Income Balance\n Cash: %'.2f € \nProfit: %'.2f €", gameState->getPlayer()->getCash(), gameState->getPlayer()->getProfit()));
         std::string hintText = "Income Balance\n";
-        hintText += utils::string_format("Cash: %'.2f €", gameState->getPlayer()->getCash()) + "\n";
-        hintText += utils::string_format("Income: %'.2f €", gameState->getPlayer()->getIncome()) + "\n";
-        hintText += utils::string_format("Costs:  %'.2f €", gameState->getPlayer()->getCosts()) + "\n";
-        hintText += utils::string_format("Profit: %'.2f €", gameState->getPlayer()->getProfit());
+        hintText += utils::string_format("Cash:   %.2f €", gameState->getPlayer()->getCash()) + "\n";
+        hintText += utils::string_format("Income: %.2f €", gameState->getPlayer()->getIncome()) + "\n";
+        hintText += utils::string_format("Costs:  %.2f €", gameState->getPlayer()->getCosts()) + "\n";
+        hintText += utils::string_format("Profit: %.2f €", gameState->getPlayer()->getProfit());
         cashButton->getHint()->setHintText(hintText);
     }
 }
