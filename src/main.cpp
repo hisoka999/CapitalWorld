@@ -18,6 +18,7 @@
 #include "services/buildingservice.h"
 #include <iostream>
 #include "engine/utils/localisation.h"
+
 #include <magic_enum.hpp>
 
 template <size_t SIZE>
@@ -45,7 +46,7 @@ void generateEnumPot(std::string fileName)
     os.close();
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     try
     {
@@ -56,7 +57,7 @@ int main()
         Localisation::Instance().detectLanguage("capitalworld");
         Localisation::Instance().detectLanguage("enum");
 
-        setlocale(LC_ALL, "");
+        setlocale(LC_ALL, "de_DE");
         auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
         win.open(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "captialworld");
         utils::Logger logger(utils::LogLevel::trace);

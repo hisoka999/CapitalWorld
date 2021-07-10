@@ -45,7 +45,7 @@ elseif (WIN32)
     set(SDL2TTF_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
     set(SDL2TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
 
-    set(SDL2_MIXER_LIBRARY sdl2ttf)
+    set(SDL2_MIXER_LIBRARY SDL2_mixer)
     set(SDL2_MIXER_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
     set(SDL2_MIXER_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
 
@@ -107,6 +107,12 @@ ${PROJECT_SOURCE_DIR}/cmake
 ${PROJECT_BINARY_DIR}/engine
 )
 
+if (WIN32)
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+    
+endif()
+
 message( ${MAGIC_ENUM_SRC})
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
@@ -114,7 +120,21 @@ include_directories("${PROJECT_BINARY_DIR}" "src/" ${SDL2_INCLUDE_DIR} ${GETTEXT
 
 
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
-target_link_libraries(${PROJECT_NAME} sgl)
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)    
+    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2 -mwindows)
+else()
+    target_link_libraries(${PROJECT_NAME} SDL2)
+    message("unix "+${SDL2_LIBRARIES})
+endif()
+#ADD_LIBRARY(sgl STATIC IMPORTED)
+#SET_TARGET_PROPERTIES(sgl PROPERTIES
+#    IMPORTED_LOCATION /usr/lib/libboost_unit_test_framework.a)
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE sgl)
+else()
+    target_link_libraries(${PROJECT_NAME} sgl)
+endif()
 if(MINGW)
     IF(CMAKE_BUILD_TYPE MATCHES DEBUG) 
         message("debug mode")
@@ -122,15 +142,10 @@ if(MINGW)
     else()
         target_link_libraries(${PROJECT_NAME} mingw32 SDL2main SDL2 -mwindows)
     ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
-elsif(WIN32)
-    target_link_libraries(${PROJECT_NAME} SDL2main SDL2 -mwindows)
-else()
-    target_link_libraries(${PROJECT_NAME} SDL2)
-    message("unix "+${SDL2_LIBRARIES})
 endif()
-target_link_libraries(${PROJECT_NAME} SDL2_ttf)
-target_link_libraries(${PROJECT_NAME} SDL2_image)
-target_link_libraries(${PROJECT_NAME} SDL2_mixer)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_ttf)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_image)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_mixer)
 if( UNIX)
   target_link_libraries(${PROJECT_NAME} SDL2_gfx)
   target_link_libraries(${PROJECT_NAME} pthread)
@@ -143,7 +158,21 @@ add_custom_command(TARGET CapitalWorld PRE_BUILD
 add_custom_command(TARGET CapitalWorld PRE_BUILD
                   COMMAND ${CMAKE_COMMAND} -E copy_directory
                       ${CMAKE_SOURCE_DIR}/images/ $<TARGET_FILE_DIR:CapitalWorld>/images/)
+add_custom_command(TARGET CapitalWorld PRE_BUILD
+                  COMMAND ${CMAKE_COMMAND} -E copy_directory
+                      ${CMAKE_SOURCE_DIR}/locale/ $<TARGET_FILE_DIR:CapitalWorld>/locale/)
+add_custom_command(TARGET CapitalWorld PRE_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_directory
+                          ${CMAKE_SOURCE_DIR}/data/ $<TARGET_FILE_DIR:CapitalWorld>/data/)
+if(WIN32)
+    add_custom_command(TARGET CapitalWorld POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/ $<TARGET_FILE_DIR:CapitalWorld>)
 
+    add_custom_command(TARGET CapitalWorld POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy
+                           ${PROJECT_BINARY_DIR}/engine/engine-build/Debug/sgl.dll $<TARGET_FILE_DIR:CapitalWorld>)
+endif()
 INSTALL(TARGETS CapitalWorld DESTINATION capitalworld)
 INSTALL(DIRECTORY fonts DESTINATION capitalworld )
 INSTALL(DIRECTORY images DESTINATION capitalworld )

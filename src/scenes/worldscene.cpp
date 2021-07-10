@@ -369,7 +369,7 @@ namespace scenes
         }
     }
 
-    void WorldScene::fixedUpdate(u_int32_t delta)
+    void WorldScene::fixedUpdate(uint32_t delta)
     {
 
         hud->update();

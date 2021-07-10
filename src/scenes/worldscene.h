@@ -42,7 +42,7 @@ namespace scenes
         void render();
         void handleEvents(core::Input *pInput);
         virtual void update();
-        virtual void fixedUpdate(u_int32_t delta);
+        virtual void fixedUpdate(uint32_t delta);
 
     private:
         void renderHUD();
