@@ -116,7 +116,6 @@ namespace UI
             std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
             pc->connect("imageClicked", [=](void)
                         {
-                            std::cout << "click: " << product->getName() << std::endl;
                             resourceSelectionBox->setSelectionByText(product->getResources().at(0)->getName());
                             productSelectionBox->setSelectionByText(product->getName());
                         });
@@ -132,11 +131,11 @@ namespace UI
             auto product = productList[static_cast<size_t>(productSelectionBox->getSelection())];
             if (!building->hasProduct(product))
             {
-                addButton->setLabel("Add");
+                addButton->setLabel(_("Add"));
             }
             else
             {
-                addButton->setLabel("Remove");
+                addButton->setLabel(_("Remove"));
             }
         }
     }

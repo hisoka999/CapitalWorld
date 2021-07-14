@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-30 16:26+0200\n"
+"POT-Creation-Date: 2021-07-14 22:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/ui/factoryproductiontab.cpp:75 src/ui/factoryproductiontab.cpp:196
+msgid "Add"
+msgstr ""
+
+#: src/scenes/NewGameScene.cpp:39
+msgid "Back"
+msgstr ""
 
 #: src/ui/buildwindow.cpp:14
 msgid "Build"
@@ -25,11 +33,24 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/scenes/MainScene.cpp:69
+#: src/scenes/NewGameScene.cpp:52
+msgid "Companyname: "
+msgstr ""
+
+#: src/ui/factoryproductiontab.cpp:58
+msgid "Costs:"
+msgstr ""
+
+#: src/scenes/NewGameScene.cpp:162
+msgid "Difficultiy: "
+msgstr ""
+
+#: src/scenes/MainScene.cpp:69 src/scenes/MainScene.cpp:73
 msgid "Exit Game"
 msgstr ""
 
 #: src/ui/buildwindow.cpp:50 src/scenes/worldscene.cpp:69
+#: src/ui/buildwindow.cpp:52
 msgid "Factory"
 msgstr ""
 
@@ -45,15 +66,23 @@ msgstr ""
 msgid "Ground: "
 msgstr ""
 
-#: src/world/city.cpp:136
+#: src/ui/factoryproductiontab.cpp:94
+msgid "Help"
+msgstr ""
+
+#: src/world/city.cpp:136 src/world/city.cpp:432
 msgid "House"
 msgstr ""
 
-#: src/scenes/MainScene.cpp:44
+#: src/scenes/MainScene.cpp:44 src/scenes/MainScene.cpp:48
 msgid "Load Game"
 msgstr ""
 
-#: src/scenes/MainScene.cpp:33
+#: src/scenes/NewGameScene.cpp:137
+msgid "Map size: "
+msgstr ""
+
+#: src/scenes/MainScene.cpp:33 src/scenes/MainScene.cpp:37
 msgid "New Game"
 msgstr ""
 
@@ -65,6 +94,18 @@ msgstr ""
 msgid "Product:"
 msgstr ""
 
+#: src/ui/factoryproductiontab.cpp:10
+msgid "Production"
+msgstr ""
+
+#: src/ui/factoryproductiontab.cpp:54
+msgid "Production Cycle:"
+msgstr ""
+
+#: src/ui/factoryproductiontab.cpp:200
+msgid "Remove"
+msgstr ""
+
 #: src/ui/SettingsWindow.cpp:96
 msgid "Resolution"
 msgstr ""
@@ -73,8 +114,13 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: src/scenes/NewGameScene.cpp:70
+msgid "Seed: "
+msgstr ""
+
 #. fullscreen->setText(_("Fullscreen"));
 #: src/ui/SettingsWindow.cpp:44 src/scenes/MainScene.cpp:57
+#: src/scenes/MainScene.cpp:61
 msgid "Settings"
 msgstr ""
 
@@ -82,11 +128,16 @@ msgstr ""
 msgid "Show Building"
 msgstr ""
 
+#: src/scenes/NewGameScene.cpp:30
+msgid "Start Game"
+msgstr ""
+
 #: src/ui/routecomponent.cpp:49
 msgid "Start: "
 msgstr ""
 
 #: src/ui/buildwindow.cpp:92 src/world/buildings/street.cpp:9
+#: src/ui/buildwindow.cpp:104
 msgid "Street"
 msgstr ""
 
@@ -94,7 +145,7 @@ msgstr ""
 msgid "Target: "
 msgstr ""
 
-#: src/ui/buildwindow.cpp:77
+#: src/ui/buildwindow.cpp:77 src/ui/buildwindow.cpp:87
 msgid "Transport"
 msgstr ""
 
@@ -109,4 +160,12 @@ msgstr ""
 
 #: src/ui/routecomponent.cpp:53
 msgid "is active"
+msgstr ""
+
+#: src/scenes/NewGameScene.cpp:113
+msgid "number of cities: "
+msgstr ""
+
+#: src/scenes/NewGameScene.cpp:88
+msgid "number of companies: "
 msgstr ""
