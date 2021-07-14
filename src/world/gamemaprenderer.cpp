@@ -69,7 +69,7 @@ void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int ti
     destRect.width = srcRect.width * factor;
     destRect.height = srcRect.height * factor;
 
-    graphics::Rect realRect = {(pos.getX() * renderer->getZoomFactor()), (pos.getY() + (tileHeight - srcRect.height)) * renderer->getZoomFactor(), srcRect.width * renderer->getZoomFactor(), srcRect.height * renderer->getZoomFactor()};
+    graphics::Rect realRect = {(pos.getX() * renderer->getZoomFactor()), (pos.getY() + (tileHeight - srcRect.height)) * factor, srcRect.width * factor, srcRect.height * factor};
 
     if (!realRect.intersects(camera->getViewPortRect()))
     {

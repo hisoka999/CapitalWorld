@@ -47,6 +47,7 @@ namespace scenes
     private:
         void renderHUD();
         std::shared_ptr<world::Building> createBuilding(world::BuildingType type);
+        std::shared_ptr<world::Building> findBuilding(world::BuildingType type);
         graphics::Texture uiTexture;
         core::SceneManager *sceneManager;
 
@@ -63,6 +64,7 @@ namespace scenes
         UI::BuildingWindow buildingWindow;
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
+        bool wasMoving = false;
     };
 }
 #endif // WORLDSCENE_H

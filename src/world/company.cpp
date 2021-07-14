@@ -1,6 +1,8 @@
 #include "company.h"
 #include <algorithm>
-
+#include "services/buildingservice.h"
+#include <magic_enum.hpp>
+#include "world/buildings/street.h"
 namespace world
 {
 
@@ -113,6 +115,51 @@ namespace world
         obj->setArrayAttribute("buildings", jsonBuildings);
 
         return obj;
+    }
+
+    std::shared_ptr<Company> Company::fromJson(const std::shared_ptr<utils::JSON::Object> &object)
+    {
+        std::string name = object->getStringValue("name");
+        float cash = object->getIntValue("cash");
+        int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
+        auto company = std::make_shared<Company>(name, cash, true);
+        auto buildings = object->getArray("buildings");
+
+        for (auto val : buildings)
+        {
+            auto b = std::get<std::shared_ptr<utils::JSON::Object>>(val);
+            world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(b->getStringValue("type")).value();
+            switch (type)
+            {
+            case world::BuildingType::Street:
+            {
+                auto street = std::make_shared<world::buildings::Street>();
+                //todo change position, or move to new class
+                graphics::Rect rect;
+                rect.x = 0;
+                rect.y = 128;
+                rect.width = 64;
+                rect.height = 32;
+                street->setSourceRect(rect);
+                street->setOffset(0, 0);
+                street->setPosition(b->getIntValue("pos_x"), b->getIntValue("pos_y"));
+                street->setSubTexture("street1");
+                company->addBuilding(street);
+
+                break;
+            }
+            default:
+                auto building = services::BuildingService::Instance().find(type);
+                company->addBuilding(Building::fromJson(building, b));
+            }
+        }
+
+        return company;
+    }
+
+    std::vector<std::shared_ptr<world::Building>> &Company::getBuildings()
+    {
+        return buildings;
     }
 
 }

@@ -1,5 +1,7 @@
 #include "building.h"
 #include <algorithm>
+#include <magic_enum.hpp>
+#include "services/productservice.h"
 
 namespace world
 {
@@ -268,8 +270,85 @@ namespace world
         myBuilding->setAttribute("displayName", getDisplayName());
         myBuilding->setAttribute("pos_x", get2DPosition().x);
         myBuilding->setAttribute("pos_y", get2DPosition().y);
+        myBuilding->setAttribute("offset_x", xOffset);
+        myBuilding->setAttribute("offset_y", yOffset);
+        myBuilding->setAttribute("subTexture", subTexture);
+        myBuilding->setAttribute("type", std::string(magic_enum::enum_name(type)));
+
+        utils::JSON::JsonArray productsArray;
+        for (auto &product : products)
+        {
+
+            utils::JSON::JsonValue value = product->getName();
+            productsArray.push_back(value);
+        }
+        myBuilding->setArrayAttribute("products", productsArray);
+
+        myBuilding->setAttribute("storage", storage.toJson());
+
+        // TODO balance
+        utils::JSON::JsonArray balanceArray;
+        for (auto &b : balance)
+        {
+            std::shared_ptr<utils::JSON::Object> jBalance = std::make_shared<utils::JSON::Object>();
+            jBalance->setAttribute("year", b.year);
+            jBalance->setAttribute("month", b.month);
+            jBalance->setAttribute("product", b.name);
+            jBalance->setAttribute("costs", float(b.costs));
+            jBalance->setAttribute("income", float(b.income));
+            jBalance->setAttribute("account", std::string(magic_enum::enum_name(b.account)));
+            utils::JSON::JsonValue value = jBalance;
+            balanceArray.push_back(value);
+        }
+
+        myBuilding->setArrayAttribute("balance", balanceArray);
 
         return myBuilding;
+    }
+
+    std::shared_ptr<Building> Building::fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object)
+    {
+        auto result = std::make_shared<Building>(*reference);
+        result->setDisplayName(object->getStringValue("displayName"));
+        int posX = object->getIntValue("pos_x");
+        int posY = object->getIntValue("pos_y");
+        result->setPosition(posX, posY);
+        result->setSubTexture(object->getStringValue("subTexture"));
+        // add products
+        utils::JSON::JsonArray productsArray = object->getArray("products");
+
+        for (auto attrName : object->getObjectValue("storage")->getAttributes())
+        {
+            int amount = object->getObjectValue("storage")->getIntValue(attrName);
+            result->getStorage().addEntry(attrName, amount);
+        }
+
+        for (auto p : productsArray)
+        {
+            auto productName = std::get<std::string>(p);
+            auto product = services::ProductService::Instance().getProductByName(productName);
+            result->addProduct(product);
+        }
+        // add balance
+        utils::JSON::JsonArray balanceArray = object->getArray("balance");
+        for (auto b : balanceArray)
+        {
+            auto balanceObject = std::get<std::shared_ptr<utils::JSON::Object>>(b);
+            ProductBalance balance;
+            balance.account = magic_enum::enum_cast<BalanceAccount>(balanceObject->getStringValue("account")).value();
+            balance.costs = balanceObject->getIntValue("costs");
+            balance.income = balanceObject->getIntValue("income");
+            balance.month = balanceObject->getIntValue("month");
+            balance.year = balanceObject->getIntValue("year");
+            balance.name = balanceObject->getStringValue("product");
+            result->addBalance(balance);
+        }
+        return result;
+    }
+
+    void Building::addBalance(ProductBalance value)
+    {
+        balance.push_back(value);
     }
 
 }

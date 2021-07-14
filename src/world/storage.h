@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <engine/utils/json/object.h>
 
 struct StorageEntry
 {
@@ -20,6 +21,8 @@ public:
     unsigned getEntry(std::string product);
     unsigned usedStorage();
     std::vector<std::string> getStoredProducts();
+
+    std::shared_ptr<utils::JSON::Object> toJson();
 
 private:
     unsigned maximalAmount;

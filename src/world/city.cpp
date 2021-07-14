@@ -173,29 +173,31 @@ namespace world
                 buildings.push_back(house);
         }
 
-        std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2) {
-            utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-            auto v11 = gameMap->twoDToIso(v1);
+        std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2)
+                  {
+                      utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
+                      auto v11 = gameMap->twoDToIso(v1);
 
-            utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-            auto v22 = gameMap->twoDToIso(v2);
+                      utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
+                      auto v22 = gameMap->twoDToIso(v2);
 
-            return v11.getY() < v22.getY();
-            //  o1->get2DPosition().x > o2->get2DPosition().x
-            ;
-        });
+                      return v11.getY() < v22.getY();
+                      //  o1->get2DPosition().x > o2->get2DPosition().x
+                      ;
+                  });
 
-        std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2) {
-            utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-            auto v11 = gameMap->twoDToIso(v1);
+        std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2)
+                  {
+                      utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
+                      auto v11 = gameMap->twoDToIso(v1);
 
-            utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-            auto v22 = gameMap->twoDToIso(v2);
+                      utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
+                      auto v22 = gameMap->twoDToIso(v2);
 
-            return v11.getY() < v22.getY();
-            //  o1->get2DPosition().x > o2->get2DPosition().x
-            ;
-        });
+                      return v11.getY() < v22.getY();
+                      //  o1->get2DPosition().x > o2->get2DPosition().x
+                      ;
+                  });
 
         for (auto &street : streets)
         {
@@ -371,4 +373,85 @@ namespace world
         //render the city name
     }
 
+    std::shared_ptr<utils::JSON::Object> City::toJson()
+    {
+        std::shared_ptr<utils::JSON::Object> json = std::make_shared<utils::JSON::Object>();
+
+        json->setAttribute("name", name);
+        json->setAttribute("numberOfCitizen", int(numberOfCitizen));
+        //json->setAttribute("type",   type);
+        json->setAttribute("pos_x", position.getX());
+        json->setAttribute("pos_y", position.getY());
+
+        utils::JSON::JsonArray jsonStreets;
+
+        for (auto &street : streets)
+        {
+            utils::JSON::JsonValue value = street->toJson();
+            jsonStreets.push_back(value);
+        }
+        json->setArrayAttribute("streets", jsonStreets);
+        utils::JSON::JsonArray jsonBuildings;
+        for (auto &street : buildings)
+        {
+            utils::JSON::JsonValue value = street->toJson();
+            jsonBuildings.push_back(value);
+        }
+        json->setArrayAttribute("buildings", jsonBuildings);
+        return json;
+    }
+
+    std::shared_ptr<City> City::fromJson(const std::shared_ptr<utils::JSON::Object> &object)
+    {
+        std::string name = object->getStringValue("name");
+        int numberOfCitizen = object->getIntValue("numberOfCitizen");
+        int posX = object->getIntValue("pos_x");
+        int posY = object->getIntValue("pos_y");
+        utils::Vector2 pos(posX, posY);
+        auto city = std::make_shared<City>(name, pos);
+
+        utils::JSON::JsonArray jsonStreets = object->getArray("streets");
+        for (auto s : jsonStreets)
+        {
+            auto streetObject = std::get<std::shared_ptr<utils::JSON::Object>>(s);
+            auto street = std::make_shared<world::buildings::Street>();
+            //todo change position, or move to new class
+            street->setSourceRect(city->groundTexture->getSourceRect("street1"));
+            street->setOffset(0, 0);
+            street->setPosition(streetObject->getIntValue("pos_x"), streetObject->getIntValue("pos_y"));
+            street->setSubTexture("street1");
+            city->streets.push_back(street);
+        }
+
+        utils::JSON::JsonArray jsonBuildings = object->getArray("buildings");
+
+        for (auto b : jsonBuildings)
+        {
+            auto buildingObject = std::get<std::shared_ptr<utils::JSON::Object>>(b);
+
+            auto house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
+            utils::Vector2 housePosition(buildingObject->getIntValue("pos_x"), buildingObject->getIntValue("pos_y"));
+            //change it in the real version
+            std::string subTexture = buildingObject->getStringValue("subTexture");
+            house->setSourceRect(city->groundTexture->getSourceRect(subTexture));
+            house->setPosition(housePosition.getX(), housePosition.getY());
+            int xOffset = buildingObject->getIntValue("offset_x");
+            int yOffset = buildingObject->getIntValue("offset_y");
+
+            house->setOffset(xOffset, yOffset);
+            house->setSubTexture(subTexture);
+            city->buildings.push_back(house);
+        }
+        return city;
+    }
+
+    std::vector<std::shared_ptr<Building>> &City::getBuildings()
+    {
+        return buildings;
+    }
+
+    std::vector<std::shared_ptr<world::buildings::Street>> &City::getStreets()
+    {
+        return streets;
+    }
 }

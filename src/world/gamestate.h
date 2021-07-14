@@ -10,6 +10,7 @@
 #include <vector>
 #include "constants.h"
 #include <engine/utils/time/date.h>
+#include <engine/utils/json/object.h>
 
 namespace world
 {
@@ -26,24 +27,26 @@ namespace world
     {
     public:
         GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty);
+        GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty, utils::time::Date &time);
 
         void setTimeState(TimeState state);
         void increaseTime();
         utils::time::Date &getTime();
         const std::shared_ptr<world::Company> &getPlayer() const;
         const std::shared_ptr<GameMap> &getGameMap() const;
-        const std::vector<std::shared_ptr<world::City>> &getCities() const;
+        const std::vector<std::shared_ptr<world::City>> &getCities();
         const Difficulty getDifficulty() const;
         std::string toJsonString();
+        static std::shared_ptr<GameState> fromJson(std::shared_ptr<utils::JSON::Object> &object);
 
     private:
-        utils::time::Date time;
-        std::vector<std::shared_ptr<world::Company>> companies;
-        std::shared_ptr<Company> player;
         TimeState timeState;
+        std::shared_ptr<Company> player;
         std::shared_ptr<GameMap> gameMap;
         std::vector<std::shared_ptr<world::City>> cities;
         Difficulty difficulty;
+        utils::time::Date time;
+        std::vector<std::shared_ptr<world::Company>> companies;
     };
 }
 #endif // GAMESTATE_H

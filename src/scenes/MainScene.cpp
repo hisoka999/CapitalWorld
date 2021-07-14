@@ -13,7 +13,11 @@
 #include "translate.h"
 #include <engine/utils/os.h>
 #include <engine/core/gamewindow.h>
-
+#include <engine/utils/os.h>
+#include <engine/utils/json/parser.h>
+#include <fstream>
+#include "world/gamestate.h"
+#include "scenes/worldscene.h"
 namespace scenes
 {
 
@@ -44,7 +48,7 @@ namespace scenes
                 btnLoadGame->setLabel(_("Load Game"));
                 btnLoadGame->setPos(450, 400);
                 btnLoadGame->setStaticWidth(150);
-                btnLoadGame->disable();
+                //btnLoadGame->disable();
 
                 btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]()
                                      { loadGame(); });
@@ -100,6 +104,30 @@ namespace scenes
 
         void MainScene::loadGame()
         {
+                std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/savegame.save";
+                std::ifstream file;
+                std::istringstream is;
+                std::string s;
+                std::string group;
+                //  std::cout << filename << std::endl;
+
+                file.open(saveGameFile.c_str(), std::ios::in);
+                if (!file.is_open())
+                {
+                        throw IOException(saveGameFile, "file does not exists");
+                }
+                std::string buffer((std::istreambuf_iterator<char>(file)),
+                                   std::istreambuf_iterator<char>());
+                utils::JSON::Parser parser;
+                auto jsonObject = parser.parseObject(buffer);
+
+                file.close();
+
+                auto gameState = world::GameState::fromJson(jsonObject);
+
+                auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
+                sceneManager->addScene("world", starMapScene);
+                sceneManager->setCurrentScene("world");
         }
 
         void MainScene::handleEvents(core::Input *pInput)

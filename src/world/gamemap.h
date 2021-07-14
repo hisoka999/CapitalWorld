@@ -35,6 +35,9 @@ public:
     const std::shared_ptr<world::Building> &getBuilding(const int x, const int y) const;
     std::vector<std::shared_ptr<world::Building>> findProductionBuildings(const std::shared_ptr<world::Building> &startBuilding);
 
+    std::shared_ptr<utils::JSON::Object> toJson();
+    static std::shared_ptr<GameMap> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
+
 private:
     const size_t make_pos(const uint16_t x, const uint16_t y) const;
     std::vector<std::shared_ptr<world::Building>> borderingBuilding(const std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType);

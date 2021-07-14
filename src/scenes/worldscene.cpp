@@ -39,12 +39,10 @@ namespace scenes
         hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
+        optionsWindow.setGameState(gameState);
     }
     WorldScene::~WorldScene()
     {
-        setlocale(LC_ALL, "C");
-
-        std::cout << gameState->toJsonString();
 
         thread->stop();
     }
@@ -72,13 +70,34 @@ namespace scenes
         return building;
     }
 
+    std::shared_ptr<world::Building> WorldScene::findBuilding(world::BuildingType type)
+    {
+        std::shared_ptr<world::Building> building = nullptr;
+        graphics::Rect rect;
+        rect.width = static_cast<float>(mapRenderer->getTileWidth());
+        rect.height = static_cast<float>(mapRenderer->getTileHeight());
+
+        switch (type)
+        {
+
+        case world::BuildingType::Street:
+            building = std::make_shared<world::buildings::Street>();
+            rect.x = 0;
+            rect.y = 128;
+            building->setOffset(0, 0);
+            building->setSourceRect(rect);
+            break;
+        default:
+            building = services::BuildingService::Instance().find(type);
+        }
+        return building;
+    }
+
     void WorldScene::renderHUD()
     {
         int y = 0;
         int height = 40;
         buildWindow.setPos(0, height + 50);
-        //hudTexture->setBlendMode(SDL_BLENDMODE_ADD);
-        //hudTexture->renderResized(renderer, 0, y, renderer->getViewPort().width, height);
 
         renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
@@ -106,8 +125,6 @@ namespace scenes
         {
             city->renderCity(renderer);
         }
-        float cursorX = (cursorPosition.getX() * mapRenderer->getTileWidth() / 2.f);
-        float cursorY = (cursorPosition.getY() * mapRenderer->getTileHeight());
 
         float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
@@ -116,14 +133,25 @@ namespace scenes
         {
             for (float x = 0; x < cursorBuildingRect.width; x++)
             {
-                utils::Vector2 pos = gameMap->twoDToIso(utils::Vector2(cursorX + (x * mapRenderer->getTileWidth() / 2.f), cursorY + (y * mapRenderer->getTileHeight())));
-                float xPos = (pos.getX() * factor) - camera->getX();
+
+                float tx = float(cursorPosition.getX() + x) * mapRenderer->getTileWidth() / 2.0f;
+                float ty = float(cursorPosition.getY() + y) * mapRenderer->getTileHeight();
+                utils::Vector2 vec(tx, ty);
+                const auto &pos = gameMap->twoDToIso(vec);
 
                 float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
 
-                float yPos = ((pos.getY() - tileYOffset) * factor) - (camera->getY());
-
-                cursorTexture->renderResized(renderer, xPos, yPos, cursorTexture->getWidth() * factor, cursorTexture->getHeight() * factor);
+                graphics::Rect srcRect;
+                srcRect.x = 0;
+                srcRect.y = 0;
+                srcRect.width = cursorTexture->getWidth();
+                srcRect.height = cursorTexture->getHeight();
+                graphics::Rect destRect;
+                destRect.x = (pos.getX() * factor) - camera->getX();
+                destRect.y = ((pos.getY() + (mapRenderer->getTileHeight() - srcRect.height) - tileYOffset) * factor) - camera->getY();
+                destRect.width = srcRect.width * factor;
+                destRect.height = srcRect.height * factor;
+                cursorTexture->render(renderer, srcRect, destRect);
             }
         }
 
@@ -171,6 +199,7 @@ namespace scenes
                             //if no one owns the building you have to pay for destroying it
                             gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
                         }
+                        mapRenderer->clearCache();
                     }
                 }
                 else if (action == world::BuildAction::Build)
@@ -238,11 +267,12 @@ namespace scenes
                 cursorPosition = utils::Vector2(x, y);
                 //std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
-                auto building = (buildWindow.getCurrentAction() == world::BuildAction::Build) ? services::BuildingService::Instance().find(buildWindow.getCurrentBuildingType()) : nullptr;
+                auto building = (buildWindow.getCurrentAction() == world::BuildAction::Build) ? findBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
                 if (building != nullptr)
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
-                cursorTexture->setBlendMode(SDL_BLENDMODE_ADD);
+                cursorTexture->setBlendMode(SDL_BLENDMODE_BLEND);
+                SDL_SetTextureAlphaMod(cursorTexture->getSDLTexture(), 150);
                 if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
                 {
                     cursorBuildingRect = building->get2DPosition();
@@ -356,10 +386,7 @@ namespace scenes
             renderer->getMainCamera()->move(moveX, moveY);
             moveX = 0;
             moveY = 0;
-            // if (renderer->getMainCamera()->getX() < 0)
-            // {
-            //     moveX = renderer->getMainCamera()->getX() * -1;
-            // }
+            wasMoving = true;
 
             if (renderer->getMainCamera()->getY() < 0)
             {
@@ -374,7 +401,10 @@ namespace scenes
 
         hud->update();
 
-        if (direction.isMoving())
+        if (wasMoving)
+        {
             mapRenderer->clearCache();
+            wasMoving = false;
+        }
     }
 }

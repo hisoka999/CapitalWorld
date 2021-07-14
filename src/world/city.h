@@ -41,6 +41,15 @@ namespace world
         void generate(unsigned int seed, std::shared_ptr<GameMap> gameMap);
         void renderCity(core::Renderer *renderer);
 
+        std::shared_ptr<utils::JSON::Object> toJson();
+        static std::shared_ptr<City> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
+        std::vector<std::shared_ptr<Building>> &getBuildings();
+        std::vector<std::shared_ptr<world::buildings::Street>> &getStreets();
+
+    protected:
+        std::vector<std::shared_ptr<Building>> buildings;
+        std::vector<std::shared_ptr<world::buildings::Street>> streets;
+
     private:
         bool isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap);
         bool isOverlapStreet(std::shared_ptr<Building> &building);
@@ -56,8 +65,7 @@ namespace world
         CityType type;
         std::shared_ptr<GameMap> gameMap;
         std::shared_ptr<graphics::TextureMap> groundTexture;
-        std::vector<std::shared_ptr<Building>> buildings;
-        std::vector<std::shared_ptr<world::buildings::Street>> streets;
+
         std::shared_ptr<TreeNode> root;
     };
 }

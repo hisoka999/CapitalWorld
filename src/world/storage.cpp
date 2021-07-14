@@ -49,6 +49,17 @@ std::vector<std::string> Storage::getStoredProducts()
     return result;
 }
 
+std::shared_ptr<utils::JSON::Object> Storage::toJson()
+{
+    std::shared_ptr<utils::JSON::Object> json = std::make_shared<utils::JSON::Object>();
+
+    for (auto &entry : entries)
+    {
+        json->setAttribute(entry.first, int(entry.second.amount));
+    }
+    return json;
+}
+
 unsigned Storage::getEntry(std::string product)
 {
     return entries[product].amount;

@@ -2,6 +2,10 @@
 #include <engine/ui/Button.h>
 #include <engine/ui/layout/GridLayout.h>
 #include <engine/core/SceneManager.h>
+#include <engine/utils/os.h>
+#include <engine/utils/json/parser.h>
+#include <fstream>
+
 namespace UI
 {
     OptionsWindow::OptionsWindow(int x, int y) : UI::Window(x, y, 200, 300)
@@ -18,11 +22,15 @@ namespace UI
         auto loadButton = std::make_shared<UI::Button>(mainArea.get());
         loadButton->setFont("fonts/arial.ttf", 12);
         loadButton->setLabel("Load Game");
+        loadButton->connect(UI::Button::buttonClickCallback(), [&]()
+                            { loadGame(); });
         mainArea->addObject(loadButton);
 
         auto saveButton = std::make_shared<UI::Button>(mainArea.get());
         saveButton->setFont("fonts/arial.ttf", 12);
         saveButton->setLabel("Save Game");
+        saveButton->connect(UI::Button::buttonClickCallback(), [&]()
+                            { saveGame(); });
         mainArea->addObject(saveButton);
 
         auto optionsButton = std::make_shared<UI::Button>(mainArea.get());
@@ -62,6 +70,52 @@ namespace UI
     {
         UI::Window::handleEvents(pInput);
         settingsWindow.handleEvents(pInput);
+    }
+
+    void OptionsWindow::setGameState(const std::shared_ptr<world::GameState> &gameState)
+    {
+        this->gameState = gameState;
+    }
+
+    const std::shared_ptr<world::GameState> &OptionsWindow::getGameState()
+    {
+        return gameState;
+    }
+
+    void OptionsWindow::saveGame()
+    {
+        setlocale(LC_ALL, "C");
+        std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/savegame.save";
+        std::cout << "savegame: " << saveGameFile << std::endl;
+        std::ofstream ostream(saveGameFile, std::ios::trunc | std::ios::out);
+
+        ostream << gameState->toJsonString();
+        ostream.flush();
+        ostream.close();
+    }
+
+    void OptionsWindow::loadGame()
+    {
+        std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/savegame.save";
+        std::ifstream file;
+        std::istringstream is;
+        std::string s;
+        std::string group;
+        //  std::cout << filename << std::endl;
+
+        file.open(saveGameFile.c_str(), std::ios::in);
+        if (!file.is_open())
+        {
+            throw IOException(saveGameFile, "file does not exists");
+        }
+        std::string buffer((std::istreambuf_iterator<char>(file)),
+                           std::istreambuf_iterator<char>());
+        utils::JSON::Parser parser;
+        auto jsonObject = parser.parseObject(buffer);
+
+        file.close();
+
+        gameState = world::GameState::fromJson(jsonObject);
     }
 
 }

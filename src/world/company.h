@@ -31,6 +31,8 @@ namespace world
         int getMaxBuildingIndex();
 
         std::shared_ptr<utils::JSON::Object> toJson();
+        static std::shared_ptr<Company> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
+        std::vector<std::shared_ptr<world::Building>> &getBuildings();
 
     private:
         std::string name;

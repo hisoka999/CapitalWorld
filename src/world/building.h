@@ -80,7 +80,11 @@ namespace world
 
         virtual void update(GameMap *gameMap){};
 
-        std::shared_ptr<utils::JSON::Object> toJson();
+        virtual std::shared_ptr<utils::JSON::Object> toJson();
+        static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object);
+
+    protected:
+        void addBalance(ProductBalance value);
 
     private:
         std::string name;

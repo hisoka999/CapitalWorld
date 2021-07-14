@@ -281,3 +281,40 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findProductionBuildings(c
 
     return targets;
 }
+
+std::shared_ptr<utils::JSON::Object> GameMap::toJson()
+{
+    std::shared_ptr<utils::JSON::Object> json = std::make_shared<utils::JSON::Object>();
+
+    std::string tileData = "";
+    for (TileType tile : mapData)
+    {
+        tileData += ('0' + tile);
+    }
+    json->setAttribute("width", int(getWidth()));
+    json->setAttribute("height", int(getHeight()));
+    json->setAttribute("mapData", tileData);
+
+    return json;
+}
+
+std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Object> &object)
+{
+    int width = object->getIntValue("width");
+    int height = object->getIntValue("height");
+    std::string mapData = object->getStringValue("mapData");
+
+    std::vector<TileType> tiles;
+    //tiles.reserve(width * height);
+    //std::fill(tiles.begin(), tiles.end(), 10);
+
+    size_t i = 0;
+    for (char val : mapData)
+    {
+        TileType tile = static_cast<TileType>(val - '0');
+        //tiles[i] = tile;
+        tiles.push_back(tile);
+        i++;
+    }
+    return std::make_shared<GameMap>(width, height, tiles);
+}
