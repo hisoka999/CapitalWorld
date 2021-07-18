@@ -2,7 +2,6 @@
 
 #include <engine/ui/Tab.h>
 #include "world/building.h"
-#include "world/buildings/transportoffice.h"
 #include "ui/routecomponent.h"
 #include <engine/ui/scrollarea.h>
 
@@ -21,7 +20,7 @@ namespace UI
     private:
         void initUI();
         void refreshComponents();
-        std::shared_ptr<world::buildings::TransportOffice> building;
+        std::shared_ptr<world::Building> building;
         std::shared_ptr<UI::ScrollArea> scrollArea;
         GameMap *gameMap;
     };

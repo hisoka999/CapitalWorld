@@ -33,6 +33,7 @@ namespace world
         std::shared_ptr<utils::JSON::Object> toJson();
         static std::shared_ptr<Company> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
         std::vector<std::shared_ptr<world::Building>> &getBuildings();
+        std::shared_ptr<world::Building> findBuildingByDisplayName(const std::string &name);
 
     private:
         std::string name;

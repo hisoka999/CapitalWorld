@@ -2,9 +2,12 @@
 #include <algorithm>
 #include <magic_enum.hpp>
 #include "services/productservice.h"
+#include "buildings/TransportComponent.h"
 
 namespace world
 {
+
+    std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> Building::componentMap;
 
     Building::Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type, int blockWidth, int blockHeight)
         : name(name), displayName(displayName), type(type), description(description), buildPrice(buildPrice), blockWidth(blockWidth), blockHeight(blockHeight), xOffset(0), yOffset(0)
@@ -24,6 +27,10 @@ namespace world
         this->yOffset = copy.yOffset;
         this->displayRect = copy.displayRect;
         this->sourceRect = copy.sourceRect;
+        for (auto &component : copy.components)
+        {
+            components[component.first] = component.second->clone();
+        }
     }
 
     Building::Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type)
@@ -201,6 +208,11 @@ namespace world
                 }
             }
         }
+
+        for (auto &component : components)
+        {
+            component.second->updateProduction(month, year);
+        }
     }
 
     void Building::addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount)
@@ -303,15 +315,23 @@ namespace world
 
         myBuilding->setArrayAttribute("balance", balanceArray);
 
+        utils::JSON::JsonArray componentsArray;
+        for (auto &component : components)
+        {
+            utils::JSON::JsonValue value = component.second->toJson();
+            componentsArray.push_back(value);
+        }
+        myBuilding->setArrayAttribute("components", componentsArray);
+
         return myBuilding;
     }
 
-    std::shared_ptr<Building> Building::fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object)
+    std::shared_ptr<Building> Building::fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company)
     {
         auto result = std::make_shared<Building>(*reference);
         result->setDisplayName(object->getStringValue("displayName"));
-        int posX = object->getIntValue("pos_x");
-        int posY = object->getIntValue("pos_y");
+        int posX = object->getFloatValue("pos_x");
+        int posY = object->getFloatValue("pos_y");
         result->setPosition(posX, posY);
         result->setSubTexture(object->getStringValue("subTexture"));
         // add products
@@ -336,14 +356,47 @@ namespace world
             auto balanceObject = std::get<std::shared_ptr<utils::JSON::Object>>(b);
             ProductBalance balance;
             balance.account = magic_enum::enum_cast<BalanceAccount>(balanceObject->getStringValue("account")).value();
-            balance.costs = balanceObject->getIntValue("costs");
-            balance.income = balanceObject->getIntValue("income");
+            balance.costs = balanceObject->getFloatValue("costs");
+            balance.income = balanceObject->getFloatValue("income");
             balance.month = balanceObject->getIntValue("month");
             balance.year = balanceObject->getIntValue("year");
             balance.name = balanceObject->getStringValue("product");
             result->addBalance(balance);
         }
+
+        utils::JSON::JsonArray componentsArray = object->getArray("components");
+        for (auto &c : componentsArray)
+        {
+            auto componentObject = std::get<std::shared_ptr<utils::JSON::Object>>(c);
+            auto componentName = componentObject->getStringValue("name");
+
+            auto component = Building::createComponentByName(componentName);
+            component->fromJson(componentObject, company);
+
+            result->addComponent(component);
+        }
+
         return result;
+    }
+
+    void Building::addComponent(std::shared_ptr<world::buildings::BuildingComponent> &component)
+    {
+        components[component->getName()] = component;
+    }
+
+    std::shared_ptr<world::buildings::BuildingComponent> Building::getComponentByName(const std::string &name)
+    {
+        return components.at(name);
+    }
+
+    void Building::initComponentMap()
+    {
+        Building::componentMap["TransportComponent"] = std::make_shared<world::buildings::TransportComponent>();
+    }
+
+    std::shared_ptr<world::buildings::BuildingComponent> Building::createComponentByName(const std::string &name)
+    {
+        return Building::componentMap.at(name);
     }
 
     void Building::addBalance(ProductBalance value)

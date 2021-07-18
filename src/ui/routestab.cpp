@@ -12,7 +12,7 @@ namespace UI
 
     void RoutesTab::setBuilding(const std::shared_ptr<world::Building> &building)
     {
-        this->building = std::dynamic_pointer_cast<world::buildings::TransportOffice>(building);
+        this->building = building;
         initUI();
     }
 
@@ -28,7 +28,9 @@ namespace UI
         newRouteButton->setPos(5, getHeight() - 50);
         newRouteButton->connect(UI::Button::buttonClickCallback(), [&]()
                                 {
-                                    building->addRoute(nullptr, nullptr, nullptr, 0);
+                                    std::shared_ptr<world::buildings::TransportComponent> transportComp = building->getComponent<world::buildings::TransportComponent>("TransportComponent");
+
+                                    transportComp->addRoute(nullptr, nullptr, nullptr, 0);
                                     refreshComponents();
                                 });
         addObject(newRouteButton);
@@ -41,7 +43,8 @@ namespace UI
         int yoffset = 0;
         if (building == nullptr)
             return;
-        for (auto &route : building->getAllRoutes())
+        std::shared_ptr<world::buildings::TransportComponent> transportComp = building->getComponent<world::buildings::TransportComponent>("TransportComponent");
+        for (auto &route : transportComp->getAllRoutes())
         {
             std::shared_ptr<RouteComponent> routeComp = std::make_shared<RouteComponent>(scrollArea.get(), route, gameMap, building);
 

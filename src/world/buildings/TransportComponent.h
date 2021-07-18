@@ -1,12 +1,17 @@
-#pragma once
+#ifndef __TRANSPORTCOMPONENT_H__
+#define __TRANSPORTCOMPONENT_H__
 
-#include <world/building.h>
-#include <vector>
+#include "BuildingComponent.h"
+
+class Product;
 
 namespace world
 {
+    class Building;
+
     namespace buildings
     {
+
         struct TransportRoute
         {
             std::shared_ptr<world::Building> startBuilding;
@@ -16,19 +21,25 @@ namespace world
             bool active;
         };
 
-        class TransportOffice : public world::Building
+        class TransportComponent : public world::buildings::BuildingComponent
         {
+        private:
+            std::vector<std::shared_ptr<TransportRoute>> routes;
+
         public:
-            TransportOffice(std::string name, std::string displayName, std::string description, int buildPirce, BuildingType type, int blockWidth, int blockHeight);
-            TransportOffice(TransportOffice &copy);
+            TransportComponent();
+            ~TransportComponent();
+            virtual std::shared_ptr<utils::JSON::Object> toJson();
+            virtual void fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company);
 
             const std::vector<std::shared_ptr<TransportRoute>> &getAllRoutes();
             std::vector<std::shared_ptr<TransportRoute>> getActiveRoutes();
             void addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity);
             void updateProduction(int month, int year);
-
-        private:
-            std::vector<std::shared_ptr<TransportRoute>> routes;
+            virtual std::shared_ptr<BuildingComponent> clone();
         };
-    };
-};
+
+    } // namespace buildings
+
+} // namespace world
+#endif // __TRANSPORTCOMPONENT_H__

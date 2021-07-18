@@ -405,8 +405,8 @@ namespace world
     {
         std::string name = object->getStringValue("name");
         int numberOfCitizen = object->getIntValue("numberOfCitizen");
-        int posX = object->getIntValue("pos_x");
-        int posY = object->getIntValue("pos_y");
+        int posX = object->getFloatValue("pos_x");
+        int posY = object->getFloatValue("pos_y");
         utils::Vector2 pos(posX, posY);
         auto city = std::make_shared<City>(name, pos);
 
@@ -418,7 +418,7 @@ namespace world
             //todo change position, or move to new class
             street->setSourceRect(city->groundTexture->getSourceRect("street1"));
             street->setOffset(0, 0);
-            street->setPosition(streetObject->getIntValue("pos_x"), streetObject->getIntValue("pos_y"));
+            street->setPosition(streetObject->getFloatValue("pos_x"), streetObject->getFloatValue("pos_y"));
             street->setSubTexture("street1");
             city->streets.push_back(street);
         }
@@ -430,7 +430,7 @@ namespace world
             auto buildingObject = std::get<std::shared_ptr<utils::JSON::Object>>(b);
 
             auto house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
-            utils::Vector2 housePosition(buildingObject->getIntValue("pos_x"), buildingObject->getIntValue("pos_y"));
+            utils::Vector2 housePosition(buildingObject->getFloatValue("pos_x"), buildingObject->getFloatValue("pos_y"));
             //change it in the real version
             std::string subTexture = buildingObject->getStringValue("subTexture");
             house->setSourceRect(city->groundTexture->getSourceRect(subTexture));

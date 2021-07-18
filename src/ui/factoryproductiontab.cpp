@@ -116,7 +116,7 @@ namespace UI
             std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
             pc->connect("imageClicked", [=](void)
                         {
-                            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->getName());
+                            resourceSelectionBox->setSelectionByText(product->getBaseProducts().at(0)->product->getName());
                             productSelectionBox->setSelectionByText(product->getName());
                         });
 

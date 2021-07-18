@@ -3,11 +3,11 @@
 
 #include <string>
 #include <engine/graphics/rect.h>
-#include "../world/product.h"
-#include "../world/storage.h"
+#include "world/product.h"
+#include "world/storage.h"
 #include "buildingtypes.h"
 #include <engine/utils/json/object.h>
-
+#include "world/buildings/BuildingComponent.h"
 class GameMap;
 
 namespace world
@@ -81,7 +81,17 @@ namespace world
         virtual void update(GameMap *gameMap){};
 
         virtual std::shared_ptr<utils::JSON::Object> toJson();
-        static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object);
+        static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company);
+        void addComponent(std::shared_ptr<world::buildings::BuildingComponent> &component);
+        std::shared_ptr<world::buildings::BuildingComponent> getComponentByName(const std::string &name);
+
+        template <typename T>
+        std::shared_ptr<T> getComponent(const std::string &name)
+        {
+            return std::dynamic_pointer_cast<T>(getComponentByName(name));
+        }
+        static void initComponentMap();
+        static std::shared_ptr<world::buildings::BuildingComponent> createComponentByName(const std::string &name);
 
     protected:
         void addBalance(ProductBalance value);
@@ -100,6 +110,8 @@ namespace world
         std::vector<ProductBalance> balance;
         Storage storage;
         std::string subTexture;
+        std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> components;
+        static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;
     };
 }
 #endif // BUILDING_H

@@ -4,7 +4,7 @@
 #include <engine/ui/Label.h>
 #include <engine/ui/iconbutton.h>
 #include <engine/ui/ComboBox.h>
-#include "world/buildings/transportoffice.h"
+#include "world/buildings/TransportComponent.h"
 
 class GameMap;
 

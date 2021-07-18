@@ -1,8 +1,8 @@
 #include "buildingservice.h"
-#include "world/buildings/transportoffice.h"
 #include "magic_enum.hpp"
 #include <algorithm>
 #include <engine/utils/localisation.h>
+#include "world/buildings/TransportComponent.h"
 
 namespace services
 {
@@ -15,14 +15,7 @@ namespace services
             {
                 index++;
                 std::shared_ptr<world::Building> clone;
-                if (type == world::BuildingType::Transport)
-                {
-                    clone = std::make_shared<world::buildings::TransportOffice>(*(std::dynamic_pointer_cast<world::buildings::TransportOffice>(building)));
-                }
-                else
-                {
-                    clone = std::make_shared<world::Building>(*building);
-                }
+                clone = std::make_shared<world::Building>(*building);
 
                 clone->setDisplayName(building->getDisplayName() + " " + std::to_string(index));
                 return clone;
@@ -36,6 +29,18 @@ namespace services
         for (auto &building : getData())
         {
             if (building->getType() == type)
+            {
+                return building;
+            }
+        }
+        return nullptr;
+    }
+
+    std::shared_ptr<world::Building> BuildingService::findByName(const std::string &name)
+    {
+        for (auto &building : getData())
+        {
+            if (building->getName() == name)
             {
                 return building;
             }
@@ -68,18 +73,12 @@ namespace services
         int width = object->getIntValue("block_width");
         int height = object->getIntValue("block_height");
 
-        switch (buildingClass)
+        building = std::make_shared<world::Building>(name, displayName, description, buildCosts, type, width, height);
+        for (auto &componentValue : object->getArray("components"))
         {
-        case world::BuildingClass::Building:
-            building = std::make_shared<world::Building>(name, displayName, description, buildCosts, type, width, height);
-
-            break;
-        case world::BuildingClass::TransportOffice:
-            building = std::make_shared<world::buildings::TransportOffice>(name, displayName, description, buildCosts, type, width, height);
-            break;
-        case world::BuildingClass::Street:
-        default:
-            break;
+            auto componentName = std::get<std::string>(componentValue);
+            auto component = world::Building::createComponentByName(componentName);
+            building->addComponent(component);
         }
 
         graphics::Rect rect;
@@ -93,6 +92,10 @@ namespace services
         building->setSourceRect(rect);
 
         return building;
+    }
+
+    BuildingService::BuildingService()
+    {
     }
 
 } // namespace services

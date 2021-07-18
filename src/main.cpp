@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
         utils::Logger logger(utils::LogLevel::trace);
         core::Renderer ren(logger);
         graphics::TextureManager::Instance().setRenderer(&ren);
+        graphics::TextureManager::Instance().loadTheme("data/theme.json", true);
         core::Input input;
         auto &sceneManager = core::SceneManager::Instance();
 
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
+        world::Building::initComponentMap();
         services::RessourceService::Instance().loadData("data/ressources.json");
         services::ProductService::Instance().loadData("data/products.json");
         services::BuildingService::Instance().loadData("data/buildings.json");
@@ -100,26 +102,26 @@ int main(int argc, char *argv[])
             ren.setDrawColor(0, 0, 0, 255);
             ren.clear();
             bool saveScreenshot = false;
-            try
+            //try
+            //{
+            while (input.poll())
             {
-                while (input.poll())
+                if (input.isQuit())
+                    run = false;
+                // else if (input.isKeyDown(SDLK_ESCAPE))
+                //     sceneManager.setCurrentScene("main");
+                else if (input.isKeyDown(SDLK_p))
                 {
-                    if (input.isQuit())
-                        run = false;
-                    // else if (input.isKeyDown(SDLK_ESCAPE))
-                    //     sceneManager.setCurrentScene("main");
-                    else if (input.isKeyDown(SDLK_p))
-                    {
-                        saveScreenshot = true;
-                    }
-
-                    sceneManager.handleEvents(&input);
+                    saveScreenshot = true;
                 }
+
+                sceneManager.handleEvents(&input);
             }
-            catch (std::exception &e)
-            {
-                std::cerr << e.what() << std::endl;
-            }
+            //}
+            // catch (std::exception &e)
+            // {
+            //     std::cerr << e.what() << std::endl;
+            // }
             sceneManager.render();
             frames++;
             if ((ren.getTickCount() - lastTime) >= 1000)

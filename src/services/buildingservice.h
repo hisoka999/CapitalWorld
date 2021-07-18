@@ -18,13 +18,14 @@ namespace services
 
         std::shared_ptr<world::Building> create(world::BuildingType type);
         std::shared_ptr<world::Building> find(world::BuildingType type);
+        std::shared_ptr<world::Building> findByName(const std::string &name);
         void init();
 
     protected:
         virtual std::shared_ptr<world::Building> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object);
 
     private:
-        BuildingService() = default;
+        BuildingService();
         ~BuildingService() = default;
         BuildingService(const BuildingService &) = delete;
         BuildingService &operator=(const BuildingService &) = delete;

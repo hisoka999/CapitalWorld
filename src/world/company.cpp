@@ -120,7 +120,7 @@ namespace world
     std::shared_ptr<Company> Company::fromJson(const std::shared_ptr<utils::JSON::Object> &object)
     {
         std::string name = object->getStringValue("name");
-        float cash = object->getIntValue("cash");
+        float cash = object->getFloatValue("cash");
         int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
         auto company = std::make_shared<Company>(name, cash, true);
         auto buildings = object->getArray("buildings");
@@ -142,15 +142,16 @@ namespace world
                 rect.height = 32;
                 street->setSourceRect(rect);
                 street->setOffset(0, 0);
-                street->setPosition(b->getIntValue("pos_x"), b->getIntValue("pos_y"));
+                street->setPosition(b->getFloatValue("pos_x"), b->getFloatValue("pos_y"));
                 street->setSubTexture("street1");
                 company->addBuilding(street);
 
                 break;
             }
+            case world::BuildingType::Transport:
             default:
                 auto building = services::BuildingService::Instance().find(type);
-                company->addBuilding(Building::fromJson(building, b));
+                company->addBuilding(Building::fromJson(building, b, company.get()));
             }
         }
 
@@ -160,6 +161,18 @@ namespace world
     std::vector<std::shared_ptr<world::Building>> &Company::getBuildings()
     {
         return buildings;
+    }
+
+    std::shared_ptr<world::Building> Company::findBuildingByDisplayName(const std::string &name)
+    {
+        for (auto &building : buildings)
+        {
+            if (building->getDisplayName() == name)
+            {
+                return building;
+            }
+        }
+        return nullptr;
     }
 
 }

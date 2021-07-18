@@ -1,0 +1,18 @@
+{
+    "window": {
+        "IconFontName": "fonts/fa-solid-900.ttf",
+        "IconFontSize": 16,
+        "TitleColor": "#C3812AFF",
+        "ForgroundColor": "#C3812AFF",
+        "BackgroundColor": "#0ea9e5FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "button": {
+        "BackgroundImage": "",
+        "Color": "#FFFFFFFF",
+        "HoverColor": "#AD676CFF",
+        "DisabledColor": "#CCCCCCFF",
+        "BackgroundColor": "#10BCFFFF",
+        "BorderColor": "#5D676CFF"
+    }
+}

@@ -1,7 +1,6 @@
 #include "worldscene.h"
 #include "../world/mapgenerator.h"
 #include "../world/buildings/street.h"
-#include "world/buildings/transportoffice.h"
 #include "services/buildingservice.h"
 #include <chrono>
 #include <cmath>
@@ -272,7 +271,7 @@ namespace scenes
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
                 cursorTexture->setBlendMode(SDL_BLENDMODE_BLEND);
-                SDL_SetTextureAlphaMod(cursorTexture->getSDLTexture(), 150);
+                cursorTexture->setAlphaMod(150);
                 if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
                 {
                     cursorBuildingRect = building->get2DPosition();
