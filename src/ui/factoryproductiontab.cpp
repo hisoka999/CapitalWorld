@@ -59,6 +59,9 @@ namespace UI
         labelCosts->setPos(295, 100);
         addObject(labelCosts);
 
+        std::shared_ptr<UI::Label> labelCostsPerPerPiece = std::make_shared<UI::Label>(_("Costs per Piece:"), this);
+        labelCostsPerPerPiece->setPos(295, 130);
+
         productNameText = std::make_shared<UI::Label>(this);
         productNameText->setPos(490, 180);
         addObject(productNameText);
@@ -66,6 +69,10 @@ namespace UI
         costsText = std::make_shared<UI::Label>(this);
         costsText->setPos(400, 100);
         addObject(costsText);
+
+        costsPerPieceText = std::make_shared<UI::Label>("0,00 €", this);
+        costsPerPieceText->setPos(400, 130);
+        addObject(costsPerPieceText);
 
         productionCycleText = std::make_shared<UI::Label>(this);
         productionCycleText->setPos(400, 70);
@@ -168,7 +175,8 @@ namespace UI
         auto product = productList[selection];
         productNameText->setText(product->getName());
         productImage->loadImage(utils::os::combine("images", "products", product->getImage()));
-        costsText->setText(utils::string_format("%'.2f €/m", product->calculateCostsPerMonth()));
+        costsText->setTextF("%'.2f €/m", product->calculateCostsPerMonth());
+        costsPerPieceText->setTextF("%'.2f €", product->calculateCostsPerPiece());
 
         productionCycleText->setTextF("%'d  - %'d", product->getProductionCycle().startMonth, product->getProductionCycle().endMonth);
 

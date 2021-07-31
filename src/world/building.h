@@ -4,7 +4,6 @@
 #include <string>
 #include <engine/graphics/rect.h>
 #include "world/product.h"
-#include "world/storage.h"
 #include "buildingtypes.h"
 #include <engine/utils/json/object.h>
 #include "world/buildings/BuildingComponent.h"
@@ -12,6 +11,7 @@ class GameMap;
 
 namespace world
 {
+    class Company;
 
     enum class BalanceAccount
     {
@@ -71,10 +71,11 @@ namespace world
         float getIncomePerMonth(int month, int year);
         virtual void updateProduction(int month, int year);
         void addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount);
+        void addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount);
         bool isAutoSellActive();
         void autoSell(int month, int year);
         BuildingType getType();
-        Storage &getStorage();
+        //Storage &getStorage();
         const std::string &getSubTexture();
         void setSubTexture(const std::string &tex);
 
@@ -84,6 +85,7 @@ namespace world
         static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company);
         void addComponent(std::shared_ptr<world::buildings::BuildingComponent> &component);
         std::shared_ptr<world::buildings::BuildingComponent> getComponentByName(const std::string &name);
+        bool hasComponent(const std::string &name);
 
         template <typename T>
         std::shared_ptr<T> getComponent(const std::string &name)
@@ -92,6 +94,8 @@ namespace world
         }
         static void initComponentMap();
         static std::shared_ptr<world::buildings::BuildingComponent> createComponentByName(const std::string &name);
+
+        void delayedUpdate(Company *company);
 
     protected:
         void addBalance(ProductBalance value);
@@ -108,7 +112,6 @@ namespace world
         int xOffset, yOffset;
         std::vector<std::shared_ptr<Product>> products;
         std::vector<ProductBalance> balance;
-        Storage storage;
         std::string subTexture;
         std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> components;
         static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;

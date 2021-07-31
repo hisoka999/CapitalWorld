@@ -7,6 +7,7 @@
 #include <iostream>
 #include <random>
 #include "../translate.h"
+#include "world/buildings/HouseComponent.h"
 namespace world
 {
 
@@ -138,10 +139,15 @@ namespace world
             //change it in the real version
             int houseId = houseGen(gen);
             std::string subTexture = "house" + std::to_string(houseId);
+
             house->setSourceRect(groundTexture->getSourceRect(subTexture));
             house->setPosition(housePosition.getX(), housePosition.getY());
             house->setOffset(0, house->getSourceRect().height - height);
+            if (subTexture == "house2")
+                std::cout << "yOffset = " << house->getYOffset() << std::endl;
             house->setSubTexture(subTexture);
+            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(numberOfCitizen / numberOfBuildings);
+            house->addComponent(houseComponent);
             int stopKey = 0;
             while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)
             {
@@ -430,16 +436,17 @@ namespace world
             auto buildingObject = std::get<std::shared_ptr<utils::JSON::Object>>(b);
 
             auto house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
-            utils::Vector2 housePosition(buildingObject->getFloatValue("pos_x"), buildingObject->getFloatValue("pos_y"));
-            //change it in the real version
+            house = Building::fromJson(house, buildingObject, nullptr);
+            // utils::Vector2 housePosition(buildingObject->getFloatValue("pos_x"), buildingObject->getFloatValue("pos_y"));
+            // //change it in the real version
             std::string subTexture = buildingObject->getStringValue("subTexture");
             house->setSourceRect(city->groundTexture->getSourceRect(subTexture));
-            house->setPosition(housePosition.getX(), housePosition.getY());
+            // house->setPosition(housePosition.getX(), housePosition.getY());
             int xOffset = buildingObject->getIntValue("offset_x");
             int yOffset = buildingObject->getIntValue("offset_y");
 
             house->setOffset(xOffset, yOffset);
-            house->setSubTexture(subTexture);
+            // house->setSubTexture(subTexture);
             city->buildings.push_back(house);
         }
         return city;

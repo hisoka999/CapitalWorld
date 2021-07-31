@@ -5,13 +5,13 @@
         "texture": "egg.png",
         "building": "Farm",
         "baseResources": {
-            "Chicken": 100
+            "Chicken": 10
         },
         "productionCycle": {
             "start": 1,
             "end": 12,
             "time": 90,
-            "amount": 100
+            "amount": 1000
         }
     },
     {
@@ -20,13 +20,13 @@
         "texture": "wheat.png",
         "building": "Farm",
         "baseResources": {
-            "Wheet": 300
+            "Wheet": 30
         },
         "productionCycle": {
             "start": 3,
             "end": 7,
             "time": 30,
-            "amount": 300
+            "amount": 6000
         }
     },
     {

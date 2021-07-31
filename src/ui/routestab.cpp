@@ -3,7 +3,7 @@
 
 namespace UI
 {
-    RoutesTab::RoutesTab(UI::Object *parent, const std::shared_ptr<world::Building> &building, GameMap *gameMap) : UI::Tab(parent, "Transport routes"), gameMap(gameMap)
+    RoutesTab::RoutesTab(UI::Object *parent, const std::shared_ptr<world::Building> &building, GameMap *gameMap, const std::shared_ptr<world::Company> &player) : UI::Tab(parent, "Transport routes"), gameMap(gameMap), player(player)
     {
         setWidth(parent->getWidth() - 100);
         setHeight(parent->getHeight() - 10);
@@ -14,6 +14,12 @@ namespace UI
     {
         this->building = building;
         initUI();
+    }
+
+    void RoutesTab::refresh()
+    {
+        refreshComponents();
+        Tab::refresh();
     }
 
     void RoutesTab::initUI()
@@ -31,7 +37,7 @@ namespace UI
                                     std::shared_ptr<world::buildings::TransportComponent> transportComp = building->getComponent<world::buildings::TransportComponent>("TransportComponent");
 
                                     transportComp->addRoute(nullptr, nullptr, nullptr, 0);
-                                    refreshComponents();
+                                    needsRefresh();
                                 });
         addObject(newRouteButton);
     }
@@ -40,17 +46,25 @@ namespace UI
     {
         scrollArea->reset();
 
+        scrollArea->clear();
         int yoffset = 0;
         if (building == nullptr)
             return;
         std::shared_ptr<world::buildings::TransportComponent> transportComp = building->getComponent<world::buildings::TransportComponent>("TransportComponent");
+        size_t i = 0;
         for (auto &route : transportComp->getAllRoutes())
         {
-            std::shared_ptr<RouteComponent> routeComp = std::make_shared<RouteComponent>(scrollArea.get(), route, gameMap, building);
-
+            std::shared_ptr<RouteComponent> routeComp = std::make_shared<RouteComponent>(scrollArea.get(), route, gameMap, building, player);
+            const size_t value = i;
+            routeComp->closeButton->connect(UI::Button::buttonClickCallback(), [=]()
+                                            {
+                                                transportComp->removeRoute(value);
+                                                needsRefresh();
+                                            });
             routeComp->setY(yoffset);
             scrollArea->addObject(routeComp);
             yoffset += routeComp->getHeight() + 10;
+            i++;
         }
     }
 

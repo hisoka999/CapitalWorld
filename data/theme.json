@@ -14,5 +14,13 @@
         "DisabledColor": "#CCCCCCFF",
         "BackgroundColor": "#10BCFFFF",
         "BorderColor": "#5D676CFF"
+    },
+    "SalesItemComponent": {
+        "IconFontName": "fonts/fa-solid-900.ttf",
+        "IconFontSize": 16
+    },
+    "RouteComponent": {
+        "IconFontName": "fonts/fa-solid-900.ttf",
+        "IconFontSize": 16
     }
 }

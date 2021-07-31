@@ -9,6 +9,7 @@
 #include <iostream>
 #include <random>
 #include "../translate.h"
+#include "world/buildings/SalesComponent.h"
 namespace scenes
 {
 
@@ -94,7 +95,7 @@ namespace scenes
 
     void WorldScene::renderHUD()
     {
-        int y = 0;
+
         int height = 40;
         buildWindow.setPos(0, height + 50);
 
@@ -116,8 +117,6 @@ namespace scenes
     {
         auto &gameMap = gameState->getGameMap();
         auto &cities = gameState->getCities();
-        size_t width = gameMap->getHeight() * mapRenderer->getTileWidth();
-        size_t height = gameMap->getWidth() * mapRenderer->getTileHeight() / 2;
 
         mapRenderer->render(renderer);
         for (auto city : cities)
@@ -164,7 +163,6 @@ namespace scenes
         auto &gameMap = gameState->getGameMap();
         bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
-        int y = 0;
         float height = 50;
         //
 
@@ -208,7 +206,11 @@ namespace scenes
 
                     if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
                     {
-
+                        if (building->hasComponent("SalesComponent"))
+                        {
+                            auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                            sales->setGameMap(gameMap.get());
+                        }
                         gameMap->addBuilding(building);
                         gameState->getPlayer()->addBuilding(building);
                         gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
@@ -288,66 +290,66 @@ namespace scenes
                     cursorTexture->setColorKey(255, 255, 255);
                 }
             }
-        }
 
-        if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
-        {
-            direction.bottom = true;
-            direction.top = false;
-        }
-        else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
-        {
-            direction.top = true;
-            direction.bottom = false;
-        }
-        else
-        {
-            direction.top = false;
-            direction.bottom = false;
-        }
+            if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
+            {
+                direction.bottom = true;
+                direction.top = false;
+            }
+            else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
+            {
+                direction.top = true;
+                direction.bottom = false;
+            }
+            else
+            {
+                direction.top = false;
+                direction.bottom = false;
+            }
 
-        if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
-        {
-            direction.left = true;
-            direction.right = false;
-        }
-        else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
-        {
-            direction.left = false;
-            direction.right = true;
-        }
-        else
-        {
-            direction.left = false;
-            direction.right = false;
+            if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
+            {
+                direction.left = true;
+                direction.right = false;
+            }
+            else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
+            {
+                direction.left = false;
+                direction.right = true;
+            }
+            else
+            {
+                direction.left = false;
+                direction.right = false;
+            }
+
+            if (utils::areSame(pInput->getMousePostion().getX(), 0.f))
+            {
+                direction.left = true;
+                direction.right = false;
+            }
+            else if (renderer->getMainCamera()->getWidth() - pInput->getMousePostion().getX() <= 5)
+            {
+                direction.left = false;
+                direction.right = true;
+            }
+
+            if (utils::areSame(pInput->getMousePostion().getY(), 0.f))
+            {
+                direction.top = true;
+                direction.bottom = false;
+            }
+            else if (renderer->getMainCamera()->getHeight() - pInput->getMousePostion().getY() <= 5)
+            {
+                direction.top = false;
+                direction.bottom = true;
+            }
         }
 
         if (pInput->isKeyDown(SDLK_ESCAPE))
         {
             optionsWindow.setPos(renderer->getViewPort().width / 2, renderer->getViewPort().height / 2);
             optionsWindow.setVisible(true);
-        }
-
-        if (utils::areSame(pInput->getMousePostion().getX(), 0.f))
-        {
-            direction.left = true;
-            direction.right = false;
-        }
-        else if (renderer->getMainCamera()->getWidth() - pInput->getMousePostion().getX() <= 5)
-        {
-            direction.left = false;
-            direction.right = true;
-        }
-
-        if (utils::areSame(pInput->getMousePostion().getY(), 0.f))
-        {
-            direction.top = true;
-            direction.bottom = false;
-        }
-        else if (renderer->getMainCamera()->getHeight() - pInput->getMousePostion().getY() <= 5)
-        {
-            direction.top = false;
-            direction.bottom = true;
         }
 
         buildWindow.handleEvents(pInput);

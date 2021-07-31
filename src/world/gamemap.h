@@ -7,8 +7,11 @@
 #include <engine/utils/vector2.h>
 #include "building.h"
 #include <memory>
+#include <world/company.h>
 
 typedef uint16_t TileType;
+
+std::string tileTypeToString(const TileType tile);
 
 class GameMap
 {
@@ -18,7 +21,7 @@ public:
 
     void initEmtyMap();
 
-    const TileType getTile(const size_t x, const size_t y) const;
+    const TileType getTile(const int x, const int y) const;
     TileType getTile(utils::Vector2 &pos);
 
     const size_t getWidth() const;
@@ -33,7 +36,8 @@ public:
     void removeBuilding(std::shared_ptr<world::Building> building);
     const std::vector<std::shared_ptr<world::Building>> &getBuildings() const;
     const std::shared_ptr<world::Building> &getBuilding(const int x, const int y) const;
-    std::vector<std::shared_ptr<world::Building>> findProductionBuildings(const std::shared_ptr<world::Building> &startBuilding);
+    std::vector<std::shared_ptr<world::Building>> findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company);
+    std::vector<std::shared_ptr<world::Building>> findHousesInDistance(world::Building *startBuilding, const int distance);
 
     std::shared_ptr<utils::JSON::Object> toJson();
     static std::shared_ptr<GameMap> fromJson(const std::shared_ptr<utils::JSON::Object> &object);

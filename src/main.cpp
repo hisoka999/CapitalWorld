@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         Localisation::Instance().detectLanguage("capitalworld");
         Localisation::Instance().detectLanguage("enum");
 
-        setlocale(LC_ALL, "de_DE");
+        setlocale(LC_ALL, Localisation::Instance().getLocale().name().c_str());
         auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
         win.open(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "captialworld");
         utils::Logger logger(utils::LogLevel::trace);

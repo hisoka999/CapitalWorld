@@ -2,14 +2,30 @@
 #include "world/gamemap.h"
 #include "translate.h"
 #include "engine/ui/Checkbox.h"
-
+#include "world/buildings/StorageComponent.h"
+#include "services/productservice.h"
 namespace UI
 {
-    RouteComponent::RouteComponent(UI::Object *parent, const std::shared_ptr<world::buildings::TransportRoute> &route, GameMap *gameMap, const std::shared_ptr<world::Building> &parentBuilding)
-        : UI::Object(parent), UI::Container(), route(route), gameMap(gameMap), parentBuilding(parentBuilding)
+    RouteComponent::RouteComponent(UI::Object *parent, const std::shared_ptr<world::buildings::TransportRoute> &route, GameMap *gameMap, const std::shared_ptr<world::Building> &parentBuilding, const std::shared_ptr<world::Company> &player)
+        : UI::Object(parent), UI::Container(), route(route), gameMap(gameMap), parentBuilding(parentBuilding), player(player)
     {
-        initUI();
+
         setHeight(70);
+        setWidth(parent->displayRect().width - 10);
+        setHeight(100);
+        setObjectName("RouteComponent");
+        closeButton = std::make_shared<UI::Button>(this);
+        closeButton->setX(parent->displayRect().width - 50);
+        closeButton->setY(10);
+        std::string iconFontName = getTheme()->getStyleText(this, UI::StyleType::IconFontName);
+        int iconFontSize = getTheme()->getStyleInt(this, UI::StyleType::IconFontSize);
+
+        closeButton->setFont(iconFontName, iconFontSize);
+        closeButton->setLabel("\uf00d");
+        closeButton->setBorderless(true);
+
+        addObject(closeButton);
+        initUI();
     }
 
     void RouteComponent::render(core::Renderer *pRender)
@@ -25,8 +41,12 @@ namespace UI
     void RouteComponent::fillProductListByBuilding(std::shared_ptr<world::Building> &building)
     {
         productList->clearElements();
-        for (auto &product : building->getProducts())
+
+        auto storage = building->getComponent<world::buildings::StorageComponent>("StorageComponent");
+
+        for (auto &productName : storage->getStoredProducts())
         {
+            auto product = services::ProductService::Instance().getProductByName(productName);
             productList->addElement(product);
         }
     }
@@ -55,11 +75,17 @@ namespace UI
         activeCheckbox->connect("checkboxChanged", [&](bool val)
                                 { route->active = val; });
 
-        auto productionBuildings = gameMap->findProductionBuildings(parentBuilding);
+        auto productionBuildings = gameMap->findStorageBuildings(parentBuilding, player);
+        int i = 0;
         for (auto &building : productionBuildings)
         {
             startBuildings->addElement(building);
             finishBuildings->addElement(building);
+            if (route->startBuilding == nullptr)
+            {
+                route->startBuilding = building;
+            }
+            i++;
         }
 
         auto elemFunction = [&](std::shared_ptr<world::Building> var)

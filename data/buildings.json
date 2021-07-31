@@ -14,7 +14,7 @@
             "x": 128,
             "y": 160,
             "width": 128,
-            "height": 128
+            "height": 96
         },
         "offset": {
             "x": 32,
@@ -45,7 +45,9 @@
             "x": 0,
             "y": 0
         },
-        "components": []
+        "components": [
+            "StorageComponent"
+        ]
     },
     {
         "name": "Factory",
@@ -62,12 +64,40 @@
             "x": 0,
             "y": 160,
             "width": 128,
-            "height": 128
+            "height": 64
         },
         "offset": {
             "x": 32,
             "y": 16
         },
-        "components": []
+        "components": [
+            "StorageComponent"
+        ]
+    },
+    {
+        "name": "Shop",
+        "displayName": "Shop",
+        "displayName_de": "Shop",
+        "buildingClass": "Building",
+        "description": "A retail shop to sell goods.",
+        "description_de": "Ein Laden",
+        "type": "Shop",
+        "buildCosts": 50000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 0,
+            "y": 288,
+            "width": 128,
+            "height": 96
+        },
+        "offset": {
+            "x": 32,
+            "y": 32
+        },
+        "components": [
+            "SalesComponent",
+            "StorageComponent"
+        ]
     }
 ]

@@ -2,10 +2,11 @@
 #include <engine/ui/Label.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
-#include "../ui/farmproductiontab.h"
-#include "../ui/factoryproductiontab.h"
-#include "../ui/routestab.h"
-#include "../ui/storagetab.h"
+#include "ui/farmproductiontab.h"
+#include "ui/factoryproductiontab.h"
+#include "ui/routestab.h"
+#include "ui/storagetab.h"
+#include "ui/SalesTab.h"
 #include "translate.h"
 
 namespace UI
@@ -50,6 +51,8 @@ namespace UI
     void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile, GameMap *gameMap)
     {
         this->building = building;
+        labelGroundValue->setText(tileTypeToString(tile));
+
         if (building != nullptr)
         {
             labelTypeValue->setText(building->getDisplayName());
@@ -62,7 +65,6 @@ namespace UI
                 labelOwnerValue->setText("");
             }
 
-            labelGroundValue->setText("Grass");
             tabBar->removeTab(productionTab);
             tabBar->removeTab(storageTab);
             //recreate tab based on Building type
@@ -77,13 +79,20 @@ namespace UI
                 productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building);
                 break;
             case world::BuildingType::Transport:
-                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap);
+                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap, company);
+                break;
+            case world::BuildingType::Shop:
+                productionTab = std::make_shared<UI::SalesTab>(tabBar.get(), building);
+                break;
             }
             if (productionTab != nullptr)
             {
                 tabBar->addTab(productionTab);
-                storageTab = std::make_shared<UI::StorageTab>(tabBar.get(), building);
-                tabBar->addTab(storageTab);
+                if (building->hasComponent("StorageComponent"))
+                {
+                    storageTab = std::make_shared<UI::StorageTab>(tabBar.get(), building);
+                    tabBar->addTab(storageTab);
+                }
             }
         }
         else
@@ -95,7 +104,6 @@ namespace UI
             }
             labelTypeValue->setText("");
             labelOwnerValue->setText("");
-            labelGroundValue->setText("TODO");
         }
         this->setVisible(true);
     }

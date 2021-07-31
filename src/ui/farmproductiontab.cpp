@@ -128,7 +128,7 @@ namespace UI
             pc->connect("imageClicked", [=](void)
                         {
                             std::cout << "click: " << product->getName() << std::endl;
-                            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->getName());
+                            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->resource->getName());
                             productSelectionBox->setSelectionByText(product->getName());
                         });
 

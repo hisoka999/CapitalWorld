@@ -16,6 +16,8 @@ namespace world
         {
             std::shared_ptr<world::Building> startBuilding;
             std::shared_ptr<world::Building> endBuilding;
+            std::string startBuildingName;
+            std::string endBuildingName;
             std::shared_ptr<Product> product;
             unsigned quantity;
             bool active;
@@ -35,8 +37,10 @@ namespace world
             const std::vector<std::shared_ptr<TransportRoute>> &getAllRoutes();
             std::vector<std::shared_ptr<TransportRoute>> getActiveRoutes();
             void addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity);
-            void updateProduction(int month, int year);
+            void removeRoute(const size_t position);
+            void updateProduction(int month, int year, Building *building);
             virtual std::shared_ptr<BuildingComponent> clone();
+            virtual void delayedUpdate(Company *company);
         };
 
     } // namespace buildings

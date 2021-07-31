@@ -29,13 +29,17 @@ namespace world
             return name;
         }
 
-        void BuildingComponent::updateProduction(int month, int year)
+        void BuildingComponent::updateProduction(int month, int year, Building *building)
         {
         }
 
         std::shared_ptr<BuildingComponent> BuildingComponent::clone()
         {
             return std::make_shared<BuildingComponent>(this->getName());
+        }
+
+        void BuildingComponent::delayedUpdate(Company *company)
+        {
         }
     }
 }

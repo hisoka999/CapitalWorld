@@ -12,7 +12,7 @@ std::string Product::getImage()
 {
     return image;
 }
-std::vector<std::shared_ptr<Resource>> Product::getResources()
+std::vector<std::shared_ptr<ResourceRequirement>> Product::getResources()
 {
     return resources;
 }
@@ -21,9 +21,12 @@ std::vector<std::shared_ptr<ProductRequirement>> Product::getBaseProducts()
     return products;
 }
 
-void Product::addRessource(std::shared_ptr<Resource> resource)
+void Product::addRessource(std::shared_ptr<Resource> resource, int amount)
 {
-    resources.push_back(resource);
+    std::shared_ptr<ResourceRequirement> requirement = std::make_shared<ResourceRequirement>();
+    requirement->amount = amount;
+    requirement->resource = resource;
+    resources.push_back(requirement);
 }
 
 world::BuildingType Product::getBuildingType()
@@ -40,7 +43,7 @@ float Product::calculateCostsPerPiece()
     float result = 0.0f;
     for (auto &res : resources)
     {
-        result += res->getCostPerMonth();
+        result += (res->resource->getCostPerMonth() / float(res->amount));
     }
     for (auto &pro : products)
     {
@@ -54,7 +57,7 @@ bool Product::needsResource(std::shared_ptr<Resource> resource)
     bool result = false;
     for (auto &res : resources)
     {
-        if (res->getName() == resource->getName())
+        if (res->resource->getName() == resource->getName())
         {
             result = true;
             break;

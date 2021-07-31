@@ -4,6 +4,7 @@
 #include <engine/utils/os.h>
 #include "../services/productservice.h"
 #include "../messages.h"
+#include "world/buildings/StorageComponent.h"
 
 namespace UI
 {
@@ -14,9 +15,8 @@ namespace UI
         initUI();
 
         auto &sys = core::MessageSystem<MessageTypes>::get();
-        msgRef = sys.registerForType(MessageTypes::NewMonth, [&]() {
-            refreshUI = true;
-        });
+        msgRef = sys.registerForType(MessageTypes::NewMonth, [&]()
+                                     { refreshUI = true; });
     }
 
     StorageTab::~StorageTab()
@@ -59,11 +59,13 @@ namespace UI
 
         int x = 0;
         int y = 0;
-        for (auto productName : building->getStorage().getStoredProducts())
+        auto storage = building->getComponent<world::buildings::StorageComponent>("StorageComponent");
+
+        for (auto productName : storage->getStoredProducts())
         {
             auto amount = std::make_shared<UI::Label>(this);
             amount->setFont("fonts/arial.ttf", 12);
-            amount->setTextF("%d", building->getStorage().getEntry(productName));
+            amount->setTextF("%d", storage->getEntry(productName));
             amount->setPos(x * 55, (y * 55) + 40);
             auto icon = std::make_shared<UI::ImageButton>(this, 50, 50, 0, 0, true);
             auto product = services::ProductService::Instance().getProductByName(productName);

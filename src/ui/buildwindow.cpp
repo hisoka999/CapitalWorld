@@ -71,7 +71,7 @@ namespace UI
         shopButton->setHoverColor(hoverColor);
         shopButton->setColor(defaultColor);
         shopButton->setPos(xPos, yPos);
-        shopButton->disable();
+
         shopButton->connect("buttonClick", [&]()
                             {
                                 setCurrentAction(world::BuildAction::Build);

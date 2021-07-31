@@ -72,9 +72,10 @@ namespace services
         auto attrs = object->getAttributes();
         if (std::find(attrs.begin(), attrs.end(), std::string("baseResources")) != attrs.end())
         {
-            for (auto attr : object->getObjectValue("baseResources")->getAttributes())
+            auto baseResources = object->getObjectValue("baseResources");
+            for (auto attr : baseResources->getAttributes())
             {
-                product->addRessource(RessourceService::Instance().getResourceByName(attr));
+                product->addRessource(RessourceService::Instance().getResourceByName(attr), baseResources->getIntValue(attr));
             }
         }
         if (std::find(attrs.begin(), attrs.end(), std::string("baseProducts")) != attrs.end())

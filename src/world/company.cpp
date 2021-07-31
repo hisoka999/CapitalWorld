@@ -155,6 +155,11 @@ namespace world
             }
         }
 
+        for (auto &building : company->buildings)
+        {
+            building->delayedUpdate(company.get());
+        }
+
         return company;
     }
 

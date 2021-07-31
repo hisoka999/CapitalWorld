@@ -4,6 +4,8 @@
 #include "services/productservice.h"
 #include "services/buildingservice.h"
 #include "world/company.h"
+#include <future>
+#include "world/buildings/StorageComponent.h"
 
 namespace world
 {
@@ -48,9 +50,11 @@ namespace world
                 auto routeObject = std::get<std::shared_ptr<utils::JSON::Object>>(jsonRoute);
                 std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>();
                 route->active = routeObject->getBoolValue("active");
+
+                route->startBuildingName = routeObject->getStringValue("startBuilding");
+                route->endBuildingName = routeObject->getStringValue("endBuilding");
                 route->product = services::ProductService::Instance().getProductByName(routeObject->getStringValue("product"));
-                route->startBuilding = company->findBuildingByDisplayName(routeObject->getStringValue("startBuilding"));
-                route->endBuilding = company->findBuildingByDisplayName(routeObject->getStringValue("endBuilding"));
+
                 routes.push_back(route);
             }
         }
@@ -75,30 +79,51 @@ namespace world
 
         void TransportComponent::addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity)
         {
-            TransportRoute tmp = {startBuilding, endBuilding, product, quantity, false};
+            TransportRoute tmp = {startBuilding, endBuilding, "", "", product, quantity, false};
             std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>(tmp);
             routes.push_back(route);
         }
 
-        void TransportComponent::updateProduction(int month, int year)
+        void TransportComponent::removeRoute(const size_t position)
+        {
+            auto it = routes.begin() + position;
+
+            if (it != std::end(routes))
+                routes.erase(it);
+        }
+
+        void TransportComponent::updateProduction(int month, int year, Building *building)
         {
             for (auto &route : routes)
             {
-                if (!route->active || route->product == nullptr || route->endBuilding == nullptr)
+                if (!route->active || route->product == nullptr || route->endBuilding == nullptr || route->startBuilding == nullptr)
                     continue;
-                auto &startStorage = route->startBuilding->getStorage();
-                auto &endStorage = route->endBuilding->getStorage();
-                int amount = startStorage.getEntry(route->product->getName());
-                startStorage.addEntry(route->product->getName(), amount * -1);
-                endStorage.addEntry(route->product->getName(), amount);
 
-                route->endBuilding->addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
+                auto startStorage = route->startBuilding->getComponent<world::buildings::StorageComponent>("StorageComponent");
+                auto endStorage = route->endBuilding->getComponent<world::buildings::StorageComponent>("StorageComponent");
+                int amount = startStorage->getEntry(route->product->getName());
+                if (endStorage->canAdd(route->product->getName(), amount))
+                {
+                    startStorage->addEntry(route->product->getName(), amount * -1);
+                    endStorage->addEntry(route->product->getName(), amount);
+
+                    route->endBuilding->addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
+                }
             }
         }
 
         std::shared_ptr<BuildingComponent> TransportComponent::clone()
         {
             return std::make_shared<TransportComponent>();
+        }
+
+        void TransportComponent::delayedUpdate(Company *company)
+        {
+            for (auto &route : routes)
+            {
+                route->startBuilding = company->findBuildingByDisplayName(route->startBuildingName);
+                route->endBuilding = company->findBuildingByDisplayName(route->endBuildingName);
+            }
         }
     }
 }

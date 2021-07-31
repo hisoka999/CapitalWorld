@@ -62,6 +62,8 @@ void UpdateThread::update()
             if (time.getDay() == 1)
             {
                 //update game state
+                auto start = std::chrono::high_resolution_clock::now();
+
                 auto company = gameState->getPlayer();
                 company->updateBalance(time.getMonth(), time.getYear());
                 std::cout << time.format() << ": update game state" << std::endl;
@@ -69,6 +71,9 @@ void UpdateThread::update()
                 auto &msgSystem = core::MessageSystem<MessageTypes>::get();
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
                 msgSystem.sendMessage(msg);
+                auto elapsed = std::chrono::high_resolution_clock::now() - start;
+                long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
+                std::cout << "update thread time: " << microseconds << "µs" << std::endl;
             }
         }
     }

@@ -6,9 +6,11 @@
 namespace world
 {
     class Company;
+    class Building;
 
     namespace buildings
     {
+
         class BuildingComponent
         {
         private:
@@ -20,8 +22,10 @@ namespace world
             virtual std::shared_ptr<utils::JSON::Object> toJson();
             virtual void fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company);
             std::string &getName();
-            virtual void updateProduction(int month, int year);
+            virtual void updateProduction(int month, int year, Building *building);
             virtual std::shared_ptr<BuildingComponent> clone();
+
+            virtual void delayedUpdate(Company *company);
         };
 
     } // namespace buildings

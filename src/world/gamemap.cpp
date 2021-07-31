@@ -1,5 +1,11 @@
 #include "gamemap.h"
 #include <algorithm>
+#include "translate.h"
+
+bool isBuildingSmaller(std::shared_ptr<world::Building> &b1, std::shared_ptr<world::Building> &b2)
+{
+    return b1->getDisplayName() < b2->getDisplayName();
+}
 GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
 {
     initEmtyMap();
@@ -21,10 +27,12 @@ void GameMap::initEmtyMap()
     std::fill(buildings.begin(), buildings.end(), nullptr);
 }
 
-const TileType GameMap::getTile(const size_t x, const size_t y) const
+const TileType GameMap::getTile(const int x, const int y) const
 {
-    size_t pos = x + (y * height);
+    int pos = x + (y * height);
     if (pos > mapData.size())
+        return 0;
+    else if (x < 0 || y < 0)
         return 0;
     return mapData[pos];
 }
@@ -249,7 +257,7 @@ void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding,
     }
 }
 
-std::vector<std::shared_ptr<world::Building>> GameMap::findProductionBuildings(const std::shared_ptr<world::Building> &startBuilding)
+std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company)
 {
     //Schritt 1 Suche Straße neben dem Startgebäude
     auto startPos = startBuilding->get2DPosition();
@@ -272,14 +280,43 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findProductionBuildings(c
         for (auto &b : borderBuildings)
         {
             //std::cout << "b x: " << b->get2DPosition().x << " y: " << b->get2DPosition().y << std::endl;
-            if (b != startBuilding && b->getProducts().size() > 0)
+            if (b != startBuilding && (b->hasComponent("StorageComponent")) && company->hasBuilding(b))
             {
-                targets.push_back(b);
+                auto it = std::find_if(targets.begin(), targets.end(), [=](std::shared_ptr<world::Building> &b2)
+                                       { return b->getDisplayName() == b2->getDisplayName(); });
+                if (it == std::end(targets))
+                {
+                    targets.push_back(b);
+                }
             }
         }
     }
+    std::sort(targets.begin(), targets.end(), isBuildingSmaller);
 
     return targets;
+}
+
+std::vector<std::shared_ptr<world::Building>> GameMap::findHousesInDistance(world::Building *startBuilding, const int distance)
+{
+    std::vector<std::shared_ptr<world::Building>> result;
+    auto startRect = startBuilding->get2DPosition();
+    utils::Vector2 startPos(startRect.x, startRect.y);
+    for (auto building : buildings)
+    {
+        if (building == nullptr)
+            continue;
+
+        if (building->hasComponent("HouseComponent"))
+        {
+            auto rect = building->get2DPosition();
+            utils::Vector2 endPos(rect.x, rect.y);
+            if (endPos.distance(startPos) < distance)
+            {
+                result.push_back(building);
+            }
+        }
+    }
+    return result;
 }
 
 std::shared_ptr<utils::JSON::Object> GameMap::toJson()
@@ -317,4 +354,20 @@ std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Ob
         i++;
     }
     return std::make_shared<GameMap>(width, height, tiles);
+}
+
+std::string tileTypeToString(const TileType tile)
+{
+    const int groundLimit = 8;
+
+    if (tile < groundLimit)
+    {
+        return _("Water");
+    }
+    else if (tile > 12)
+    {
+        return _("Trees");
+    }
+
+    return _("Grass");
 }

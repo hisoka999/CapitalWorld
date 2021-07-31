@@ -14,9 +14,11 @@ namespace UI
     class RouteComponent : public UI::Container, public UI::Object
     {
     public:
-        RouteComponent(UI::Object *parent, const std::shared_ptr<world::buildings::TransportRoute> &route, GameMap *gameMap, const std::shared_ptr<world::Building> &parentBuilding);
+        RouteComponent(UI::Object *parent, const std::shared_ptr<world::buildings::TransportRoute> &route, GameMap *gameMap, const std::shared_ptr<world::Building> &parentBuilding, const std::shared_ptr<world::Company> &player);
         virtual void render(core::Renderer *pRender);
         virtual void handleEvents(core::Input *pInput);
+
+        std::shared_ptr<UI::Button> closeButton;
 
     private:
         void fillProductListByBuilding(std::shared_ptr<world::Building> &building);
@@ -25,5 +27,6 @@ namespace UI
         GameMap *gameMap;
         std::shared_ptr<world::Building> parentBuilding;
         std::shared_ptr<UI::ComboBox<std::shared_ptr<Product>>> productList;
+        std::shared_ptr<world::Company> player;
     };
 };

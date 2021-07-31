@@ -1,6 +1,7 @@
 #include "gamestate.h"
 #include <engine/utils/json/object.h>
 #include <magic_enum.hpp>
+#include <world/buildings/SalesComponent.h>
 
 namespace world
 {
@@ -79,6 +80,11 @@ namespace world
 
         for (auto &street : player->getBuildings())
         {
+            if (street->hasComponent("SalesComponent"))
+            {
+                auto component = street->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                component->setGameMap(gameMap.get());
+            }
             gameMap->addBuilding(street);
         }
 

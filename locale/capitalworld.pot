@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-14 22:17+0200\n"
+"POT-Creation-Date: 2021-07-18 21:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/ui/factoryproductiontab.cpp:75 src/ui/factoryproductiontab.cpp:196
+#: src/ui/factoryproductiontab.cpp:134 src/ui/factoryproductiontab.cpp:195
 msgid "Add"
 msgstr ""
 
@@ -62,6 +63,10 @@ msgstr ""
 msgid "Fullscreen"
 msgstr ""
 
+#: src/world/gamemap.cpp:338
+msgid "Grass"
+msgstr ""
+
 #: src/ui/buildingwindow.cpp:36
 msgid "Ground: "
 msgstr ""
@@ -70,7 +75,7 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-#: src/world/city.cpp:136 src/world/city.cpp:432
+#: src/world/city.cpp:136 src/world/city.cpp:432 src/world/city.cpp:435
 msgid "House"
 msgstr ""
 
@@ -102,7 +107,8 @@ msgstr ""
 msgid "Production Cycle:"
 msgstr ""
 
-#: src/ui/factoryproductiontab.cpp:200
+#: src/ui/factoryproductiontab.cpp:200 src/ui/factoryproductiontab.cpp:138
+#: src/ui/factoryproductiontab.cpp:199
 msgid "Remove"
 msgstr ""
 
@@ -153,9 +159,17 @@ msgstr ""
 msgid "Transport Office"
 msgstr ""
 
+#: src/world/gamemap.cpp:335
+msgid "Trees"
+msgstr ""
+
 #. fill info tab
 #: src/ui/buildingwindow.cpp:28
 msgid "Type: "
+msgstr ""
+
+#: src/world/gamemap.cpp:331
+msgid "Water"
 msgstr ""
 
 #: src/ui/routecomponent.cpp:53

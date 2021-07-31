@@ -3,6 +3,9 @@
 #include <magic_enum.hpp>
 #include "services/productservice.h"
 #include "buildings/TransportComponent.h"
+#include "buildings/SalesComponent.h"
+#include "buildings/StorageComponent.h"
+#include "buildings/HouseComponent.h"
 
 namespace world
 {
@@ -175,43 +178,49 @@ namespace world
     }
     void Building::updateProduction(int month, int year)
     {
-        for (auto &product : products)
-        {
 
-            auto cycle = product->getProductionCycle();
-            if (month >= cycle.startMonth && month <= cycle.endMonth)
+        if (hasComponent("StorageComponent"))
+        {
+            auto storage = getComponent<world::buildings::StorageComponent>("StorageComponent");
+
+            for (auto &product : products)
             {
-                if (product->getBaseProducts().size() > 0)
+
+                auto cycle = product->getProductionCycle();
+                if (month >= cycle.startMonth && month <= cycle.endMonth)
                 {
-                    bool requirementsFullfilled = true;
-                    for (auto &base : product->getBaseProducts())
+                    if (product->getBaseProducts().size() > 0)
                     {
-                        int amount = storage.getEntry(base->product->getName());
-                        if (amount < base->amount)
-                        {
-                            requirementsFullfilled = false;
-                        }
-                    }
-                    if (requirementsFullfilled)
-                    {
+                        bool requirementsFullfilled = true;
                         for (auto &base : product->getBaseProducts())
                         {
-                            storage.addEntry(base->product->getName(), base->amount * -1);
+                            int amount = storage->getEntry(base->product->getName());
+                            if (amount < base->amount)
+                            {
+                                requirementsFullfilled = false;
+                            }
                         }
-                        storage.addEntry(product->getName(), cycle.amount);
-                        updateProduction(month, year);
+                        if (requirementsFullfilled)
+                        {
+                            for (auto &base : product->getBaseProducts())
+                            {
+                                storage->addEntry(base->product->getName(), base->amount * -1);
+                            }
+                            storage->addEntry(product->getName(), cycle.amount);
+                            updateProduction(month, year);
+                        }
                     }
-                }
-                else if (product->getResources().size() > 0)
-                {
-                    storage.addEntry(product->getName(), cycle.amount);
+                    else if (product->getResources().size() > 0)
+                    {
+                        storage->addEntry(product->getName(), cycle.amount);
+                    }
                 }
             }
         }
 
         for (auto &component : components)
         {
-            component.second->updateProduction(month, year);
+            component.second->updateProduction(month, year, this);
         }
     }
 
@@ -239,33 +248,58 @@ namespace world
         }
     }
 
+    void Building::addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount)
+    {
+        bool found = false;
+        for (auto &b : balance)
+        {
+            if (b.name == productName && b.year == year && b.month == month && b.account == account)
+            {
+                b.income += amount;
+            }
+        }
+        if (!found)
+        {
+            ProductBalance productBalance;
+            productBalance.name = productName;
+            productBalance.year = year;
+            productBalance.month = month;
+            productBalance.income = amount;
+            productBalance.costs = 0;
+            productBalance.account = account;
+            balance.push_back(productBalance);
+        }
+    }
+
     bool Building::isAutoSellActive()
     {
-        return type == BuildingType::Factory;
+        return false; //type == BuildingType::Factory;
     }
 
     void Building::autoSell(int month, int year)
     {
-        for (auto &product : products)
+        if (hasComponent("StorageComponent"))
         {
-            unsigned amount = storage.getEntry(product->getName());
-            double income = amount * product->calculateCostsPerPiece() * 1.5;
+            auto storage = getComponent<world::buildings::StorageComponent>("StorageComponent");
 
-            //find balance
-            for (auto &b : balance)
+            for (auto &product : products)
             {
-                if (b.name == product->getName() && b.year == year && b.month == month && b.account == BalanceAccount::Production)
+                unsigned amount = storage->getEntry(product->getName());
+                double income = amount * product->calculateCostsPerPiece() * 1.5;
+
+                //find balance
+                for (auto &b : balance)
                 {
-                    b.income += income;
+                    if (b.name == product->getName() && b.year == year && b.month == month && b.account == BalanceAccount::Production)
+                    {
+                        b.income += income;
+                    }
                 }
+                storage->addEntry(product->getName(), amount * -1);
             }
-            storage.addEntry(product->getName(), amount * -1);
         }
     }
-    Storage &Building::getStorage()
-    {
-        return storage;
-    }
+
     const std::string &Building::getSubTexture()
     {
         return subTexture;
@@ -296,9 +330,6 @@ namespace world
         }
         myBuilding->setArrayAttribute("products", productsArray);
 
-        myBuilding->setAttribute("storage", storage.toJson());
-
-        // TODO balance
         utils::JSON::JsonArray balanceArray;
         for (auto &b : balance)
         {
@@ -337,12 +368,6 @@ namespace world
         // add products
         utils::JSON::JsonArray productsArray = object->getArray("products");
 
-        for (auto attrName : object->getObjectValue("storage")->getAttributes())
-        {
-            int amount = object->getObjectValue("storage")->getIntValue(attrName);
-            result->getStorage().addEntry(attrName, amount);
-        }
-
         for (auto p : productsArray)
         {
             auto productName = std::get<std::string>(p);
@@ -370,7 +395,7 @@ namespace world
             auto componentObject = std::get<std::shared_ptr<utils::JSON::Object>>(c);
             auto componentName = componentObject->getStringValue("name");
 
-            auto component = Building::createComponentByName(componentName);
+            auto component = Building::createComponentByName(componentName)->clone();
             component->fromJson(componentObject, company);
 
             result->addComponent(component);
@@ -389,14 +414,30 @@ namespace world
         return components.at(name);
     }
 
+    bool Building::hasComponent(const std::string &name)
+    {
+        return components.count(name) > 0;
+    }
+
     void Building::initComponentMap()
     {
         Building::componentMap["TransportComponent"] = std::make_shared<world::buildings::TransportComponent>();
+        Building::componentMap["SalesComponent"] = std::make_shared<world::buildings::SalesComponent>();
+        Building::componentMap["StorageComponent"] = std::make_shared<world::buildings::StorageComponent>();
+        Building::componentMap["HouseComponent"] = std::make_shared<world::buildings::HouseComponent>();
     }
 
     std::shared_ptr<world::buildings::BuildingComponent> Building::createComponentByName(const std::string &name)
     {
         return Building::componentMap.at(name);
+    }
+
+    void Building::delayedUpdate(Company *company)
+    {
+        for (auto &component : components)
+        {
+            component.second->delayedUpdate(company);
+        }
     }
 
     void Building::addBalance(ProductBalance value)
