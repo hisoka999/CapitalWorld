@@ -110,6 +110,11 @@ namespace scenes
         renderer->drawLine(start, end);
         renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
 
+        //render minimap
+        auto &miniMap = mapRenderer->getMiniMap();
+        const int miniMapSize = 150;
+        miniMap->renderResized(renderer, renderer->getViewPort().width - miniMapSize, height, miniMapSize, miniMapSize);
+
         buildWindow.render(renderer);
     }
 

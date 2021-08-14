@@ -189,48 +189,6 @@ namespace scenes
         bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
 
         graphics::Rect scrollbounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
-
-        //auto scrollArea = std::make_shared<UI::ScrollArea>(scrollbounds.width, 190, nullptr);
-        //scrollArea->setPos(scrollbounds.x, scrollbounds.y);
-        int i = 0;
-        // for (auto &race : avaiableRaces)
-        // {
-        //     auto raceIcon = std::make_shared<UI::ImageButton>(scrollArea.get(), 80, 170, 0, 0, true);
-        //     raceIcon->setImage(race->getFaceTexture());
-        //     raceIcon->setPos(i * 100, 5);
-        //     scrollArea->addObject(raceIcon);
-        //     auto raceName = std::make_shared<UI::Label>(scrollArea.get());
-        //     raceName->setFont("fonts/arial.ttf", 14);
-        //     raceName->setPos(i * 100, 170);
-        //     raceName->setText(race->getName());
-        //     if (i == 0)
-        //     {
-        //         raceName->setColor(utils::color::BLUE);
-        //     }
-        //     raceIcon->connect("buttonClick", [=]()
-        //                       {
-        //                           SDL_Color color = utils::color::BLUE;
-        //                           SDL_Color white = utils::color::WHITE;
-        //                           for (size_t objIdx = 0; objIdx < scrollArea->size(); ++objIdx)
-        //                           {
-        //                               auto obj = scrollArea->get(objIdx);
-        //                               auto label = std::dynamic_pointer_cast<UI::Label>(obj);
-        //                               if (label != nullptr)
-        //                               {
-        //                                   label->setColor(utils::color::WHITE);
-        //                               }
-        //                           }
-
-        //                           raceName->setColor(color);
-        //                           selectedRace = race;
-        //                       });
-
-        //     scrollArea->addObject(raceName);
-
-        //     i++;
-        // }
-
-        //winMgr->addContainer(scrollArea.get());
     }
 
     void NewGameScene::render()

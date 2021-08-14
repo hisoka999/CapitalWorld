@@ -104,6 +104,59 @@ void GameMapRenderer::clearCache()
     cacheTexture = nullptr;
 }
 
+void GameMapRenderer::refreshMiniMap()
+{
+    updateMiniMap = true;
+}
+
+std::shared_ptr<graphics::Texture> &GameMapRenderer::getMiniMap()
+{
+    return miniMap;
+}
+
+void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
+{
+
+    if (!updateMiniMap)
+        return;
+    miniMap = nullptr;
+    miniMap = std::make_shared<graphics::Texture>(renderer, gameMap->getWidth() * 2, gameMap->getHeight());
+
+    renderer->setRenderTarget(miniMap->getSDLTexture());
+
+    auto camera = renderer->getMainCamera();
+    auto viewPort = camera->getViewPortRect();
+
+    for (int tempY = 0; tempY < gameMap->getHeight(); ++tempY)
+    {
+        for (int tempX = 0; tempX < gameMap->getWidth(); ++tempX)
+        {
+            if (tempX > gameMap->getWidth() - 1 || tempY > gameMap->getHeight() - 1)
+                continue;
+            float x = tempX;
+            float y = tempY;
+            utils::Vector2 vec(x, y);
+            const auto &iso = gameMap->twoDToIso(vec);
+            const TileType tileType = gameMap->getTile(vec);
+            if (tileType > 8)
+            {
+                renderer->setDrawColor({125, 139, 46, 255});
+            }
+            else if (tileType == 8)
+            {
+                renderer->setDrawColor({246, 226, 197, 255});
+            }
+            else
+            {
+                renderer->setDrawColor({46, 80, 125, 255});
+            }
+            renderer->drawPoint(gameMap->getWidth() + iso.getX(), iso.getY());
+        }
+    }
+    renderer->setRenderTarget(nullptr);
+    updateMiniMap = false;
+}
+
 void GameMapRenderer::renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos)
 {
     const auto &camera = renderer->getMainCamera();
@@ -243,6 +296,8 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
     renderer->setRenderTarget(nullptr);
     cacheTexture->render(renderer, 0, 0);
+
+    renderMiniMap(renderer);
 }
 
 size_t GameMapRenderer::getTileWidth()

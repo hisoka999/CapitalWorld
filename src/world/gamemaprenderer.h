@@ -18,8 +18,12 @@ public:
     size_t getTileHeight();
     float getTileYOffset(uint16_t tile, size_t tileX, size_t tileY);
     void clearCache();
+    void refreshMiniMap();
+    std::shared_ptr<graphics::Texture> &getMiniMap();
 
 private:
+    void renderMiniMap(core::Renderer *renderer);
+
     void renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos);
     utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
     graphics::Rect getSourceRect(TileType tile, size_t tileX, size_t tileY);
@@ -29,6 +33,8 @@ private:
     std::shared_ptr<graphics::TextureMap> textureMap;
 
     std::shared_ptr<graphics::Texture> cacheTexture;
+    std::shared_ptr<graphics::Texture> miniMap;
+    bool updateMiniMap = true;
     size_t tileWidth;
     size_t tileHeight;
 };
