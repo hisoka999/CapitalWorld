@@ -14,7 +14,7 @@ namespace world
     City::City(std::string name, utils::Vector2 &position)
         : position(position), name(name), numberOfCitizen(0)
     {
-        groundTexture = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.tm"));
+        groundTexture = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
     }
 
     bool City::isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap)

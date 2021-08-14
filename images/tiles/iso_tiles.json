@@ -1,0 +1,138 @@
+{
+    "textureName": "images/landscape.png",
+    "subTextures": [
+        {
+            "name": "water1",
+            "x": 64.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "trees",
+            "x": 320.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 64.0
+        },
+        {
+            "name": "grass",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "mountain",
+            "x": 0.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "house1",
+            "x": 0.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "house2",
+            "x": 64.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 64.0
+        },
+        {
+            "name": "house3",
+            "x": 0.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "house4",
+            "x": 128.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 64.0
+        },
+        {
+            "name": "street_corner_left",
+            "x": 192.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_corner_up",
+            "x": 256.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_cross_center",
+            "x": 320.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_cross_up_right",
+            "x": 384.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_cross_up_left",
+            "x": 448.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_cross_down_left",
+            "x": 512.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_cross_down_right",
+            "x": 576.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_corner_right",
+            "x": 704.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street_corner_down",
+            "x": 640.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street1",
+            "x": 128.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "street2",
+            "x": 64.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        }
+    ]
+}

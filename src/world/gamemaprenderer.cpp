@@ -9,7 +9,7 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
     groundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "landscape.png"));
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 10);
 
-    textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.tm"));
+    textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
     cacheTexture = nullptr;
 }
 
@@ -78,23 +78,16 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
         }
         else
         {
-            //render water
-            srcRect.x = 64;
-            srcRect.y = 0;
+            srcRect = textureMap->getSourceRect("water1");
         }
     }
     else if (tile > 12)
     {
-        //render trees
-        srcRect.x = 320;
-        srcRect.y = 0;
-        srcRect.height = tileHeight * 2;
+        srcRect = textureMap->getSourceRect("trees");
     }
     else
     {
-        //grass
-        srcRect.x = 0;
-        srcRect.y = 0;
+        srcRect = textureMap->getSourceRect("grass");
     }
 
     return srcRect;
