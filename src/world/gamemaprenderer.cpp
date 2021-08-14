@@ -85,9 +85,13 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
     {
         srcRect = textureMap->getSourceRect("trees");
     }
-    else
+    else if (tile > groundLimit)
     {
         srcRect = textureMap->getSourceRect("grass");
+    }
+    else
+    {
+        srcRect = textureMap->getSourceRect("sand");
     }
 
     return srcRect;
