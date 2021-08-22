@@ -8,6 +8,7 @@
 #include <engine/ui/ComboBox.h>
 #include <engine/core/gamewindow.h>
 #include <engine/ui/scrollarea.h>
+#include <engine/ui/TabBar.h>
 #include <vector>
 
 struct DisplayMode
@@ -34,8 +35,9 @@ protected:
     void closeWindow();
 
 private:
-    std::shared_ptr<UI::ScrollArea> mainArea;
+    std::shared_ptr<UI::TabBar> tabBar;
     std::shared_ptr<UI::Checkbox> fullscreen;
+    std::shared_ptr<UI::Checkbox> vsync;
     std::shared_ptr<UI::Button> saveButton;
     std::shared_ptr<UI::Button> cancelButton;
     std::shared_ptr<UI::ComboBox<DisplayMode>> resolutions;

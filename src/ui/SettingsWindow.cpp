@@ -3,46 +3,60 @@
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/layout/GridLayout.h>
 #include <engine/ui/Label.h>
-
+#include "magic_enum.hpp"
 #include <functional>
 SettingsWindow::SettingsWindow()
-    : UI::Window(50, 50, 490, 300)
+    : UI::Window(50, 50, 520, 400)
 {
-    mainArea = std::make_shared<UI::ScrollArea>(450, 250, this);
-    mainArea->setPos(5, 5);
-    addObject(mainArea);
+    tabBar = std::make_shared<UI::TabBar>(this);
+    tabBar->setPos(5, 5);
+    tabBar->setWidth(400);
+    tabBar->setHeight(300);
+    addObject(tabBar);
+    auto generalTab = std::make_shared<UI::Tab>(tabBar.get(), _("General"));
+    auto graphicsTab = std::make_shared<UI::Tab>(tabBar.get(), _("Graphics"));
+    auto soundTab = std::make_shared<UI::Tab>(tabBar.get(), _("Sound"));
+    auto controlsTab = std::make_shared<UI::Tab>(tabBar.get(), _("Controls"));
+    tabBar->addTab(generalTab);
+    tabBar->addTab(graphicsTab);
+    tabBar->addTab(soundTab);
+    tabBar->addTab(controlsTab);
 
-    auto layout = std::make_shared<UI::layout::GridLayout>(mainArea.get(), 2);
+    auto layout = std::make_shared<UI::layout::GridLayout>(graphicsTab.get(), 2);
     layout->setPadding(utils::Vector2(20, 10));
 
     uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
 
     setFont(uiText.get());
-    this->fullscreen = std::make_shared<UI::Checkbox>(mainArea.get());
-    this->cancelButton = std::make_shared<UI::Button>(mainArea.get());
-    this->saveButton = std::make_shared<UI::Button>(mainArea.get());
+    this->fullscreen = std::make_shared<UI::Checkbox>(graphicsTab.get());
+    vsync = std::make_shared<UI::Checkbox>(graphicsTab.get());
+    this->cancelButton = std::make_shared<UI::Button>(this);
+    this->saveButton = std::make_shared<UI::Button>(this);
+    auto comboboxLanguage = std::make_shared<UI::ComboBox<Language>>(generalTab.get());
 
     saveButton->setLabel(_("Save"));
-    saveButton->setPos(30, 200);
+    saveButton->setPos(30, 300);
     saveButton->connect(UI::Button::buttonClickCallback(), [=]()
                         {
                             auto settings = core::GameWindow::Instance().getSettings();
                             settings->setAttrB("Base", "Fullscreen", fullscreen->isChecked());
+                            settings->setAttrB("Base", "VSync", vsync->isChecked());
                             int i = resolutions->getSelection();
 
                             settings->setAttrI("Base", "Height", displayModes[i].height);
                             settings->setAttrI("Base", "Width", displayModes[i].width);
+                            settings->setAttr("Base", "Lang", std::string(magic_enum::enum_name(comboboxLanguage->getSelectionText())));
 
                             settings->write();
                             closeWindow();
                         });
 
     cancelButton->setLabel(_("Cancel"));
-    cancelButton->setPos(200, 200);
+    cancelButton->setPos(200, 300);
     fullscreen->setPos(30, 50);
     //fullscreen->setText(_("Fullscreen"));
     setTitle(_("Settings"));
-    resolutions = std::make_shared<UI::ComboBox<DisplayMode>>(mainArea.get());
+    resolutions = std::make_shared<UI::ComboBox<DisplayMode>>(graphicsTab.get());
 
     resolutions->setElementFunction([](DisplayMode val)
                                     { return val.toString(); });
@@ -50,6 +64,7 @@ SettingsWindow::SettingsWindow()
     resolutions->setWidth(200);
     auto settings = core::GameWindow::Instance().getSettings();
     fullscreen->setChecked(settings->getValueB("Base", "Fullscreen"));
+    vsync->setChecked(settings->getValueB("Base", "VSync"));
     cancelButton->connect("buttonClick", [&]()
                           { closeWindow(); });
     int screenWidth = settings->getValueI("Base", "Width");
@@ -91,25 +106,60 @@ SettingsWindow::SettingsWindow()
         }
         //FIXME distinct mode list
     }
-    auto labelResolution = std::make_shared<UI::Label>(mainArea.get());
+    auto labelResolution = std::make_shared<UI::Label>(graphicsTab.get());
     labelResolution->setFont(uiText.get());
     labelResolution->setText(_("Resolution"));
 
-    auto labelFullscreen = std::make_shared<UI::Label>(mainArea.get());
+    auto labelFullscreen = std::make_shared<UI::Label>(graphicsTab.get());
     labelFullscreen->setFont(uiText.get());
     labelFullscreen->setText(_("Fullscreen"));
 
-    mainArea->addObject(labelResolution);
-    mainArea->addObject(resolutions);
-    mainArea->addObject(labelFullscreen);
-    mainArea->addObject(fullscreen);
-    mainArea->addObject(cancelButton);
-    mainArea->addObject(saveButton);
+    auto labelVSync = std::make_shared<UI::Label>(graphicsTab.get());
+    labelVSync->setFont(uiText.get());
+    labelVSync->setText(_("VSync"));
 
-    graphics::Rect bounds = {10, 10, float(mainArea->getWidth()), float(mainArea->getHeight())};
+    // general tab
+    auto labelLanguage = std::make_shared<UI::Label>(generalTab.get());
+    labelLanguage->setFont(uiText.get());
+    labelLanguage->setText(_("Language"));
+    labelLanguage->setPos(5, 5);
+
+    comboboxLanguage->setFont("fonts/arial.ttf", 14);
+    // comboboxLanguage->connect("valueChanged", [&](Language size)
+    //                           { worldSize = size; });
+    constexpr auto &languages = magic_enum::enum_values<Language>();
+
+    for (auto &value : languages)
+    {
+        comboboxLanguage->addElement(value);
+    }
+    Language lang = Localisation::Instance().getLang();
+    if (!settings->getValue("Base", "Lang").empty())
+    {
+        lang = magic_enum::enum_cast<Language>(settings->getValue("Base", "Lang")).value();
+    }
+    comboboxLanguage->setSelectionByText(lang);
+
+    comboboxLanguage->setPos(105, 5);
+    comboboxLanguage->setWidth(200);
+    comboboxLanguage->setElementFunction([](Language val) -> std::string
+                                         { return _(std::string(magic_enum::enum_name(val))); });
+
+    generalTab->addObject(labelLanguage);
+    generalTab->addObject(comboboxLanguage);
+
+    graphicsTab->addObject(labelResolution);
+    graphicsTab->addObject(resolutions);
+    graphicsTab->addObject(labelFullscreen);
+    graphicsTab->addObject(fullscreen);
+    graphicsTab->addObject(labelVSync);
+    graphicsTab->addObject(vsync);
+    addObject(cancelButton);
+    addObject(saveButton);
+
+    graphics::Rect bounds = {10, 10, float(graphicsTab->getWidth()), float(graphicsTab->getHeight())};
 
     layout->updateLayout(bounds);
-    mainArea->reset();
 }
 
 SettingsWindow::~SettingsWindow()

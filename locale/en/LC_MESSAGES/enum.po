@@ -1,0 +1,72 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"X-Generator: Poedit 2.3\n"
+
+msgid "Farm"
+msgstr "Farm"
+
+msgid "Factory"
+msgstr "Factory"
+
+msgid "Shop"
+msgstr "Shop"
+
+msgid "Street"
+msgstr "Street"
+
+msgid "House"
+msgstr "House"
+
+msgid "Transport"
+msgstr "Transport"
+
+msgid "Village"
+msgstr "Village"
+
+msgid "SmallTown"
+msgstr "SmallTown"
+
+msgid "City"
+msgstr "City"
+
+msgid "Metropolis"
+msgstr "Metropolis"
+
+msgid "Production"
+msgstr "Production"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Sales"
+msgstr "Sales"
+
+msgid "Small"
+msgstr "Small"
+
+msgid "Medium"
+msgstr "Medium"
+
+msgid "Big"
+msgstr "Big"
+
+msgid "Huge"
+msgstr "Huge"
+
+msgid "Easy"
+msgstr "Easy"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Hard"
+msgstr "Hard"
