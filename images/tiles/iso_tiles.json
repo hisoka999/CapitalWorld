@@ -2,7 +2,7 @@
     "textureName": "images/landscape.png",
     "subTextures": [
         {
-            "name": "water1",
+            "name": "water",
             "x": 64.0,
             "y": 0.0,
             "width": 64.0,
@@ -138,6 +138,146 @@
             "name": "street2",
             "x": 64.0,
             "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_top_right",
+            "x": 896.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_top_left",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_bottom_left",
+            "x": 960.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_bottom_right",
+            "x": 960.0,
+            "y": 32.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_bottom_right_corner",
+            "x": 960.0,
+            "y": 128.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_top_left_corner",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_left",
+            "x": 896.0,
+            "y": 32.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_right",
+            "x": 896.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_top",
+            "x": 896.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "water_bottom",
+            "x": 960.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_top_right",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_top_left",
+            "x": 832.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_bottom_left",
+            "x": 832.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_bottom_right",
+            "x": 832.0,
+            "y": 32.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_bottom_right_corner",
+            "x": 832.0,
+            "y": 128.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_top_left_corner",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_left",
+            "x": 768.0,
+            "y": 32.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_right",
+            "x": 768.0,
+            "y": 64.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_top",
+            "x": 768.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "sand_bottom",
+            "x": 832.0,
+            "y": 96.0,
             "width": 64.0,
             "height": 32.0
         }

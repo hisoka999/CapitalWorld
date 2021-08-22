@@ -11,7 +11,7 @@ GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
     initEmtyMap();
 }
 
-GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData) : width(width), height(height), mapData(mapData)
+GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration) : width(width), height(height), mapData(mapData), mapDecoration(mapDecoration)
 {
     buildings.resize(width * height);
     std::fill(buildings.begin(), buildings.end(), nullptr);
@@ -23,8 +23,10 @@ void GameMap::initEmtyMap()
     buildings.clear();
     mapData.resize(width * height);
     buildings.resize(width * height);
+    mapDecoration.resize(width * height);
     std::fill(mapData.begin(), mapData.end(), 10);
     std::fill(buildings.begin(), buildings.end(), nullptr);
+    std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
 }
 
 const TileType GameMap::getTile(const int x, const int y) const
@@ -40,6 +42,21 @@ const TileType GameMap::getTile(const int x, const int y) const
 TileType GameMap::getTile(utils::Vector2 &pos)
 {
     return getTile(pos.getX(), pos.getY());
+}
+
+TileType GameMap::getDecoration(utils::Vector2 &pos)
+{
+    return getDecoration(pos.getX(), pos.getY());
+}
+
+const TileType GameMap::getDecoration(const int x, const int y) const
+{
+    int pos = x + (y * height);
+    if (pos > mapDecoration.size())
+        return 0;
+    else if (x < 0 || y < 0)
+        return 0;
+    return mapDecoration[pos];
 }
 
 const size_t GameMap::getWidth() const
@@ -328,9 +345,15 @@ std::shared_ptr<utils::JSON::Object> GameMap::toJson()
     {
         tileData += ('0' + tile);
     }
+    std::string decoration = "";
+    for (TileType tile : mapDecoration)
+    {
+        decoration += ('0' + tile);
+    }
     json->setAttribute("width", int(getWidth()));
     json->setAttribute("height", int(getHeight()));
     json->setAttribute("mapData", tileData);
+    json->setAttribute("mapDecoraction", decoration);
 
     return json;
 }
@@ -340,20 +363,28 @@ std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Ob
     int width = object->getIntValue("width");
     int height = object->getIntValue("height");
     std::string mapData = object->getStringValue("mapData");
+    std::string mapDecoraction = object->getStringValue("mapDecoraction");
 
     std::vector<TileType> tiles;
+    std::vector<TileType> decoration;
     //tiles.reserve(width * height);
     //std::fill(tiles.begin(), tiles.end(), 10);
 
-    size_t i = 0;
     for (char val : mapData)
     {
         TileType tile = static_cast<TileType>(val - '0');
         //tiles[i] = tile;
         tiles.push_back(tile);
-        i++;
     }
-    return std::make_shared<GameMap>(width, height, tiles);
+
+    for (char val : mapDecoraction)
+    {
+        TileType tile = static_cast<TileType>(val - '0');
+        //tiles[i] = tile;
+        decoration.push_back(tile);
+    }
+
+    return std::make_shared<GameMap>(width, height, tiles, decoration);
 }
 
 std::string tileTypeToString(const TileType tile)

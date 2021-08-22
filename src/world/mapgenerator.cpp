@@ -25,9 +25,13 @@ namespace world
         utils::PerlinNoise pn(seed);
         std::mt19937 gen(seed);
         std::uniform_int_distribution<int> dist(-10, 20);
+        std::uniform_int_distribution<int> decoration(int(Decoration::none), int(Decoration::mountain));
         std::vector<TileType> mapData;
+        std::vector<TileType> mapDecoration;
         mapData.resize(width * height);
+        mapDecoration.resize(width * height);
         std::fill(mapData.begin(), mapData.end(), 10);
+        std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
 
         // Visit every pixel of the image and assign a color generated with Perlin noise
         for (unsigned int i = 0; i < height; ++i)
@@ -44,9 +48,16 @@ namespace world
                 //std::cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<" noise: "<<noise<<std::endl;
 
                 mapData[i + (j * height)] = std::floor(noise);
+
+                if (mapData[i + (j * height)] > 8 && mapData[i + (j * height)] < 12)
+                {
+                    mapDecoration[i + (j * height)] = decoration(gen);
+                }
             }
         }
-        auto map = std::make_shared<GameMap>(width, height, mapData);
+        // 8 ... 11 = grass
+
+        auto map = std::make_shared<GameMap>(width, height, mapData, mapDecoration);
 
         std::uniform_int_distribution<long> xPositionGen(0, width);
         std::uniform_int_distribution<long> yPositionGen(0, height);

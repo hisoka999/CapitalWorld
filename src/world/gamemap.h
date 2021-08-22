@@ -11,18 +11,28 @@
 
 typedef uint16_t TileType;
 
+enum class Decoration : TileType
+{
+    none = 0,
+    rocks = 1,
+    trees = 2,
+    mountain = 3,
+};
+
 std::string tileTypeToString(const TileType tile);
 
 class GameMap
 {
 public:
     GameMap(size_t width, size_t height);
-    GameMap(size_t width, size_t height, std::vector<TileType> mapData);
+    GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration);
 
     void initEmtyMap();
 
     const TileType getTile(const int x, const int y) const;
     TileType getTile(utils::Vector2 &pos);
+    TileType getDecoration(utils::Vector2 &pos);
+    const TileType getDecoration(const int x, const int y) const;
 
     const size_t getWidth() const;
     const size_t getHeight() const;
@@ -49,6 +59,7 @@ private:
 
     size_t width, height;
     std::vector<TileType> mapData;
+    std::vector<TileType> mapDecoration;
     std::vector<std::shared_ptr<world::Building>> buildings;
 };
 

@@ -13,6 +13,61 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
     cacheTexture = nullptr;
 }
 
+graphics::Rect GameMapRenderer::getAutoTile(TileType tile, std::string baseTile, size_t tileX, size_t tileY, TileType groundLimit)
+{
+
+    const TileType leftTile = gameMap->getTile(tileX, tileY + 1);
+    const TileType rightTile = gameMap->getTile(tileX, tileY - 1);
+    const TileType topTile = gameMap->getTile(tileX - 1, tileY);
+    const TileType bottomTile = gameMap->getTile(tileX + 1, tileY);
+    graphics::Rect srcRect;
+    if (rightTile >= groundLimit && topTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_top_right");
+    }
+    else if (leftTile >= groundLimit && topTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_top_left");
+    }
+    else if (rightTile >= groundLimit && bottomTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_bottom_right");
+    }
+    else if (leftTile >= groundLimit && bottomTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_bottom_left");
+    }
+    else if (gameMap->getTile(tileX + 1, tileY - 1) >= groundLimit && bottomTile < groundLimit && rightTile < groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_bottom_right_corner");
+    }
+    else if (gameMap->getTile(tileX - 1, tileY + 1) >= groundLimit && topTile < groundLimit && leftTile < groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_top_left_corner");
+    }
+    else if (leftTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_left");
+    }
+    else if (rightTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_right");
+    }
+    else if (topTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_top");
+    }
+    else if (bottomTile >= groundLimit)
+    {
+        srcRect = textureMap->getSourceRect(baseTile + "_bottom");
+    }
+    else
+    {
+        srcRect = textureMap->getSourceRect(baseTile);
+    }
+    return srcRect;
+}
+
 graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_t tileY)
 {
     graphics::Rect srcRect = {0, 0, static_cast<float>(tileWidth), static_cast<float>(tileHeight)};
@@ -25,61 +80,7 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
 
     if (tile < groundLimit)
     {
-        if (rightTile >= groundLimit && topTile >= groundLimit)
-        {
-            srcRect.x = 896;
-            srcRect.y = 0;
-        }
-        else if (leftTile >= groundLimit && topTile >= groundLimit)
-        {
-            srcRect.x = 960;
-            srcRect.y = 0;
-        }
-        else if (rightTile >= groundLimit && bottomTile >= groundLimit)
-        {
-            srcRect.x = 960;
-            srcRect.y = 32;
-        }
-        else if (leftTile >= groundLimit && bottomTile >= groundLimit)
-        {
-            srcRect.x = 960;
-            srcRect.y = 64;
-        }
-        else if (gameMap->getTile(tileX + 1, tileY - 1) >= groundLimit && bottomTile < groundLimit && rightTile < groundLimit)
-        {
-            srcRect.x = 960;
-            srcRect.y = 128;
-        }
-        else if (gameMap->getTile(tileX - 1, tileY + 1) >= groundLimit && topTile < groundLimit && leftTile < groundLimit)
-        {
-            srcRect.x = 896;
-            srcRect.y = 128;
-        }
-        else if (leftTile >= groundLimit)
-        {
-            //render water with land
-            srcRect.x = 896;
-            srcRect.y = 32;
-        }
-        else if (rightTile >= groundLimit)
-        {
-            srcRect.x = 896;
-            srcRect.y = 64;
-        }
-        else if (topTile >= groundLimit)
-        {
-            srcRect.x = 896;
-            srcRect.y = 96;
-        }
-        else if (bottomTile >= groundLimit)
-        {
-            srcRect.x = 960;
-            srcRect.y = 96;
-        }
-        else
-        {
-            srcRect = textureMap->getSourceRect("water1");
-        }
+        srcRect = getAutoTile(tile, "water", tileX, tileY, groundLimit);
     }
     else if (tile > 12)
     {
@@ -87,11 +88,21 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
     }
     else if (tile > groundLimit)
     {
-        srcRect = textureMap->getSourceRect("grass");
+        //find special tiles like rocks, single trees or mountains
+        Decoration decoration = static_cast<Decoration>(gameMap->getDecoration(tileX, tileY));
+        switch (decoration)
+        {
+        case Decoration::none:
+            srcRect = textureMap->getSourceRect("grass");
+            break;
+
+        default:
+            break;
+        }
     }
     else
     {
-        srcRect = textureMap->getSourceRect("sand");
+        srcRect = getAutoTile(tile, "sand", tileX, tileY, groundLimit + 1);
     }
 
     return srcRect;

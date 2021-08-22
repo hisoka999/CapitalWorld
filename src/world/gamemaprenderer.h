@@ -23,6 +23,7 @@ public:
 
 private:
     void renderMiniMap(core::Renderer *renderer);
+    graphics::Rect getAutoTile(TileType tile, std::string baseTile, size_t tileX, size_t tileY, TileType groundLimit);
 
     void renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos);
     utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
