@@ -14,9 +14,10 @@ typedef uint16_t TileType;
 enum class Decoration : TileType
 {
     none = 0,
-    rocks = 1,
-    trees = 2,
-    mountain = 3,
+    grass1 = 1,
+    rocks = 2,
+    trees = 3,
+    mountain = 4,
 };
 
 std::string tileTypeToString(const TileType tile);

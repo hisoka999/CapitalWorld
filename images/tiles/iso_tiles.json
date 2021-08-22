@@ -280,6 +280,20 @@
             "y": 96.0,
             "width": 64.0,
             "height": 32.0
+        },
+        {
+            "name": "grass1",
+            "x": 0.0,
+            "y": 32.0,
+            "width": 64.0,
+            "height": 32.0
+        },
+        {
+            "name": "grass_rocks",
+            "x": 64.0,
+            "y": 32.0,
+            "width": 64.0,
+            "height": 32.0
         }
     ]
 }

@@ -92,6 +92,12 @@ graphics::Rect GameMapRenderer::getSourceRect(TileType tile, size_t tileX, size_
         Decoration decoration = static_cast<Decoration>(gameMap->getDecoration(tileX, tileY));
         switch (decoration)
         {
+        case Decoration::grass1:
+            srcRect = textureMap->getSourceRect("grass1");
+            break;
+        case Decoration::rocks:
+            srcRect = textureMap->getSourceRect("grass_rocks");
+            break;
         case Decoration::none:
             srcRect = textureMap->getSourceRect("grass");
             break;

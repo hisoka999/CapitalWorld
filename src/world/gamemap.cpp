@@ -399,6 +399,10 @@ std::string tileTypeToString(const TileType tile)
     {
         return _("Trees");
     }
+    else if (groundLimit == tile)
+    {
+        return _("Sand");
+    }
 
     return _("Grass");
 }

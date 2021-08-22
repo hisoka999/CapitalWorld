@@ -49,7 +49,7 @@ namespace world
 
                 mapData[i + (j * height)] = std::floor(noise);
 
-                if (mapData[i + (j * height)] > 8 && mapData[i + (j * height)] < 12)
+                if (mapData[i + (j * height)] > 8 && mapData[i + (j * height)] <= 12)
                 {
                     mapDecoration[i + (j * height)] = decoration(gen);
                 }
