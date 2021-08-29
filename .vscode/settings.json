@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.save": "json",
         "vector": "cpp",
         "memory": "cpp",
         "fstream": "cpp",
@@ -87,7 +88,8 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "codecvt": "cpp"
     },
     "cmakeExplorer.buildDir": "build/",
     "editor.formatOnSave": true,

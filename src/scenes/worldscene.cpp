@@ -10,6 +10,8 @@
 #include <random>
 #include "../translate.h"
 #include "world/buildings/SalesComponent.h"
+#include <future>
+
 namespace scenes
 {
 
@@ -40,6 +42,11 @@ namespace scenes
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         optionsWindow.setGameState(gameState);
+        optionsWindow.connect("stateChanged", [&](std::shared_ptr<world::GameState> state)
+                              {
+                                  auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
+                                  core::SceneManager::Instance().changeScene("world", starMapScene);
+                              });
     }
     WorldScene::~WorldScene()
     {

@@ -53,7 +53,12 @@ namespace world
 
         void SalesComponent::addSalesItem(const std::string &product, const float price)
         {
-            sales.push_back(std::make_shared<SalesItem>(product, price));
+            addSalesItem(product, price, false);
+        }
+
+        void SalesComponent::addSalesItem(const std::string &product, const float price, const bool active)
+        {
+            sales.push_back(std::make_shared<SalesItem>(product, price, active));
         }
 
         void SalesComponent::updateSalesItem(const std::string &product, const float price)
@@ -140,19 +145,29 @@ namespace world
         {
             auto object = world::buildings::BuildingComponent::toJson();
 
+            utils::JSON::JsonArray items;
             for (auto &item : sales)
             {
-                object->setAttribute(item->product, item->price);
+                std::shared_ptr<utils::JSON::Object> salesItem = std::make_shared<utils::JSON::Object>();
+                salesItem->setAttribute("product", item->product);
+                salesItem->setAttribute("price", item->price);
+                salesItem->setAttribute("active", item->active);
+                items.push_back(salesItem);
             }
+            object->setArrayAttribute("items", items);
             return object;
         }
 
         void SalesComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
         {
-            for (auto attr : object->getAttributes())
+            auto items = object->getArray("items");
+            for (auto item : items)
             {
-                if (attr != "name")
-                    addSalesItem(attr, object->getFloatValue(attr));
+                auto value = std::get<std::shared_ptr<utils::JSON::Object>>(item);
+                std::string product = value->getStringValue("product");
+                float price = value->getFloatValue("price");
+                bool active = value->getBoolValue("active");
+                addSalesItem(product, price, active);
             }
         }
 

@@ -28,7 +28,7 @@ SettingsWindow::SettingsWindow()
     uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
 
     setFont(uiText.get());
-    this->fullscreen = std::make_shared<UI::Checkbox>(graphicsTab.get());
+    this->fullscreen = std::make_shared<UI::ComboBox<core::FullScreenMode>>(graphicsTab.get());
     vsync = std::make_shared<UI::Checkbox>(graphicsTab.get());
     this->cancelButton = std::make_shared<UI::Button>(this);
     this->saveButton = std::make_shared<UI::Button>(this);
@@ -39,7 +39,8 @@ SettingsWindow::SettingsWindow()
     saveButton->connect(UI::Button::buttonClickCallback(), [=]()
                         {
                             auto settings = core::GameWindow::Instance().getSettings();
-                            settings->setAttrB("Base", "Fullscreen", fullscreen->isChecked());
+                            settings->setAttrI("Base", "Fullscreen", int(fullscreen->getSelectionText()));
+                            core::GameWindow::Instance().setFullScreen(fullscreen->getSelectionText());
                             settings->setAttrB("Base", "VSync", vsync->isChecked());
                             int i = resolutions->getSelection();
 
@@ -54,6 +55,7 @@ SettingsWindow::SettingsWindow()
     cancelButton->setLabel(_("Cancel"));
     cancelButton->setPos(200, 300);
     fullscreen->setPos(30, 50);
+    fullscreen->setHeight(25);
     //fullscreen->setText(_("Fullscreen"));
     setTitle(_("Settings"));
     resolutions = std::make_shared<UI::ComboBox<DisplayMode>>(graphicsTab.get());
@@ -63,8 +65,19 @@ SettingsWindow::SettingsWindow()
     resolutions->setPos(30, 70);
     resolutions->setWidth(200);
     auto settings = core::GameWindow::Instance().getSettings();
-    fullscreen->setChecked(settings->getValueB("Base", "Fullscreen"));
+
+    constexpr auto &modes = magic_enum::enum_values<core::FullScreenMode>();
+
+    for (auto &value : modes)
+    {
+        fullscreen->addElement(value);
+    }
+    fullscreen->setElementFunction([](core::FullScreenMode val) -> std::string
+                                   { return _(std::string(magic_enum::enum_name(val))); });
+
+    fullscreen->setSelectionByText((core::FullScreenMode)settings->getValueI("Base", "Fullscreen"));
     vsync->setChecked(settings->getValueB("Base", "VSync"));
+    vsync->setHeight(25);
     cancelButton->connect("buttonClick", [&]()
                           { closeWindow(); });
     int screenWidth = settings->getValueI("Base", "Width");

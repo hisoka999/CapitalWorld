@@ -144,6 +144,11 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
     miniMap = std::make_shared<graphics::Texture>(renderer, gameMap->getWidth() * 2, gameMap->getHeight());
 
     renderer->setRenderTarget(miniMap->getSDLTexture());
+    miniMap->setBlendMode(SDL_BLENDMODE_BLEND);
+    //miniMap->setColorKey(255, 0, 255);
+    renderer->setDrawColor(0, 0, 0, 0);
+    renderer->clear();
+    //renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
 
     auto camera = renderer->getMainCamera();
     auto viewPort = camera->getViewPortRect();

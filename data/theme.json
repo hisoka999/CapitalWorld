@@ -22,5 +22,24 @@
     "RouteComponent": {
         "IconFontName": "fonts/fa-solid-900.ttf",
         "IconFontSize": 16
+    },
+    "checkbox": {
+        "IconFontName": "fonts/fa-solid-900.ttf",
+        "IconFontSize": 16,
+        "Color": "#FFFFFFFF",
+        "BackgroundColor": "#10BCFFFF",
+        "BorderColor": "#FFFFFFFF"
+    },
+    "tabbar": {
+        "BackgroundImage": "",
+        "Color": "#FFFFFFFF",
+        "HoverColor": "#AD676CFF",
+        "DisabledColor": "#CCCCCCFF",
+        "BackgroundColor": "#10BCFFFF",
+        "BorderColor": "#5D676CFF"
+    },
+    "scrollarea": {
+        "BackgroundColor": "#0ea9e5FF",
+        "ForgroundColor": "#FFFFFFFF"
     }
 }

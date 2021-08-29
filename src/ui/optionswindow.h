@@ -5,7 +5,7 @@
 #include <engine/ui/scrollarea.h>
 #include "ui/SettingsWindow.h"
 #include "world/gamestate.h"
-
+#include "SaveGameWindow.h"
 namespace UI
 {
     class OptionsWindow : public UI::Window
@@ -27,6 +27,8 @@ namespace UI
         std::shared_ptr<UI::ScrollArea> mainArea;
         SettingsWindow settingsWindow;
         std::shared_ptr<world::GameState> gameState;
+        UI::SaveGameWindow saveWindow;
+        UI::SaveGameWindow loadWindow;
     };
 
 } // namespace UI

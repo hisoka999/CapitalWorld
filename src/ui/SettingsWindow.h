@@ -36,7 +36,7 @@ protected:
 
 private:
     std::shared_ptr<UI::TabBar> tabBar;
-    std::shared_ptr<UI::Checkbox> fullscreen;
+    std::shared_ptr<UI::ComboBox<core::FullScreenMode>> fullscreen;
     std::shared_ptr<UI::Checkbox> vsync;
     std::shared_ptr<UI::Button> saveButton;
     std::shared_ptr<UI::Button> cancelButton;

@@ -21,6 +21,10 @@ namespace world
                       const float price) : product(product), price(price), active(false)
             {
             }
+            SalesItem(const std::string &product,
+                      const float price, bool active) : product(product), price(price), active(active)
+            {
+            }
         };
 
         class SalesComponent : public BuildingComponent
@@ -38,6 +42,7 @@ namespace world
             void setGameMap(GameMap *gameMap);
 
             void addSalesItem(const std::string &product, const float price);
+            void addSalesItem(const std::string &product, const float price, const bool active);
             void updateSalesItem(const std::string &product, const float price);
             void removeSalesItem(const std::string &product);
             void removeSalesItem(const size_t position);
