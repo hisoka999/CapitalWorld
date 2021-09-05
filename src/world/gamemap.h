@@ -38,9 +38,6 @@ public:
     const size_t getWidth() const;
     const size_t getHeight() const;
 
-    const utils::Vector2 isoTo2D(const utils::Vector2 &pt);
-    const utils::Vector2 twoDToIso(const utils::Vector2 &pt);
-
     std::shared_ptr<world::Building> getBuilding2D(const graphics::Rect &sourceBuilding);
     bool canBuild(graphics::Rect buildRect);
     void addBuilding(std::shared_ptr<world::Building> building);

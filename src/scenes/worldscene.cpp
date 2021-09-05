@@ -11,6 +11,7 @@
 #include "../translate.h"
 #include "world/buildings/SalesComponent.h"
 #include <future>
+#include "world/iso.h"
 
 namespace scenes
 {
@@ -147,7 +148,7 @@ namespace scenes
                 float tx = float(cursorPosition.getX() + x) * mapRenderer->getTileWidth() / 2.0f;
                 float ty = float(cursorPosition.getY() + y) * mapRenderer->getTileHeight();
                 utils::Vector2 vec(tx, ty);
-                const auto &pos = gameMap->twoDToIso(vec);
+                const auto &pos = iso::twoDToIso(vec);
 
                 float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
 
@@ -250,7 +251,7 @@ namespace scenes
                 auto wheelPosition = pInput->getMouseWheelPosition();
                 float offset = (wheelPosition.getY() / 10.f);
                 float factor = renderer->getZoomFactor() + offset;
-                if (factor >= 0.4f)
+                if (factor >= 0.5f)
                 {
                     renderer->setZoomFactor(factor);
                     float camX = renderer->getMainCamera()->getX();
@@ -267,7 +268,7 @@ namespace scenes
                 float camX = renderer->getMainCamera()->getX();
                 float camY = renderer->getMainCamera()->getY();
 
-                utils::Vector2 pt = gameMap->isoTo2D(pInput->getMousePostion() + utils::Vector2(camX, camY));
+                utils::Vector2 pt = iso::isoTo2D(pInput->getMousePostion() + utils::Vector2(camX, camY));
 
                 float x, y = 0.0;
 

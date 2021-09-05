@@ -304,9 +304,15 @@ namespace world
     {
         return subTexture;
     }
+
+    const size_t Building::getSubTextureHash()
+    {
+        return hashId;
+    }
     void Building::setSubTexture(const std::string &tex)
     {
         subTexture = tex;
+        hashId = hasher(subTexture);
     }
 
     std::shared_ptr<utils::JSON::Object> Building::toJson()

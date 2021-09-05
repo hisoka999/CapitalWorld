@@ -8,6 +8,9 @@
 #include <random>
 #include "../translate.h"
 #include "world/buildings/HouseComponent.h"
+#include <engine/utils/color.h>
+#include "iso.h"
+
 namespace world
 {
 
@@ -15,6 +18,7 @@ namespace world
         : position(position), name(name), numberOfCitizen(0)
     {
         groundTexture = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
+        font = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 20);
     }
 
     bool City::isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap)
@@ -182,10 +186,10 @@ namespace world
         std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2)
                   {
                       utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-                      auto v11 = gameMap->twoDToIso(v1);
+                      auto v11 = iso::twoDToIso(v1);
 
                       utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-                      auto v22 = gameMap->twoDToIso(v2);
+                      auto v22 = iso::twoDToIso(v2);
 
                       return v11.getY() < v22.getY();
                       //  o1->get2DPosition().x > o2->get2DPosition().x
@@ -195,10 +199,10 @@ namespace world
         std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2)
                   {
                       utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-                      auto v11 = gameMap->twoDToIso(v1);
+                      auto v11 = iso::twoDToIso(v1);
 
                       utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-                      auto v22 = gameMap->twoDToIso(v2);
+                      auto v22 = iso::twoDToIso(v2);
 
                       return v11.getY() < v22.getY();
                       //  o1->get2DPosition().x > o2->get2DPosition().x
@@ -213,6 +217,19 @@ namespace world
         {
             gameMap->addBuilding(street);
         }
+    }
+
+    void City::renderCity(core::Renderer *renderer)
+    {
+        float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+
+        float x = static_cast<float>(position.getX()) * 64.f / 2.0f;
+        float y = static_cast<float>(position.getY()) * 32.f;
+        utils::Vector2 vec(x, y);
+        auto isoPos = iso::twoDToIso(vec);
+        const utils::Vector2 isoPos2((isoPos.getX() * factor) - renderer->getMainCamera()->getX(), (isoPos.getY() * factor) - renderer->getMainCamera()->getY());
+        if (renderer->getViewPort().intersects(isoPos2))
+            font->render(renderer, name, utils::color::WHITE, isoPos2.getX(), isoPos2.getY());
     }
 
     void City::fillStreetsByTree(std::shared_ptr<TreeNode> node)
@@ -239,10 +256,10 @@ namespace world
         switch (node->direction)
         {
         case 1: //north
-            streetPosition = streetPosition + utils::Vector2(0, 1);
+            streetPosition += utils::Vector2(0, 1);
             break;
         case 2: //south
-            streetPosition = streetPosition - utils::Vector2(0, 1);
+            streetPosition -= utils::Vector2(0, 1);
             break;
         case 3: //east
             streetPosition = streetPosition + utils::Vector2(1, 0);
@@ -371,12 +388,6 @@ namespace world
                 node->children.push_back(child);
             }
         }
-    }
-
-    void City::renderCity(core::Renderer *renderer)
-    {
-
-        //render the city name
     }
 
     std::shared_ptr<utils::JSON::Object> City::toJson()

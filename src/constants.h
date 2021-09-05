@@ -14,3 +14,9 @@ enum class Difficulty
     Normal,
     Hard,
 };
+
+enum class CityNames
+{
+    de,
+    gb
+};

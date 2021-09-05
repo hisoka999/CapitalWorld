@@ -77,6 +77,7 @@ namespace world
         BuildingType getType();
         //Storage &getStorage();
         const std::string &getSubTexture();
+        const size_t getSubTextureHash();
         void setSubTexture(const std::string &tex);
 
         virtual void update(GameMap *gameMap){};
@@ -115,6 +116,8 @@ namespace world
         std::string subTexture;
         std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> components;
         static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;
+        std::hash<std::string> hasher;
+        size_t hashId = 0;
     };
 }
 #endif // BUILDING_H

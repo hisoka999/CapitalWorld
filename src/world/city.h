@@ -8,6 +8,7 @@
 #include <memory>
 #include <engine/core/renderer.h>
 #include <engine/graphics/texturemap.h>
+#include <engine/graphics/text.h>
 #include <random>
 
 namespace world
@@ -67,6 +68,7 @@ namespace world
         std::shared_ptr<graphics::TextureMap> groundTexture;
 
         std::shared_ptr<TreeNode> root;
+        std::shared_ptr<graphics::Text> font;
     };
 }
 

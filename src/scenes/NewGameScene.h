@@ -37,6 +37,7 @@ namespace scenes
         unsigned long seed;
         WorldSize worldSize;
         Difficulty difficulty;
+        CityNames cityName;
         std::string playerName;
         int numberOfCompanys;
         int numberOfCities;

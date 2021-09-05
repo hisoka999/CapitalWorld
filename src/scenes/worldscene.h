@@ -65,6 +65,7 @@ namespace scenes
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
         bool wasMoving = false;
+        double updateDelta = 0;
     };
 }
 #endif // WORLDSCENE_H

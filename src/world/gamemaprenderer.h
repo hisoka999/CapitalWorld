@@ -8,6 +8,21 @@
 #include <engine/graphics/texturemap.h>
 #include "world/gamemap.h"
 
+struct Autotile
+{
+    size_t baseHash;
+    size_t top_right;
+    size_t top_left;
+    size_t bottom_right;
+    size_t bottom_left;
+    size_t bottom_right_corner;
+    size_t top_left_corner;
+    size_t left;
+    size_t right;
+    size_t top;
+    size_t bottom;
+};
+
 class GameMapRenderer
 {
 public:
@@ -23,11 +38,13 @@ public:
 
 private:
     void renderMiniMap(core::Renderer *renderer);
-    graphics::Rect getAutoTile(TileType tile, std::string baseTile, size_t tileX, size_t tileY, TileType groundLimit);
+    const graphics::Rect &getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    void fillAutoTileMap();
+    Autotile generateAutoTile(std::string base);
 
-    void renderTile(core::Renderer *renderer, uint16_t tile, int tileX, int tileY, const utils::Vector2 &pos);
+    void renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const uint16_t tile, const int tileX, const int tileY, const utils::Vector2 &pos);
     utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
-    graphics::Rect getSourceRect(TileType tile, size_t tileX, size_t tileY);
+    const graphics::Rect &getSourceRect(const TileType tile, const size_t tileX, const size_t tileY);
     std::shared_ptr<GameMap> gameMap;
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;
@@ -38,6 +55,15 @@ private:
     bool updateMiniMap = true;
     size_t tileWidth;
     size_t tileHeight;
+    std::hash<std::string_view> hasher;
+    size_t sandHash;
+    size_t grassHash;
+    size_t waterHash;
+    size_t grass1Hash;
+    size_t grasRockHash;
+    size_t treesHash;
+    bool fillCache = false;
+    std::map<size_t, Autotile> autoTileMap;
 };
 
 #endif // GAMEMAPRENDERER_H

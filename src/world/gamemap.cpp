@@ -68,21 +68,6 @@ const size_t GameMap::getHeight() const
     return height;
 }
 
-const utils::Vector2 GameMap::isoTo2D(const utils::Vector2 &pt)
-{
-    float x, y = 0.0f;
-    x = ((2.0f * pt.getY()) + pt.getX()) / 2.0f;
-    y = ((2.0f * pt.getY()) - pt.getX()) / 2.0f;
-    return utils::Vector2(x, y);
-}
-
-const utils::Vector2 GameMap::twoDToIso(const utils::Vector2 &pt)
-{
-    float x, y = 0.0f;
-    x = pt.getX() - pt.getY();
-    y = (pt.getX() + pt.getY()) / 2.0f;
-    return utils::Vector2(x, y);
-}
 std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &sourceBuilding)
 {
     std::shared_ptr<world::Building> result = nullptr;
