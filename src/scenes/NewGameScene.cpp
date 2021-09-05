@@ -107,7 +107,7 @@ namespace scenes
         container->addObject(numberOfPlayersCombobox);
 
         //numberOfCities
-        numberOfCities = 4;
+        numberOfCities = 8;
         auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
         numberOfCitiesLabel->setFont("fonts/arial.ttf", 14);
         numberOfCitiesLabel->setText(_("number of cities: "));
@@ -116,11 +116,11 @@ namespace scenes
 
         auto numberOfCitiesCombobox = std::make_shared<UI::ComboBox<int>>();
         numberOfCitiesCombobox->setFont("fonts/arial.ttf", 14);
-        numberOfCitiesCombobox->addElement(2);
+
         numberOfCitiesCombobox->addElement(4);
         numberOfCitiesCombobox->addElement(8);
-        //numberOfCitiesCombobox->addElement(16);
-        //numberOfCitiesCombobox->addElement(32);
+        numberOfCitiesCombobox->addElement(16);
+        numberOfCitiesCombobox->addElement(32);
         numberOfCitiesCombobox->setPos(200, y);
         numberOfCitiesCombobox->setSelectionByText(numberOfCities);
         numberOfCitiesCombobox->setWidth(200);

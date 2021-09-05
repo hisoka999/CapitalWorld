@@ -350,8 +350,9 @@ void GameMapRenderer::render(core::Renderer *renderer)
     renderer->setRenderTarget(nullptr);
     cacheTexture->render(renderer, 0, 0);
     auto elapsed = std::chrono::high_resolution_clock::now() - startTime;
-    long long microseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-    std::cout << "update map time: " << microseconds << "ms" << std::endl;
+    long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    if (milliseconds >= 10)
+        std::cout << "update map time: " << milliseconds << "ms" << std::endl;
     // std::cout << "x num:" << endX - std::max(startX, 0) << " y num: " << endY - std::max(startY, 0) << std::endl;
     // std::cout << "start x: " << std::max(startX, 0) << " end x: " << endX << std::endl;
     // std::cout << " viewPort.x: " << viewPort.x << " viewPort.y: " << viewPort.y << std::endl;

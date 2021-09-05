@@ -107,7 +107,7 @@ namespace world
         {
             utils::Vector2 cityPos(xPositionGen(gen), yPositionGen(gen));
             auto city = std::make_shared<world::City>(definitions[i].name, cityPos);
-            city->generate(seed, map);
+            city->generate(seed, map, definitions[i].size);
             cities.push_back(city);
         }
 

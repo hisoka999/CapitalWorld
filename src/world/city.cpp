@@ -102,20 +102,23 @@ namespace world
         return isBordering;
     }
 
-    void City::generate(unsigned int seed, std::shared_ptr<GameMap> gameMap)
+    void City::generate(unsigned int seed, std::shared_ptr<GameMap> gameMap, long people)
     {
         this->gameMap = gameMap;
         std::mt19937 gen(seed);
+        if (people == 0)
+            people = 100000;
 
         std::uniform_int_distribution<long> xPositionGen(0, gameMap->getWidth());
         std::uniform_int_distribution<long> yPositionGen(0, gameMap->getHeight());
 
-        std::uniform_int_distribution<long> peopleGen(100000, 1000000);
+        std::uniform_int_distribution<long> peopleGen(people * 0.5, people * 1.5);
 
         std::uniform_int_distribution<long> houseGen(1, 4);
 
         numberOfCitizen = peopleGen(gen);
         long numberOfBuildings = static_cast<long>(std::round(static_cast<float>(numberOfCitizen) / 1000.0f));
+        std::cout << "city name: " << this->name << std ::endl;
         std::cout << "numberOfCitizen = " << numberOfCitizen << std::endl;
         std::cout << "numberOfBuildings = " << numberOfBuildings << std::endl;
 
@@ -147,8 +150,7 @@ namespace world
             house->setSourceRect(groundTexture->getSourceRect(subTexture));
             house->setPosition(housePosition.getX(), housePosition.getY());
             house->setOffset(0, house->getSourceRect().height - height);
-            if (subTexture == "house2")
-                std::cout << "yOffset = " << house->getYOffset() << std::endl;
+
             house->setSubTexture(subTexture);
             std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(numberOfCitizen / numberOfBuildings);
             house->addComponent(houseComponent);
@@ -285,7 +287,7 @@ namespace world
         root = std::make_shared<TreeNode>(position, 0);
         std::mt19937 gen(seed);
         long numberOfBuildings = long(std::round(float(numberOfCitizen) / 1000.0f));
-        numberOfBuildings /= 2.0;
+        //numberOfBuildings /= 2.0;
         fillNode(gen, root, &numberOfBuildings);
     }
 
@@ -308,16 +310,18 @@ namespace world
     {
 
         int base = 4;
+        int max = 4;
         if (root->children.size() > 0)
         {
-            base = 1;
+            base = 2;
+            max = 3;
         }
 
-        if ((*nodesLeft) == 0)
+        if ((*nodesLeft) <= 0)
             return;
         std::cout << "nodes left: " << *nodesLeft << std::endl;
 
-        std::uniform_int_distribution<int> directionGen(base, 4);
+        std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
 
         int directions = directionGen(gen);
@@ -325,7 +329,7 @@ namespace world
 
         if (root->children.size() > 0)
         {
-            if (noDirectionGen(gen) <= 5)
+            if (noDirectionGen(gen) <= 1)
             {
                 std::cout << " no direction " << std::endl;
                 return;
@@ -333,52 +337,72 @@ namespace world
         }
         std::vector<std::shared_ptr<TreeNode>> children;
 
-        for (int i = 1; i <= directions; ++i)
+        std::vector<int> usedDirections;
+        for (int i = 1; i <= 4; ++i)
         {
-            utils::Vector2 streetPosition = node->position;
-
-            switch (i)
-            {
-            case 1: //north
-                streetPosition = streetPosition - utils::Vector2(0, 2);
-                break;
-            case 2: //south
-                streetPosition = streetPosition + utils::Vector2(0, 2);
-                break;
-            case 3: //east
-                streetPosition = streetPosition - utils::Vector2(2, 0);
-                break;
-            case 4: //west
-                streetPosition = streetPosition + utils::Vector2(2, 0);
-                break;
-            }
-            //don't fill existing childs
-
             if (i != node->direction)
             {
+                usedDirections.push_back(i);
+            }
+        }
+        std::random_shuffle(usedDirections.begin(), usedDirections.end());
+
+        for (int i = 1; i <= directions; ++i)
+        {
+            if ((*nodesLeft) == 0)
+                break;
+            size_t directionNodes = 2;
+            int direction = usedDirections[i - 1];
+
+            for (size_t dn = 0; dn < directionNodes; ++dn)
+            {
+                utils::Vector2 streetPosition = node->position;
+
+                if ((*nodesLeft) == 0)
+                    break;
+                switch (direction)
+                {
+                case 1: //north
+                    streetPosition -= utils::Vector2(0.f, 2.f + float(dn));
+                    break;
+                case 2: //south
+                    streetPosition += utils::Vector2(0.f, 2.f + float(dn));
+                    break;
+                case 3: //east
+                    streetPosition -= utils::Vector2(2.f + float(dn), 0.f);
+                    break;
+                case 4: //west
+                    streetPosition += utils::Vector2(2.f + float(dn), 0.f);
+                    break;
+                }
+                //don't fill existing childs
+
                 //std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
 
-                //first check if you can build a street
                 graphics::Rect buildRect{streetPosition.getX(), streetPosition.getY(), 1, 1};
                 if (gameMap->canBuild(buildRect))
                 {
-                    auto child = std::make_shared<TreeNode>(streetPosition, i);
+                    auto child = std::make_shared<TreeNode>(streetPosition, direction);
+                    child->lastNode = dn + 1 == directionNodes;
                     (*nodesLeft)--;
 
                     children.push_back(child);
                     if ((*nodesLeft) == 0)
                         break;
                 }
-            }
-            else
-            {
-                if (directions < 4)
-                    directions++;
+
+                //first check if you can build a street
+                // }
+                // else
+                // {
+                //     if (directions < 4)
+                //         directions++;
+                // }
             }
         }
         for (auto child : children)
         {
-            if (!existsNode(root, child->position))
+            if (!existsNode(root, child->position) && child->lastNode)
             {
                 node->children.push_back(child);
                 fillNode(gen, child, nodesLeft);

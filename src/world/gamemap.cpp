@@ -146,10 +146,6 @@ bool GameMap::canBuild(graphics::Rect buildRect)
 
     TileType tile = getTile(buildRect.x, buildRect.y);
 
-    size_t tileX = buildRect.x;
-    size_t tileY = buildRect.y;
-    int groundLimit = 10;
-
     if (tile < 8)
     {
         //render water

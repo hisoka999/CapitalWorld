@@ -33,13 +33,14 @@ namespace world
         int direction;
 
         std::vector<std::shared_ptr<TreeNode>> children;
+        bool lastNode = false;
     };
 
     class City
     {
     public:
         City(std::string name, utils::Vector2 &position);
-        void generate(unsigned int seed, std::shared_ptr<GameMap> gameMap);
+        void generate(unsigned int seed, std::shared_ptr<GameMap> gameMap, long people);
         void renderCity(core::Renderer *renderer);
 
         std::shared_ptr<utils::JSON::Object> toJson();
