@@ -135,6 +135,8 @@ namespace world
 
         int width = 64;
         int height = 32;
+        world::buildings::DemandMap baseDemand;
+        baseDemand[world::ProductType::Food] = 0.7f;
 
         generateStreetTree(seed);
         fillStreetsByTree(root);
@@ -145,14 +147,15 @@ namespace world
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);
             //change it in the real version
             int houseId = houseGen(gen);
-            std::string subTexture = "house" + std::to_string(houseId);
+            std::string subTexture = "house_1";
 
             house->setSourceRect(groundTexture->getSourceRect(subTexture));
             house->setPosition(housePosition.getX(), housePosition.getY());
             house->setOffset(0, house->getSourceRect().height - height);
 
             house->setSubTexture(subTexture);
-            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(numberOfCitizen / numberOfBuildings);
+
+            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(numberOfCitizen / numberOfBuildings, baseDemand, houseId);
             house->addComponent(houseComponent);
             int stopKey = 0;
             while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)
@@ -319,13 +322,13 @@ namespace world
 
         if ((*nodesLeft) <= 0)
             return;
-        std::cout << "nodes left: " << *nodesLeft << std::endl;
+        //std::cout << "nodes left: " << *nodesLeft << std::endl;
 
         std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
 
         int directions = directionGen(gen);
-        std::cout << "directions:" << directions << std::endl;
+        //std::cout << "directions:" << directions << std::endl;
 
         if (root->children.size() > 0)
         {

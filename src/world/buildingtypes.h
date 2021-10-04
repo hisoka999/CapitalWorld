@@ -13,5 +13,16 @@ namespace world
         Transport
 
     };
+
+    enum class ProductType
+    {
+        Food,
+        Entertainment,
+        Cloth,
+        Technology,
+        Transport,
+        Resource,
+
+    };
 };
 #endif // BUILDINGTYPES_H

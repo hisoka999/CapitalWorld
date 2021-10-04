@@ -2,26 +2,42 @@
 #define __HOUSECOMPONENT_H__
 
 #include "BuildingComponent.h"
+#include "world/buildingtypes.h"
 namespace world
 {
     namespace buildings
     {
+        typedef std::map<world::ProductType, float> DemandMap;
+        struct Demand
+        {
+            size_t maxDemand;
+            size_t monthsFullFilled;
+            size_t value;
+        };
+
         class HouseComponent : public world::buildings::BuildingComponent
         {
 
         public:
             HouseComponent();
-            HouseComponent(unsigned int residents);
+            HouseComponent(unsigned int residents, DemandMap baseDemand, int houseId);
             ~HouseComponent();
             unsigned int getResidents();
 
             virtual void fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company);
             virtual void updateProduction(int month, int year, Building *building);
+            void updateTexture(Building *building);
             virtual std::shared_ptr<BuildingComponent> clone();
             virtual std::shared_ptr<utils::JSON::Object> toJson();
+            int getCurrentDemand(world::ProductType type);
+            int fullfillDemand(world::ProductType type, int value);
 
         private:
+            void initDemand();
             unsigned int residents;
+            int houseId;
+            std::map<world::ProductType, Demand> demand;
+            DemandMap baseDemand;
         };
 
     } // namespace buildings

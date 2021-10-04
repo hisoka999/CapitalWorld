@@ -30,6 +30,7 @@ namespace world
         this->yOffset = copy.yOffset;
         this->displayRect = copy.displayRect;
         this->sourceRect = copy.sourceRect;
+        this->hashId = copy.hashId;
         for (auto &component : copy.components)
         {
             components[component.first] = component.second->clone();
@@ -312,7 +313,8 @@ namespace world
     void Building::setSubTexture(const std::string &tex)
     {
         subTexture = tex;
-        hashId = hasher(subTexture);
+        if (!tex.empty())
+            hashId = hasher(subTexture);
     }
 
     std::shared_ptr<utils::JSON::Object> Building::toJson()

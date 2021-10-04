@@ -36,6 +36,8 @@ namespace world
         const std::shared_ptr<GameMap> &getGameMap() const;
         const std::vector<std::shared_ptr<world::City>> &getCities();
         const Difficulty getDifficulty() const;
+        void update(int month, int year);
+
         std::string toJsonString();
         static std::shared_ptr<GameState> fromJson(std::shared_ptr<utils::JSON::Object> &object);
 

@@ -36,7 +36,7 @@ struct ResourceRequirement
 class Product
 {
 public:
-    Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle);
+    Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
     std::string getName();
     std::string getImage();
     std::vector<std::shared_ptr<ResourceRequirement>> getResources();
@@ -51,6 +51,7 @@ public:
     float calculateCostsPerMonth();
     float calculateCostsPerPiece();
     world::BuildingType getBuildingType();
+    world::ProductType getProductType();
 
 private:
     std::string name;
@@ -59,6 +60,7 @@ private:
     std::vector<std::shared_ptr<ResourceRequirement>> resources;
     std::vector<std::shared_ptr<ProductRequirement>> products;
     ProductionCycle cycle;
+    world::ProductType productType;
 };
 
 #endif // PRODUCT_H

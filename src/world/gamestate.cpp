@@ -52,6 +52,20 @@ namespace world
         return difficulty;
     }
 
+    void GameState::update(int month, int year)
+    {
+        player->updateBalance(time.getMonth(), time.getYear());
+
+        // update cities
+        for (auto &city : cities)
+        {
+            for (auto &building : city->getBuildings())
+            {
+                building->updateProduction(time.getMonth(), time.getYear());
+            }
+        }
+    }
+
     std::shared_ptr<GameState> GameState::fromJson(std::shared_ptr<utils::JSON::Object> &object)
     {
         std::shared_ptr<Company> player = Company::fromJson(object->getObjectValue("player"));

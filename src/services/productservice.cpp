@@ -66,9 +66,10 @@ namespace services
         std::string name = object->getStringValue("name");
         std::string texture = object->getStringValue("texture");
         world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(object->getStringValue("building")).value();
+        world::ProductType productType = magic_enum::enum_cast<world::ProductType>(object->getStringValue("type")).value();
 
         ProductionCycle cycle = convertJsonObject2Cycle(object->getObjectValue("productionCycle"));
-        auto product = std::make_shared<Product>(name, texture, type, cycle);
+        auto product = std::make_shared<Product>(name, texture, type, cycle, productType);
         auto attrs = object->getAttributes();
         if (std::find(attrs.begin(), attrs.end(), std::string("baseResources")) != attrs.end())
         {
