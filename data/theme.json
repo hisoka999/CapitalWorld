@@ -41,5 +41,10 @@
     "scrollarea": {
         "BackgroundColor": "#0ea9e5FF",
         "ForgroundColor": "#FFFFFFFF"
+    },
+    "label": {
+        "FontName": "fonts/arial.ttf",
+        "FontSize": 12,
+        "Color": "#FFFFFFFF"
     }
 }

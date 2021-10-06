@@ -1,5 +1,6 @@
 #include "buildingwindow.h"
 #include <engine/ui/Label.h>
+#include <engine/ui/layout/GridLayout.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
 #include "ui/farmproductiontab.h"
@@ -22,36 +23,46 @@ namespace UI
         tabBar->setWidth(740 - 10);
         tabBar->setHeight(520 - 50);
         addObject(tabBar);
-        std::shared_ptr<UI::Tab> infoTab = std::make_shared<UI::Tab>(tabBar.get(), "Info");
+        infoTab = std::make_shared<UI::Tab>(tabBar.get(), "Info");
         tabBar->addTab(infoTab);
+        layout = std::make_shared<UI::layout::GridLayout>(infoTab.get(), 2);
 
         //fill info tab
         std::shared_ptr<UI::Label> labelName = std::make_shared<UI::Label>(_("Type: "), infoTab.get());
         labelName->setPos(5, 5);
         infoTab->addObject(labelName);
+        labelTypeValue = std::make_shared<UI::Label>(infoTab.get());
+        labelTypeValue->setPos(100, 5);
+        infoTab->addObject(labelTypeValue);
 
         std::shared_ptr<UI::Label> labelOwner = std::make_shared<UI::Label>(_("Owner: "), infoTab.get());
         labelOwner->setPos(5, 25);
         infoTab->addObject(labelOwner);
+        labelOwnerValue = std::make_shared<UI::Label>(infoTab.get());
+        labelOwnerValue->setPos(100, 25);
+        infoTab->addObject(labelOwnerValue);
 
         std::shared_ptr<UI::Label> labelGround = std::make_shared<UI::Label>(_("Ground: "), infoTab.get());
         labelGround->setPos(5, 45);
         infoTab->addObject(labelGround);
 
-        labelTypeValue = std::make_shared<UI::Label>(infoTab.get());
-        labelTypeValue->setPos(100, 5);
-        infoTab->addObject(labelTypeValue);
-        labelOwnerValue = std::make_shared<UI::Label>(infoTab.get());
-        labelOwnerValue->setPos(100, 25);
-        infoTab->addObject(labelOwnerValue);
         labelGroundValue = std::make_shared<UI::Label>(infoTab.get());
         labelGroundValue->setPos(100, 45);
         infoTab->addObject(labelGroundValue);
+        graphics::Rect bounds = tabBar->displayRect();
+        bounds.x = 5;
+        bounds.y = 5;
+        layout->updateLayout(bounds);
     }
     void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile, GameMap *gameMap)
     {
         this->building = building;
         labelGroundValue->setText(tileTypeToString(tile));
+        for (auto &item : optionalItems)
+        {
+            infoTab->removeObject(item);
+        }
+        optionalItems.clear();
 
         if (building != nullptr)
         {
@@ -94,6 +105,20 @@ namespace UI
                     tabBar->addTab(storageTab);
                 }
             }
+
+            for (auto data : building->displayData())
+            {
+                auto labelName = std::make_shared<UI::Label>(data.first, infoTab.get());
+                auto labelValue = std::make_shared<UI::Label>(data.second, infoTab.get());
+                optionalItems.push_back(labelName);
+                optionalItems.push_back(labelValue);
+                infoTab->addObject(labelName);
+                infoTab->addObject(labelValue);
+            }
+            graphics::Rect bounds = tabBar->displayRect();
+            bounds.x = 5;
+            bounds.y = 5;
+            layout->updateLayout(bounds);
         }
         else
         {

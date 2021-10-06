@@ -1,7 +1,7 @@
 [
     {
         "name": "Eggs",
-        "type": "Product",
+        "type": "Food",
         "texture": "egg.png",
         "building": "Farm",
         "baseResources": {
@@ -16,7 +16,7 @@
     },
     {
         "name": "Wheet",
-        "type": "Product",
+        "type": "Resource",
         "texture": "wheat.png",
         "building": "Farm",
         "baseResources": {
@@ -31,7 +31,7 @@
     },
     {
         "name": "Bread",
-        "type": "Product",
+        "type": "Food",
         "texture": "bread.png",
         "building": "Factory",
         "baseProducts": {
@@ -47,7 +47,7 @@
     },
     {
         "name": "Beer",
-        "type": "Product",
+        "type": "Food",
         "texture": "beer.png",
         "building": "Factory",
         "baseProducts": {

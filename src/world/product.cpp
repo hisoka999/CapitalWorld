@@ -1,7 +1,7 @@
 #include "product.h"
 
-Product::Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle)
-    : name(name), image(image), buildingType(buildingType), cycle(cycle)
+Product::Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type)
+    : name(name), image(image), buildingType(buildingType), cycle(cycle), productType(type)
 {
 }
 std::string Product::getName()
@@ -32,6 +32,11 @@ void Product::addRessource(std::shared_ptr<Resource> resource, int amount)
 world::BuildingType Product::getBuildingType()
 {
     return buildingType;
+}
+
+world::ProductType Product::getProductType()
+{
+    return productType;
 }
 
 float Product::calculateCostsPerMonth()

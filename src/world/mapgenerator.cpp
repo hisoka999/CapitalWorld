@@ -2,6 +2,10 @@
 #include <engine/utils/perlinnoise.h>
 #include <iostream>
 #include <random>
+#include <fstream>
+#include <engine/utils/string.h>
+#include "magic_enum.hpp"
+#include <algorithm>
 
 namespace world
 {
@@ -15,15 +19,53 @@ namespace world
         return cities;
     }
 
-    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities)
+    std::vector<CityDefinition> MapGenerator::getCityDefinitions(CityNames cityName)
     {
-        return generateMap(width, height, 1, numberOfCities);
+        std::vector<CityDefinition> cityDefinitions;
+        std::fstream file;
+
+        std::string filename = "data/cities/";
+        filename += magic_enum::enum_name(cityName);
+        filename += ".csv";
+        std::string line;
+        file.open(filename.c_str(), std::ios::in);
+        if (!file.is_open())
+        {
+            throw IOException(filename, "file does not exists");
+        }
+        int i = 0;
+        while (getline(file, line))
+        {
+            i++;
+            if (i == 1)
+            {
+                continue;
+            }
+
+            auto columns = utils::split(line, ",");
+            CityDefinition definition;
+            definition.name = columns[0];
+            definition.size = std::atoi(columns[8].c_str());
+
+            cityDefinitions.push_back(definition);
+        }
+        //while(!s.empty());
+        file.close();
+        return cityDefinitions;
     }
-    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities, unsigned long seed)
+
+    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities, CityNames cityName)
+    {
+        return generateMap(width, height, numberOfCities, cityName, 1);
+    }
+    std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities, CityNames cityName, unsigned long seed)
     {
         std::cout << "seed: " << seed << std::endl;
+        auto definitions = getCityDefinitions(cityName);
+
         utils::PerlinNoise pn(seed);
         std::mt19937 gen(seed);
+        std::random_shuffle(definitions.begin(), definitions.end());
         std::uniform_int_distribution<int> dist(-10, 20);
         std::uniform_int_distribution<int> decoration(int(Decoration::none), int(Decoration::mountain));
         std::vector<TileType> mapData;
@@ -64,8 +106,8 @@ namespace world
         for (int i = 0; i < numberOfCities; i++)
         {
             utils::Vector2 cityPos(xPositionGen(gen), yPositionGen(gen));
-            auto city = std::make_shared<world::City>("Rostock", cityPos); //TODO change name
-            city->generate(seed, map);
+            auto city = std::make_shared<world::City>(definitions[i].name, cityPos);
+            city->generate(seed, map, definitions[i].size);
             cities.push_back(city);
         }
 

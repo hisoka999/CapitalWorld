@@ -26,6 +26,7 @@ namespace world
             virtual std::shared_ptr<BuildingComponent> clone();
 
             virtual void delayedUpdate(Company *company);
+            virtual std::map<std::string, std::string> displayData();
         };
 
     } // namespace buildings

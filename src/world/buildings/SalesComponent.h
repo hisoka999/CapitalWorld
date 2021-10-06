@@ -32,7 +32,7 @@ namespace world
         private:
             std::vector<std::shared_ptr<SalesItem>> sales;
             GameMap *gameMap;
-            int calcDemand(const std::string &product, Building *building);
+            int calcDemand(const ProductType productType, Building *building);
             bool isSalesActive(const std::string &product);
 
         public:

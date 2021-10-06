@@ -107,7 +107,7 @@ namespace scenes
         container->addObject(numberOfPlayersCombobox);
 
         //numberOfCities
-        numberOfCities = 4;
+        numberOfCities = 8;
         auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
         numberOfCitiesLabel->setFont("fonts/arial.ttf", 14);
         numberOfCitiesLabel->setText(_("number of cities: "));
@@ -116,11 +116,11 @@ namespace scenes
 
         auto numberOfCitiesCombobox = std::make_shared<UI::ComboBox<int>>();
         numberOfCitiesCombobox->setFont("fonts/arial.ttf", 14);
-        numberOfCitiesCombobox->addElement(2);
+
         numberOfCitiesCombobox->addElement(4);
         numberOfCitiesCombobox->addElement(8);
-        //numberOfCitiesCombobox->addElement(16);
-        //numberOfCitiesCombobox->addElement(32);
+        numberOfCitiesCombobox->addElement(16);
+        numberOfCitiesCombobox->addElement(32);
         numberOfCitiesCombobox->setPos(200, y);
         numberOfCitiesCombobox->setSelectionByText(numberOfCities);
         numberOfCitiesCombobox->setWidth(200);
@@ -181,6 +181,30 @@ namespace scenes
         difficultyCombobox->connect("valueChanged", [&](Difficulty diff)
                                     { difficulty = diff; });
         container->addObject(difficultyCombobox);
+
+        auto cityNameLabel = std::make_shared<UI::Label>(nullptr);
+        cityNameLabel->setFont("fonts/arial.ttf", 14);
+        cityNameLabel->setText(_("City Names: "));
+        cityNameLabel->setPos(20, y);
+        container->addObject(cityNameLabel);
+
+        auto cityNamesCombobox = std::make_shared<UI::ComboBox<CityNames>>();
+        cityNamesCombobox->setFont("fonts/arial.ttf", 14);
+        constexpr auto &cityNames = magic_enum::enum_values<CityNames>();
+        for (auto &value : cityNames)
+        {
+            cityNamesCombobox->addElement(value);
+        }
+        cityName = CityNames::de;
+        cityNamesCombobox->setSelectionByText(cityName);
+
+        cityNamesCombobox->setPos(200, y);
+        cityNamesCombobox->setWidth(200);
+        cityNamesCombobox->setElementFunction([](CityNames val) -> std::string
+                                              { return _(std::string(magic_enum::enum_name(val))); });
+        cityNamesCombobox->connect("valueChanged", [&](CityNames diff)
+                                   { cityName = diff; });
+        container->addObject(cityNamesCombobox);
         winMgr->addContainer(container.get());
         graphics::Rect bounds = {10, 450, 1280, 400};
 
@@ -241,7 +265,7 @@ namespace scenes
 
         int size = 100 * static_cast<int>(worldSize);
 
-        auto gameMap = gen.generateMap(size, size, numberOfCities, seed);
+        auto gameMap = gen.generateMap(size, size, numberOfCities, cityName, seed);
         auto cities = gen.getGeneratedCities();
         auto player = std::make_shared<world::Company>(playerName, 1000000, true);
         auto gameState = std::make_shared<world::GameState>(player, gameMap, cities, difficulty);

@@ -41,5 +41,11 @@ namespace world
         void BuildingComponent::delayedUpdate(Company *company)
         {
         }
+
+        std::map<std::string, std::string> BuildingComponent::displayData()
+        {
+            std::map<std::string, std::string> result;
+            return result;
+        }
     }
 }

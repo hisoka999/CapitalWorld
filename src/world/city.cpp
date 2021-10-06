@@ -8,6 +8,9 @@
 #include <random>
 #include "../translate.h"
 #include "world/buildings/HouseComponent.h"
+#include <engine/utils/color.h>
+#include "iso.h"
+
 namespace world
 {
 
@@ -15,6 +18,7 @@ namespace world
         : position(position), name(name), numberOfCitizen(0)
     {
         groundTexture = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
+        font = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 20);
     }
 
     bool City::isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap)
@@ -98,20 +102,23 @@ namespace world
         return isBordering;
     }
 
-    void City::generate(unsigned int seed, std::shared_ptr<GameMap> gameMap)
+    void City::generate(unsigned int seed, std::shared_ptr<GameMap> gameMap, long people)
     {
         this->gameMap = gameMap;
         std::mt19937 gen(seed);
+        if (people == 0)
+            people = 100000;
 
         std::uniform_int_distribution<long> xPositionGen(0, gameMap->getWidth());
         std::uniform_int_distribution<long> yPositionGen(0, gameMap->getHeight());
 
-        std::uniform_int_distribution<long> peopleGen(100000, 1000000);
+        std::uniform_int_distribution<long> peopleGen(people * 0.5, people * 1.5);
 
-        std::uniform_int_distribution<long> houseGen(1, 4);
+        std::uniform_int_distribution<long> houseGen(1, 2);
 
         numberOfCitizen = peopleGen(gen);
         long numberOfBuildings = static_cast<long>(std::round(static_cast<float>(numberOfCitizen) / 1000.0f));
+        std::cout << "city name: " << this->name << std ::endl;
         std::cout << "numberOfCitizen = " << numberOfCitizen << std::endl;
         std::cout << "numberOfBuildings = " << numberOfBuildings << std::endl;
 
@@ -128,6 +135,8 @@ namespace world
 
         int width = 64;
         int height = 32;
+        world::buildings::DemandMap baseDemand;
+        baseDemand[world::ProductType::Food] = 0.7f;
 
         generateStreetTree(seed);
         fillStreetsByTree(root);
@@ -138,15 +147,20 @@ namespace world
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);
             //change it in the real version
             int houseId = houseGen(gen);
-            std::string subTexture = "house" + std::to_string(houseId);
+            std::string subTexture = "house_" + std::to_string(houseId);
 
             house->setSourceRect(groundTexture->getSourceRect(subTexture));
             house->setPosition(housePosition.getX(), housePosition.getY());
             house->setOffset(0, house->getSourceRect().height - height);
-            if (subTexture == "house2")
-                std::cout << "yOffset = " << house->getYOffset() << std::endl;
+
             house->setSubTexture(subTexture);
-            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(numberOfCitizen / numberOfBuildings);
+
+            float distance = housePosition.distance(this->position);
+
+            int residents = (numberOfCitizen / numberOfBuildings) * ((distance == 0) ? 1 : (5.f / distance));
+
+            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(residents, baseDemand, houseId);
+            houseComponent->updateProduction(0, 0, house.get());
             house->addComponent(houseComponent);
             int stopKey = 0;
             while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)
@@ -182,10 +196,10 @@ namespace world
         std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2)
                   {
                       utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-                      auto v11 = gameMap->twoDToIso(v1);
+                      auto v11 = iso::twoDToIso(v1);
 
                       utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-                      auto v22 = gameMap->twoDToIso(v2);
+                      auto v22 = iso::twoDToIso(v2);
 
                       return v11.getY() < v22.getY();
                       //  o1->get2DPosition().x > o2->get2DPosition().x
@@ -195,10 +209,10 @@ namespace world
         std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2)
                   {
                       utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-                      auto v11 = gameMap->twoDToIso(v1);
+                      auto v11 = iso::twoDToIso(v1);
 
                       utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-                      auto v22 = gameMap->twoDToIso(v2);
+                      auto v22 = iso::twoDToIso(v2);
 
                       return v11.getY() < v22.getY();
                       //  o1->get2DPosition().x > o2->get2DPosition().x
@@ -213,6 +227,19 @@ namespace world
         {
             gameMap->addBuilding(street);
         }
+    }
+
+    void City::renderCity(core::Renderer *renderer)
+    {
+        float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+
+        float x = static_cast<float>(position.getX()) * 64.f / 2.0f;
+        float y = static_cast<float>(position.getY()) * 32.f;
+        utils::Vector2 vec(x, y);
+        auto isoPos = iso::twoDToIso(vec);
+        const utils::Vector2 isoPos2((isoPos.getX() * factor) - renderer->getMainCamera()->getX(), (isoPos.getY() * factor) - renderer->getMainCamera()->getY());
+        if (renderer->getViewPort().intersects(isoPos2))
+            font->render(renderer, name, utils::color::WHITE, isoPos2.getX(), isoPos2.getY());
     }
 
     void City::fillStreetsByTree(std::shared_ptr<TreeNode> node)
@@ -239,10 +266,10 @@ namespace world
         switch (node->direction)
         {
         case 1: //north
-            streetPosition = streetPosition + utils::Vector2(0, 1);
+            streetPosition += utils::Vector2(0, 1);
             break;
         case 2: //south
-            streetPosition = streetPosition - utils::Vector2(0, 1);
+            streetPosition -= utils::Vector2(0, 1);
             break;
         case 3: //east
             streetPosition = streetPosition + utils::Vector2(1, 0);
@@ -268,7 +295,7 @@ namespace world
         root = std::make_shared<TreeNode>(position, 0);
         std::mt19937 gen(seed);
         long numberOfBuildings = long(std::round(float(numberOfCitizen) / 1000.0f));
-        numberOfBuildings /= 2.0;
+        //numberOfBuildings /= 2.0;
         fillNode(gen, root, &numberOfBuildings);
     }
 
@@ -291,24 +318,26 @@ namespace world
     {
 
         int base = 4;
+        int max = 4;
         if (root->children.size() > 0)
         {
-            base = 1;
+            base = 2;
+            max = 3;
         }
 
-        if ((*nodesLeft) == 0)
+        if ((*nodesLeft) <= 0)
             return;
-        std::cout << "nodes left: " << *nodesLeft << std::endl;
+        //std::cout << "nodes left: " << *nodesLeft << std::endl;
 
-        std::uniform_int_distribution<int> directionGen(base, 4);
+        std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
 
         int directions = directionGen(gen);
-        std::cout << "directions:" << directions << std::endl;
+        //std::cout << "directions:" << directions << std::endl;
 
         if (root->children.size() > 0)
         {
-            if (noDirectionGen(gen) <= 5)
+            if (noDirectionGen(gen) <= 1)
             {
                 std::cout << " no direction " << std::endl;
                 return;
@@ -316,52 +345,72 @@ namespace world
         }
         std::vector<std::shared_ptr<TreeNode>> children;
 
-        for (int i = 1; i <= directions; ++i)
+        std::vector<int> usedDirections;
+        for (int i = 1; i <= 4; ++i)
         {
-            utils::Vector2 streetPosition = node->position;
-
-            switch (i)
-            {
-            case 1: //north
-                streetPosition = streetPosition - utils::Vector2(0, 2);
-                break;
-            case 2: //south
-                streetPosition = streetPosition + utils::Vector2(0, 2);
-                break;
-            case 3: //east
-                streetPosition = streetPosition - utils::Vector2(2, 0);
-                break;
-            case 4: //west
-                streetPosition = streetPosition + utils::Vector2(2, 0);
-                break;
-            }
-            //don't fill existing childs
-
             if (i != node->direction)
             {
+                usedDirections.push_back(i);
+            }
+        }
+        std::random_shuffle(usedDirections.begin(), usedDirections.end());
+
+        for (int i = 1; i <= directions; ++i)
+        {
+            if ((*nodesLeft) == 0)
+                break;
+            size_t directionNodes = 2;
+            int direction = usedDirections[i - 1];
+
+            for (size_t dn = 0; dn < directionNodes; ++dn)
+            {
+                utils::Vector2 streetPosition = node->position;
+
+                if ((*nodesLeft) == 0)
+                    break;
+                switch (direction)
+                {
+                case 1: //north
+                    streetPosition -= utils::Vector2(0.f, 2.f + float(dn));
+                    break;
+                case 2: //south
+                    streetPosition += utils::Vector2(0.f, 2.f + float(dn));
+                    break;
+                case 3: //east
+                    streetPosition -= utils::Vector2(2.f + float(dn), 0.f);
+                    break;
+                case 4: //west
+                    streetPosition += utils::Vector2(2.f + float(dn), 0.f);
+                    break;
+                }
+                //don't fill existing childs
+
                 //std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
 
-                //first check if you can build a street
                 graphics::Rect buildRect{streetPosition.getX(), streetPosition.getY(), 1, 1};
                 if (gameMap->canBuild(buildRect))
                 {
-                    auto child = std::make_shared<TreeNode>(streetPosition, i);
+                    auto child = std::make_shared<TreeNode>(streetPosition, direction);
+                    child->lastNode = dn + 1 == directionNodes;
                     (*nodesLeft)--;
 
                     children.push_back(child);
                     if ((*nodesLeft) == 0)
                         break;
                 }
-            }
-            else
-            {
-                if (directions < 4)
-                    directions++;
+
+                //first check if you can build a street
+                // }
+                // else
+                // {
+                //     if (directions < 4)
+                //         directions++;
+                // }
             }
         }
         for (auto child : children)
         {
-            if (!existsNode(root, child->position))
+            if (!existsNode(root, child->position) && child->lastNode)
             {
                 node->children.push_back(child);
                 fillNode(gen, child, nodesLeft);
@@ -371,12 +420,6 @@ namespace world
                 node->children.push_back(child);
             }
         }
-    }
-
-    void City::renderCity(core::Renderer *renderer)
-    {
-
-        //render the city name
     }
 
     std::shared_ptr<utils::JSON::Object> City::toJson()

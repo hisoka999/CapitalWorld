@@ -4,25 +4,25 @@
 #include "StorageComponent.h"
 #include "world/gamemap.h"
 #include "HouseComponent.h"
-
+#include "services/productservice.h"
 namespace world
 {
     namespace buildings
     {
-        int SalesComponent::calcDemand(const std::string &product, Building *building)
+        int SalesComponent::calcDemand(const ProductType productType, Building *building)
         {
 
             if (gameMap != nullptr)
             {
-                int residents = 0;
+                int demand = 0;
                 auto houses = gameMap->findHousesInDistance(building, 10);
                 for (auto house : houses)
                 {
                     auto comp = house->getComponent<world::buildings::HouseComponent>("HouseComponent");
-                    residents += comp->getResidents();
+                    demand += comp->getCurrentDemand(productType);
                 }
 
-                return residents * 0.2;
+                return demand;
             }
         }
 
@@ -114,7 +114,8 @@ namespace world
                 if (!isSalesActive(storedProduct))
                     continue;
                 int amount = storage->getEntry(storedProduct);
-                int demand = calcDemand(storedProduct, building);
+                auto product = services::ProductService::Instance().getProductByName(storedProduct);
+                int demand = calcDemand(product->getProductType(), building);
                 if (amount > 0)
                 {
                     if (amount > demand)
@@ -126,6 +127,20 @@ namespace world
                     {
                         storage->addEntry(storedProduct, amount * -1);
                         building->addIncome(month, year, storedProduct, BalanceAccount::Sales, income);
+                    }
+
+                    if (gameMap != nullptr)
+                    {
+
+                        auto houses = gameMap->findHousesInDistance(building, 10);
+                        demand = amount;
+                        for (auto house : houses)
+                        {
+                            auto comp = house->getComponent<world::buildings::HouseComponent>("HouseComponent");
+                            demand = comp->fullfillDemand(product->getProductType(), demand);
+                            if (demand == 0)
+                                break;
+                        }
                     }
                 }
             }

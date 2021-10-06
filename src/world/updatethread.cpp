@@ -64,10 +64,9 @@ void UpdateThread::update()
                 //update game state
                 auto start = std::chrono::high_resolution_clock::now();
 
-                auto company = gameState->getPlayer();
-                company->updateBalance(time.getMonth(), time.getYear());
-                std::cout << time.format() << ": update game state" << std::endl;
+                gameState->update(time.getMonth(), time.getYear());
 
+                std::cout << time.format() << ": update game state" << std::endl;
                 auto &msgSystem = core::MessageSystem<MessageTypes>::get();
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
                 msgSystem.sendMessage(msg);

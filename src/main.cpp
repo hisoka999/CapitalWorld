@@ -165,9 +165,9 @@ int main(int argc, char *argv[])
 
                 if (surf != 0)
                 {
-                    std::string fileName = utils::os::get_pref_dir("", "captialworld") + "screenshot_" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count()) + ".bmp";
+                    std::string fileName = utils::os::get_pref_dir("", "captialworld") + "screenshot_" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count()) + ".png";
                     std::cout << "screenshot: " << fileName << std::endl;
-                    SDL_SaveBMP(surf, fileName.c_str());
+                    IMG_SavePNG(surf, fileName.c_str());
                     SDL_FreeSurface(surf);
                 }
                 else
