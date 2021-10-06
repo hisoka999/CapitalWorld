@@ -114,7 +114,7 @@ namespace world
 
         std::uniform_int_distribution<long> peopleGen(people * 0.5, people * 1.5);
 
-        std::uniform_int_distribution<long> houseGen(1, 4);
+        std::uniform_int_distribution<long> houseGen(1, 2);
 
         numberOfCitizen = peopleGen(gen);
         long numberOfBuildings = static_cast<long>(std::round(static_cast<float>(numberOfCitizen) / 1000.0f));
@@ -147,7 +147,7 @@ namespace world
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);
             //change it in the real version
             int houseId = houseGen(gen);
-            std::string subTexture = "house_1";
+            std::string subTexture = "house_" + std::to_string(houseId);
 
             house->setSourceRect(groundTexture->getSourceRect(subTexture));
             house->setPosition(housePosition.getX(), housePosition.getY());
@@ -155,7 +155,12 @@ namespace world
 
             house->setSubTexture(subTexture);
 
-            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(numberOfCitizen / numberOfBuildings, baseDemand, houseId);
+            float distance = housePosition.distance(this->position);
+
+            int residents = (numberOfCitizen / numberOfBuildings) * ((distance == 0) ? 1 : (5.f / distance));
+
+            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(residents, baseDemand, houseId);
+            houseComponent->updateProduction(0, 0, house.get());
             house->addComponent(houseComponent);
             int stopKey = 0;
             while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)

@@ -301,6 +301,19 @@ namespace world
         }
     }
 
+    std::map<std::string, std::string> Building::displayData()
+    {
+        std::map<std::string, std::string> result;
+        for (auto &component : components)
+        {
+            for (auto data : component.second->displayData())
+            {
+                result[data.first] = data.second;
+            }
+        }
+        return result;
+    }
+
     const std::string &Building::getSubTexture()
     {
         return subTexture;

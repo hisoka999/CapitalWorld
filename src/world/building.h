@@ -98,6 +98,8 @@ namespace world
 
         void delayedUpdate(Company *company);
 
+        std::map<std::string, std::string> displayData();
+
     protected:
         void addBalance(ProductBalance value);
 

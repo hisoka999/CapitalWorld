@@ -114,6 +114,13 @@ namespace world
             return offset;
         }
 
+        std::map<std::string, std::string> HouseComponent::displayData()
+        {
+            std::map<std::string, std::string> result;
+            result["residents"] = std::to_string(residents);
+            return result;
+        }
+
         void HouseComponent::initDemand()
         {
             for (auto base : baseDemand)

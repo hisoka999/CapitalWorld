@@ -51,6 +51,13 @@
             "height": 64.0
         },
         {
+            "name": "medhouse_2",
+            "x": 256.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 64.0
+        },
+        {
             "name": "house_2",
             "x": 0.0,
             "y": 64.0,
@@ -60,6 +67,13 @@
         {
             "name": "bighouse_1",
             "x": 128.0,
+            "y": 96.0,
+            "width": 64.0,
+            "height": 64.0
+        },
+        {
+            "name": "bighouse_2",
+            "x": 320.0,
             "y": 96.0,
             "width": 64.0,
             "height": 64.0

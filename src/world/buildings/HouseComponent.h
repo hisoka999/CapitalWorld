@@ -31,6 +31,7 @@ namespace world
             virtual std::shared_ptr<utils::JSON::Object> toJson();
             int getCurrentDemand(world::ProductType type);
             int fullfillDemand(world::ProductType type, int value);
+            virtual std::map<std::string, std::string> displayData();
 
         private:
             void initDemand();
