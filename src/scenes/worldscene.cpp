@@ -240,6 +240,11 @@ namespace scenes
                     {
                         company = gameState->getPlayer();
                     }
+                    auto rect = buildingWindow.displayRect();
+                    int width = core::GameWindow::Instance().getWidth();
+                    int height = core::GameWindow::Instance().getHeight();
+                    buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+
                     buildingWindow.open(building, company, gameMap->getTile(cursorPosition), gameMap.get());
                 }
             }
