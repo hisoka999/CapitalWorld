@@ -1,21 +1,22 @@
 #ifndef WORLDSCENE_H
 #define WORLDSCENE_H
 
-#include <engine/core/Scene.h>
-#include <engine/core/SceneManager.h>
-#include <world/gamemap.h>
-#include "world/gamemaprenderer.h"
+#include "ui/buildingwindow.h"
 #include "ui/buildwindow.h"
+#include "ui/hudcontainer.h"
 #include "ui/optionswindow.h"
-#include "world/company.h"
+#include "ui/researchwindow.h"
 #include "world/buildactions.h"
 #include "world/building.h"
+#include "world/city.h"
+#include "world/company.h"
+#include "world/gamemaprenderer.h"
 #include "world/gamestate.h"
 #include "world/updatethread.h"
-#include "ui/buildingwindow.h"
-#include "ui/hudcontainer.h"
-#include "world/city.h"
+#include <engine/core/Scene.h>
+#include <engine/core/SceneManager.h>
 #include <map>
+#include <world/gamemap.h>
 
 namespace scenes
 {
@@ -59,6 +60,7 @@ namespace scenes
         graphics::Rect cursorBuildingRect;
         UI::BuildWindow buildWindow;
         UI::OptionsWindow optionsWindow;
+        UI::ResearchWindow researchWindow;
         std::shared_ptr<world::GameState> gameState;
         std::unique_ptr<UpdateThread> thread;
         UI::BuildingWindow buildingWindow;

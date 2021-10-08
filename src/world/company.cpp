@@ -1,8 +1,10 @@
 #include "company.h"
-#include <algorithm>
 #include "services/buildingservice.h"
-#include <magic_enum.hpp>
+#include "services/researchservice.h"
 #include "world/buildings/street.h"
+#include <algorithm>
+#include <magic_enum.hpp>
+
 namespace world
 {
 
@@ -78,6 +80,7 @@ namespace world
             income += building->getIncomePerMonth(month, year);
         }
         incCash(income - costs);
+        research();
     }
 
     std::vector<std::shared_ptr<Building>> Company::findProductionBuildings()
@@ -178,6 +181,68 @@ namespace world
             }
         }
         return nullptr;
+    }
+    std::vector<std::shared_ptr<Research>> Company::getResearchQueue() const
+    {
+        return researchQueue;
+    }
+
+    void Company::addResearchToQueue(const std::shared_ptr<Research> &research)
+    {
+        auto found = std::find(researchQueue.begin(), researchQueue.end(), research);
+        if (found == std::end(researchQueue))
+        {
+            researchQueue.push_back(research);
+        }
+    }
+
+    std::vector<std::shared_ptr<Research>> &Company::getAvailableResearch()
+    {
+        return availableResearch;
+    }
+
+    void Company::setAvailableResearch(const std::vector<std::shared_ptr<Research>> &list)
+    {
+        this->availableResearch.clear();
+        for (auto &research : list)
+        {
+            this->availableResearch.push_back(std::make_shared<Research>(*research));
+        }
+
+        for (auto &research : availableResearch)
+        {
+
+            auto names = research->getRequirementNames();
+            for (auto name : names)
+            {
+                for (auto &sub : availableResearch)
+                {
+                    if (sub->getName() == name)
+                    {
+                        research->addRequirement(sub);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    int Company::getResearchPerMonth()
+    {
+        return 42; //TODO
+    }
+    void Company::research()
+    {
+        if (researchQueue.size() == 0)
+            return;
+
+        auto &currentResearch = researchQueue.front();
+
+        currentResearch->reduceCosts(getResearchPerMonth());
+        if (currentResearch->getResearched())
+        {
+            researchQueue.erase(researchQueue.begin());
+        }
     }
 
 }

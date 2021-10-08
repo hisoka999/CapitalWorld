@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "name": "Mining",
+        "name_de": "Bergbau",
+        "icon": "\uf6fc",
+        "start_date": {
+            "year": 1900,
+            "month": 1
+        },
+        "description": "From now on you will be able to fly into space",
+        "costs": 200,
+        "enables": [
+            "Shipyard"
+        ],
+        "requires": []
+    },
+    {
+        "id": 2,
+        "name": "Automobile",
+        "name_de": "Automobil",
+        "icon": "\uf1b9",
+        "start_date": {
+            "year": 1920,
+            "month": 1
+        },
+        "description": "From now on you will be able to fly into space",
+        "costs": 200,
+        "enables": [
+            "Shipyard"
+        ],
+        "requires": []
+    },
+    {
+        "id": 2,
+        "name": "Advanced Mining",
+        "name_de": "Verbesserter Bergbau",
+        "icon": "\uf3a5",
+        "start_date": {
+            "year": 1950,
+            "month": 1
+        },
+        "description": "From now on you will be able to fly into space",
+        "costs": 400,
+        "enables": [
+            "Shipyard"
+        ],
+        "requires": [
+            "Mining"
+        ]
+    }
+]

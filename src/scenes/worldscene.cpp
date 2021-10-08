@@ -1,17 +1,17 @@
 #include "worldscene.h"
-#include "../world/mapgenerator.h"
+#include "../translate.h"
 #include "../world/buildings/street.h"
+#include "../world/mapgenerator.h"
 #include "services/buildingservice.h"
+#include "world/buildings/SalesComponent.h"
+#include "world/iso.h"
 #include <chrono>
 #include <cmath>
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
+#include <future>
 #include <iostream>
 #include <random>
-#include "../translate.h"
-#include "world/buildings/SalesComponent.h"
-#include <future>
-#include "world/iso.h"
 
 namespace scenes
 {
@@ -21,7 +21,7 @@ namespace scenes
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0)
+          buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f)), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
@@ -42,6 +42,7 @@ namespace scenes
         hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
+        winMgr->addWindow(&researchWindow);
         optionsWindow.setGameState(gameState);
         optionsWindow.connect("stateChanged", [&](std::shared_ptr<world::GameState> state)
                               {
@@ -363,6 +364,12 @@ namespace scenes
         {
             optionsWindow.setPos(renderer->getViewPort().width / 2, renderer->getViewPort().height / 2);
             optionsWindow.setVisible(true);
+        }
+        else if (pInput->isKeyDown(SDLK_r))
+        {
+            auto rect = researchWindow.displayRect();
+            researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));
+            researchWindow.setVisible(true);
         }
 
         buildWindow.handleEvents(pInput);

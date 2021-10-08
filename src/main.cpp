@@ -1,23 +1,24 @@
 #include "config.h"
-#include <engine/core/SceneManager.h>
-#include <engine/core/gamewindow.h>
-#include <engine/core/input.h>
 #include "engine/core/renderer.h"
 #include "engine/graphics/TextureManager.h"
 #include "engine/graphics/text.h"
 #include "engine/graphics/texture.h"
 #include "engine/utils/exceptions.h"
+#include "engine/utils/localisation.h"
 #include "engine/utils/logger.h"
 #include "engine/utils/os.h"
 #include "engine/utils/string.h"
 #include "scenes/MainScene.h"
-#include "scenes/worldscene.h"
 #include "scenes/NewGameScene.h"
-#include "services/productservice.h"
-#include "services/ressourceservice.h"
+#include "scenes/worldscene.h"
 #include "services/buildingservice.h"
+#include "services/productservice.h"
+#include "services/researchservice.h"
+#include "services/ressourceservice.h"
+#include <engine/core/SceneManager.h>
+#include <engine/core/gamewindow.h>
+#include <engine/core/input.h>
 #include <iostream>
-#include "engine/utils/localisation.h"
 
 #include <magic_enum.hpp>
 
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
         services::RessourceService::Instance().loadData("data/ressources.json");
         services::ProductService::Instance().loadData("data/products.json");
         services::BuildingService::Instance().loadData("data/buildings.json");
+        services::ResearchService::Instance().loadData("data/research.json");
 
         auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
         //auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
