@@ -170,6 +170,15 @@ namespace scenes
         renderHUD();
 
         winMgr->render(renderer);
+
+        if (optionsWindow.getVisible() && previewSurface == nullptr)
+        {
+            auto &win = core::GameWindow::Instance();
+            previewSurface = SDL_CreateRGBSurface(0, win.getWidth(), win.getHeight(), 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+            SDL_RenderReadPixels(renderer->getRenderer(), NULL, SDL_PIXELFORMAT_ARGB8888, previewSurface->pixels, previewSurface->pitch);
+
+            optionsWindow.setPreview(previewSurface);
+        }
     }
 
     void WorldScene::handleEvents(core::Input *pInput)
@@ -367,6 +376,12 @@ namespace scenes
 
         if (pInput->isKeyDown(SDLK_ESCAPE))
         {
+            //create preview image
+            if (previewSurface != nullptr)
+            {
+                SDL_FreeSurface(previewSurface);
+                previewSurface = nullptr;
+            }
             optionsWindow.setPos(renderer->getViewPort().width / 2, renderer->getViewPort().height / 2);
             optionsWindow.setVisible(true);
         }

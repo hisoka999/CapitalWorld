@@ -33,7 +33,7 @@ namespace UI
         auto nameLabel = std::make_shared<UI::Label>(this);
 
         previewImageButton->setPos(5, 5);
-        previewImageButton->loadImage("/home/stefan/.local/share/captialworld/screenshot_1626293817153250530.bmp"); //test
+        //previewImageButton->loadImage("/home/stefan/.local/share/captialworld/screenshot_1626293817153250530.bmp"); //test
         nameLabel->setPos(110, 5);
         nameTextItem->setPos(150, 5);
         fileDateLabel->setPos(110, 30);
@@ -75,10 +75,15 @@ namespace UI
 
         if (entry.exists())
         {
+            std::filesystem::path extention(".png");
+            auto previewPath = entry.path();
+            previewPath.replace_extension(extention);
             auto fileName = entry.path().stem().string();
             auto tp = entry.last_write_time();
             fileDateLabel->setText(serializeTimePoint(tp, "%d.%m.%Y %H:%M:%S"));
             nameTextItem->setText(fileName);
+            if (std::filesystem::exists(previewPath))
+                previewImageButton->loadImage(previewPath.string());
         }
     }
 

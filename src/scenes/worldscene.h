@@ -68,6 +68,7 @@ namespace scenes
         MovementDirection direction;
         bool wasMoving = false;
         double updateDelta = 0;
+        SDL_Surface *previewSurface = nullptr;
     };
 }
 #endif // WORLDSCENE_H

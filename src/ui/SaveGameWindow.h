@@ -11,12 +11,15 @@ namespace UI
     {
     private:
         std::shared_ptr<UI::ScrollArea> saveGameArea;
+        std::shared_ptr<UI::Button> saveButton;
         bool load;
+        SDL_Surface *previewSurface;
 
     public:
         SaveGameWindow(bool load);
         void updateSaveGames();
         ~SaveGameWindow();
+        void setPreview(SDL_Surface *previewSurface);
     };
 
 } // namespace UI

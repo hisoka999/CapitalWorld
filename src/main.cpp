@@ -185,10 +185,12 @@ int main(int argc, char *argv[])
     catch (SDLException &e)
     {
         std::cerr << "SDL Exception: " << e.what() << std::endl;
+        return 1;
     }
-    // catch (std::exception &e)
-    // {
-    //     std::cerr << "unkown standard exception: " << e.what() << std::endl;
-    // }
+    catch (std::exception &e)
+    {
+        std::cerr << "unkown standard exception: " << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }
