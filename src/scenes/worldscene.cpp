@@ -39,7 +39,7 @@ namespace scenes
         thread = std::make_unique<UpdateThread>(gameState);
         winMgr->addWindow(&buildingWindow);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow);
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow, &researchWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
