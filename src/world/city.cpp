@@ -353,7 +353,7 @@ namespace world
                 usedDirections.push_back(i);
             }
         }
-        std::random_shuffle(usedDirections.begin(), usedDirections.end());
+        std::shuffle(usedDirections.begin(), usedDirections.end(), gen);
 
         for (int i = 1; i <= directions; ++i)
         {

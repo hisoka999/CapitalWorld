@@ -96,7 +96,7 @@ namespace UI
                                std::filesystem::path previewPath(saveGameFile);
                                previewPath.replace_extension(extention);
                                std::cout << "preview path: " << previewPath << std::endl;
-                               IMG_SavePNG(previewSurface, previewPath.c_str());
+                               IMG_SavePNG(previewSurface, previewPath.string().c_str());
                            });
     }
 
