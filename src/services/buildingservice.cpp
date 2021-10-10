@@ -24,16 +24,17 @@ namespace services
         return nullptr;
     }
 
-    std::shared_ptr<world::Building> BuildingService::find(world::BuildingType type)
+    std::vector<std::shared_ptr<world::Building>> BuildingService::find(world::BuildingType type)
     {
+        std::vector<std::shared_ptr<world::Building>> result;
         for (auto &building : getData())
         {
             if (building->getType() == type)
             {
-                return building;
+                result.push_back(building);
             }
         }
-        return nullptr;
+        return result;
     }
 
     std::shared_ptr<world::Building> BuildingService::findByName(const std::string &name)

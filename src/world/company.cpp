@@ -133,6 +133,7 @@ namespace world
         {
             auto b = std::get<std::shared_ptr<utils::JSON::Object>>(val);
             world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(b->getStringValue("type")).value();
+            std::string name = b->getStringValue("name");
             switch (type)
             {
             case world::BuildingType::Street:
@@ -154,7 +155,7 @@ namespace world
             }
             case world::BuildingType::Transport:
             default:
-                auto building = services::BuildingService::Instance().find(type);
+                auto building = services::BuildingService::Instance().findByName(name);
                 company->addBuilding(Building::fromJson(building, b, company.get()));
             }
         }
@@ -182,6 +183,29 @@ namespace world
             }
         }
         return nullptr;
+    }
+
+    std::vector<std::shared_ptr<world::Building>> Company::findAvailableBuildingsByType(world::BuildingType type)
+    {
+        auto buildings = services::BuildingService::Instance().find(type);
+        std::vector<std::shared_ptr<world::Building>> result;
+        for (auto &building : buildings)
+        {
+            bool canBuild = true;
+            for (auto research : availableResearch)
+            {
+                if (research->canEnableObject(building->getName()) && !research->getResearched())
+                {
+                    canBuild = false;
+                    break;
+                }
+            }
+            if (canBuild)
+            {
+                result.push_back(building);
+            }
+        }
+        return result;
     }
     std::vector<std::shared_ptr<Research>> Company::getResearchQueue() const
     {
