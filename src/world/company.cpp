@@ -1,6 +1,7 @@
 #include "company.h"
 #include "services/buildingservice.h"
 #include "services/researchservice.h"
+#include "world/buildings/WorkerComponent.h"
 #include "world/buildings/street.h"
 #include <algorithm>
 #include <magic_enum.hpp>
@@ -229,7 +230,16 @@ namespace world
 
     int Company::getResearchPerMonth()
     {
-        return 42; //TODO
+        int research = 0;
+        for (auto &building : buildings)
+        {
+            if (building->getName() == "ResearchLab" && building->hasComponent("WorkerComponent"))
+            {
+                auto component = building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                research += component->getCurrentWorkers();
+            }
+        }
+        return research;
     }
     void Company::research()
     {

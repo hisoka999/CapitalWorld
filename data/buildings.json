@@ -20,9 +20,9 @@
             "x": 32,
             "y": 16
         },
-        "components": [
-            "TransportComponent"
-        ]
+        "components": {
+            "TransportComponent": null
+        }
     },
     {
         "name": "Farm",
@@ -45,9 +45,9 @@
             "x": 0,
             "y": 0
         },
-        "components": [
-            "StorageComponent"
-        ]
+        "components": {
+            "StorageComponent": null
+        }
     },
     {
         "name": "Factory",
@@ -70,9 +70,9 @@
             "x": 32,
             "y": 16
         },
-        "components": [
-            "StorageComponent"
-        ]
+        "components": {
+            "StorageComponent": null
+        }
     },
     {
         "name": "Shop",
@@ -95,9 +95,37 @@
             "x": 32,
             "y": 32
         },
-        "components": [
-            "SalesComponent",
-            "StorageComponent"
-        ]
+        "components": {
+            "SalesComponent": null,
+            "StorageComponent": null
+        }
+    },
+    {
+        "name": "ResearchLab",
+        "displayName": "Research Lab",
+        "displayName_de": "Forschungslabor",
+        "buildingClass": "Building",
+        "description": "Lab to research technologies.",
+        "description_de": "Labor zur Erforschung neuer Technologien",
+        "type": "Other",
+        "buildCosts": 1000000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 128,
+            "y": 288,
+            "width": 128,
+            "height": 96
+        },
+        "offset": {
+            "x": 32,
+            "y": 32
+        },
+        "components": {
+            "WorkerComponent": {
+                "max_worker": 20,
+                "salary": 10000
+            }
+        }
     }
 ]

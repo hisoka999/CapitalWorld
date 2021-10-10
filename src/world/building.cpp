@@ -1,11 +1,12 @@
 #include "building.h"
-#include <algorithm>
-#include <magic_enum.hpp>
-#include "services/productservice.h"
-#include "buildings/TransportComponent.h"
+#include "buildings/HouseComponent.h"
 #include "buildings/SalesComponent.h"
 #include "buildings/StorageComponent.h"
-#include "buildings/HouseComponent.h"
+#include "buildings/TransportComponent.h"
+#include "buildings/WorkerComponent.h"
+#include "services/productservice.h"
+#include <algorithm>
+#include <magic_enum.hpp>
 
 namespace world
 {
@@ -446,6 +447,7 @@ namespace world
         Building::componentMap["SalesComponent"] = std::make_shared<world::buildings::SalesComponent>();
         Building::componentMap["StorageComponent"] = std::make_shared<world::buildings::StorageComponent>();
         Building::componentMap["HouseComponent"] = std::make_shared<world::buildings::HouseComponent>();
+        Building::componentMap["WorkerComponent"] = std::make_shared<world::buildings::WorkerComponent>();
     }
 
     std::shared_ptr<world::buildings::BuildingComponent> Building::createComponentByName(const std::string &name)

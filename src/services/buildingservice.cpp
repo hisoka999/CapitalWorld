@@ -1,8 +1,8 @@
 #include "buildingservice.h"
 #include "magic_enum.hpp"
+#include "world/buildings/TransportComponent.h"
 #include <algorithm>
 #include <engine/utils/localisation.h>
-#include "world/buildings/TransportComponent.h"
 
 namespace services
 {
@@ -74,10 +74,13 @@ namespace services
         int height = object->getIntValue("block_height");
 
         building = std::make_shared<world::Building>(name, displayName, description, buildCosts, type, width, height);
-        for (auto &componentValue : object->getArray("components"))
+        auto components = object->getObjectValue("components");
+        for (auto &componentName : components->getAttributes())
         {
-            auto componentName = std::get<std::string>(componentValue);
+            auto metaData = components->getObjectValue(componentName);
+            //auto componentName = std::get<std::string>(componentValue);
             auto component = world::Building::createComponentByName(componentName);
+            component->setMetaData(metaData);
             building->addComponent(component);
         }
 

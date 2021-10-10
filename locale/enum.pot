@@ -16,6 +16,9 @@ msgstr ""
 msgid "Transport"
 msgstr ""
 
+msgid "Other"
+msgstr ""
+
 msgid "Village"
 msgstr ""
 

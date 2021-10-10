@@ -8,6 +8,10 @@ namespace world
         {
         }
 
+        void BuildingComponent::setMetaData(std::shared_ptr<utils::JSON::Object> jsonData)
+        {
+        }
+
         BuildingComponent::~BuildingComponent()
         {
         }
