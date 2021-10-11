@@ -22,6 +22,8 @@ namespace world
             virtual std::map<std::string, std::string> displayData();
             virtual void setMetaData(std::shared_ptr<utils::JSON::Object> jsonData);
             int getCurrentWorkers();
+            int getMaxWorkers();
+            void setCurrentWorkers(int workers);
 
         private:
             int currentWorkers = 0;

@@ -7,6 +7,7 @@
 #include <memory>
 #include "../world/buildactions.h"
 #include "world/buildingtypes.h"
+#include "ui/BuildingSelectionWindow.h"
 
 namespace UI
 {
@@ -14,7 +15,7 @@ namespace UI
     class BuildWindow : public UI::Window
     {
     public:
-        BuildWindow(int x, int y);
+        BuildWindow(int x, int y, UI::BuildingSelectionWindow *buildingSelectionWindow);
         ~BuildWindow();
         virtual void render(core::Renderer *pRender);
         virtual void handleEvents(core::Input *pInput);
@@ -32,6 +33,7 @@ namespace UI
         world::BuildAction currentAction;
         world::BuildingType currentBuildingType;
         SDL_Cursor *cursor;
+        UI::BuildingSelectionWindow *buildingSelectionWindow;
     };
 
 }

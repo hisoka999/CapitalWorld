@@ -1,6 +1,8 @@
 #include "BuildingSelectionComponent.h"
 #include <engine/ui/ImageButton.h>
 #include <engine/ui/Label.h>
+#include <engine/graphics/TextureManager.h>
+#include <engine/utils/os.h>
 
 namespace UI
 {
@@ -29,17 +31,20 @@ namespace UI
     {
         auto srcRect = building->getSourceRect();
         std::shared_ptr<UI::ImageButton> buildingImage = std::make_shared<UI::ImageButton>(this, srcRect.width, srcRect.height, srcRect.x, srcRect.y);
+        auto textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
+
         buildingImage->setPos(5, 5);
+        buildingImage->setImage(textureMap->getTexture());
         addObject(buildingImage);
         auto nameLabel = std::make_shared<UI::Label>(building->getDisplayName(), this);
         nameLabel->setFont("fonts/arial.ttf", 14);
-        nameLabel->setPos(110, 10);
+        nameLabel->setPos(150, 10);
         addObject(nameLabel);
 
         auto costsLabel = std::make_shared<UI::Label>(this);
         costsLabel->setFont("fonts/arial.ttf", 12);
-        costsLabel->setTextF("Price: %.2f", building->getBuildPrice());
-        costsLabel->setPos(110, 30);
+        costsLabel->setTextF("Price: %d €", building->getBuildPrice());
+        costsLabel->setPos(150, 30);
         addObject(costsLabel);
     }
 }

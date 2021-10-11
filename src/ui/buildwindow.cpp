@@ -6,8 +6,8 @@
 #include "../translate.h"
 namespace UI
 {
-    BuildWindow::BuildWindow(int x, int y)
-        : UI::Window(x, y, 180, 300), cursor(nullptr)
+    BuildWindow::BuildWindow(int x, int y, UI::BuildingSelectionWindow *buildingSelectionWindow)
+        : UI::Window(x, y, 180, 320), cursor(nullptr), buildingSelectionWindow(buildingSelectionWindow)
     {
         setCurrentAction(world::BuildAction::None);
         backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "BuildMenu.png"));
@@ -43,6 +43,8 @@ namespace UI
                             {
                                 setCurrentAction(world::BuildAction::Build);
                                 currentBuildingType = world::BuildingType::Farm;
+                                buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                buildingSelectionWindow->setVisible(true);
                             });
         addObject(farmButton);
 
@@ -60,6 +62,8 @@ namespace UI
                                {
                                    setCurrentAction(world::BuildAction::Build);
                                    currentBuildingType = world::BuildingType::Factory;
+                                   buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                   buildingSelectionWindow->setVisible(true);
                                });
         yPos += offset;
 
@@ -76,6 +80,8 @@ namespace UI
                             {
                                 setCurrentAction(world::BuildAction::Build);
                                 currentBuildingType = world::BuildingType::Shop;
+                                buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                buildingSelectionWindow->setVisible(true);
                             });
 
         addObject(shopButton);
@@ -93,10 +99,30 @@ namespace UI
                                  {
                                      setCurrentAction(world::BuildAction::Build);
                                      currentBuildingType = world::BuildingType::Transport;
+                                     buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                     buildingSelectionWindow->setVisible(true);
                                  });
 
         addObject(transportButton);
+        yPos += offset;
 
+        auto otherButton = std::make_shared<UI::IconButton>(this);
+        otherButton->setIconText("\uf0d1");
+        otherButton->setPos(xPos, yPos);
+        otherButton->setLabel(_("Other"));
+        //transportButton->setClickColor(clickColor);
+        otherButton->setHoverColor(hoverColor);
+        otherButton->setColor(defaultColor);
+        otherButton->setStaticWidth(120);
+        otherButton->connect("buttonClick", [&]()
+                             {
+                                 setCurrentAction(world::BuildAction::Build);
+                                 currentBuildingType = world::BuildingType::Other;
+                                 buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                 buildingSelectionWindow->setVisible(true);
+                             });
+
+        addObject(otherButton);
         yPos += offset;
 
         auto streetButton = std::make_shared<UI::IconButton>(this);

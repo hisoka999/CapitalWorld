@@ -17,6 +17,7 @@
 #include <engine/core/SceneManager.h>
 #include <map>
 #include <world/gamemap.h>
+#include "ui/BuildingSelectionWindow.h"
 
 namespace scenes
 {
@@ -59,11 +60,12 @@ namespace scenes
         utils::Vector2 cursorPosition;
         graphics::Rect cursorBuildingRect;
         UI::BuildWindow buildWindow;
-        UI::OptionsWindow optionsWindow;
         UI::ResearchWindow researchWindow;
         std::shared_ptr<world::GameState> gameState;
+        UI::OptionsWindow optionsWindow;
         std::unique_ptr<UpdateThread> thread;
         UI::BuildingWindow buildingWindow;
+        UI::BuildingSelectionWindow buildingSelectionWindow;
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
         bool wasMoving = false;

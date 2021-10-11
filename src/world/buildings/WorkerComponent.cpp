@@ -21,14 +21,17 @@ namespace world
 
         void WorkerComponent::updateProduction(int month, int year, Building *building)
         {
-            int costs = salary * maxWorkers;
+            int costs = salary * currentWorkers;
             if (costs > 0)
                 building->addCosts(month, year, "", world::BalanceAccount::Production, costs);
         }
 
         std::shared_ptr<BuildingComponent> WorkerComponent::clone()
         {
-            return std::make_shared<WorkerComponent>();
+            auto component = std::make_shared<WorkerComponent>();
+            component->salary = salary;
+            component->maxWorkers = maxWorkers;
+            return component;
         }
 
         std::shared_ptr<utils::JSON::Object> WorkerComponent::toJson()
@@ -52,6 +55,16 @@ namespace world
         int WorkerComponent::getCurrentWorkers()
         {
             return currentWorkers;
+        }
+
+        int WorkerComponent::getMaxWorkers()
+        {
+            return maxWorkers;
+        }
+
+        void WorkerComponent::setCurrentWorkers(int workers)
+        {
+            currentWorkers = workers;
         }
     }
 }

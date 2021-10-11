@@ -31,6 +31,7 @@ namespace UI
         std::shared_ptr<UI::Tab> productionTab;
         std::shared_ptr<UI::Tab> storageTab;
         std::shared_ptr<UI::Tab> infoTab;
+        std::shared_ptr<UI::Tab> workerTab;
         std::shared_ptr<UI::layout::Layout> layout;
         std::vector<std::shared_ptr<UI::Object>> optionalItems;
     };

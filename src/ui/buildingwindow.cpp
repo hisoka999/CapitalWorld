@@ -9,6 +9,7 @@
 #include "ui/storagetab.h"
 #include "ui/SalesTab.h"
 #include "translate.h"
+#include "ui/WorkerTab.h"
 
 namespace UI
 {
@@ -78,9 +79,11 @@ namespace UI
 
             tabBar->removeTab(productionTab);
             tabBar->removeTab(storageTab);
+            tabBar->removeTab(workerTab);
             //recreate tab based on Building type
             productionTab = nullptr;
             storageTab = nullptr;
+            workerTab = nullptr;
             switch (building->getType())
             {
             case world::BuildingType::Farm:
@@ -104,6 +107,12 @@ namespace UI
                     storageTab = std::make_shared<UI::StorageTab>(tabBar.get(), building);
                     tabBar->addTab(storageTab);
                 }
+            }
+
+            if (building->hasComponent("WorkerComponent"))
+            {
+                workerTab = std::make_shared<UI::WorkerTab>(tabBar.get(), building);
+                tabBar->addTab(workerTab);
             }
 
             for (auto data : building->displayData())
