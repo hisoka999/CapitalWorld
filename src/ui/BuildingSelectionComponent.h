@@ -16,6 +16,7 @@ namespace UI
     private:
         void initUI();
         std::shared_ptr<world::Building> building;
+        bool selected = false;
     };
 
 };

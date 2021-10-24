@@ -46,7 +46,11 @@
             "y": 0
         },
         "components": {
-            "StorageComponent": null
+            "StorageComponent": null,
+            "WorkerComponent": {
+                "max_worker": 5,
+                "salary": 1500
+            }
         }
     },
     {

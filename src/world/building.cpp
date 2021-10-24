@@ -452,7 +452,7 @@ namespace world
 
     std::shared_ptr<world::buildings::BuildingComponent> Building::createComponentByName(const std::string &name)
     {
-        return Building::componentMap.at(name);
+        return Building::componentMap.at(name)->clone();
     }
 
     void Building::delayedUpdate(Company *company)

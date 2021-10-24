@@ -1,5 +1,6 @@
 #include "BuildingSelectionWindow.h"
 #include "BuildingSelectionComponent.h"
+#include "translate.h"
 namespace UI
 {
     void BuildingSelectionWindow::initUI()
@@ -17,11 +18,23 @@ namespace UI
             scrollArea->addObject(comp);
         }
         scrollArea->reset(false);
+
+        scrollArea->connect("selectItem", [&](int selection)
+                            {
+                                auto buildings = company->findAvailableBuildingsByType(buildingType);
+
+                                auto building = buildings.at(selection);
+                                auto component = std::dynamic_pointer_cast<UI::BuildingSelectionComponent>(scrollArea->get(selection));
+
+                                std::cout << "selected building: " << building->getDisplayName() << std::endl;
+                                setVisible(false);
+                            });
     }
 
-    BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 260, 400), company(company)
+    BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 300, 400), company(company)
     {
-        scrollArea = std::make_shared<UI::ScrollArea>(240, 380, this);
+        setTitle(_("select a building"));
+        scrollArea = std::make_shared<UI::ScrollArea>(280, 380, this);
         addObject(scrollArea);
     }
 
