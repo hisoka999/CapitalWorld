@@ -13,15 +13,20 @@ namespace services
         {
             if (building->getType() == type)
             {
-                index++;
-                std::shared_ptr<world::Building> clone;
-                clone = std::make_shared<world::Building>(*building);
-
-                clone->setDisplayName(building->getDisplayName() + " " + std::to_string(index));
-                return clone;
+                return create(building);
             }
         }
         return nullptr;
+    }
+
+    std::shared_ptr<world::Building> BuildingService::create(std::shared_ptr<world::Building> original)
+    {
+        index++;
+        std::shared_ptr<world::Building> clone;
+        clone = std::make_shared<world::Building>(*original);
+
+        clone->setDisplayName(original->getDisplayName() + " " + std::to_string(index));
+        return clone;
     }
 
     std::vector<std::shared_ptr<world::Building>> BuildingService::find(world::BuildingType type)

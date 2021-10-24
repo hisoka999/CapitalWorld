@@ -44,63 +44,19 @@ namespace scenes
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
         winMgr->addWindow(&buildingSelectionWindow);
+        buildingSelectionWindow.connect("buildingSelectionChanged", [&](std::shared_ptr<world::Building> building)
+                                        { selectedBuilding2Build = building; });
         optionsWindow.setGameState(gameState);
         optionsWindow.connect("stateChanged", [&](std::shared_ptr<world::GameState> state)
                               {
-                                  auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
-                                  core::SceneManager::Instance().changeScene("world", starMapScene);
+                                  auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
+                                  core::SceneManager::Instance().changeScene("world", worldScene);
                               });
     }
     WorldScene::~WorldScene()
     {
 
         thread->stop();
-    }
-    std::shared_ptr<world::Building> WorldScene::createBuilding(world::BuildingType type)
-    {
-        std::shared_ptr<world::Building> building = nullptr;
-        graphics::Rect rect;
-        rect.width = static_cast<float>(mapRenderer->getTileWidth());
-        rect.height = static_cast<float>(mapRenderer->getTileHeight());
-        int nextIndex = gameState->getPlayer()->getMaxBuildingIndex() + 1;
-        std::string index = std::to_string(nextIndex);
-        switch (type)
-        {
-
-        case world::BuildingType::Street:
-            building = std::make_shared<world::buildings::Street>();
-            rect.x = 0;
-            rect.y = 128;
-            building->setOffset(0, 0);
-            building->setSourceRect(rect);
-            break;
-        default:
-            building = services::BuildingService::Instance().create(type);
-        }
-        return building;
-    }
-
-    std::shared_ptr<world::Building> WorldScene::findBuilding(world::BuildingType type)
-    {
-        std::shared_ptr<world::Building> building = nullptr;
-        graphics::Rect rect;
-        rect.width = static_cast<float>(mapRenderer->getTileWidth());
-        rect.height = static_cast<float>(mapRenderer->getTileHeight());
-
-        switch (type)
-        {
-
-        case world::BuildingType::Street:
-            building = std::make_shared<world::buildings::Street>();
-            rect.x = 0;
-            rect.y = 128;
-            building->setOffset(0, 0);
-            building->setSourceRect(rect);
-            break;
-        default:
-            building = services::BuildingService::Instance().find(type).at(0);
-        }
-        return building;
     }
 
     void WorldScene::renderHUD()
@@ -126,6 +82,30 @@ namespace scenes
         miniMap->renderResized(renderer, renderer->getViewPort().width - miniMapSize, height, miniMapSize, miniMapSize);
 
         buildWindow.render(renderer);
+    }
+
+    std::shared_ptr<world::Building> WorldScene::createBuilding()
+    {
+        std::shared_ptr<world::Building> building = nullptr;
+        graphics::Rect rect;
+        rect.width = static_cast<float>(mapRenderer->getTileWidth());
+        rect.height = static_cast<float>(mapRenderer->getTileHeight());
+        int nextIndex = gameState->getPlayer()->getMaxBuildingIndex() + 1;
+        std::string index = std::to_string(nextIndex);
+        switch (selectedBuilding2Build->getType())
+        {
+
+        case world::BuildingType::Street:
+            building = std::make_shared<world::buildings::Street>();
+            rect.x = 0;
+            rect.y = 128;
+            building->setOffset(0, 0);
+            building->setSourceRect(rect);
+            break;
+        default:
+            building = services::BuildingService::Instance().create(selectedBuilding2Build);
+        }
+        return building;
     }
 
     void WorldScene::render()
@@ -225,7 +205,7 @@ namespace scenes
                 }
                 else if (action == world::BuildAction::Build)
                 {
-                    auto building = createBuilding(buildWindow.getCurrentBuildingType());
+                    auto building = createBuilding();
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
                     if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
@@ -261,6 +241,7 @@ namespace scenes
             else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
             {
                 buildWindow.setCurrentAction(world::BuildAction::None);
+                buildingSelectionWindow.setSelectedBuilding(nullptr);
             }
             if (pInput->isScrollWheel())
             {
@@ -297,7 +278,7 @@ namespace scenes
                 cursorPosition = utils::Vector2(x, y);
                 //std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
-                auto building = (buildWindow.getCurrentAction() == world::BuildAction::Build) ? findBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
+                auto building = selectedBuilding2Build; // (buildWindow.getCurrentAction() == world::BuildAction::Build) ? findBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
                 if (building != nullptr)
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 

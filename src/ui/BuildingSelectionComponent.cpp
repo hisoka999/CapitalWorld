@@ -1,13 +1,14 @@
 #include "BuildingSelectionComponent.h"
+#include "world/company.h"
+#include <engine/graphics/TextureManager.h>
 #include <engine/ui/ImageButton.h>
 #include <engine/ui/Label.h>
-#include <engine/graphics/TextureManager.h>
+#include <engine/utils/color.h>
 #include <engine/utils/os.h>
-
 namespace UI
 {
-    BuildingSelectionComponent::BuildingSelectionComponent(UI::Object *parent, std::shared_ptr<world::Building> &building)
-        : UI::Container(), UI::Object(parent), building(building)
+    BuildingSelectionComponent::BuildingSelectionComponent(UI::Object *parent, std::shared_ptr<world::Building> &building, const std::shared_ptr<world::Company> &company)
+        : UI::Container(), UI::Object(parent), building(building), company(company)
     {
         initUI();
         setWidth(270);
@@ -58,6 +59,14 @@ namespace UI
         costsLabel->setFont("fonts/arial.ttf", 12);
         costsLabel->setTextF("Price: %d €", building->getBuildPrice());
         costsLabel->setPos(140, 30);
+        if (building->canBuild(company->getCash()))
+        {
+            costsLabel->setColor(utils::color::GREEN);
+        }
+        else
+        {
+            costsLabel->setColor(utils::color::RED);
+        }
         addObject(costsLabel);
     }
 }

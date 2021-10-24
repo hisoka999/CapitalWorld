@@ -1,13 +1,14 @@
 #include "buildwindow.h"
-#include <engine/graphics/TextureManager.h>
-#include <engine/utils/os.h>
-#include <engine/ui/iconbutton.h>
-#include <iostream>
 #include "../translate.h"
+#include "world/buildings/street.h"
+#include <engine/graphics/TextureManager.h>
+#include <engine/ui/iconbutton.h>
+#include <engine/utils/os.h>
+#include <iostream>
 namespace UI
 {
     BuildWindow::BuildWindow(int x, int y, UI::BuildingSelectionWindow *buildingSelectionWindow)
-        : UI::Window(x, y, 180, 320), cursor(nullptr), buildingSelectionWindow(buildingSelectionWindow)
+        : UI::Window(x, y, 180, 320), cursor(nullptr), buildingSelectionWindow(buildingSelectionWindow), selectedBuilding(nullptr)
     {
         setCurrentAction(world::BuildAction::None);
         backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "BuildMenu.png"));
@@ -43,7 +44,7 @@ namespace UI
                             {
                                 setCurrentAction(world::BuildAction::Build);
                                 currentBuildingType = world::BuildingType::Farm;
-                                buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                buildingSelectionWindow->setBuildingType(currentBuildingType);
                                 buildingSelectionWindow->setVisible(true);
                             });
         addObject(farmButton);
@@ -62,7 +63,7 @@ namespace UI
                                {
                                    setCurrentAction(world::BuildAction::Build);
                                    currentBuildingType = world::BuildingType::Factory;
-                                   buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                   buildingSelectionWindow->setBuildingType(currentBuildingType);
                                    buildingSelectionWindow->setVisible(true);
                                });
         yPos += offset;
@@ -80,7 +81,7 @@ namespace UI
                             {
                                 setCurrentAction(world::BuildAction::Build);
                                 currentBuildingType = world::BuildingType::Shop;
-                                buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                buildingSelectionWindow->setBuildingType(currentBuildingType);
                                 buildingSelectionWindow->setVisible(true);
                             });
 
@@ -99,7 +100,7 @@ namespace UI
                                  {
                                      setCurrentAction(world::BuildAction::Build);
                                      currentBuildingType = world::BuildingType::Transport;
-                                     buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                     buildingSelectionWindow->setBuildingType(currentBuildingType);
                                      buildingSelectionWindow->setVisible(true);
                                  });
 
@@ -118,7 +119,7 @@ namespace UI
                              {
                                  setCurrentAction(world::BuildAction::Build);
                                  currentBuildingType = world::BuildingType::Other;
-                                 buildingSelectionWindow->setBuildingType(getCurrentBuildingType());
+                                 buildingSelectionWindow->setBuildingType(currentBuildingType);
                                  buildingSelectionWindow->setVisible(true);
                              });
 
@@ -139,6 +140,9 @@ namespace UI
                               {
                                   setCurrentAction(world::BuildAction::Build);
                                   currentBuildingType = world::BuildingType::Street;
+                                  auto building = std::make_shared<world::buildings::Street>();
+                                  buildingSelectionWindow->setSelectedBuilding(building);
+                                  buildingSelectionWindow->setVisible(false);
                               });
 
         yPos += offset;
@@ -153,7 +157,11 @@ namespace UI
         destroyButton->setStaticWidth(120);
         addObject(destroyButton);
         destroyButton->connect("buttonClick", [&]()
-                               { setCurrentAction(world::BuildAction::Destroy); });
+                               {
+                                   setCurrentAction(world::BuildAction::Destroy);
+                                   buildingSelectionWindow->setSelectedBuilding(nullptr);
+                                   buildingSelectionWindow->setVisible(false);
+                               });
     }
 
     void BuildWindow::render(core::Renderer *pRender)
@@ -164,11 +172,6 @@ namespace UI
     void BuildWindow::handleEvents(core::Input *pInput)
     {
         UI::Window::handleEvents(pInput);
-    }
-
-    world::BuildingType BuildWindow::getCurrentBuildingType()
-    {
-        return currentBuildingType;
     }
 
     void BuildWindow::setCurrentAction(world::BuildAction action)
@@ -191,6 +194,11 @@ namespace UI
             break;
         }
         SDL_SetCursor(cursor);
+    }
+
+    std::shared_ptr<world::Building> BuildWindow::getSelectedBuilding()
+    {
+        return selectedBuilding;
     }
 
 }

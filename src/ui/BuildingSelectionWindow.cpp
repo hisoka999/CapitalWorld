@@ -12,7 +12,7 @@ namespace UI
 
         for (auto &building : buildings)
         {
-            auto comp = std::make_shared<UI::BuildingSelectionComponent>(scrollArea.get(), building);
+            auto comp = std::make_shared<UI::BuildingSelectionComponent>(scrollArea.get(), building, company);
             comp->setPos(0, yPos);
             yPos += 110;
             scrollArea->addObject(comp);
@@ -23,10 +23,10 @@ namespace UI
                             {
                                 auto buildings = company->findAvailableBuildingsByType(buildingType);
 
-                                auto building = buildings.at(selection);
+                                selectedBuilding = buildings.at(selection);
+                                this->fireFuncionCall("buildingSelectionChanged", selectedBuilding);
                                 auto component = std::dynamic_pointer_cast<UI::BuildingSelectionComponent>(scrollArea->get(selection));
-
-                                std::cout << "selected building: " << building->getDisplayName() << std::endl;
+                                std::cout << "selected building: " << selectedBuilding->getDisplayName() << std::endl;
                                 setVisible(false);
                             });
     }
@@ -36,6 +36,7 @@ namespace UI
         setTitle(_("select a building"));
         scrollArea = std::make_shared<UI::ScrollArea>(280, 380, this);
         addObject(scrollArea);
+        selectedBuilding = nullptr;
     }
 
     BuildingSelectionWindow::~BuildingSelectionWindow()
@@ -46,5 +47,16 @@ namespace UI
     {
         this->buildingType = buildingType;
         initUI();
+    }
+
+    std::shared_ptr<world::Building> BuildingSelectionWindow::getSelectedBuilding()
+    {
+        return selectedBuilding;
+    }
+
+    void BuildingSelectionWindow::setSelectedBuilding(std::shared_ptr<world::Building> building)
+    {
+        selectedBuilding = building;
+        this->fireFuncionCall("buildingSelectionChanged", selectedBuilding);
     }
 }

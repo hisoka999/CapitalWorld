@@ -13,12 +13,15 @@ namespace UI
         std::shared_ptr<UI::ScrollArea> scrollArea;
         world::BuildingType buildingType;
         std::shared_ptr<world::Company> company;
+        std::shared_ptr<world::Building> selectedBuilding;
         void initUI();
 
     public:
         BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company);
         ~BuildingSelectionWindow();
         void setBuildingType(world::BuildingType buildingType);
+        std::shared_ptr<world::Building> getSelectedBuilding();
+        void setSelectedBuilding(std::shared_ptr<world::Building> building);
     };
 
 };

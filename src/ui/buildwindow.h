@@ -3,11 +3,11 @@
 
 #include <engine/ui/Window.h>
 
+#include "../world/buildactions.h"
+#include "ui/BuildingSelectionWindow.h"
+#include "world/buildingtypes.h"
 #include <engine/graphics/texture.h>
 #include <memory>
-#include "../world/buildactions.h"
-#include "world/buildingtypes.h"
-#include "ui/BuildingSelectionWindow.h"
 
 namespace UI
 {
@@ -24,8 +24,8 @@ namespace UI
         {
             return currentAction;
         }
-        world::BuildingType getCurrentBuildingType();
         void setCurrentAction(world::BuildAction action);
+        std::shared_ptr<world::Building> getSelectedBuilding();
 
     private:
         void initUI();
@@ -34,6 +34,7 @@ namespace UI
         world::BuildingType currentBuildingType;
         SDL_Cursor *cursor;
         UI::BuildingSelectionWindow *buildingSelectionWindow;
+        std::shared_ptr<world::Building> selectedBuilding;
     };
 
 }

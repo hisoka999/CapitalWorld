@@ -1,6 +1,7 @@
 #ifndef WORLDSCENE_H
 #define WORLDSCENE_H
 
+#include "ui/BuildingSelectionWindow.h"
 #include "ui/buildingwindow.h"
 #include "ui/buildwindow.h"
 #include "ui/hudcontainer.h"
@@ -17,7 +18,6 @@
 #include <engine/core/SceneManager.h>
 #include <map>
 #include <world/gamemap.h>
-#include "ui/BuildingSelectionWindow.h"
 
 namespace scenes
 {
@@ -48,8 +48,8 @@ namespace scenes
 
     private:
         void renderHUD();
-        std::shared_ptr<world::Building> createBuilding(world::BuildingType type);
-        std::shared_ptr<world::Building> findBuilding(world::BuildingType type);
+        std::shared_ptr<world::Building> createBuilding();
+
         graphics::Texture uiTexture;
         core::SceneManager *sceneManager;
 
@@ -71,6 +71,7 @@ namespace scenes
         bool wasMoving = false;
         double updateDelta = 0;
         SDL_Surface *previewSurface = nullptr;
+        std::shared_ptr<world::Building> selectedBuilding2Build;
     };
 }
 #endif // WORLDSCENE_H
