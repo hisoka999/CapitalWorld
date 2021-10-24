@@ -18,6 +18,7 @@ namespace world
 
         public:
             BuildingComponent(const std::string &name);
+            virtual void setMetaData(std::shared_ptr<utils::JSON::Object> jsonData);
             ~BuildingComponent();
             virtual std::shared_ptr<utils::JSON::Object> toJson();
             virtual void fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company);

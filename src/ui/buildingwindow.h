@@ -1,12 +1,12 @@
 #ifndef BUILDINGWINDOW_H
 #define BUILDINGWINDOW_H
 
-#include <engine/ui/Window.h>
-#include <engine/ui/TabBar.h>
 #include "../world/building.h"
 #include "../world/company.h"
-#include <engine/ui/Label.h>
 #include "../world/gamemap.h"
+#include <engine/ui/Label.h>
+#include <engine/ui/TabBar.h>
+#include <engine/ui/Window.h>
 #include <engine/ui/layout/Layout.h>
 
 class GameMap;
@@ -31,6 +31,7 @@ namespace UI
         std::shared_ptr<UI::Tab> productionTab;
         std::shared_ptr<UI::Tab> storageTab;
         std::shared_ptr<UI::Tab> infoTab;
+        std::shared_ptr<UI::Tab> workerTab;
         std::shared_ptr<UI::layout::Layout> layout;
         std::vector<std::shared_ptr<UI::Object>> optionalItems;
     };

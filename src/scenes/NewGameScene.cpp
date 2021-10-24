@@ -1,17 +1,18 @@
 #include "NewGameScene.h"
-#include <magic_enum.hpp>
+#include "../translate.h"
+#include "scenes/worldscene.h"
+#include "services/researchservice.h"
+#include "world/mapgenerator.h"
 #include <engine/core/SceneManager.h>
 #include <engine/graphics/TextureManager.h>
-#include <engine/ui/TextItem.h>
 #include <engine/ui/ComboBox.h>
-#include "../translate.h"
+#include <engine/ui/TextItem.h>
+#include <magic_enum.hpp>
 #include <string>
-#include "scenes/worldscene.h"
-#include "world/mapgenerator.h"
 
-#include <random>
 #include <engine/ui/layout/GridLayout.h>
 #include <engine/utils/color.h>
+#include <random>
 
 namespace scenes
 {
@@ -268,10 +269,11 @@ namespace scenes
         auto gameMap = gen.generateMap(size, size, numberOfCities, cityName, seed);
         auto cities = gen.getGeneratedCities();
         auto player = std::make_shared<world::Company>(playerName, 1000000, true);
+        player->setAvailableResearch(services::ResearchService::Instance().getData());
         auto gameState = std::make_shared<world::GameState>(player, gameMap, cities, difficulty);
 
-        auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
-        sceneManager->addScene("world", starMapScene);
+        auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
+        sceneManager->addScene("world", worldScene);
         sceneManager->setCurrentScene("world");
     }
 } // namespace scenes

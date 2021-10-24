@@ -1,8 +1,8 @@
 #include "buildingservice.h"
 #include "magic_enum.hpp"
+#include "world/buildings/TransportComponent.h"
 #include <algorithm>
 #include <engine/utils/localisation.h>
-#include "world/buildings/TransportComponent.h"
 
 namespace services
 {
@@ -13,27 +13,33 @@ namespace services
         {
             if (building->getType() == type)
             {
-                index++;
-                std::shared_ptr<world::Building> clone;
-                clone = std::make_shared<world::Building>(*building);
-
-                clone->setDisplayName(building->getDisplayName() + " " + std::to_string(index));
-                return clone;
+                return create(building);
             }
         }
         return nullptr;
     }
 
-    std::shared_ptr<world::Building> BuildingService::find(world::BuildingType type)
+    std::shared_ptr<world::Building> BuildingService::create(std::shared_ptr<world::Building> original)
     {
+        index++;
+        std::shared_ptr<world::Building> clone;
+        clone = std::make_shared<world::Building>(*original);
+
+        clone->setDisplayName(original->getDisplayName() + " " + std::to_string(index));
+        return clone;
+    }
+
+    std::vector<std::shared_ptr<world::Building>> BuildingService::find(world::BuildingType type)
+    {
+        std::vector<std::shared_ptr<world::Building>> result;
         for (auto &building : getData())
         {
             if (building->getType() == type)
             {
-                return building;
+                result.push_back(building);
             }
         }
-        return nullptr;
+        return result;
     }
 
     std::shared_ptr<world::Building> BuildingService::findByName(const std::string &name)
@@ -74,10 +80,13 @@ namespace services
         int height = object->getIntValue("block_height");
 
         building = std::make_shared<world::Building>(name, displayName, description, buildCosts, type, width, height);
-        for (auto &componentValue : object->getArray("components"))
+        auto components = object->getObjectValue("components");
+        for (auto &componentName : components->getAttributes())
         {
-            auto componentName = std::get<std::string>(componentValue);
+            auto metaData = components->getObjectValue(componentName);
+            //auto componentName = std::get<std::string>(componentValue);
             auto component = world::Building::createComponentByName(componentName);
+            component->setMetaData(metaData);
             building->addComponent(component);
         }
 

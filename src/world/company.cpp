@@ -1,8 +1,11 @@
 #include "company.h"
-#include <algorithm>
 #include "services/buildingservice.h"
-#include <magic_enum.hpp>
+#include "services/researchservice.h"
+#include "world/buildings/WorkerComponent.h"
 #include "world/buildings/street.h"
+#include <algorithm>
+#include <magic_enum.hpp>
+
 namespace world
 {
 
@@ -78,6 +81,7 @@ namespace world
             income += building->getIncomePerMonth(month, year);
         }
         incCash(income - costs);
+        research();
     }
 
     std::vector<std::shared_ptr<Building>> Company::findProductionBuildings()
@@ -129,6 +133,7 @@ namespace world
         {
             auto b = std::get<std::shared_ptr<utils::JSON::Object>>(val);
             world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(b->getStringValue("type")).value();
+            std::string name = b->getStringValue("name");
             switch (type)
             {
             case world::BuildingType::Street:
@@ -150,7 +155,7 @@ namespace world
             }
             case world::BuildingType::Transport:
             default:
-                auto building = services::BuildingService::Instance().find(type);
+                auto building = services::BuildingService::Instance().findByName(name);
                 company->addBuilding(Building::fromJson(building, b, company.get()));
             }
         }
@@ -178,6 +183,100 @@ namespace world
             }
         }
         return nullptr;
+    }
+
+    std::vector<std::shared_ptr<world::Building>> Company::findAvailableBuildingsByType(world::BuildingType type)
+    {
+        auto buildings = services::BuildingService::Instance().find(type);
+        std::vector<std::shared_ptr<world::Building>> result;
+        for (auto &building : buildings)
+        {
+            bool canBuild = true;
+            for (auto research : availableResearch)
+            {
+                if (research->canEnableObject(building->getName()) && !research->getResearched())
+                {
+                    canBuild = false;
+                    break;
+                }
+            }
+            if (canBuild)
+            {
+                result.push_back(building);
+            }
+        }
+        return result;
+    }
+    std::vector<std::shared_ptr<Research>> Company::getResearchQueue() const
+    {
+        return researchQueue;
+    }
+
+    void Company::addResearchToQueue(const std::shared_ptr<Research> &research)
+    {
+        auto found = std::find(researchQueue.begin(), researchQueue.end(), research);
+        if (found == std::end(researchQueue))
+        {
+            researchQueue.push_back(research);
+        }
+    }
+
+    std::vector<std::shared_ptr<Research>> &Company::getAvailableResearch()
+    {
+        return availableResearch;
+    }
+
+    void Company::setAvailableResearch(const std::vector<std::shared_ptr<Research>> &list)
+    {
+        this->availableResearch.clear();
+        for (auto &research : list)
+        {
+            this->availableResearch.push_back(std::make_shared<Research>(*research));
+        }
+
+        for (auto &research : availableResearch)
+        {
+
+            auto names = research->getRequirementNames();
+            for (auto name : names)
+            {
+                for (auto &sub : availableResearch)
+                {
+                    if (sub->getName() == name)
+                    {
+                        research->addRequirement(sub);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    int Company::getResearchPerMonth()
+    {
+        int research = 0;
+        for (auto &building : buildings)
+        {
+            if (building->getName() == "ResearchLab" && building->hasComponent("WorkerComponent"))
+            {
+                auto component = building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                research += component->getCurrentWorkers();
+            }
+        }
+        return research;
+    }
+    void Company::research()
+    {
+        if (researchQueue.size() == 0)
+            return;
+
+        auto &currentResearch = researchQueue.front();
+
+        currentResearch->reduceCosts(getResearchPerMonth());
+        if (currentResearch->getResearched())
+        {
+            researchQueue.erase(researchQueue.begin());
+        }
     }
 
 }

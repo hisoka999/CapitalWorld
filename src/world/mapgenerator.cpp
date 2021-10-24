@@ -1,11 +1,11 @@
 #include "mapgenerator.h"
-#include <engine/utils/perlinnoise.h>
-#include <iostream>
-#include <random>
-#include <fstream>
-#include <engine/utils/string.h>
 #include "magic_enum.hpp"
 #include <algorithm>
+#include <engine/utils/perlinnoise.h>
+#include <engine/utils/string.h>
+#include <fstream>
+#include <iostream>
+#include <random>
 
 namespace world
 {
@@ -65,9 +65,9 @@ namespace world
 
         utils::PerlinNoise pn(seed);
         std::mt19937 gen(seed);
-        std::random_shuffle(definitions.begin(), definitions.end());
+        std::shuffle(definitions.begin(), definitions.end(), gen);
         std::uniform_int_distribution<int> dist(-10, 20);
-        std::uniform_int_distribution<int> decoration(int(Decoration::none), int(Decoration::mountain));
+        std::uniform_int_distribution<int> decoration(static_cast<int>(Decoration::none), static_cast<int>(Decoration::mountain));
         std::vector<TileType> mapData;
         std::vector<TileType> mapDecoration;
         mapData.resize(width * height);

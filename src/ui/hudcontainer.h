@@ -1,7 +1,8 @@
 #pragma once
-#include <engine/ui/Container.h>
 #include "../world/updatethread.h"
 #include "buildwindow.h"
+#include "researchwindow.h"
+#include <engine/ui/Container.h>
 
 namespace UI
 {
@@ -14,7 +15,7 @@ namespace UI
     class HUDContainer : public UI::Container
     {
     public:
-        HUDContainer(UpdateThread *updateThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow);
+        HUDContainer(UpdateThread *updateThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow);
 
         virtual void render(core::Renderer *renderer);
         void update();
@@ -30,9 +31,11 @@ namespace UI
         std::shared_ptr<UI::IconButton> cashButton;
         std::shared_ptr<UI::IconButton> profitButton;
         std::shared_ptr<UI::IconButton> buildButton;
+        std::shared_ptr<UI::IconButton> researchButton;
 
         UpdateThread *updateThread;
         std::shared_ptr<world::GameState> gameState;
         UI::BuildWindow *buildWindow;
+        UI::ResearchWindow *researchWindow;
     };
 };

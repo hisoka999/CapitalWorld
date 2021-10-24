@@ -1,11 +1,11 @@
 #ifndef __OPTIONSWINDOW_H__
 #define __OPTIONSWINDOW_H__
 
-#include <engine/ui/Window.h>
-#include <engine/ui/scrollarea.h>
+#include "SaveGameWindow.h"
 #include "ui/SettingsWindow.h"
 #include "world/gamestate.h"
-#include "SaveGameWindow.h"
+#include <engine/ui/Window.h>
+#include <engine/ui/scrollarea.h>
 namespace UI
 {
     class OptionsWindow : public UI::Window
@@ -20,6 +20,7 @@ namespace UI
         virtual void handleEvents(core::Input *pInput);
         void setGameState(const std::shared_ptr<world::GameState> &gameState);
         const std::shared_ptr<world::GameState> &getGameState();
+        void setPreview(SDL_Surface *previewSurface);
 
     private:
         void saveGame();
@@ -29,6 +30,7 @@ namespace UI
         std::shared_ptr<world::GameState> gameState;
         UI::SaveGameWindow saveWindow;
         UI::SaveGameWindow loadWindow;
+        SDL_Surface *previewSurface;
     };
 
 } // namespace UI

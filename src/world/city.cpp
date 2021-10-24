@@ -1,15 +1,15 @@
 #include "city.h"
 
+#include "../translate.h"
+#include "iso.h"
+#include "world/buildings/HouseComponent.h"
 #include <algorithm>
 #include <cmath>
 #include <engine/graphics/TextureManager.h>
+#include <engine/utils/color.h>
 #include <engine/utils/os.h>
 #include <iostream>
 #include <random>
-#include "../translate.h"
-#include "world/buildings/HouseComponent.h"
-#include <engine/utils/color.h>
-#include "iso.h"
 
 namespace world
 {
@@ -353,7 +353,7 @@ namespace world
                 usedDirections.push_back(i);
             }
         }
-        std::random_shuffle(usedDirections.begin(), usedDirections.end());
+        std::shuffle(usedDirections.begin(), usedDirections.end(), gen);
 
         for (int i = 1; i <= directions; ++i)
         {

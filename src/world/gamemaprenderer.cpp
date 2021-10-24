@@ -1,8 +1,8 @@
 #include "gamemaprenderer.h"
+#include "iso.h"
 #include <engine/graphics/rect.h>
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
-#include "iso.h"
 
 Uint32 ColourToUint(int R, int G, int B)
 {
@@ -165,6 +165,11 @@ void GameMapRenderer::refreshMiniMap()
 std::shared_ptr<graphics::Texture> &GameMapRenderer::getMiniMap()
 {
     return miniMap;
+}
+
+std::shared_ptr<graphics::TextureMap> &GameMapRenderer::getTextureMap()
+{
+    return textureMap;
 }
 
 void GameMapRenderer::renderMiniMap(core::Renderer *renderer)

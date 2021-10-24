@@ -32,6 +32,8 @@ if(MINGW)
 
     link_directories(${SDL2_DIR}/lib/ ${PROJECT_SOURCE_DIR}/deps/gettext/lib/ )
 elseif (WIN32)
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+
     set(SDL2_LIBRARY sdl2)
     set(SDL2MAIN_LIBRARY SDL2main)
     set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)

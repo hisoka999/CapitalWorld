@@ -1,14 +1,15 @@
 #include "optionswindow.h"
+#include <engine/core/SceneManager.h>
 #include <engine/ui/Button.h>
 #include <engine/ui/layout/GridLayout.h>
-#include <engine/core/SceneManager.h>
-#include <engine/utils/os.h>
 #include <engine/utils/json/parser.h>
+#include <engine/utils/os.h>
+#include <filesystem>
 #include <fstream>
 
 namespace UI
 {
-    OptionsWindow::OptionsWindow(int x, int y) : UI::Window(x, y, 200, 300), saveWindow(false), loadWindow(true)
+    OptionsWindow::OptionsWindow(int x, int y) : UI::Window(x, y, 200, 300), saveWindow(false), loadWindow(true), previewSurface(nullptr)
     {
 
         setTitle("Options");
@@ -90,6 +91,12 @@ namespace UI
                                ostream << gameState->toJsonString();
                                ostream.flush();
                                ostream.close();
+
+                               std::filesystem::path extention(".png");
+                               std::filesystem::path previewPath(saveGameFile);
+                               previewPath.replace_extension(extention);
+                               std::cout << "preview path: " << previewPath << std::endl;
+                               IMG_SavePNG(previewSurface, previewPath.string().c_str());
                            });
     }
 
@@ -121,6 +128,11 @@ namespace UI
     const std::shared_ptr<world::GameState> &OptionsWindow::getGameState()
     {
         return gameState;
+    }
+
+    void OptionsWindow::setPreview(SDL_Surface *previewSurface)
+    {
+        this->previewSurface = previewSurface;
     }
 
     void OptionsWindow::saveGame()

@@ -2,9 +2,9 @@
 #define __BUILDINGSERVICE_H__
 
 #include "../world/building.h"
+#include <engine/utils/json/jsonservice.h>
 #include <memory>
 #include <mutex>
-#include <engine/utils/json/jsonservice.h>
 namespace services
 {
     class BuildingService : public utils::json::JSONService<world::Building>
@@ -17,7 +17,9 @@ namespace services
         }
 
         std::shared_ptr<world::Building> create(world::BuildingType type);
-        std::shared_ptr<world::Building> find(world::BuildingType type);
+        std::shared_ptr<world::Building> create(std::shared_ptr<world::Building> original);
+
+        std::vector<std::shared_ptr<world::Building>> find(world::BuildingType type);
         std::shared_ptr<world::Building> findByName(const std::string &name);
         void init();
 

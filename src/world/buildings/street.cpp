@@ -1,6 +1,6 @@
 #include "street.h"
-#include "../gamemap.h"
 #include "../../translate.h"
+#include "../gamemap.h"
 namespace world
 {
     namespace buildings
@@ -9,6 +9,7 @@ namespace world
             : Building("Street", _("Street"), "Street", 1000, BuildingType::Street, 1, 1)
 
         {
+            setSubTexture("street1");
         }
 
         void Street::update(GameMap *gameMap)

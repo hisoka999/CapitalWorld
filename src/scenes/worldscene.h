@@ -1,21 +1,23 @@
 #ifndef WORLDSCENE_H
 #define WORLDSCENE_H
 
-#include <engine/core/Scene.h>
-#include <engine/core/SceneManager.h>
-#include <world/gamemap.h>
-#include "world/gamemaprenderer.h"
+#include "ui/BuildingSelectionWindow.h"
+#include "ui/buildingwindow.h"
 #include "ui/buildwindow.h"
+#include "ui/hudcontainer.h"
 #include "ui/optionswindow.h"
-#include "world/company.h"
+#include "ui/researchwindow.h"
 #include "world/buildactions.h"
 #include "world/building.h"
+#include "world/city.h"
+#include "world/company.h"
+#include "world/gamemaprenderer.h"
 #include "world/gamestate.h"
 #include "world/updatethread.h"
-#include "ui/buildingwindow.h"
-#include "ui/hudcontainer.h"
-#include "world/city.h"
+#include <engine/core/Scene.h>
+#include <engine/core/SceneManager.h>
 #include <map>
+#include <world/gamemap.h>
 
 namespace scenes
 {
@@ -46,8 +48,8 @@ namespace scenes
 
     private:
         void renderHUD();
-        std::shared_ptr<world::Building> createBuilding(world::BuildingType type);
-        std::shared_ptr<world::Building> findBuilding(world::BuildingType type);
+        std::shared_ptr<world::Building> createBuilding();
+
         graphics::Texture uiTexture;
         core::SceneManager *sceneManager;
 
@@ -58,14 +60,18 @@ namespace scenes
         utils::Vector2 cursorPosition;
         graphics::Rect cursorBuildingRect;
         UI::BuildWindow buildWindow;
-        UI::OptionsWindow optionsWindow;
+        UI::ResearchWindow researchWindow;
         std::shared_ptr<world::GameState> gameState;
+        UI::OptionsWindow optionsWindow;
         std::unique_ptr<UpdateThread> thread;
         UI::BuildingWindow buildingWindow;
+        UI::BuildingSelectionWindow buildingSelectionWindow;
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
         bool wasMoving = false;
         double updateDelta = 0;
+        SDL_Surface *previewSurface = nullptr;
+        std::shared_ptr<world::Building> selectedBuilding2Build;
     };
 }
 #endif // WORLDSCENE_H

@@ -1,12 +1,12 @@
 #ifndef GAMEMAPRENDERER_H
 #define GAMEMAPRENDERER_H
 
-#include <memory>
-#include <engine/core/renderer.h>
-#include <engine/graphics/texture.h>
-#include <engine/graphics/TextureManager.h>
-#include <engine/graphics/texturemap.h>
 #include "world/gamemap.h"
+#include <engine/core/renderer.h>
+#include <engine/graphics/TextureManager.h>
+#include <engine/graphics/texture.h>
+#include <engine/graphics/texturemap.h>
+#include <memory>
 
 struct Autotile
 {
@@ -35,6 +35,7 @@ public:
     void clearCache();
     void refreshMiniMap();
     std::shared_ptr<graphics::Texture> &getMiniMap();
+    std::shared_ptr<graphics::TextureMap> &getTextureMap();
 
 private:
     void renderMiniMap(core::Renderer *renderer);
