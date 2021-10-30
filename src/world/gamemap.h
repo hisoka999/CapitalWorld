@@ -19,6 +19,17 @@ enum class Decoration : TileType
     trees = 3,
     mountain = 4,
 };
+enum class RawResource : int
+{
+    None = 0,
+    Oil = 1,
+    Iron = 2,
+    Coal = 3,
+    Aluminum = 4,
+    Gold = 5,
+    Copper = 6,
+    Silicon = 7
+};
 
 std::string tileTypeToString(const TileType tile);
 
@@ -26,7 +37,7 @@ class GameMap
 {
 public:
     GameMap(size_t width, size_t height);
-    GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration);
+    GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<RawResource> mapRessources);
 
     void initEmtyMap();
 
@@ -34,6 +45,7 @@ public:
     TileType getTile(utils::Vector2 &pos);
     TileType getDecoration(utils::Vector2 &pos);
     const TileType getDecoration(const int x, const int y) const;
+    const RawResource getRawResource(const int x, const int y) const;
 
     const size_t getWidth() const;
     const size_t getHeight() const;
@@ -58,6 +70,7 @@ private:
     size_t width, height;
     std::vector<TileType> mapData;
     std::vector<TileType> mapDecoration;
+    std::vector<RawResource> mapRessources;
     std::vector<std::shared_ptr<world::Building>> buildings;
 };
 

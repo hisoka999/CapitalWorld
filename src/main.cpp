@@ -19,6 +19,7 @@
 #include <engine/core/gamewindow.h>
 #include <engine/core/input.h>
 #include <iostream>
+#include <chrono>
 
 #include <magic_enum.hpp>
 
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
         core::Input input;
         auto &sceneManager = core::SceneManager::Instance();
 
-        ren.open(&win, false);
+        ren.open(&win, win.getSettings()->getValueB("Base", "VSync"));
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
@@ -87,10 +88,10 @@ int main(int argc, char *argv[])
         services::ResearchService::Instance().loadData("data/research.json");
 
         auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
-        //auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
+        // auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
         auto newGameScene = std::make_shared<scenes::NewGameScene>(&ren, &sceneManager);
         sceneManager.addScene("main", mainScene);
-        //sceneManager.addScene("world", worldScene);
+        // sceneManager.addScene("world", worldScene);
         sceneManager.addScene("newGameScene", newGameScene);
         sceneManager.setCurrentScene("main");
 
@@ -112,7 +113,7 @@ int main(int argc, char *argv[])
             ren.setDrawColor(0, 0, 0, 255);
             ren.clear();
             bool saveScreenshot = false;
-            //try
+            // try
             //{
             while (input.poll())
             {
@@ -158,7 +159,6 @@ int main(int argc, char *argv[])
             sceneManager.update();
             text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
             ren.renderPresent();
-
             if (saveScreenshot)
             {
 
@@ -178,7 +178,8 @@ int main(int argc, char *argv[])
                 }
             }
 
-            //win.delay(delay);
+            // win.delay(delay);
+
             ren.calcDelta();
         }
     }

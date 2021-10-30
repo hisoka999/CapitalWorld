@@ -11,7 +11,7 @@ GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
     initEmtyMap();
 }
 
-GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration) : width(width), height(height), mapData(mapData), mapDecoration(mapDecoration)
+GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<RawResource> mapRessources) : width(width), height(height), mapData(mapData), mapDecoration(mapDecoration), mapRessources(mapRessources)
 {
     buildings.resize(width * height);
     std::fill(buildings.begin(), buildings.end(), nullptr);
@@ -59,6 +59,16 @@ const TileType GameMap::getDecoration(const int x, const int y) const
     return mapDecoration[pos];
 }
 
+const RawResource GameMap::getRawResource(const int x, const int y) const
+{
+    int pos = x + (y * height);
+    if (pos > mapRessources.size())
+        return RawResource::None;
+    else if (x < 0 || y < 0)
+        return RawResource::None;
+    return mapRessources[pos];
+}
+
 const size_t GameMap::getWidth() const
 {
     return width;
@@ -71,7 +81,7 @@ const size_t GameMap::getHeight() const
 std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &sourceBuilding)
 {
     std::shared_ptr<world::Building> result = nullptr;
-    //auto iso = twoDToIso(pt);
+    // auto iso = twoDToIso(pt);
     for (int y = sourceBuilding.y - sourceBuilding.height; y <= sourceBuilding.y + sourceBuilding.height; ++y)
     {
         for (int x = sourceBuilding.x - sourceBuilding.width; x <= sourceBuilding.x + sourceBuilding.width; ++x)
@@ -100,7 +110,7 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
     int y = building->get2DPosition().y;
     size_t pos = x + (y * height);
     buildings[pos] = building;
-    //buildings.push_back(building);
+    // buildings.push_back(building);
     building->update(this);
 }
 const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() const
@@ -148,7 +158,7 @@ bool GameMap::canBuild(graphics::Rect buildRect)
 
     if (tile < 8)
     {
-        //render water
+        // render water
         return false;
     }
 
@@ -170,7 +180,7 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
     auto posSouth = pos;
     posSouth.y += 1;
 
-    //find parent buildings
+    // find parent buildings
     for (auto &tmp : buildings)
     {
         auto street = tmp;
@@ -257,7 +267,7 @@ void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding,
 
 std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company)
 {
-    //Schritt 1 Suche Straße neben dem Startgebäude
+    // Schritt 1 Suche Straße neben dem Startgebäude
     auto startPos = startBuilding->get2DPosition();
 
     std::vector<std::shared_ptr<world::Building>> allStreets;
@@ -272,12 +282,12 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(cons
     std::vector<std::shared_ptr<world::Building>> targets;
     for (auto &street : allStreets)
     {
-        //std::cout << "steet x: " << street->get2DPosition().x << " y: " << street->get2DPosition().y << std::endl;
+        // std::cout << "steet x: " << street->get2DPosition().x << " y: " << street->get2DPosition().y << std::endl;
 
         auto borderBuildings = borderingBuilding(street, world::BuildingType::Street, true);
         for (auto &b : borderBuildings)
         {
-            //std::cout << "b x: " << b->get2DPosition().x << " y: " << b->get2DPosition().y << std::endl;
+            // std::cout << "b x: " << b->get2DPosition().x << " y: " << b->get2DPosition().y << std::endl;
             if (b != startBuilding && (b->hasComponent("StorageComponent")) && company->hasBuilding(b))
             {
                 auto it = std::find_if(targets.begin(), targets.end(), [=](std::shared_ptr<world::Building> &b2)
@@ -331,10 +341,16 @@ std::shared_ptr<utils::JSON::Object> GameMap::toJson()
     {
         decoration += ('0' + tile);
     }
+    std::string resources = "";
+    for (RawResource res : mapRessources)
+    {
+        resources += ('0' + (int)res);
+    }
     json->setAttribute("width", int(getWidth()));
     json->setAttribute("height", int(getHeight()));
     json->setAttribute("mapData", tileData);
     json->setAttribute("mapDecoraction", decoration);
+    json->setAttribute("mapResources", resources);
 
     return json;
 }
@@ -346,26 +362,35 @@ std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Ob
     std::string mapData = object->getStringValue("mapData");
     std::string mapDecoraction = object->getStringValue("mapDecoraction");
 
+    std::string mapResources = object->getStringValue("mapResources");
+
     std::vector<TileType> tiles;
     std::vector<TileType> decoration;
-    //tiles.reserve(width * height);
-    //std::fill(tiles.begin(), tiles.end(), 10);
+    std::vector<RawResource> resources;
+    // tiles.reserve(width * height);
+    // std::fill(tiles.begin(), tiles.end(), 10);
 
     for (char val : mapData)
     {
         TileType tile = static_cast<TileType>(val - '0');
-        //tiles[i] = tile;
+        // tiles[i] = tile;
         tiles.push_back(tile);
     }
 
     for (char val : mapDecoraction)
     {
         TileType tile = static_cast<TileType>(val - '0');
-        //tiles[i] = tile;
+        // tiles[i] = tile;
         decoration.push_back(tile);
     }
+    for (char val : mapResources)
+    {
+        RawResource tile = static_cast<RawResource>(val - '0');
+        // tiles[i] = tile;
+        resources.push_back(tile);
+    }
 
-    return std::make_shared<GameMap>(width, height, tiles, decoration);
+    return std::make_shared<GameMap>(width, height, tiles, decoration, resources);
 }
 
 std::string tileTypeToString(const TileType tile)

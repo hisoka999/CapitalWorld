@@ -49,7 +49,7 @@ namespace world
 
             cityDefinitions.push_back(definition);
         }
-        //while(!s.empty());
+        // while(!s.empty());
         file.close();
         return cityDefinitions;
     }
@@ -68,12 +68,18 @@ namespace world
         std::shuffle(definitions.begin(), definitions.end(), gen);
         std::uniform_int_distribution<int> dist(-10, 20);
         std::uniform_int_distribution<int> decoration(static_cast<int>(Decoration::none), static_cast<int>(Decoration::mountain));
+        std::uniform_int_distribution<int> oilDistribution(0, 1000);
+        std::uniform_int_distribution<int> mountainDistribution(static_cast<int>(RawResource::Iron), static_cast<int>(RawResource::Silicon));
+
         std::vector<TileType> mapData;
         std::vector<TileType> mapDecoration;
+        std::vector<RawResource> mapRessources;
         mapData.resize(width * height);
         mapDecoration.resize(width * height);
+        mapRessources.resize(width * height);
         std::fill(mapData.begin(), mapData.end(), 10);
         std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
+        std::fill(mapRessources.begin(), mapRessources.end(), RawResource::None);
 
         // Visit every pixel of the image and assign a color generated with Perlin noise
         for (unsigned int i = 0; i < height; ++i)
@@ -85,21 +91,47 @@ namespace world
                 int z = dist(gen);
                 double base = 5;
                 double noise = 20 * pn.noise(base * x, base * y, 0.5);
-                //noise = noise-std::floor(noise );
-                //noise = noise*20;
-                //std::cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<" noise: "<<noise<<std::endl;
+                // noise = noise-std::floor(noise );
+                // noise = noise*20;
+                // std::cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<" noise: "<<noise<<std::endl;
 
                 mapData[i + (j * height)] = std::floor(noise);
 
                 if (mapData[i + (j * height)] > 8 && mapData[i + (j * height)] <= 12)
                 {
                     mapDecoration[i + (j * height)] = decoration(gen);
+                    Decoration d = static_cast<Decoration>(mapDecoration[i + (j * height)]);
+                    if (d == Decoration::mountain)
+                    {
+                        if (2 >= oilDistribution(gen))
+                        {
+                            int value = mountainDistribution(gen);
+                            mapRessources[i + (j * height)] = static_cast<RawResource>(value);
+                            switch (mapRessources[i + (j * height)])
+                            {
+                            case RawResource::Aluminum:
+                            case RawResource::Copper:
+                            case RawResource::Gold:
+                                std::cout << magic_enum::enum_name(mapRessources[i + (j * height)]) << " pos: " << i << "," << j << std::endl;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (mapData[i + (j * height)] == 8)
+                {
+                    if (1 >= oilDistribution(gen))
+                    {
+                        mapRessources[i + (j * height)] = RawResource::Oil;
+                    }
                 }
             }
         }
         // 8 ... 11 = grass
 
-        auto map = std::make_shared<GameMap>(width, height, mapData, mapDecoration);
+        auto map = std::make_shared<GameMap>(width, height, mapData, mapDecoration, mapRessources);
 
         std::uniform_int_distribution<long> xPositionGen(0, width);
         std::uniform_int_distribution<long> yPositionGen(0, height);

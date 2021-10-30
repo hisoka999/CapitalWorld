@@ -39,14 +39,19 @@ public:
 
 private:
     void renderMiniMap(core::Renderer *renderer);
+    void generateTileDataFromMap();
     const graphics::Rect &getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    const size_t getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    const size_t getSourceTile(const TileType tile, const size_t tileX, const size_t tileY);
     void fillAutoTileMap();
     Autotile generateAutoTile(std::string base);
 
     void renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const uint16_t tile, const int tileX, const int tileY, const utils::Vector2 &pos);
+    void renderResource(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos);
     utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
     const graphics::Rect &getSourceRect(const TileType tile, const size_t tileX, const size_t tileY);
     std::shared_ptr<GameMap> gameMap;
+    std::vector<size_t> tileData;
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;
     std::shared_ptr<graphics::TextureMap> textureMap;
@@ -63,6 +68,8 @@ private:
     size_t grass1Hash;
     size_t grasRockHash;
     size_t treesHash;
+    size_t resourceRockHash;
+    size_t resourceOilHash;
     bool fillCache = false;
     std::map<size_t, Autotile> autoTileMap;
 };

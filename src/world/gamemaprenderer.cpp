@@ -24,13 +24,20 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
     treesHash = hasher("trees");
     waterHash = hasher("water");
     sandHash = hasher("sand");
-
+    resourceRockHash = hasher("resource_rock");
+    resourceOilHash = hasher("resource_oil");
     fillAutoTileMap();
+    generateTileDataFromMap();
 }
 
 const graphics::Rect &GameMapRenderer::getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
 {
 
+    return textureMap->getSourceRect(getAutoTileId(tile, baseTile, tileX, tileY, groundLimit));
+}
+
+const size_t GameMapRenderer::getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
+{
     const TileType leftTile = gameMap->getTile(tileX, tileY + 1);
     const TileType rightTile = gameMap->getTile(tileX, tileY - 1);
     const TileType topTile = gameMap->getTile(tileX - 1, tileY);
@@ -78,7 +85,44 @@ const graphics::Rect &GameMapRenderer::getAutoTile(const TileType tile, size_t b
     {
         resultTile = autoTile.bottom;
     }
-    return textureMap->getSourceRect(resultTile);
+    return resultTile;
+}
+
+const size_t GameMapRenderer::getSourceTile(const TileType tile, const size_t tileX, const size_t tileY)
+{
+    const int groundLimit = 8;
+
+    if (tile < groundLimit)
+    {
+        return getAutoTileId(tile, waterHash, tileX, tileY, groundLimit);
+    }
+    else if (tile > 12)
+    {
+        return treesHash;
+    }
+    else if (tile > groundLimit)
+    {
+        // find special tiles like rocks, single trees or mountains
+        Decoration decoration = static_cast<Decoration>(gameMap->getDecoration(tileX, tileY));
+        switch (decoration)
+        {
+        case Decoration::grass1:
+            return grass1Hash;
+            break;
+        case Decoration::rocks:
+            return grasRockHash;
+            break;
+        case Decoration::none:
+            return grassHash;
+            break;
+
+        default:
+            return grassHash;
+            break;
+        }
+    }
+
+    return getAutoTileId(tile, sandHash, tileX, tileY, groundLimit + 1);
 }
 
 void GameMapRenderer::fillAutoTileMap()
@@ -123,7 +167,7 @@ const graphics::Rect &GameMapRenderer::getSourceRect(const TileType tile, const 
     }
     else if (tile > groundLimit)
     {
-        //find special tiles like rocks, single trees or mountains
+        // find special tiles like rocks, single trees or mountains
         Decoration decoration = static_cast<Decoration>(gameMap->getDecoration(tileX, tileY));
         switch (decoration)
         {
@@ -226,15 +270,62 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
     std::cout << "create minimap time: " << microseconds << "ms" << std::endl;
 }
 
+void GameMapRenderer::generateTileDataFromMap()
+{
+    tileData.resize(gameMap->getWidth() * gameMap->getHeight());
+
+    for (size_t y = 0; y < gameMap->getHeight(); ++y)
+    {
+        for (size_t x = 0; x < gameMap->getWidth(); ++x)
+        {
+            const TileType tile = gameMap->getTile(x, y);
+            size_t source = getSourceTile(tile, x, y);
+            tileData[x + (y * gameMap->getWidth())] = source;
+        }
+    }
+}
+
 void GameMapRenderer::renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const uint16_t tile, const int tileX, const int tileY, const utils::Vector2 &pos)
 {
-
-    const graphics::Rect &srcRect = getSourceRect(tile, tileX, tileY);
+    size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
+    const graphics::Rect &srcRect = textureMap->getSourceRect(hash);
     float x = (pos.getX() * factor) - camera->getX();
     float y = ((pos.getY() - (srcRect.height - tileHeight)) * factor) - camera->getY();
     const graphics::Rect destRect{x, y, srcRect.width * factor, srcRect.height * factor};
 
-    groundTexture->render(renderer, srcRect, destRect);
+    // // groundTexture->render(renderer, srcRect, destRect);
+    textureMap->render(hash, destRect, renderer);
+}
+
+void GameMapRenderer::renderResource(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos)
+{
+    auto resource = gameMap->getRawResource(tileX, tileY);
+    size_t hash = 0;
+    switch (resource)
+    {
+    case RawResource::Coal:
+    case RawResource::Iron:
+    case RawResource::Silicon:
+    case RawResource::Copper:
+    case RawResource::Gold:
+    case RawResource::Aluminum:
+        hash = resourceRockHash;
+        break;
+
+    case RawResource::Oil:
+        hash = resourceOilHash;
+        break;
+    }
+
+    if (hash != 0)
+    {
+        const graphics::Rect &srcRect = textureMap->getSourceRect(hash);
+        float x = (pos.getX() * factor) - camera->getX();
+        float y = ((pos.getY() - (srcRect.height - tileHeight)) * factor) - camera->getY();
+        const graphics::Rect destRect{x, y, srcRect.width * factor, srcRect.height * factor};
+
+        textureMap->render(hash, destRect, renderer);
+        }
 }
 
 utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 input)
@@ -264,7 +355,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
     if (!fillCache && cacheTexture != nullptr)
     {
         cacheTexture->render(renderer, 0, 0);
-        //cacheBuildingTexture->render(renderer, 0, 0);
+        // cacheBuildingTexture->render(renderer, 0, 0);
         return;
     }
     fillCache = false;
@@ -273,7 +364,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
     float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
     if (cacheTexture == nullptr)
         cacheTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
-    //cacheBuildingTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
+    // cacheBuildingTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
     renderer->setRenderTarget(cacheTexture->getSDLTexture());
 
     renderer->clear();
@@ -304,6 +395,8 @@ void GameMapRenderer::render(core::Renderer *renderer)
             const auto tile = gameMap->getTile(tempX, tempY);
 
             renderTile(renderer, camera, factor, tile, tempX, tempY, iso);
+
+            renderResource(renderer, camera, factor, tempX, tempY, iso);
         }
     }
     graphics::Rect displayRect;

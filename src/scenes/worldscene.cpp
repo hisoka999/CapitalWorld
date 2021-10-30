@@ -12,6 +12,7 @@
 #include <future>
 #include <iostream>
 #include <random>
+#include <engine/utils/vector2.h>
 
 namespace scenes
 {
@@ -27,14 +28,14 @@ namespace scenes
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
-        //gameMap = std::make_shared<GameMap>(100,100);
+        // gameMap = std::make_shared<GameMap>(100,100);
         mapRenderer = std::make_shared<GameMapRenderer>(gameState->getGameMap());
 
         renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
         buildWindow.setVisible(true);
 
-        uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
+        // uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
         winMgr->addWindow(&buildingWindow);
@@ -50,13 +51,16 @@ namespace scenes
         optionsWindow.connect("stateChanged", [&](std::shared_ptr<world::GameState> state)
                               {
                                   auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
-                                  core::SceneManager::Instance().changeScene("world", worldScene);
-                              });
+                                  core::SceneManager::Instance().changeScene("world", worldScene); });
     }
     WorldScene::~WorldScene()
     {
 
         thread->stop();
+        if (previewSurface != nullptr)
+        {
+            SDL_FreeSurface(previewSurface);
+        }
     }
 
     void WorldScene::renderHUD()
@@ -76,7 +80,7 @@ namespace scenes
         renderer->drawLine(start, end);
         renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
 
-        //render minimap
+        // render minimap
         auto &miniMap = mapRenderer->getMiniMap();
         const int miniMapSize = 150;
         miniMap->renderResized(renderer, renderer->getViewPort().width - miniMapSize, height, miniMapSize, miniMapSize);
@@ -180,16 +184,16 @@ namespace scenes
                 auto action = buildWindow.getCurrentAction();
                 if (action == world::BuildAction::Destroy)
                 {
-                    //check if building exists and then destroy it
+                    // check if building exists and then destroy it
                     const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
 
                     auto building = gameMap->getBuilding2D(sourceBuilding);
                     if (building != nullptr)
                     {
-                        //remove it
+                        // remove it
 
                         gameMap->removeBuilding(building);
-                        //get back cash
+                        // get back cash
                         if (gameState->getPlayer()->hasBuilding(building))
                         {
                             gameState->getPlayer()->removeBuilding(building);
@@ -197,7 +201,7 @@ namespace scenes
                         }
                         else
                         {
-                            //if no one owns the building you have to pay for destroying it
+                            // if no one owns the building you have to pay for destroying it
                             gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
                         }
                         mapRenderer->clearCache();
@@ -235,7 +239,7 @@ namespace scenes
                     int height = core::GameWindow::Instance().getHeight();
                     buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
 
-                    buildingWindow.open(building, company, gameMap->getTile(cursorPosition), gameMap.get());
+                    buildingWindow.open(building, company, cursorPosition, gameMap.get());
                 }
             }
             else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
@@ -276,7 +280,7 @@ namespace scenes
                 y = std::round(ty - 0.5f);
 
                 cursorPosition = utils::Vector2(x, y);
-                //std::cout << "mouse position x: " << x << " y:" << y << std::endl;
+                // std::cout << "mouse position x: " << x << " y:" << y << std::endl;
 
                 auto building = selectedBuilding2Build; // (buildWindow.getCurrentAction() == world::BuildAction::Build) ? findBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
                 if (building != nullptr)
@@ -358,7 +362,7 @@ namespace scenes
 
         if (pInput->isKeyDown(SDLK_ESCAPE))
         {
-            //create preview image
+            // create preview image
             if (previewSurface != nullptr)
             {
                 SDL_FreeSurface(previewSurface);
@@ -387,7 +391,7 @@ namespace scenes
 
         if (direction.top)
         {
-            //if (viewPort.y > 0)
+            // if (viewPort.y > 0)
             moveY -= speed;
         }
         else if (direction.bottom)
@@ -397,7 +401,7 @@ namespace scenes
 
         if (direction.left)
         {
-            //if (viewPort.x > 0)
+            // if (viewPort.x > 0)
             moveX -= speed;
         }
         else if (direction.right)

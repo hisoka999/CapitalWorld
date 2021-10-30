@@ -10,6 +10,7 @@
 #include <engine/ui/Label.h>
 #include <engine/ui/layout/GridLayout.h>
 #include <engine/utils/os.h>
+#include <magic_enum.hpp>
 
 namespace UI
 {
@@ -28,13 +29,20 @@ namespace UI
         tabBar->addTab(infoTab);
         layout = std::make_shared<UI::layout::GridLayout>(infoTab.get(), 2);
 
-        //fill info tab
+        // fill info tab
         std::shared_ptr<UI::Label> labelName = std::make_shared<UI::Label>(_("Type: "), infoTab.get());
         labelName->setPos(5, 5);
         infoTab->addObject(labelName);
         labelTypeValue = std::make_shared<UI::Label>(infoTab.get());
         labelTypeValue->setPos(100, 5);
         infoTab->addObject(labelTypeValue);
+
+        std::shared_ptr<UI::Label> labelNameRes = std::make_shared<UI::Label>(_("Resource: "), infoTab.get());
+        labelNameRes->setPos(5, 5);
+        infoTab->addObject(labelNameRes);
+        labelResourceValue = std::make_shared<UI::Label>(infoTab.get());
+        labelResourceValue->setPos(100, 5);
+        infoTab->addObject(labelResourceValue);
 
         std::shared_ptr<UI::Label> labelOwner = std::make_shared<UI::Label>(_("Owner: "), infoTab.get());
         labelOwner->setPos(5, 25);
@@ -55,10 +63,14 @@ namespace UI
         bounds.y = 5;
         layout->updateLayout(bounds);
     }
-    void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, TileType tile, GameMap *gameMap)
+    void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, utils::Vector2 &position2D, GameMap *gameMap)
     {
         this->building = building;
+        TileType tile = gameMap->getTile(position2D);
         labelGroundValue->setText(tileTypeToString(tile));
+
+        labelResourceValue->setText(_(std::string(magic_enum::enum_name(gameMap->getRawResource(position2D.getX(), position2D.getY())))));
+
         for (auto &item : optionalItems)
         {
             infoTab->removeObject(item);
@@ -80,7 +92,7 @@ namespace UI
             tabBar->removeTab(productionTab);
             tabBar->removeTab(storageTab);
             tabBar->removeTab(workerTab);
-            //recreate tab based on Building type
+            // recreate tab based on Building type
             productionTab = nullptr;
             storageTab = nullptr;
             workerTab = nullptr;

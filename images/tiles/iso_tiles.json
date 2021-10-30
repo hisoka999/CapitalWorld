@@ -308,6 +308,20 @@
             "y": 32.0,
             "width": 64.0,
             "height": 32.0
+        },
+        {
+            "name": "resource_rock",
+            "x": 576.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 64.0
+        },
+        {
+            "name": "resource_oil",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 64.0,
+            "height": 32.0
         }
     ]
 }
