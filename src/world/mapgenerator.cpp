@@ -73,13 +73,13 @@ namespace world
 
         std::vector<TileType> mapData;
         std::vector<TileType> mapDecoration;
-        std::vector<RawResource> mapRessources;
+        std::vector<RawResource> mapResources;
         mapData.resize(width * height);
         mapDecoration.resize(width * height);
-        mapRessources.resize(width * height);
+        mapResources.resize(width * height);
         std::fill(mapData.begin(), mapData.end(), 10);
         std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
-        std::fill(mapRessources.begin(), mapRessources.end(), RawResource::None);
+        std::fill(mapResources.begin(), mapResources.end(), RawResource::None);
 
         // Visit every pixel of the image and assign a color generated with Perlin noise
         for (unsigned int i = 0; i < height; ++i)
@@ -106,13 +106,13 @@ namespace world
                         if (2 >= oilDistribution(gen))
                         {
                             int value = mountainDistribution(gen);
-                            mapRessources[i + (j * height)] = static_cast<RawResource>(value);
-                            switch (mapRessources[i + (j * height)])
+                            mapResources[i + (j * height)] = static_cast<RawResource>(value);
+                            switch (mapResources[i + (j * height)])
                             {
                             case RawResource::Aluminum:
                             case RawResource::Copper:
                             case RawResource::Gold:
-                                std::cout << magic_enum::enum_name(mapRessources[i + (j * height)]) << " pos: " << i << "," << j << std::endl;
+                                std::cout << magic_enum::enum_name(mapResources[i + (j * height)]) << " pos: " << i << "," << j << std::endl;
                                 break;
                             default:
                                 break;
@@ -124,14 +124,14 @@ namespace world
                 {
                     if (1 >= oilDistribution(gen))
                     {
-                        mapRessources[i + (j * height)] = RawResource::Oil;
+                        mapResources[i + (j * height)] = RawResource::Oil;
                     }
                 }
             }
         }
         // 8 ... 11 = grass
 
-        auto map = std::make_shared<GameMap>(width, height, mapData, mapDecoration, mapRessources);
+        auto map = std::make_shared<GameMap>(width, height, mapData, mapDecoration, mapResources);
 
         std::uniform_int_distribution<long> xPositionGen(0, width);
         std::uniform_int_distribution<long> yPositionGen(0, height);

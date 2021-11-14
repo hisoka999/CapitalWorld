@@ -1,6 +1,6 @@
 #include "productservice.h"
-#include "ressourceservice.h"
 #include "magic_enum.hpp"
+#include "ressourceservice.h"
 #include <algorithm>
 
 namespace services
@@ -29,7 +29,7 @@ namespace services
                 for (auto &baseProduct : baseProducts)
                 {
 
-                    //check if base product is in result list
+                    // check if base product is in result list
                     bool isInList = false;
                     for (auto &resultProduct : result)
                     {
@@ -76,7 +76,7 @@ namespace services
             auto baseResources = object->getObjectValue("baseResources");
             for (auto attr : baseResources->getAttributes())
             {
-                product->addRessource(RessourceService::Instance().getResourceByName(attr), baseResources->getIntValue(attr));
+                product->addResource(ResourceService::Instance().getResourceByName(attr), baseResources->getIntValue(attr));
             }
         }
         if (std::find(attrs.begin(), attrs.end(), std::string("baseProducts")) != attrs.end())

@@ -3,14 +3,22 @@
         "name": "Chicken",
         "type": "Resource",
         "texture": "chicken.png",
-        "building": "Farm",
+        "building": "Resource",
         "costs": 20
     },
     {
         "name": "Wheet",
         "type": "Resource",
         "texture": "wheat.png",
-        "building": "Farm",
+        "building": "Resource",
         "costs": 10
+    },
+    {
+        "name": "Crud Oil",
+        "type": "Resource",
+        "texture": "wheat.png",
+        "building": "Resource",
+        "rawResource": "Oil",
+        "costs": 100
     }
 ]

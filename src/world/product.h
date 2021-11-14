@@ -1,16 +1,16 @@
 #ifndef PRODUCT_H
 #define PRODUCT_H
 
+#include "../world/ressource.h"
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include "../world/ressource.h"
 
 struct ProductionCycle
 {
     unsigned startMonth;
     unsigned endMonth;
-    //production time in days
+    // production time in days
     unsigned productionTime;
     unsigned amount;
 
@@ -42,7 +42,7 @@ public:
     std::vector<std::shared_ptr<ResourceRequirement>> getResources();
     std::vector<std::shared_ptr<ProductRequirement>> getBaseProducts();
 
-    void addRessource(std::shared_ptr<Resource> resource, int amount);
+    void addResource(std::shared_ptr<Resource> resource, int amount);
     bool needsResource(std::shared_ptr<Resource> resource);
     void addProduct(std::shared_ptr<Product> product, int amount);
     bool needsProduct(std::shared_ptr<Product> product);

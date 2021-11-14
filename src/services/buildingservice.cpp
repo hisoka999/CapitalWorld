@@ -84,10 +84,19 @@ namespace services
         for (auto &componentName : components->getAttributes())
         {
             auto metaData = components->getObjectValue(componentName);
-            //auto componentName = std::get<std::string>(componentValue);
+            // auto componentName = std::get<std::string>(componentValue);
             auto component = world::Building::createComponentByName(componentName);
             component->setMetaData(metaData);
             building->addComponent(component);
+        }
+
+        if (object->hasArray("rawResources"))
+        {
+            for (auto resource : object->getArray("rawResources"))
+            {
+                world::RawResource rawResource = magic_enum::enum_cast<world::RawResource>(std::get<std::string>(resource)).value();
+                building->addResource(rawResource);
+            }
         }
 
         graphics::Rect rect;

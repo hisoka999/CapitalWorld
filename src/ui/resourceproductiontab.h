@@ -1,22 +1,22 @@
-#ifndef FARMPRODUCTIONTAB_H
-#define FARMPRODUCTIONTAB_H
+#ifndef RESOURCEPRODUCTIONTAB_H
+#define RESOURCEPRODUCTIONTAB_H
 
-#include <engine/ui/Tab.h>
-#include <engine/ui/Button.h>
-#include <engine/ui/Label.h>
-#include <engine/ui/ImageButton.h>
-#include <engine/ui/ComboBox.h>
 #include "../services/productservice.h"
-#include "../world/building.h"
 #include "../ui/productcomponent.h"
+#include "../world/building.h"
+#include <engine/ui/Button.h>
+#include <engine/ui/ComboBox.h>
+#include <engine/ui/ImageButton.h>
+#include <engine/ui/Label.h>
+#include <engine/ui/Tab.h>
 
 namespace UI
 {
 
-    class FarmProductionTab : public UI::Tab
+    class ResourceProductionTab : public UI::Tab
     {
     public:
-        FarmProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building);
+        ResourceProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, world::RawResource rawResource);
 
         void setBuilding(std::shared_ptr<world::Building> building);
 
@@ -42,7 +42,8 @@ namespace UI
         std::shared_ptr<UI::Button> addButton;
         std::shared_ptr<UI::Button> helpButton;
         std::vector<std::shared_ptr<UI::ProductComponent>> productComponents;
+        world::RawResource rawResource;
     };
 }
 
-#endif // FARMPRODUCTIONTAB_H
+#endif // RESOURCEPRODUCTIONTAB_H

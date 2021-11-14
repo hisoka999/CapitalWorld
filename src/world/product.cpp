@@ -21,7 +21,7 @@ std::vector<std::shared_ptr<ProductRequirement>> Product::getBaseProducts()
     return products;
 }
 
-void Product::addRessource(std::shared_ptr<Resource> resource, int amount)
+void Product::addResource(std::shared_ptr<Resource> resource, int amount)
 {
     std::shared_ptr<ResourceRequirement> requirement = std::make_shared<ResourceRequirement>();
     requirement->amount = amount;

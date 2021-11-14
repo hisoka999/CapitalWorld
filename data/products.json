@@ -3,7 +3,7 @@
         "name": "Eggs",
         "type": "Food",
         "texture": "egg.png",
-        "building": "Farm",
+        "building": "Resource",
         "baseResources": {
             "Chicken": 10
         },
@@ -18,7 +18,7 @@
         "name": "Wheet",
         "type": "Resource",
         "texture": "wheat.png",
-        "building": "Farm",
+        "building": "Resource",
         "baseResources": {
             "Wheet": 30
         },
@@ -58,6 +58,21 @@
             "end": 12,
             "time": 2,
             "amount": 100
+        }
+    },
+    {
+        "name": "Oil",
+        "type": "Resource",
+        "texture": "/Pixel_Mart/olive_oil.png",
+        "building": "Resource",
+        "baseResources": {
+            "Crud Oil": 30
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 10,
+            "amount": 60000
         }
     }
 ]

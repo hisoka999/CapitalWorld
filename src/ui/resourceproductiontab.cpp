@@ -1,32 +1,32 @@
-#include "farmproductiontab.h"
-#include <engine/utils/os.h>
+#include "resourceproductiontab.h"
 #include "services/ressourceservice.h"
+#include <engine/utils/os.h>
 
 namespace UI
 {
 
-    FarmProductionTab::FarmProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building)
-        : UI::Tab(parent, "Production")
+    ResourceProductionTab::ResourceProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, world::RawResource rawResource)
+        : UI::Tab(parent, "Production"), rawResource(rawResource), building(building)
     {
         initUI();
         setBuilding(building);
     }
-    void FarmProductionTab::initUI()
+    void ResourceProductionTab::initUI()
     {
         productSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
         productSelectionBox->setPos(490, 28);
         productSelectionBox->setWidth(120);
-        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Farm);
+        // productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Resource);
         productSelectionBox->connect("selectionChanged", [&](unsigned int selection)
                                      { productSelectionChanged(selection); });
 
         productSelectionBox->setElementFunction([&](std::string var)
                                                 { return var; });
 
-        for (auto &product : productList)
-        {
-            productSelectionBox->addElement(product->getName());
-        }
+        // for (auto &product : productList)
+        // {
+        //     productSelectionBox->addElement(product->getName());
+        // }
         addObject(productSelectionBox);
 
         resourceSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
@@ -36,7 +36,14 @@ namespace UI
         resourceSelectionBox->connect("selectionChanged", [&](unsigned int selection)
                                       { resourceSelectionChanged(selection); });
 
-        resourceList = services::RessourceService::Instance().getResourcesByBuildingType(world::BuildingType::Farm);
+        if (building->requireResource(rawResource))
+        {
+            resourceList = services::ResourceService::Instance().getResourcesByBuildingType(world::BuildingType::Resource, rawResource);
+        }
+        else
+        {
+            resourceList.clear();
+        }
         for (auto &res : resourceList)
         {
             resourceSelectionBox->addElement(res->getName());
@@ -97,8 +104,7 @@ namespace UI
                                {
                                    building->removeProduct(product);
                                }
-                               refreshProductList();
-                           });
+                               refreshProductList(); });
         addObject(addButton);
 
         helpButton = std::make_shared<UI::Button>(this);
@@ -112,7 +118,7 @@ namespace UI
         refreshProductList();
     }
 
-    void FarmProductionTab::refreshProductList()
+    void ResourceProductionTab::refreshProductList()
     {
         for (auto p : productComponents)
         {
@@ -129,8 +135,7 @@ namespace UI
                         {
                             std::cout << "click: " << product->getName() << std::endl;
                             resourceSelectionBox->setSelectionByText(product->getResources().at(0)->resource->getName());
-                            productSelectionBox->setSelectionByText(product->getName());
-                        });
+                            productSelectionBox->setSelectionByText(product->getName()); });
 
             productComponents.push_back(pc);
             pc->setPos(20, y);
@@ -152,21 +157,26 @@ namespace UI
         }
     }
 
-    void FarmProductionTab::setBuilding(std::shared_ptr<world::Building> building)
+    void ResourceProductionTab::setBuilding(std::shared_ptr<world::Building> building)
     {
         this->building = building;
         refreshProductList();
     }
 
-    void FarmProductionTab::resourceSelectionChanged(unsigned int selection)
+    void ResourceProductionTab::resourceSelectionChanged(unsigned int selection)
     {
+        if (resourceList.size() == 0)
+        {
+            std::cout << "no resource available" << std::endl;
+            return;
+        }
         auto resource = resourceList[selection];
         resourceNameText->setText(resource->getName());
         costsText->setText(utils::string_format("%'.2f €/m", resource->getCostPerMonth()));
         resourceImage->loadImage(utils::os::combine("images", "products", resource->getImage()));
 
         // reload products
-        productList = services::ProductService::Instance().getProductsByTypeAndResource(world::BuildingType::Farm, resource);
+        productList = services::ProductService::Instance().getProductsByTypeAndResource(world::BuildingType::Resource, resource);
         productSelectionBox->clearElements();
         for (auto &product : productList)
         {
@@ -174,8 +184,13 @@ namespace UI
         }
         productSelectionChanged(0);
     }
-    void FarmProductionTab::productSelectionChanged(unsigned int selection)
+    void ResourceProductionTab::productSelectionChanged(unsigned int selection)
     {
+        if (productList.size() == 0)
+        {
+            std::cout << "no products available" << std::endl;
+            return;
+        }
         auto product = productList[selection];
         productNameText->setText(product->getName());
         productImage->loadImage(utils::os::combine("images", "products", product->getImage()));

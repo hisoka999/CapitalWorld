@@ -303,16 +303,16 @@ void GameMapRenderer::renderResource(core::Renderer *renderer, const core::Camer
     size_t hash = 0;
     switch (resource)
     {
-    case RawResource::Coal:
-    case RawResource::Iron:
-    case RawResource::Silicon:
-    case RawResource::Copper:
-    case RawResource::Gold:
-    case RawResource::Aluminum:
+    case world::RawResource::Coal:
+    case world::RawResource::Iron:
+    case world::RawResource::Silicon:
+    case world::RawResource::Copper:
+    case world::RawResource::Gold:
+    case world::RawResource::Aluminum:
         hash = resourceRockHash;
         break;
 
-    case RawResource::Oil:
+    case world::RawResource::Oil:
         hash = resourceOilHash;
         break;
     }
@@ -325,7 +325,7 @@ void GameMapRenderer::renderResource(core::Renderer *renderer, const core::Camer
         const graphics::Rect destRect{x, y, srcRect.width * factor, srcRect.height * factor};
 
         textureMap->render(hash, destRect, renderer);
-        }
+    }
 }
 
 utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 input)

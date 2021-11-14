@@ -31,7 +31,10 @@
         "buildingClass": "Building",
         "description": "TODO",
         "description_de": "TODO Deutsch",
-        "type": "Farm",
+        "type": "Resource",
+        "rawResources": [
+            "None"
+        ],
         "buildCosts": 10000,
         "block_width": 1,
         "block_height": 1,
@@ -50,6 +53,75 @@
             "WorkerComponent": {
                 "max_worker": 5,
                 "salary": 1500
+            }
+        }
+    },
+    {
+        "name": "Pumpjack",
+        "displayName": "Pumpjack",
+        "displayName_de": "Ölbohrturm",
+        "buildingClass": "Building",
+        "description": "building to pump crud oil from the ground up.",
+        "description_de": "Gebäude zur Förderung von Rohöl,",
+        "type": "Resource",
+        "rawResources": [
+            "Oil"
+        ],
+        "buildCosts": 500000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 256,
+            "y": 288,
+            "width": 128,
+            "height": 96
+        },
+        "offset": {
+            "x": 32,
+            "y": 32
+        },
+        "components": {
+            "StorageComponent": null,
+            "WorkerComponent": {
+                "max_worker": 5,
+                "salary": 2500
+            }
+        }
+    },
+    {
+        "name": "Mine",
+        "displayName": "Mine",
+        "displayName_de": "Mine",
+        "buildingClass": "Building",
+        "description": "Building to dig up resources like iron or gold.",
+        "description_de": "Gebäude zur Förderung von Rohöl,",
+        "type": "Resource",
+        "rawResources": [
+            "Iron",
+            "Coal",
+            "Aluminum",
+            "Gold",
+            "Copper",
+            "Silicon"
+        ],
+        "buildCosts": 500000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 256,
+            "y": 288,
+            "width": 128,
+            "height": 96
+        },
+        "offset": {
+            "x": 32,
+            "y": 32
+        },
+        "components": {
+            "StorageComponent": null,
+            "WorkerComponent": {
+                "max_worker": 15,
+                "salary": 2000
             }
         }
     },

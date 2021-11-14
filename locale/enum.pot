@@ -1,4 +1,4 @@
-msgid "Farm"
+msgid "Resource"
 msgstr ""
 
 msgid "Factory"

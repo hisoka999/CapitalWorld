@@ -36,6 +36,11 @@ namespace world
         {
             components[component.first] = component.second->clone();
         }
+
+        for (auto res : copy.rawResources)
+        {
+            rawResources.push_back(res);
+        }
     }
 
     Building::Building(std::string name, std::string displayName, std::string description, int buildPrice, BuildingType type)
@@ -148,7 +153,7 @@ namespace world
             productBalance.year = year;
             productBalance.month = month;
             productBalance.costs = product->calculateCostsPerMonth();
-            productBalance.income = 0; //TODO
+            productBalance.income = 0; // TODO
             productBalance.account = BalanceAccount::Production;
             balance.push_back(productBalance);
         }
@@ -275,7 +280,7 @@ namespace world
 
     bool Building::isAutoSellActive()
     {
-        return false; //type == BuildingType::Factory;
+        return false; // type == BuildingType::Factory;
     }
 
     void Building::autoSell(int month, int year)
@@ -289,7 +294,7 @@ namespace world
                 unsigned amount = storage->getEntry(product->getName());
                 double income = amount * product->calculateCostsPerPiece() * 1.5;
 
-                //find balance
+                // find balance
                 for (auto &b : balance)
                 {
                     if (b.name == product->getName() && b.year == year && b.month == month && b.account == BalanceAccount::Production)
@@ -466,6 +471,16 @@ namespace world
     void Building::addBalance(ProductBalance value)
     {
         balance.push_back(value);
+    }
+
+    bool Building::requireResource(world::RawResource rawResource)
+    {
+        auto it = std::find(rawResources.begin(), rawResources.end(), rawResource);
+        return it != rawResources.end();
+    }
+    void Building::addResource(world::RawResource rawResource)
+    {
+        rawResources.push_back(rawResource);
     }
 
 }

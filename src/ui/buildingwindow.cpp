@@ -3,7 +3,7 @@
 #include "ui/SalesTab.h"
 #include "ui/WorkerTab.h"
 #include "ui/factoryproductiontab.h"
-#include "ui/farmproductiontab.h"
+#include "ui/resourceproductiontab.h"
 #include "ui/routestab.h"
 #include "ui/storagetab.h"
 #include <engine/graphics/TextureManager.h>
@@ -68,8 +68,9 @@ namespace UI
         this->building = building;
         TileType tile = gameMap->getTile(position2D);
         labelGroundValue->setText(tileTypeToString(tile));
+        world::RawResource rawResource = gameMap->getRawResource(position2D.getX(), position2D.getY());
 
-        labelResourceValue->setText(_(std::string(magic_enum::enum_name(gameMap->getRawResource(position2D.getX(), position2D.getY())))));
+        labelResourceValue->setText(_(std::string(magic_enum::enum_name(rawResource))));
 
         for (auto &item : optionalItems)
         {
@@ -98,8 +99,8 @@ namespace UI
             workerTab = nullptr;
             switch (building->getType())
             {
-            case world::BuildingType::Farm:
-                productionTab = std::make_shared<UI::FarmProductionTab>(tabBar.get(), building);
+            case world::BuildingType::Resource:
+                productionTab = std::make_shared<UI::ResourceProductionTab>(tabBar.get(), building, rawResource);
                 break;
             case world::BuildingType::Factory:
                 productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building);

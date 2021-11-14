@@ -2,9 +2,9 @@
 #define PRODUCTSERVICE_H
 
 #include "../world/product.h"
+#include <engine/utils/json/jsonservice.h>
 #include <memory>
 #include <mutex>
-#include <engine/utils/json/jsonservice.h>
 
 namespace services
 {

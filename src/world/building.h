@@ -1,12 +1,12 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 
-#include <string>
-#include <engine/graphics/rect.h>
-#include "world/product.h"
 #include "buildingtypes.h"
-#include <engine/utils/json/object.h>
 #include "world/buildings/BuildingComponent.h"
+#include "world/product.h"
+#include <engine/graphics/rect.h>
+#include <engine/utils/json/object.h>
+#include <string>
 class GameMap;
 
 namespace world
@@ -75,7 +75,7 @@ namespace world
         bool isAutoSellActive();
         void autoSell(int month, int year);
         BuildingType getType();
-        //Storage &getStorage();
+        // Storage &getStorage();
         const std::string &getSubTexture();
         const size_t getSubTextureHash();
         void setSubTexture(const std::string &tex);
@@ -99,6 +99,8 @@ namespace world
         void delayedUpdate(Company *company);
 
         std::map<std::string, std::string> displayData();
+        bool requireResource(world::RawResource rawResource);
+        void addResource(world::RawResource rawResource);
 
     protected:
         void addBalance(ProductBalance value);
@@ -120,6 +122,7 @@ namespace world
         static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;
         std::hash<std::string> hasher;
         size_t hashId = 0;
+        std::vector<world::RawResource> rawResources;
     };
 }
 #endif // BUILDING_H

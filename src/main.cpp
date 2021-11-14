@@ -15,11 +15,11 @@
 #include "services/productservice.h"
 #include "services/researchservice.h"
 #include "services/ressourceservice.h"
+#include <chrono>
 #include <engine/core/SceneManager.h>
 #include <engine/core/gamewindow.h>
 #include <engine/core/input.h>
 #include <iostream>
-#include <chrono>
 
 #include <magic_enum.hpp>
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
         world::Building::initComponentMap();
-        services::RessourceService::Instance().loadData("data/ressources.json");
+        services::ResourceService::Instance().loadData("data/ressources.json");
         services::ProductService::Instance().loadData("data/products.json");
         services::BuildingService::Instance().loadData("data/buildings.json");
         services::ResearchService::Instance().loadData("data/research.json");

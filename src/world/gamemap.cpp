@@ -1,6 +1,6 @@
 #include "gamemap.h"
-#include <algorithm>
 #include "translate.h"
+#include <algorithm>
 
 bool isBuildingSmaller(std::shared_ptr<world::Building> &b1, std::shared_ptr<world::Building> &b2)
 {
@@ -11,7 +11,7 @@ GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
     initEmtyMap();
 }
 
-GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<RawResource> mapRessources) : width(width), height(height), mapData(mapData), mapDecoration(mapDecoration), mapRessources(mapRessources)
+GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<world::RawResource> mapResources) : width(width), height(height), mapData(mapData), mapDecoration(mapDecoration), mapResources(mapResources)
 {
     buildings.resize(width * height);
     std::fill(buildings.begin(), buildings.end(), nullptr);
@@ -59,14 +59,14 @@ const TileType GameMap::getDecoration(const int x, const int y) const
     return mapDecoration[pos];
 }
 
-const RawResource GameMap::getRawResource(const int x, const int y) const
+const world::RawResource GameMap::getRawResource(const int x, const int y) const
 {
     int pos = x + (y * height);
-    if (pos > mapRessources.size())
-        return RawResource::None;
+    if (pos > mapResources.size())
+        return world::RawResource::None;
     else if (x < 0 || y < 0)
-        return RawResource::None;
-    return mapRessources[pos];
+        return world::RawResource::None;
+    return mapResources[pos];
 }
 
 const size_t GameMap::getWidth() const
@@ -342,7 +342,7 @@ std::shared_ptr<utils::JSON::Object> GameMap::toJson()
         decoration += ('0' + tile);
     }
     std::string resources = "";
-    for (RawResource res : mapRessources)
+    for (world::RawResource res : mapResources)
     {
         resources += ('0' + (int)res);
     }
@@ -366,7 +366,7 @@ std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Ob
 
     std::vector<TileType> tiles;
     std::vector<TileType> decoration;
-    std::vector<RawResource> resources;
+    std::vector<world::RawResource> resources;
     // tiles.reserve(width * height);
     // std::fill(tiles.begin(), tiles.end(), 10);
 
@@ -385,7 +385,7 @@ std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Ob
     }
     for (char val : mapResources)
     {
-        RawResource tile = static_cast<RawResource>(val - '0');
+        world::RawResource tile = static_cast<world::RawResource>(val - '0');
         // tiles[i] = tile;
         resources.push_back(tile);
     }

@@ -1,7 +1,7 @@
 #include "ressource.h"
 
-Resource::Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType)
-    : name(name), image(image), costPerMonth(costPerMonth), buildingType(buildingType)
+Resource::Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType, world::RawResource rawResource)
+    : name(name), image(image), costPerMonth(costPerMonth), buildingType(buildingType), rawResource(rawResource)
 {
 }
 
@@ -20,4 +20,9 @@ float Resource::getCostPerMonth()
 world::BuildingType Resource::getBuildingType()
 {
     return buildingType;
+}
+
+world::RawResource Resource::getRawResource()
+{
+    return rawResource;
 }
