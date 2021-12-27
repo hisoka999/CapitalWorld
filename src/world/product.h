@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "produceableobject.h"
 
 struct ProductionCycle
 {
@@ -33,12 +34,11 @@ struct ResourceRequirement
     int amount;
 };
 
-class Product
+class Product : public ProduceableObject
 {
 public:
     Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
-    std::string getName();
-    std::string getImage();
+
     std::vector<std::shared_ptr<ResourceRequirement>> getResources();
     std::vector<std::shared_ptr<ProductRequirement>> getBaseProducts();
 
@@ -54,8 +54,6 @@ public:
     world::ProductType getProductType();
 
 private:
-    std::string name;
-    std::string image;
     world::BuildingType buildingType;
     std::vector<std::shared_ptr<ResourceRequirement>> resources;
     std::vector<std::shared_ptr<ProductRequirement>> products;

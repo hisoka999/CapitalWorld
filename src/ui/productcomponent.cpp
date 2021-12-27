@@ -4,7 +4,7 @@
 namespace UI
 {
 
-    ProductComponent::ProductComponent(std::shared_ptr<Product> product, UI::Object *parent) : product(product), UI::Object(parent)
+    ProductComponent::ProductComponent(std::shared_ptr<ProduceableObject> product, UI::Object *parent) : product(product), UI::Object(parent)
     {
         image = std::make_shared<UI::ImageButton>(this, 100, 100, 0, 0, true);
         image->loadImage(utils::os::combine("images", "products", product->getImage()));
@@ -14,9 +14,8 @@ namespace UI
         label->setPos(0, 100);
         addObject(label);
 
-        image->connect("buttonClick", [this]() {
-            this->fireFuncionCall("imageClicked");
-        });
+        image->connect("buttonClick", [this]()
+                       { this->fireFuncionCall("imageClicked"); });
     }
     void ProductComponent::render(core::Renderer *pRender)
     {

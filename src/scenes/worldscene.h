@@ -18,6 +18,7 @@
 #include <engine/core/SceneManager.h>
 #include <map>
 #include <world/gamemap.h>
+#include "ui/Console.h"
 
 namespace scenes
 {
@@ -66,12 +67,13 @@ namespace scenes
         std::unique_ptr<UpdateThread> thread;
         UI::BuildingWindow buildingWindow;
         UI::BuildingSelectionWindow buildingSelectionWindow;
+        UI::Console console;
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
         bool wasMoving = false;
         double updateDelta = 0;
         SDL_Surface *previewSurface = nullptr;
         std::shared_ptr<world::Building> selectedBuilding2Build;
-    };
+        };
 }
 #endif // WORLDSCENE_H

@@ -6,8 +6,8 @@
 namespace UI
 {
 
-    FactoryProductionTab::FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building)
-        : UI::Tab(parent, _("Production"))
+    FactoryProductionTab::FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, const std::shared_ptr<world::Company> &player)
+        : UI::Tab(parent, _("Production")), player(player)
     {
         initUI();
         setBuilding(building);
@@ -39,7 +39,7 @@ namespace UI
         resourceSelectionBox->setElementFunction([&](std::string var)
                                                  { return var; });
 
-        baseProductList = services::ProductService::Instance().getBaseProductsByBuildingType(world::BuildingType::Factory);
+        baseProductList = player->findAvialableBaseProducts(world::BuildingType::Factory);
         for (auto &res : baseProductList)
         {
             resourceSelectionBox->addElement(res->getName());
@@ -93,8 +93,7 @@ namespace UI
                                {
                                    building->removeProduct(product);
                                }
-                               refreshProductList();
-                           });
+                               refreshProductList(); });
         addObject(addButton);
 
         helpButton = std::make_shared<UI::Button>(this);
@@ -124,8 +123,7 @@ namespace UI
             pc->connect("imageClicked", [=](void)
                         {
                             resourceSelectionBox->setSelectionByText(product->getBaseProducts().at(0)->product->getName());
-                            productSelectionBox->setSelectionByText(product->getName());
-                        });
+                            productSelectionBox->setSelectionByText(product->getName()); });
 
             productComponents.push_back(pc);
             pc->setPos(20, y);
@@ -160,7 +158,7 @@ namespace UI
         auto resource = baseProductList[selection];
 
         // reload products
-        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory);
+        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory, resource);
         productSelectionBox->clearElements();
         for (auto &product : productList)
         {

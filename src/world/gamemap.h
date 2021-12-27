@@ -31,8 +31,8 @@ public:
     void initEmtyMap();
 
     const TileType getTile(const int x, const int y) const;
-    TileType getTile(utils::Vector2 &pos);
-    TileType getDecoration(utils::Vector2 &pos);
+    const TileType getTile(const utils::Vector2 &pos);
+    const TileType getDecoration(const utils::Vector2 &pos);
     const TileType getDecoration(const int x, const int y) const;
     const world::RawResource getRawResource(const int x, const int y) const;
 
@@ -57,7 +57,7 @@ private:
     void findStreets(const std::shared_ptr<world::Building> &startBuilding, std::vector<std::shared_ptr<world::Building>> &streets, const std::shared_ptr<world::Building> &excludeStreet);
 
     size_t width, height;
-    std::vector<TileType> mapData;
+    TileType *mapData;
     std::vector<TileType> mapDecoration;
     std::vector<world::RawResource> mapResources;
     std::vector<std::shared_ptr<world::Building>> buildings;

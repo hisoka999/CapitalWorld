@@ -1,17 +1,10 @@
 #include "product.h"
 
 Product::Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type)
-    : name(name), image(image), buildingType(buildingType), cycle(cycle), productType(type)
+    : ProduceableObject(name, image), buildingType(buildingType), cycle(cycle), productType(type)
 {
 }
-std::string Product::getName()
-{
-    return name;
-}
-std::string Product::getImage()
-{
-    return image;
-}
+
 std::vector<std::shared_ptr<ResourceRequirement>> Product::getResources()
 {
     return resources;

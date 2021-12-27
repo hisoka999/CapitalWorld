@@ -30,10 +30,12 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
     generateTileDataFromMap();
 }
 
-const graphics::Rect &GameMapRenderer::getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
+graphics::Rect GameMapRenderer::getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
 {
 
-    return textureMap->getSourceRect(getAutoTileId(tile, baseTile, tileX, tileY, groundLimit));
+    graphics::Rect rect;
+    textureMap->getSourceRect(getAutoTileId(tile, baseTile, tileX, tileY, groundLimit), &rect);
+    return rect;
 }
 
 const size_t GameMapRenderer::getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
@@ -156,14 +158,15 @@ const graphics::Rect &GameMapRenderer::getSourceRect(const TileType tile, const 
 {
 
     const int groundLimit = 8;
-
+    graphics::Rect result;
     if (tile < groundLimit)
     {
         return getAutoTile(tile, waterHash, tileX, tileY, groundLimit);
     }
     else if (tile > 12)
     {
-        return textureMap->getSourceRect(treesHash);
+        textureMap->getSourceRect(treesHash, &result);
+        return result;
     }
     else if (tile > groundLimit)
     {
@@ -172,19 +175,20 @@ const graphics::Rect &GameMapRenderer::getSourceRect(const TileType tile, const 
         switch (decoration)
         {
         case Decoration::grass1:
-            return textureMap->getSourceRect(grass1Hash);
+            textureMap->getSourceRect(grass1Hash, &result);
             break;
         case Decoration::rocks:
-            return textureMap->getSourceRect(grasRockHash);
+            textureMap->getSourceRect(grasRockHash, &result);
             break;
         case Decoration::none:
-            return textureMap->getSourceRect(grassHash);
+            textureMap->getSourceRect(grassHash, &result);
             break;
 
         default:
-            return textureMap->getSourceRect(grassHash);
+            textureMap->getSourceRect(grassHash, &result);
             break;
         }
+        return result;
     }
 
     return getAutoTile(tile, sandHash, tileX, tileY, groundLimit + 1);
@@ -192,7 +196,10 @@ const graphics::Rect &GameMapRenderer::getSourceRect(const TileType tile, const 
 
 float GameMapRenderer::getTileYOffset(uint16_t tile, size_t tileX, size_t tileY)
 {
-    const graphics::Rect &srcRect = getSourceRect(tile, tileX, tileY);
+    graphics::Rect srcRect;
+    size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
+    textureMap->getSourceRect(hash, &srcRect);
+
     return tileHeight - srcRect.height;
 }
 
@@ -239,9 +246,9 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
                 continue;
             float x = tempX;
             float y = tempY;
-            utils::Vector2 vec(x, y);
-            const auto &iso = iso::twoDToIso(vec);
-            const TileType tileType = gameMap->getTile(vec);
+
+            const auto &iso = iso::twoDToIso(x, y);
+            const TileType tileType = gameMap->getTile(x, y);
             const std::shared_ptr<world::Building> &building = gameMap->getBuilding(tempX, tempY);
             size_t pos = (iso.getX()) + (iso.getY() * width);
             if (building != nullptr)
@@ -288,7 +295,8 @@ void GameMapRenderer::generateTileDataFromMap()
 void GameMapRenderer::renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const uint16_t tile, const int tileX, const int tileY, const utils::Vector2 &pos)
 {
     size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
-    const graphics::Rect &srcRect = textureMap->getSourceRect(hash);
+    graphics::Rect srcRect;
+    textureMap->getSourceRect(hash, &srcRect);
     float x = (pos.getX() * factor) - camera->getX();
     float y = ((pos.getY() - (srcRect.height - tileHeight)) * factor) - camera->getY();
     const graphics::Rect destRect{x, y, srcRect.width * factor, srcRect.height * factor};
@@ -319,7 +327,8 @@ void GameMapRenderer::renderResource(core::Renderer *renderer, const core::Camer
 
     if (hash != 0)
     {
-        const graphics::Rect &srcRect = textureMap->getSourceRect(hash);
+        graphics::Rect srcRect;
+        textureMap->getSourceRect(hash, &srcRect);
         float x = (pos.getX() * factor) - camera->getX();
         float y = ((pos.getY() - (srcRect.height - tileHeight)) * factor) - camera->getY();
         const graphics::Rect destRect{x, y, srcRect.width * factor, srcRect.height * factor};
@@ -350,18 +359,17 @@ utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 inp
 void GameMapRenderer::render(core::Renderer *renderer)
 {
     auto camera = renderer->getMainCamera();
-    auto viewPort = camera->getViewPortRect();
-
+    graphics::Rect viewPort = camera->getViewPortRect();
+    auto startTime = std::chrono::high_resolution_clock::now();
+    float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
     if (!fillCache && cacheTexture != nullptr)
     {
-        cacheTexture->render(renderer, 0, 0);
+        cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
         // cacheBuildingTexture->render(renderer, 0, 0);
         return;
     }
     fillCache = false;
-    auto startTime = std::chrono::high_resolution_clock::now();
 
-    float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
     if (cacheTexture == nullptr)
         cacheTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
     // cacheBuildingTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
@@ -378,35 +386,70 @@ void GameMapRenderer::render(core::Renderer *renderer)
     int startX = std::round(start.getX() - (end.getX() / 2.f));
     int startY = std::round(start.getY() - (end.getY() / 2.f));
 
-    int endY = std::min(end.getY() / 1.8f + start.getY(), float(gameMap->getHeight()));
-    int endX = std::min(end.getX() / 1.8f + start.getX(), float(gameMap->getWidth()));
+    int endY = std::max(startY, 0) + std::round((viewPort.height / (tileWidth / 4)) / (factor - 0.1f));
+    int endX = std::max(startX, 0) + std::round((viewPort.width / (tileHeight / 2)) / (factor - 0.1f));
+    graphics::Rect destRect;
+    graphics::Rect srcRect;
+    SDL_Rect sdlSrcRect;
+    int tilesX = endX - std::max(startX, 0);
+    int tilesY = endY - std::max(startY, 0);
+
+    int gameMapWidth = gameMap->getWidth();
+    int gameMapHeight = gameMap->getHeight();
+
+    auto textureMapP = textureMap.get();
 
     for (int tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
+        if (tempY > gameMapHeight - 1)
+            break;
+
         for (int tempX = std::max(startX, 0); tempX < endX; ++tempX)
         {
-            if (tempX > gameMap->getWidth() - 1 || tempY > gameMap->getHeight() - 1)
+            if (tempX > gameMapWidth - 1)
                 continue;
 
             float x = static_cast<float>(tempX) * tileWidth / 2.0f;
             float y = static_cast<float>(tempY) * tileHeight;
-            const utils::Vector2 vec(x, y);
-            const auto &iso = iso::twoDToIso(vec);
+
+            const utils::Vector2 iso(x - y, (x + y) / 2.f);
             const auto tile = gameMap->getTile(tempX, tempY);
 
-            renderTile(renderer, camera, factor, tile, tempX, tempY, iso);
+            // renderTile(renderer, camera, factor, tile, tempX, tempY, iso);
+
+            size_t hash = tileData[tempX + (gameMapWidth * tempY)];
+            textureMapP->getSourceRect(hash, &srcRect);
+
+            float dx = (iso.getX() * factor) - camera->getX();
+            float dy = ((iso.getY() - (srcRect.height - tileHeight)) * factor) - camera->getY();
+            destRect.x = (iso.getX() * factor);
+            destRect.y = ((iso.getY() - (srcRect.height - tileHeight)) * factor);
+            destRect.width = srcRect.width * factor;
+            destRect.height = srcRect.height * factor;
+
+            if (!destRect.intersects(viewPort))
+                continue;
+            destRect.x -= camera->getX();
+            destRect.y -= camera->getY();
+            textureMapP->render(hash, destRect, renderer);
 
             renderResource(renderer, camera, factor, tempX, tempY, iso);
         }
     }
+
+    auto startTimeBuildings = std::chrono::high_resolution_clock::now();
+
     graphics::Rect displayRect;
     for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
 
     {
+        if (tempY > gameMapHeight - 1)
+            break;
+
         for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
 
         {
-            if (tempX > gameMap->getWidth() - 1 || tempY > gameMap->getHeight() - 1)
+            if (tempX > gameMapWidth - 1)
                 continue;
 
             const std::shared_ptr<world::Building> &building = gameMap->getBuilding(tempX, tempY);
@@ -444,21 +487,21 @@ void GameMapRenderer::render(core::Renderer *renderer)
             }
         }
     }
-
     renderer->setRenderTarget(nullptr);
-    cacheTexture->render(renderer, 0, 0);
+    cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
     auto elapsed = std::chrono::high_resolution_clock::now() - startTime;
-    long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    int64_t milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
+    int64_t milliBuildings = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedBuildings).count();
     if (milliseconds >= 10)
-        std::cout << "update map time: " << milliseconds << "ms" << std::endl;
-    // std::cout << "x num:" << endX - std::max(startX, 0) << " y num: " << endY - std::max(startY, 0) << std::endl;
-    // std::cout << "start x: " << std::max(startX, 0) << " end x: " << endX << std::endl;
-    // std::cout << " viewPort.x: " << viewPort.x << " viewPort.y: " << viewPort.y << std::endl;
-    if (!SDL_GetHintBoolean(SDL_HINT_RENDER_BATCHING, SDL_TRUE))
     {
-        std::cout << "batch rendering is disabled" << std::endl;
+        std::cout << "update map time: " << milliseconds << "ms" << std::endl;
+        std::cout << "update building time: " << milliBuildings << "ms" << std::endl;
+        std::cout << "\t num tiles: " << (tilesX * tilesY) << std::endl;
+        std::cout << "\t factor: " << factor << std::endl;
     }
-    renderMiniMap(renderer);
+    if (updateMiniMap)
+        renderMiniMap(renderer);
 }
 
 size_t GameMapRenderer::getTileWidth()

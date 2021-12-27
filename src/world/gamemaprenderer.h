@@ -40,7 +40,7 @@ public:
 private:
     void renderMiniMap(core::Renderer *renderer);
     void generateTileDataFromMap();
-    const graphics::Rect &getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    graphics::Rect getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
     const size_t getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
     const size_t getSourceTile(const TileType tile, const size_t tileX, const size_t tileY);
     void fillAutoTileMap();

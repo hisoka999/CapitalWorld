@@ -18,6 +18,25 @@ namespace services
         }
         return result;
     }
+
+    std::vector<std::shared_ptr<Product>> ProductService::getProductsByBuildingType(world::BuildingType type, const std::shared_ptr<Product> &baseProduct)
+    {
+        std::vector<std::shared_ptr<Product>> result;
+        for (auto &product : getData())
+        {
+            if (product->getBuildingType() == type)
+            {
+                for (auto &base : product->getBaseProducts())
+                {
+                    if (base->product->getName() == baseProduct->getName())
+                    {
+                        result.push_back(product);
+                    }
+                }
+            }
+        }
+        return result;
+    }
     std::vector<std::shared_ptr<Product>> ProductService::getBaseProductsByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Product>> result;

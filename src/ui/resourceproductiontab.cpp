@@ -145,8 +145,12 @@ namespace UI
 
         if (building != nullptr)
         {
-            auto product = productList[static_cast<size_t>(productSelectionBox->getSelection())];
-            if (!building->hasProduct(product))
+            std::shared_ptr<Product> product = nullptr;
+            if (productList.size() > 0)
+            {
+                product = productList[static_cast<size_t>(productSelectionBox->getSelection())];
+            }
+            if (product && !building->hasProduct(product))
             {
                 addButton->setLabel("Add");
             }

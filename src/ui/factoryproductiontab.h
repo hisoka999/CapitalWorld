@@ -6,9 +6,10 @@
 #include <engine/ui/Label.h>
 #include <engine/ui/ImageButton.h>
 #include <engine/ui/ComboBox.h>
-#include "../services/productservice.h"
-#include "../world/building.h"
-#include "../ui/productcomponent.h"
+#include "services/productservice.h"
+#include "world/building.h"
+#include "ui/productcomponent.h"
+#include "world/company.h"
 
 namespace UI
 {
@@ -16,7 +17,7 @@ namespace UI
     class FactoryProductionTab : public UI::Tab
     {
     public:
-        FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building);
+        FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, const std::shared_ptr<world::Company> &player);
 
         void setBuilding(std::shared_ptr<world::Building> building);
 
@@ -26,6 +27,7 @@ namespace UI
         void productSelectionChanged(unsigned int selection);
         void refreshProductList();
         std::shared_ptr<world::Building> building;
+        std::shared_ptr<world::Company> player;
         std::vector<std::shared_ptr<Product>> productList;
         std::vector<std::shared_ptr<Product>> baseProductList;
 

@@ -74,5 +74,51 @@
             "time": 10,
             "amount": 60000
         }
+    },
+    {
+        "name": "Iron",
+        "type": "Resource",
+        "texture": "ressources/iron.png",
+        "building": "Resource",
+        "baseResources": {
+            "Iron Ore": 100
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 5,
+            "amount": 10000
+        }
+    },
+    {
+        "name": "Coal",
+        "type": "Resource",
+        "texture": "ressources/coal.png",
+        "building": "Resource",
+        "baseResources": {
+            "Coal Ore": 100
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 5,
+            "amount": 10000
+        }
+    },
+    {
+        "name": "Steel",
+        "type": "Resource",
+        "texture": "ressources/steel.png",
+        "building": "Factory",
+        "baseProducts": {
+            "Iron": 90,
+            "Coal": 10
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 5,
+            "amount": 10000
+        }
     }
 ]

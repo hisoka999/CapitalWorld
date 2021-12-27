@@ -103,7 +103,7 @@ namespace UI
                 productionTab = std::make_shared<UI::ResourceProductionTab>(tabBar.get(), building, rawResource);
                 break;
             case world::BuildingType::Factory:
-                productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building);
+                productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building, company);
                 break;
             case world::BuildingType::Transport:
                 productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap, company);

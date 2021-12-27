@@ -20,5 +20,21 @@
         "building": "Resource",
         "rawResource": "Oil",
         "costs": 100
+    },
+    {
+        "name": "Iron Ore",
+        "type": "Resource",
+        "texture": "ressources/iron_ore.png",
+        "building": "Resource",
+        "rawResource": "Iron",
+        "costs": 50
+    },
+    {
+        "name": "Coal Ore",
+        "type": "Resource",
+        "texture": "ressources/coal_ore.png",
+        "building": "Resource",
+        "rawResource": "Coal",
+        "costs": 10
     }
 ]

@@ -145,11 +145,12 @@ namespace world
         {
             auto house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);
-            //change it in the real version
+            // change it in the real version
             int houseId = houseGen(gen);
             std::string subTexture = "house_" + std::to_string(houseId);
-
-            house->setSourceRect(groundTexture->getSourceRect(subTexture));
+            graphics::Rect srcRect;
+            groundTexture->getSourceRect(subTexture, &srcRect);
+            house->setSourceRect(srcRect);
             house->setPosition(housePosition.getX(), housePosition.getY());
             house->setOffset(0, house->getSourceRect().height - height);
 
@@ -172,16 +173,16 @@ namespace world
 
                     switch (directionGen(gen))
                     {
-                    case 1: //north
+                    case 1: // north
                         housePosition = housePosition - utils::Vector2(0, 1);
                         break;
-                    case 2: //south
+                    case 2: // south
                         housePosition = housePosition + utils::Vector2(0, 1);
                         break;
-                    case 3: //east
+                    case 3: // east
                         housePosition = housePosition - utils::Vector2(1, 0);
                         break;
-                    case 4: //west
+                    case 4: // west
                         housePosition = housePosition + utils::Vector2(1, 0);
                         break;
                     }
@@ -203,8 +204,7 @@ namespace world
 
                       return v11.getY() < v22.getY();
                       //  o1->get2DPosition().x > o2->get2DPosition().x
-                      ;
-                  });
+                      ; });
 
         std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2)
                   {
@@ -216,8 +216,7 @@ namespace world
 
                       return v11.getY() < v22.getY();
                       //  o1->get2DPosition().x > o2->get2DPosition().x
-                      ;
-                  });
+                      ; });
 
         for (auto &street : streets)
         {
@@ -244,10 +243,12 @@ namespace world
 
     void City::fillStreetsByTree(std::shared_ptr<TreeNode> node)
     {
+        graphics::Rect srcRect;
         int height = 28;
         auto street = std::make_shared<world::buildings::Street>();
-        //todo change position, or move to new class
-        street->setSourceRect(groundTexture->getSourceRect("street1"));
+        // todo change position, or move to new class
+        groundTexture->getSourceRect("street1", &srcRect);
+        street->setSourceRect(srcRect);
         street->setOffset(0, 0);
         utils::Vector2 streetPosition = node->position;
 
@@ -258,23 +259,25 @@ namespace world
             streets.push_back(street);
 
         auto street2 = std::make_shared<world::buildings::Street>();
-        //todo change position, or move to new class
+        // todo change position, or move to new class
 
-        street2->setSourceRect(groundTexture->getSourceRect("street1"));
+        groundTexture->getSourceRect("street1", &srcRect);
+        street2->setSourceRect(srcRect);
+
         street2->setOffset(0, 0);
         streetPosition = node->position;
         switch (node->direction)
         {
-        case 1: //north
+        case 1: // north
             streetPosition += utils::Vector2(0, 1);
             break;
-        case 2: //south
+        case 2: // south
             streetPosition -= utils::Vector2(0, 1);
             break;
-        case 3: //east
+        case 3: // east
             streetPosition = streetPosition + utils::Vector2(1, 0);
             break;
-        case 4: //west
+        case 4: // west
             streetPosition = streetPosition - utils::Vector2(1, 0);
             break;
         }
@@ -295,7 +298,7 @@ namespace world
         root = std::make_shared<TreeNode>(position, 0);
         std::mt19937 gen(seed);
         long numberOfBuildings = long(std::round(float(numberOfCitizen) / 1000.0f));
-        //numberOfBuildings /= 2.0;
+        // numberOfBuildings /= 2.0;
         fillNode(gen, root, &numberOfBuildings);
     }
 
@@ -327,13 +330,13 @@ namespace world
 
         if ((*nodesLeft) <= 0)
             return;
-        //std::cout << "nodes left: " << *nodesLeft << std::endl;
+        // std::cout << "nodes left: " << *nodesLeft << std::endl;
 
         std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
 
         int directions = directionGen(gen);
-        //std::cout << "directions:" << directions << std::endl;
+        // std::cout << "directions:" << directions << std::endl;
 
         if (root->children.size() > 0)
         {
@@ -370,22 +373,22 @@ namespace world
                     break;
                 switch (direction)
                 {
-                case 1: //north
+                case 1: // north
                     streetPosition -= utils::Vector2(0.f, 2.f + float(dn));
                     break;
-                case 2: //south
+                case 2: // south
                     streetPosition += utils::Vector2(0.f, 2.f + float(dn));
                     break;
-                case 3: //east
+                case 3: // east
                     streetPosition -= utils::Vector2(2.f + float(dn), 0.f);
                     break;
-                case 4: //west
+                case 4: // west
                     streetPosition += utils::Vector2(2.f + float(dn), 0.f);
                     break;
                 }
-                //don't fill existing childs
+                // don't fill existing childs
 
-                //std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
+                // std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
 
                 graphics::Rect buildRect{streetPosition.getX(), streetPosition.getY(), 1, 1};
                 if (gameMap->canBuild(buildRect))
@@ -399,13 +402,13 @@ namespace world
                         break;
                 }
 
-                //first check if you can build a street
-                // }
-                // else
-                // {
-                //     if (directions < 4)
-                //         directions++;
-                // }
+                // first check if you can build a street
+                //  }
+                //  else
+                //  {
+                //      if (directions < 4)
+                //          directions++;
+                //  }
             }
         }
         for (auto child : children)
@@ -428,7 +431,7 @@ namespace world
 
         json->setAttribute("name", name);
         json->setAttribute("numberOfCitizen", int(numberOfCitizen));
-        //json->setAttribute("type",   type);
+        // json->setAttribute("type",   type);
         json->setAttribute("pos_x", position.getX());
         json->setAttribute("pos_y", position.getY());
 
@@ -464,8 +467,11 @@ namespace world
         {
             auto streetObject = std::get<std::shared_ptr<utils::JSON::Object>>(s);
             auto street = std::make_shared<world::buildings::Street>();
-            //todo change position, or move to new class
-            street->setSourceRect(city->groundTexture->getSourceRect("street1"));
+            // todo change position, or move to new class
+            graphics::Rect srcRect;
+            city->groundTexture->getSourceRect("street1", &srcRect);
+            street->setSourceRect(srcRect);
+
             street->setOffset(0, 0);
             street->setPosition(streetObject->getFloatValue("pos_x"), streetObject->getFloatValue("pos_y"));
             street->setSubTexture("street1");
@@ -483,7 +489,9 @@ namespace world
             // utils::Vector2 housePosition(buildingObject->getFloatValue("pos_x"), buildingObject->getFloatValue("pos_y"));
             // //change it in the real version
             std::string subTexture = buildingObject->getStringValue("subTexture");
-            house->setSourceRect(city->groundTexture->getSourceRect(subTexture));
+            graphics::Rect srcRect;
+            city->groundTexture->getSourceRect(subTexture, &srcRect);
+            house->setSourceRect(srcRect);
             // house->setPosition(housePosition.getX(), housePosition.getY());
             int xOffset = buildingObject->getIntValue("offset_x");
             int yOffset = buildingObject->getIntValue("offset_y");

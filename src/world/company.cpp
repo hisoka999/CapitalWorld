@@ -1,6 +1,7 @@
 #include "company.h"
 #include "services/buildingservice.h"
 #include "services/researchservice.h"
+#include "services/productservice.h"
 #include "world/buildings/WorkerComponent.h"
 #include "world/buildings/street.h"
 #include <algorithm>
@@ -139,7 +140,7 @@ namespace world
             case world::BuildingType::Street:
             {
                 auto street = std::make_shared<world::buildings::Street>();
-                //todo change position, or move to new class
+                // todo change position, or move to new class
                 graphics::Rect rect;
                 rect.x = 0;
                 rect.y = 128;
@@ -203,6 +204,31 @@ namespace world
             if (canBuild)
             {
                 result.push_back(building);
+            }
+        }
+        return result;
+    }
+
+    std::vector<std::shared_ptr<Product>> Company::findAvialableBaseProducts(world::BuildingType type)
+    {
+        auto products = services::ProductService::Instance().getBaseProductsByBuildingType(type);
+
+        std::vector<std::shared_ptr<Product>> result;
+
+        for (auto &product : products)
+        {
+            bool canProduce = true;
+            for (auto research : availableResearch)
+            {
+                if (research->canEnableObject(product->getName()) && !research->getResearched())
+                {
+                    canProduce = false;
+                    break;
+                }
+            }
+            if (canProduce)
+            {
+                result.push_back(product);
             }
         }
         return result;

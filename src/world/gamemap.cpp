@@ -11,20 +11,31 @@ GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
     initEmtyMap();
 }
 
-GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<world::RawResource> mapResources) : width(width), height(height), mapData(mapData), mapDecoration(mapDecoration), mapResources(mapResources)
+GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<world::RawResource> mapResources) : width(width), height(height), mapDecoration(mapDecoration), mapResources(mapResources)
 {
     buildings.resize(width * height);
     std::fill(buildings.begin(), buildings.end(), nullptr);
+    this->mapData = nullptr;
+    this->mapData = new TileType[width * height];
+    for (int i = 0; i < mapData.size(); ++i)
+        this->mapData[i] = mapData[i];
 }
 
 void GameMap::initEmtyMap()
 {
-    mapData.clear();
+    if (mapData != nullptr)
+    {
+        delete[] mapData;
+        this->mapData = nullptr;
+        this->mapData = new TileType[width * height];
+        for (int i = 0; i < width * height; ++i)
+            mapData[i] = 10;
+    }
     buildings.clear();
-    mapData.resize(width * height);
+    // mapData.resize(width * height);
     buildings.resize(width * height);
     mapDecoration.resize(width * height);
-    std::fill(mapData.begin(), mapData.end(), 10);
+    // std::fill(mapData.begin(), mapData.end(), 10);
     std::fill(buildings.begin(), buildings.end(), nullptr);
     std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
 }
@@ -32,19 +43,19 @@ void GameMap::initEmtyMap()
 const TileType GameMap::getTile(const int x, const int y) const
 {
     int pos = x + (y * height);
-    if (pos > mapData.size())
+    if (pos > (width * height))
         return 0;
     else if (x < 0 || y < 0)
         return 0;
     return mapData[pos];
 }
 
-TileType GameMap::getTile(utils::Vector2 &pos)
+const TileType GameMap::getTile(const utils::Vector2 &pos)
 {
     return getTile(pos.getX(), pos.getY());
 }
 
-TileType GameMap::getDecoration(utils::Vector2 &pos)
+const TileType GameMap::getDecoration(const utils::Vector2 &pos)
 {
     return getDecoration(pos.getX(), pos.getY());
 }
@@ -332,8 +343,9 @@ std::shared_ptr<utils::JSON::Object> GameMap::toJson()
     std::shared_ptr<utils::JSON::Object> json = std::make_shared<utils::JSON::Object>();
 
     std::string tileData = "";
-    for (TileType tile : mapData)
+    for (int i = 0; i < width * height; ++i)
     {
+        TileType tile = mapData[i];
         tileData += ('0' + tile);
     }
     std::string decoration = "";

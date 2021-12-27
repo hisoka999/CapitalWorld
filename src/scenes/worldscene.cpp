@@ -22,7 +22,7 @@ namespace scenes
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState)
+          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
@@ -33,12 +33,16 @@ namespace scenes
 
         renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
-        buildWindow.setVisible(true);
+        buildWindow.setVisible(false);
+
+        console.setFont(hudFont.get());
+        console.setVisible(false);
 
         // uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
         winMgr->addWindow(&buildingWindow);
+        winMgr->addWindow(&console);
 
         hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow, &researchWindow);
         winMgr->addContainer(hud.get());
@@ -114,6 +118,7 @@ namespace scenes
 
     void WorldScene::render()
     {
+
         auto &gameMap = gameState->getGameMap();
         auto &cities = gameState->getCities();
 
@@ -151,6 +156,7 @@ namespace scenes
                 cursorTexture->render(renderer, srcRect, destRect);
             }
         }
+        auto &win = core::GameWindow::Instance();
 
         renderHUD();
 
@@ -158,7 +164,6 @@ namespace scenes
 
         if (optionsWindow.getVisible() && previewSurface == nullptr)
         {
-            auto &win = core::GameWindow::Instance();
             previewSurface = SDL_CreateRGBSurface(0, win.getWidth(), win.getHeight(), 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
             SDL_RenderReadPixels(renderer->getRenderer(), NULL, SDL_PIXELFORMAT_ARGB8888, previewSurface->pixels, previewSurface->pitch);
 
@@ -209,6 +214,8 @@ namespace scenes
                 }
                 else if (action == world::BuildAction::Build)
                 {
+                    if (!selectedBuilding2Build)
+                        return;
                     auto building = createBuilding();
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
@@ -358,6 +365,11 @@ namespace scenes
                 direction.top = false;
                 direction.bottom = true;
             }
+
+            if (pInput->isKeyDown(SDLK_PAGEDOWN))
+            {
+                console.setVisible(true);
+            }
         }
 
         if (pInput->isKeyDown(SDLK_ESCAPE))
@@ -421,17 +433,18 @@ namespace scenes
             }
             renderer->getMainCamera()->move(moveX, moveY);
         }
+        updateDelta += renderer->getTimeDelta();
+        if (wasMoving && updateDelta > 50)
+        {
+            mapRenderer->clearCache();
+            wasMoving = false;
+            updateDelta = 0;
+        }
     }
 
     void WorldScene::fixedUpdate(uint32_t delta)
     {
 
         hud->update();
-
-        if (wasMoving)
-        {
-            mapRenderer->clearCache();
-            wasMoving = false;
-        }
     }
 }
