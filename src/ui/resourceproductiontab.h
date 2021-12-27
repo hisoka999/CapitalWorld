@@ -25,6 +25,7 @@ namespace UI
         void resourceSelectionChanged(unsigned int selection);
         void productSelectionChanged(unsigned int selection);
         void refreshProductList();
+        world::RawResource rawResource;
         std::shared_ptr<world::Building> building;
         std::vector<std::shared_ptr<Product>> productList;
         std::vector<std::shared_ptr<Resource>> resourceList;
@@ -42,7 +43,6 @@ namespace UI
         std::shared_ptr<UI::Button> addButton;
         std::shared_ptr<UI::Button> helpButton;
         std::vector<std::shared_ptr<UI::ProductComponent>> productComponents;
-        world::RawResource rawResource;
     };
 }
 

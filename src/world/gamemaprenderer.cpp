@@ -38,7 +38,7 @@ graphics::Rect GameMapRenderer::getAutoTile(const TileType tile, size_t baseTile
     return rect;
 }
 
-const size_t GameMapRenderer::getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
+size_t GameMapRenderer::getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
 {
     const TileType leftTile = gameMap->getTile(tileX, tileY + 1);
     const TileType rightTile = gameMap->getTile(tileX, tileY - 1);
@@ -90,7 +90,7 @@ const size_t GameMapRenderer::getAutoTileId(const TileType tile, size_t baseTile
     return resultTile;
 }
 
-const size_t GameMapRenderer::getSourceTile(const TileType tile, const size_t tileX, const size_t tileY)
+size_t GameMapRenderer::getSourceTile(const TileType tile, const size_t tileX, const size_t tileY)
 {
     const int groundLimit = 8;
 
@@ -229,8 +229,8 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
     if (!updateMiniMap)
         return;
     miniMap = nullptr;
-    int width = gameMap->getWidth() * 2;
-    int height = gameMap->getHeight();
+    size_t width = gameMap->getWidth() * 2;
+    size_t height = gameMap->getHeight();
     miniMap = std::make_shared<graphics::Texture>(renderer, width, height, SDL_TEXTUREACCESS_STREAMING);
 
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -238,9 +238,9 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
     miniMap->setBlendMode(SDL_BLENDMODE_BLEND);
     miniMap->lockTexture();
 
-    for (int tempY = 0; tempY < height; ++tempY)
+    for (size_t tempY = 0; tempY < height; ++tempY)
     {
-        for (int tempX = 0; tempX < int(gameMap->getWidth()); ++tempX)
+        for (size_t tempX = 0; tempX < gameMap->getWidth(); ++tempX)
         {
             if (tempX > gameMap->getWidth() - 1 || tempY > height - 1)
                 continue;
@@ -250,7 +250,7 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
             const auto &iso = iso::twoDToIso(x, y);
             const TileType tileType = gameMap->getTile(x, y);
             const std::shared_ptr<world::Building> &building = gameMap->getBuilding(tempX, tempY);
-            size_t pos = (iso.getX()) + (iso.getY() * width);
+
             if (building != nullptr)
             {
                 miniMap->setPixel(iso.getX() + gameMap->getWidth(), iso.getY(), {255, 255, 255, 255});
@@ -386,25 +386,25 @@ void GameMapRenderer::render(core::Renderer *renderer)
     int startX = std::round(start.getX() - (end.getX() / 2.f));
     int startY = std::round(start.getY() - (end.getY() / 2.f));
 
-    int endY = std::max(startY, 0) + std::round((viewPort.height / (tileWidth / 4)) / (factor - 0.1f));
-    int endX = std::max(startX, 0) + std::round((viewPort.width / (tileHeight / 2)) / (factor - 0.1f));
+    size_t endY = std::max(startY, 0) + std::round((viewPort.height / (tileWidth / 4)) / (factor - 0.1f));
+    size_t endX = std::max(startX, 0) + std::round((viewPort.width / (tileHeight / 2)) / (factor - 0.1f));
     graphics::Rect destRect;
     graphics::Rect srcRect;
-    SDL_Rect sdlSrcRect;
+
     int tilesX = endX - std::max(startX, 0);
     int tilesY = endY - std::max(startY, 0);
 
-    int gameMapWidth = gameMap->getWidth();
-    int gameMapHeight = gameMap->getHeight();
+    size_t gameMapWidth = gameMap->getWidth();
+    size_t gameMapHeight = gameMap->getHeight();
 
     auto textureMapP = textureMap.get();
 
-    for (int tempY = std::max(startY, 0); tempY < endY; ++tempY)
+    for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
         if (tempY > gameMapHeight - 1)
             break;
 
-        for (int tempX = std::max(startX, 0); tempX < endX; ++tempX)
+        for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
         {
             if (tempX > gameMapWidth - 1)
                 continue;
@@ -413,15 +413,10 @@ void GameMapRenderer::render(core::Renderer *renderer)
             float y = static_cast<float>(tempY) * tileHeight;
 
             const utils::Vector2 iso(x - y, (x + y) / 2.f);
-            const auto tile = gameMap->getTile(tempX, tempY);
-
-            // renderTile(renderer, camera, factor, tile, tempX, tempY, iso);
 
             size_t hash = tileData[tempX + (gameMapWidth * tempY)];
             textureMapP->getSourceRect(hash, &srcRect);
 
-            float dx = (iso.getX() * factor) - camera->getX();
-            float dy = ((iso.getY() - (srcRect.height - tileHeight)) * factor) - camera->getY();
             destRect.x = (iso.getX() * factor);
             destRect.y = ((iso.getY() - (srcRect.height - tileHeight)) * factor);
             destRect.width = srcRect.width * factor;

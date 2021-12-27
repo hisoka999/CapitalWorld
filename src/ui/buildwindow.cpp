@@ -27,11 +27,9 @@ namespace UI
     {
         int xPos = 15;
         int yPos = 10;
-        int iconSize = 32;
         int offset = 40;
         SDL_Color defaultColor = {255, 255, 255, 255};
         SDL_Color hoverColor = {0xcd, 0xcd, 0xcd, 0xff};
-        SDL_Color clickColor = {0x33, 0x33, 0x33, 0xff};
         auto farmButton = std::make_shared<UI::IconButton>(this);
         farmButton->setLabel(_("Resources"));
         farmButton->setIconText("\uf4d8");

@@ -41,8 +41,8 @@ private:
     void renderMiniMap(core::Renderer *renderer);
     void generateTileDataFromMap();
     graphics::Rect getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
-    const size_t getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
-    const size_t getSourceTile(const TileType tile, const size_t tileX, const size_t tileY);
+    size_t getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    size_t getSourceTile(const TileType tile, const size_t tileX, const size_t tileY);
     void fillAutoTileMap();
     Autotile generateAutoTile(std::string base);
 

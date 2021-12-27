@@ -325,7 +325,7 @@ namespace world
         return subTexture;
     }
 
-    const size_t Building::getSubTextureHash()
+    size_t Building::getSubTextureHash()
     {
         return hashId;
     }

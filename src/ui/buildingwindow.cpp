@@ -111,6 +111,8 @@ namespace UI
             case world::BuildingType::Shop:
                 productionTab = std::make_shared<UI::SalesTab>(tabBar.get(), building);
                 break;
+            default:
+                break;
             }
             if (productionTab != nullptr)
             {

@@ -17,7 +17,7 @@ GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std
     std::fill(buildings.begin(), buildings.end(), nullptr);
     this->mapData = nullptr;
     this->mapData = new TileType[width * height];
-    for (int i = 0; i < mapData.size(); ++i)
+    for (size_t i = 0; i < mapData.size(); ++i)
         this->mapData[i] = mapData[i];
 }
 
@@ -28,7 +28,7 @@ void GameMap::initEmtyMap()
         delete[] mapData;
         this->mapData = nullptr;
         this->mapData = new TileType[width * height];
-        for (int i = 0; i < width * height; ++i)
+        for (size_t i = 0; i < width * height; ++i)
             mapData[i] = 10;
     }
     buildings.clear();
@@ -40,7 +40,7 @@ void GameMap::initEmtyMap()
     std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
 }
 
-const TileType GameMap::getTile(const int x, const int y) const
+TileType GameMap::getTile(const int x, const int y) const
 {
     int pos = x + (y * height);
     if (pos > (width * height))
@@ -50,17 +50,17 @@ const TileType GameMap::getTile(const int x, const int y) const
     return mapData[pos];
 }
 
-const TileType GameMap::getTile(const utils::Vector2 &pos)
+TileType GameMap::getTile(const utils::Vector2 &pos)
 {
     return getTile(pos.getX(), pos.getY());
 }
 
-const TileType GameMap::getDecoration(const utils::Vector2 &pos)
+TileType GameMap::getDecoration(const utils::Vector2 &pos)
 {
     return getDecoration(pos.getX(), pos.getY());
 }
 
-const TileType GameMap::getDecoration(const int x, const int y) const
+TileType GameMap::getDecoration(const int x, const int y) const
 {
     int pos = x + (y * height);
     if (pos > mapDecoration.size())
@@ -70,7 +70,7 @@ const TileType GameMap::getDecoration(const int x, const int y) const
     return mapDecoration[pos];
 }
 
-const world::RawResource GameMap::getRawResource(const int x, const int y) const
+world::RawResource GameMap::getRawResource(const int x, const int y) const
 {
     int pos = x + (y * height);
     if (pos > mapResources.size())
@@ -80,11 +80,11 @@ const world::RawResource GameMap::getRawResource(const int x, const int y) const
     return mapResources[pos];
 }
 
-const size_t GameMap::getWidth() const
+size_t GameMap::getWidth() const
 {
     return width;
 }
-const size_t GameMap::getHeight() const
+size_t GameMap::getHeight() const
 {
     return height;
 }
@@ -144,7 +144,7 @@ const std::shared_ptr<world::Building> &GameMap::getBuilding(const int x, const 
     return buildings[pos];
 }
 
-const size_t GameMap::make_pos(const uint16_t x, const uint16_t y) const
+size_t GameMap::make_pos(const uint16_t x, const uint16_t y) const
 {
     return x + (y * height);
 }

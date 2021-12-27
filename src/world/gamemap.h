@@ -30,14 +30,14 @@ public:
 
     void initEmtyMap();
 
-    const TileType getTile(const int x, const int y) const;
-    const TileType getTile(const utils::Vector2 &pos);
-    const TileType getDecoration(const utils::Vector2 &pos);
-    const TileType getDecoration(const int x, const int y) const;
-    const world::RawResource getRawResource(const int x, const int y) const;
+    TileType getTile(const int x, const int y) const;
+    TileType getTile(const utils::Vector2 &pos);
+    TileType getDecoration(const utils::Vector2 &pos);
+    TileType getDecoration(const int x, const int y) const;
+    world::RawResource getRawResource(const int x, const int y) const;
 
-    const size_t getWidth() const;
-    const size_t getHeight() const;
+    size_t getWidth() const;
+    size_t getHeight() const;
 
     std::shared_ptr<world::Building> getBuilding2D(const graphics::Rect &sourceBuilding);
     bool canBuild(graphics::Rect buildRect);
@@ -52,7 +52,7 @@ public:
     static std::shared_ptr<GameMap> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
 
 private:
-    const size_t make_pos(const uint16_t x, const uint16_t y) const;
+    size_t make_pos(const uint16_t x, const uint16_t y) const;
     std::vector<std::shared_ptr<world::Building>> borderingBuilding(const std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType);
     void findStreets(const std::shared_ptr<world::Building> &startBuilding, std::vector<std::shared_ptr<world::Building>> &streets, const std::shared_ptr<world::Building> &excludeStreet);
 

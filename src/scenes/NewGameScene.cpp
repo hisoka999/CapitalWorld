@@ -212,8 +212,6 @@ namespace scenes
         layout->updateLayout(bounds);
 
         bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
-
-        graphics::Rect scrollbounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
     }
 
     void NewGameScene::render()

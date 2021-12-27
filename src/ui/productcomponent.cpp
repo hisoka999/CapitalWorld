@@ -4,7 +4,7 @@
 namespace UI
 {
 
-    ProductComponent::ProductComponent(std::shared_ptr<ProduceableObject> product, UI::Object *parent) : product(product), UI::Object(parent)
+    ProductComponent::ProductComponent(std::shared_ptr<ProduceableObject> product, UI::Object *parent) : UI::Object(parent), product(product)
     {
         image = std::make_shared<UI::ImageButton>(this, 100, 100, 0, 0, true);
         image->loadImage(utils::os::combine("images", "products", product->getImage()));

@@ -77,7 +77,7 @@ namespace world
         BuildingType getType();
         // Storage &getStorage();
         const std::string &getSubTexture();
-        const size_t getSubTextureHash();
+        size_t getSubTextureHash();
         void setSubTexture(const std::string &tex);
 
         virtual void update(GameMap *gameMap){};
