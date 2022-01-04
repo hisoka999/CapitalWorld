@@ -116,16 +116,7 @@ if (WIN32)
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
     
 endif()
-# Let's set compiler-specific flags
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    # G++
-    add_compile_options(-Wall -Wextra)
-elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    # MSVC
-    target_compile_options(${PROJECT_NAME} PRIVATE /EHsc /MTd /W2 /c)
-    # Set the DLLEXPORT variable to export symbols
-    target_compile_definitions(${PROJECT_NAME} PRIVATE WIN_EXPORT)
-endif()
+
 message( ${MAGIC_ENUM_SRC})
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
@@ -140,6 +131,18 @@ else()
     target_link_libraries(${PROJECT_NAME} SDL2)
     message("unix "+${SDL2_LIBRARIES})
 endif()
+# Let's set compiler-specific flags
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # G++
+    add_compile_options(-Wall -Wextra)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # MSVC
+    target_compile_options(${PROJECT_NAME} PRIVATE /EHsc /MTd /W2 /c)
+
+    # Set the DLLEXPORT variable to export symbols
+    target_compile_definitions(${PROJECT_NAME} PRIVATE WIN_EXPORT)
+endif()
+
 #ADD_LIBRARY(sgl STATIC IMPORTED)
 #SET_TARGET_PROPERTIES(sgl PROPERTIES
 #    IMPORTED_LOCATION /usr/lib/libboost_unit_test_framework.a)
@@ -186,9 +189,7 @@ if(WIN32)
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/ $<TARGET_FILE_DIR:CapitalWorld>)
 
-    add_custom_command(TARGET CapitalWorld POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy
-                           ${PROJECT_BINARY_DIR}/engine/engine-build/Debug/sgl.dll $<TARGET_FILE_DIR:CapitalWorld>)
+
 endif()
 INSTALL(TARGETS CapitalWorld DESTINATION capitalworld)
 INSTALL(DIRECTORY fonts DESTINATION capitalworld )
