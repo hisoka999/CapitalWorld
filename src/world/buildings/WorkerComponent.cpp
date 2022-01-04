@@ -17,6 +17,8 @@ namespace world
 
         void WorkerComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
         {
+
+            currentWorkers = object->getIntValue("currentWorkers");
         }
 
         void WorkerComponent::updateProduction(int month, int year, Building *building)
@@ -36,6 +38,9 @@ namespace world
 
         std::shared_ptr<utils::JSON::Object> WorkerComponent::toJson()
         {
+            auto object = world::buildings::BuildingComponent::toJson();
+            object->setAttribute("currentWorkers", currentWorkers);
+            return object;
         }
 
         std::map<std::string, std::string> WorkerComponent::displayData()

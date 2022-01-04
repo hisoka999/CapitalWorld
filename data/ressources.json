@@ -1,13 +1,23 @@
 [
     {
         "name": "Chicken",
+        "name_de": "Huhn",
         "type": "Resource",
         "texture": "chicken.png",
         "building": "Resource",
         "costs": 20
     },
     {
+        "name": "Cow",
+        "name_de": "Kuh",
+        "type": "Resource",
+        "texture": "ressources/cow.png",
+        "building": "Resource",
+        "costs": 1000
+    },
+    {
         "name": "Wheet",
+        "name_de": "Weizen",
         "type": "Resource",
         "texture": "wheat.png",
         "building": "Resource",
@@ -15,6 +25,7 @@
     },
     {
         "name": "Crud Oil",
+        "name_de": "Rohöl",
         "type": "Resource",
         "texture": "wheat.png",
         "building": "Resource",
@@ -23,6 +34,7 @@
     },
     {
         "name": "Iron Ore",
+        "name_de": "Eisenerz",
         "type": "Resource",
         "texture": "ressources/iron_ore.png",
         "building": "Resource",
@@ -36,5 +48,22 @@
         "building": "Resource",
         "rawResource": "Coal",
         "costs": 10
+    },
+    {
+        "name": "Sugar Cane",
+        "name_de": "Zuckerrohr",
+        "type": "Resource",
+        "building": "Resource",
+        "texture": "ressources/sugar-cane.png",
+        "costs": 10
+    },
+    {
+        "name": "Bauxite",
+        "name_de": "Bauxit",
+        "type": "Resource",
+        "texture": "ressources/aluminum_ore.png",
+        "building": "Resource",
+        "rawResource": "Iron",
+        "costs": 30
     }
 ]

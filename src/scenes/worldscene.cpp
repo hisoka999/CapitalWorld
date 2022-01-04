@@ -383,7 +383,7 @@ namespace scenes
             optionsWindow.setPos(renderer->getViewPort().width / 2, renderer->getViewPort().height / 2);
             optionsWindow.setVisible(true);
         }
-        else if (pInput->isKeyDown(SDLK_r))
+        else if (pInput->isKeyDown(SDLK_r) && !SDL_IsTextInputActive())
         {
             auto rect = researchWindow.displayRect();
             researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));

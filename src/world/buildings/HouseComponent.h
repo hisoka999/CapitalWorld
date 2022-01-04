@@ -36,6 +36,7 @@ namespace world
         private:
             void initDemand();
             unsigned int residents;
+            const unsigned int maxResidents = 3000;
             int houseId;
             std::map<world::ProductType, Demand> demand;
             DemandMap baseDemand;

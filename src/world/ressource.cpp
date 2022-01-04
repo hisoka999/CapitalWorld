@@ -1,7 +1,7 @@
 #include "ressource.h"
 
-Resource::Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType, world::RawResource rawResource)
-    : ProduceableObject(name, image), costPerMonth(costPerMonth), buildingType(buildingType), rawResource(rawResource)
+Resource::Resource(const std::string &localizedName, const std::string &name, const std::string &image, float costPerMonth, world::BuildingType buildingType, world::RawResource rawResource)
+    : ProduceableObject(localizedName, name, image), costPerMonth(costPerMonth), buildingType(buildingType), rawResource(rawResource)
 {
 }
 

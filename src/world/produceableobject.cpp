@@ -1,6 +1,6 @@
 #include "produceableobject.h"
 
-ProduceableObject::ProduceableObject(const std::string &name, const std::string &image) : name(name), image(image)
+ProduceableObject::ProduceableObject(const std::string &localizedName, const std::string &name, const std::string &image) : m_localizedName(localizedName), m_name(name), m_image(image)
 {
 }
 
@@ -8,12 +8,17 @@ ProduceableObject::~ProduceableObject()
 {
 }
 
-std::string ProduceableObject::getName()
+std::string ProduceableObject::getLocalisedName() const
 {
-    return name;
+    return m_localizedName;
 }
 
-std::string ProduceableObject::getImage()
+std::string ProduceableObject::getName() const
 {
-    return image;
+    return m_name;
+}
+
+std::string ProduceableObject::getImage() const
+{
+    return m_image;
 }

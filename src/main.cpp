@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
         unsigned int delay = 0;
 
         bool run = true;
+        lastUpdateTime = 0;
         while (run && mainScene->isRunning())
         {
             ren.setDrawColor(0, 0, 0, 255);
@@ -151,13 +152,16 @@ int main(int argc, char *argv[])
                 //         delay--;
                 // }
             }
-            if (ren.getTickCount() - lastUpdateTime >= 40)
+            lastUpdateTime += ren.getTimeDelta();
+            if (lastUpdateTime >= 40)
             {
+
                 sceneManager.fixedUpdate(40);
-                lastUpdateTime = ren.getTickCount();
+                lastUpdateTime -= 40;
             }
             sceneManager.update();
             text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
+            text.render(&ren, "FT: " + std::to_string(ren.getTimeDelta()) + "ms", color, 850, 25);
             ren.renderPresent();
             if (saveScreenshot)
             {

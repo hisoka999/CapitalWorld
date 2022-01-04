@@ -42,6 +42,11 @@ bool Research::getResearched() const
     return researched;
 }
 
+void Research::setResearched(bool value)
+{
+    researched = value;
+}
+
 std::vector<std::string> Research::getRequirementNames() const
 {
     return requirementNames;

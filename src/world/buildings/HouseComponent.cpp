@@ -51,7 +51,7 @@ namespace world
                 }
                 d.second.value = 0;
             }
-            if (fullfilled)
+            if (fullfilled && residents < maxResidents)
             {
                 residents *= 1.2;
             }

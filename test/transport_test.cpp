@@ -58,15 +58,15 @@ TEST(TransportTest, FindStorageBuildings)
     auto component1 = world::Building::createComponentByName("StorageComponent");
     office->addComponent(component1);
     map.addBuilding(office);
-    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Farm);
+    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Resource);
     farm->setPosition(2, 1);
-    farm->addProduct(std::make_shared<Product>("test", "dummy.png", world::BuildingType::Farm, ProductionCycle(0, 12, 5, 5)));
+    farm->addProduct(std::make_shared<Product>("test", "test", "dummy.png", world::BuildingType::Resource, ProductionCycle(0, 12, 5, 5), world::ProductType::Food));
     map.addBuilding(farm);
     auto component2 = world::Building::createComponentByName("StorageComponent");
     farm->addComponent(component2);
     auto factory = std::make_shared<world::Building>("Factory", "Factory", "A Factory", 10000, world::BuildingType::Factory);
     factory->setPosition(2, 2);
-    factory->addProduct(std::make_shared<Product>("test", "dummy.png", world::BuildingType::Farm, ProductionCycle(0, 12, 5, 5)));
+    factory->addProduct(std::make_shared<Product>("test", "test", "dummy.png", world::BuildingType::Resource, ProductionCycle(0, 12, 5, 5), world::ProductType::Food));
     auto component3 = world::Building::createComponentByName("StorageComponent");
     factory->addComponent(component3);
     map.addBuilding(factory);
@@ -97,7 +97,7 @@ TEST(TransportTest, GenerateRoute)
     auto office = std::make_shared<world::Building>("Transport Office", "Transport Office", "A factory", 50000, world::BuildingType::Transport, 2, 2);
     office->setPosition(1, 5);
     map.addBuilding(office);
-    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Farm);
+    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Resource);
     farm->setPosition(2, 1);
     map.addBuilding(farm);
 

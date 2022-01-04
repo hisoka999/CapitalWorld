@@ -13,7 +13,9 @@
         "enables": [
             "Mine",
             "Coal",
-            "Iron"
+            "Iron",
+            "Aluminium",
+            "Softdrink"
         ],
         "requires": []
     },

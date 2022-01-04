@@ -2,6 +2,7 @@
 #include "magic_enum.hpp"
 #include "ressourceservice.h"
 #include <algorithm>
+#include <engine/utils/localisation.h>
 
 namespace services
 {
@@ -82,13 +83,28 @@ namespace services
 
     std::shared_ptr<Product> ProductService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
     {
+
+        std::string lang = Localisation::Instance().getLanguage();
+        if (lang == "en")
+            lang = "";
+        else
+        {
+            lang = "_" + lang;
+        }
+        std::string localisedName;
+
+        if (object->hasAttribute("name" + lang))
+            localisedName = object->getStringValue("name" + lang);
+        else
+            localisedName = object->getStringValue("name");
+
         std::string name = object->getStringValue("name");
         std::string texture = object->getStringValue("texture");
         world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(object->getStringValue("building")).value();
         world::ProductType productType = magic_enum::enum_cast<world::ProductType>(object->getStringValue("type")).value();
 
         ProductionCycle cycle = convertJsonObject2Cycle(object->getObjectValue("productionCycle"));
-        auto product = std::make_shared<Product>(name, texture, type, cycle, productType);
+        auto product = std::make_shared<Product>(localisedName, name, texture, type, cycle, productType);
         auto attrs = object->getAttributes();
         if (std::find(attrs.begin(), attrs.end(), std::string("baseResources")) != attrs.end())
         {

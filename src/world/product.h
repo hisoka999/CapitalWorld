@@ -37,7 +37,7 @@ struct ResourceRequirement
 class Product : public ProduceableObject
 {
 public:
-    Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
+    Product(const std::string &localizedName, std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
 
     std::vector<std::shared_ptr<ResourceRequirement>> getResources();
     std::vector<std::shared_ptr<ProductRequirement>> getBaseProducts();

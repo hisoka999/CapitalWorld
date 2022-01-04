@@ -36,8 +36,8 @@ namespace UI
         std::shared_ptr<UI::Label> costsText;
         std::shared_ptr<UI::Label> costsPerPieceText;
         std::shared_ptr<UI::Label> productNameText;
-        std::shared_ptr<UI::ComboBox<std::string>> productSelectionBox;
-        std::shared_ptr<UI::ComboBox<std::string>> resourceSelectionBox;
+        std::shared_ptr<UI::ComboBox<std::shared_ptr<Product>>> productSelectionBox;
+        std::shared_ptr<UI::ComboBox<std::shared_ptr<Product>>> resourceSelectionBox;
         std::shared_ptr<UI::ImageButton> productImage;
         std::shared_ptr<UI::Button> addButton;
         std::shared_ptr<UI::Button> helpButton;

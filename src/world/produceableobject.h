@@ -7,13 +7,15 @@ class ProduceableObject
 private:
     /* data */
 public:
-    ProduceableObject(const std::string &name, const std::string &image);
+    ProduceableObject(const std::string &localizedName, const std::string &name, const std::string &image);
     ~ProduceableObject();
 
-    std::string getName();
-    std::string getImage();
+    std::string getLocalisedName() const;
+    std::string getName() const;
+    std::string getImage() const;
 
 private:
-    std::string name;
-    std::string image;
+    std::string m_localizedName;
+    std::string m_name;
+    std::string m_image;
 };

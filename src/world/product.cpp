@@ -1,7 +1,7 @@
 #include "product.h"
 
-Product::Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type)
-    : ProduceableObject(name, image), buildingType(buildingType), cycle(cycle), productType(type)
+Product::Product(const std::string &localizedName, std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type)
+    : ProduceableObject(localizedName, name, image), buildingType(buildingType), cycle(cycle), productType(type)
 {
 }
 
@@ -41,7 +41,7 @@ float Product::calculateCostsPerPiece()
     float result = 0.0f;
     for (auto &res : resources)
     {
-        result += (res->resource->getCostPerMonth() / float(res->amount));
+        result += (res->resource->getCostPerMonth() * float(res->amount)) / this->cycle.amount;
     }
     for (auto &pro : products)
     {

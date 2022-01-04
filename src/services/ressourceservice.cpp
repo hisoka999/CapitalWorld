@@ -1,5 +1,7 @@
 #include "ressourceservice.h"
 #include <magic_enum.hpp>
+#include <engine/utils/localisation.h>
+
 namespace services
 {
     std::shared_ptr<Resource> ResourceService::getResourceByName(std::string name)
@@ -32,6 +34,20 @@ namespace services
 
     std::shared_ptr<Resource> ResourceService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
     {
+        std::string lang = Localisation::Instance().getLanguage();
+        if (lang == "en")
+            lang = "";
+        else
+        {
+            lang = "_" + lang;
+        }
+        std::string localisedName;
+
+        if (object->hasAttribute("name" + lang))
+            localisedName = object->getStringValue("name" + lang);
+        else
+            localisedName = object->getStringValue("name");
+
         std::string name = object->getStringValue("name");
         std::string texture = object->getStringValue("texture");
         int costs = object->getIntValue("costs");
@@ -43,7 +59,7 @@ namespace services
             raw = magic_enum::enum_cast<world::RawResource>(object->getStringValue("rawResource")).value();
         }
 
-        return std::make_shared<Resource>(name, texture, costs, type, raw);
+        return std::make_shared<Resource>(localisedName, name, texture, costs, type, raw);
 
         // Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType);
     }

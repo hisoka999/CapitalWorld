@@ -8,7 +8,7 @@
 class Resource : public ProduceableObject
 {
 public:
-    Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType, world::RawResource rawResource);
+    Resource(const std::string &localizedName, const std::string &name, const std::string &image, float costPerMonth, world::BuildingType buildingType, world::RawResource rawResource);
 
     float getCostPerMonth();
     world::BuildingType getBuildingType();

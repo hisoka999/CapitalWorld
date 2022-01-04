@@ -6,7 +6,7 @@ bool isBuildingSmaller(std::shared_ptr<world::Building> &b1, std::shared_ptr<wor
 {
     return b1->getDisplayName() < b2->getDisplayName();
 }
-GameMap::GameMap(size_t width, size_t height) : width(width), height(height)
+GameMap::GameMap(size_t width, size_t height) : width(width), height(height), mapData(nullptr)
 {
     initEmtyMap();
 }
@@ -225,10 +225,10 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const s
 
     std::vector<std::shared_ptr<world::Building>> result;
 
-    auto northBuilding = getBuilding2D({pos.x, pos.y - 1, pos.width, pos.height});
-    auto southBuilding = getBuilding2D({pos.x, pos.y + pos.height, pos.width, pos.height});
-    auto eastBuilding = getBuilding2D({pos.x + pos.width, pos.y, pos.width, pos.height});
-    auto westBuilding = getBuilding2D({pos.x - 1, pos.y, pos.width, pos.height});
+    auto northBuilding = getBuilding2D({pos.x, pos.y - 1, pos.width, 1});
+    auto southBuilding = getBuilding2D({pos.x, pos.y + pos.height, 1, pos.height});
+    auto eastBuilding = getBuilding2D({pos.x + pos.width, pos.y, pos.width, 1});
+    auto westBuilding = getBuilding2D({pos.x - 1, pos.y, 1, pos.height});
 
     auto isType = [&](world::BuildingType type)
     {

@@ -1,35 +1,32 @@
 #include "resourceproductiontab.h"
 #include "services/ressourceservice.h"
 #include <engine/utils/os.h>
+#include "translate.h"
 
 namespace UI
 {
 
     ResourceProductionTab::ResourceProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, world::RawResource rawResource)
-        : UI::Tab(parent, "Production"), rawResource(rawResource), building(building)
+        : UI::Tab(parent, _("Production")), rawResource(rawResource), building(building)
     {
         initUI();
         setBuilding(building);
     }
     void ResourceProductionTab::initUI()
     {
-        productSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
+        productSelectionBox = std::make_shared<UI::ComboBox<std::shared_ptr<Product>>>(this);
         productSelectionBox->setPos(490, 28);
         productSelectionBox->setWidth(120);
-        // productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Resource);
+
         productSelectionBox->connect("selectionChanged", [&](unsigned int selection)
                                      { productSelectionChanged(selection); });
 
-        productSelectionBox->setElementFunction([&](std::string var)
-                                                { return var; });
+        productSelectionBox->setElementFunction([&](std::shared_ptr<Product> var)
+                                                { return var->getLocalisedName(); });
 
-        // for (auto &product : productList)
-        // {
-        //     productSelectionBox->addElement(product->getName());
-        // }
         addObject(productSelectionBox);
 
-        resourceSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
+        resourceSelectionBox = std::make_shared<UI::ComboBox<std::shared_ptr<Resource>>>(this);
         resourceSelectionBox->setPos(180, 28);
         resourceSelectionBox->setWidth(120);
 
@@ -46,10 +43,16 @@ namespace UI
         }
         for (auto &res : resourceList)
         {
-            resourceSelectionBox->addElement(res->getName());
+            resourceSelectionBox->addElement(res);
+            int textHeight, textWidth;
+            resourceSelectionBox->getFont()->size(res->getName(), &textHeight, &textWidth);
+            if (textWidth > resourceSelectionBox->getWidth())
+            {
+                resourceSelectionBox->setWidth(textWidth + 20);
+            }
         }
-        resourceSelectionBox->setElementFunction([&](std::string var)
-                                                 { return var; });
+        resourceSelectionBox->setElementFunction([&](std::shared_ptr<Resource> var)
+                                                 { return var->getLocalisedName(); });
 
         addObject(resourceSelectionBox);
 
@@ -65,15 +68,15 @@ namespace UI
         productImage->setPos(490, 70);
         addObject(productImage);
 
-        std::shared_ptr<UI::Label> labelCycle = std::make_shared<UI::Label>("Production Cycle:", this);
+        std::shared_ptr<UI::Label> labelCycle = std::make_shared<UI::Label>(_("Production Cycle:"), this);
         labelCycle->setPos(295, 70);
         addObject(labelCycle);
 
-        std::shared_ptr<UI::Label> labelLandType = std::make_shared<UI::Label>("Land Type:", this);
+        std::shared_ptr<UI::Label> labelLandType = std::make_shared<UI::Label>(_("Land Type:"), this);
         labelLandType->setPos(295, 100);
         addObject(labelLandType);
 
-        std::shared_ptr<UI::Label> labelCosts = std::make_shared<UI::Label>("Costs:", this);
+        std::shared_ptr<UI::Label> labelCosts = std::make_shared<UI::Label>(_("Costs:"), this);
         labelCosts->setPos(295, 130);
         addObject(labelCosts);
 
@@ -90,7 +93,7 @@ namespace UI
         addObject(productionCycleText);
 
         addButton = std::make_shared<UI::Button>(this);
-        addButton->setLabel("Add");
+        addButton->setLabel(_("Add"));
         addButton->setStaticWidth(90);
         addButton->setPos(180, 380);
         addButton->connect(UI::Button::buttonClickCallback(), [&]()
@@ -108,7 +111,7 @@ namespace UI
         addObject(addButton);
 
         helpButton = std::make_shared<UI::Button>(this);
-        helpButton->setLabel("Help");
+        helpButton->setLabel(_("Help"));
         helpButton->setStaticWidth(90);
         helpButton->setPos(180, 420);
         helpButton->disable();
@@ -134,8 +137,8 @@ namespace UI
             pc->connect("imageClicked", [=](void)
                         {
                             std::cout << "click: " << product->getName() << std::endl;
-                            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->resource->getName());
-                            productSelectionBox->setSelectionByText(product->getName()); });
+                            resourceSelectionBox->setSelectionByText(product->getResources().at(0)->resource);
+                            productSelectionBox->setSelectionByText(product); });
 
             productComponents.push_back(pc);
             pc->setPos(20, y);
@@ -152,11 +155,11 @@ namespace UI
             }
             if (product && !building->hasProduct(product))
             {
-                addButton->setLabel("Add");
+                addButton->setLabel(_("Add"));
             }
             else
             {
-                addButton->setLabel("Remove");
+                addButton->setLabel(_("Remove"));
             }
         }
     }
@@ -175,7 +178,7 @@ namespace UI
             return;
         }
         auto resource = resourceList[selection];
-        resourceNameText->setText(resource->getName());
+        resourceNameText->setText(resource->getLocalisedName());
         costsText->setText(utils::string_format("%'.2f €/m", resource->getCostPerMonth()));
         resourceImage->loadImage(utils::os::combine("images", "products", resource->getImage()));
 
@@ -184,7 +187,7 @@ namespace UI
         productSelectionBox->clearElements();
         for (auto &product : productList)
         {
-            productSelectionBox->addElement(product->getName());
+            productSelectionBox->addElement(product);
         }
         productSelectionChanged(0);
     }
@@ -196,7 +199,7 @@ namespace UI
             return;
         }
         auto product = productList[selection];
-        productNameText->setText(product->getName());
+        productNameText->setText(product->getLocalisedName());
         productImage->loadImage(utils::os::combine("images", "products", product->getImage()));
 
         productionCycleText->setTextF("%'d  - %'d", product->getProductionCycle().startMonth, product->getProductionCycle().endMonth);
@@ -205,11 +208,11 @@ namespace UI
         {
             if (!building->hasProduct(product))
             {
-                addButton->setLabel("Add");
+                addButton->setLabel(_("Add"));
             }
             else
             {
-                addButton->setLabel("Remove");
+                addButton->setLabel(_("Remove"));
             }
         }
     }

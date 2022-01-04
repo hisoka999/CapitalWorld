@@ -119,6 +119,14 @@ namespace world
         }
         obj->setArrayAttribute("buildings", jsonBuildings);
 
+        std::shared_ptr<utils::JSON::Object> jsonResearch = std::make_shared<utils::JSON::Object>();
+
+        for (auto &res : availableResearch)
+        {
+            jsonResearch->setAttribute(res->getName(), res->getResearched());
+        }
+        obj->setAttribute("research", jsonResearch);
+
         return obj;
     }
 
@@ -164,6 +172,21 @@ namespace world
         for (auto &building : company->buildings)
         {
             building->delayedUpdate(company.get());
+        }
+
+        company->setAvailableResearch(services::ResearchService::Instance().getData());
+
+        auto research = object->getObjectValue("research");
+
+        for (auto researchName : research->getAttributes())
+        {
+            bool researched = research->getBoolValue(researchName);
+
+            for (auto &r : company->getAvailableResearch())
+            {
+                if (r->getName() == researchName)
+                    r->setResearched(researched);
+            }
         }
 
         return company;

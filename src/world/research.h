@@ -24,6 +24,7 @@ public:
     std::vector<std::shared_ptr<Research>> getRequirements() const;
 
     bool getResearched() const;
+    void setResearched(bool value);
 
     std::vector<std::string> getRequirementNames() const;
     void setRequirementNames(const std::vector<std::string> &value);

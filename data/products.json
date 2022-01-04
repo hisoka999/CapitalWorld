@@ -1,8 +1,9 @@
 [
     {
         "name": "Eggs",
+        "name_de": "Eier",
         "type": "Food",
-        "texture": "egg.png",
+        "texture": "Pixel_Mart/egg_white.png",
         "building": "Resource",
         "baseResources": {
             "Chicken": 10
@@ -16,8 +17,9 @@
     },
     {
         "name": "Wheet",
+        "name_de": "Weizen",
         "type": "Resource",
-        "texture": "wheat.png",
+        "texture": "Pixel_Mart/flour.png",
         "building": "Resource",
         "baseResources": {
             "Wheet": 30
@@ -62,8 +64,9 @@
     },
     {
         "name": "Oil",
+        "name_de": "Öl",
         "type": "Resource",
-        "texture": "/Pixel_Mart/olive_oil.png",
+        "texture": "Pixel_Mart/olive_oil.png",
         "building": "Resource",
         "baseResources": {
             "Crud Oil": 30
@@ -77,6 +80,7 @@
     },
     {
         "name": "Iron",
+        "name_de": "Eisen",
         "type": "Resource",
         "texture": "ressources/iron.png",
         "building": "Resource",
@@ -91,7 +95,23 @@
         }
     },
     {
+        "name": "Aluminium",
+        "type": "Resource",
+        "texture": "ressources/aluminium.png",
+        "building": "Resource",
+        "baseResources": {
+            "Iron Ore": 100
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 5,
+            "amount": 10000
+        }
+    },
+    {
         "name": "Coal",
+        "name_de": "Kohle",
         "type": "Resource",
         "texture": "ressources/coal.png",
         "building": "Resource",
@@ -107,6 +127,7 @@
     },
     {
         "name": "Steel",
+        "name_de": "Stahl",
         "type": "Resource",
         "texture": "ressources/steel.png",
         "building": "Factory",
@@ -119,6 +140,89 @@
             "end": 12,
             "time": 5,
             "amount": 10000
+        }
+    },
+    {
+        "name": "Milk",
+        "name_de": "Milch",
+        "type": "Food",
+        "texture": "Pixel_Mart/milk_bottle.png",
+        "building": "Resource",
+        "baseResources": {
+            "Cow": 10
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 90,
+            "amount": 5000
+        }
+    },
+    {
+        "name": "Meat",
+        "name_de": "Fleisch",
+        "type": "Food",
+        "texture": "Pixel_Mart/meat1.png",
+        "building": "Resource",
+        "baseResources": {
+            "Cow": 10
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 90,
+            "amount": 500
+        }
+    },
+    {
+        "name": "Sugar",
+        "name_de": "Zucker",
+        "type": "Food",
+        "texture": "Pixel_Mart/sugar.png",
+        "building": "Resource",
+        "baseResources": {
+            "Sugar Cane": 100
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 6,
+            "amount": 1000
+        }
+    },
+    {
+        "name": "Cookie",
+        "name_de": "Kekse",
+        "type": "Food",
+        "texture": "Pixel_Mart/cookies.png",
+        "building": "Factory",
+        "baseProducts": {
+            "Sugar": 100,
+            "Eggs": 20,
+            "Wheet": 200
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 1,
+            "amount": 500
+        }
+    },
+    {
+        "name": "Softdrink",
+        "name_de": "Cola",
+        "type": "Food",
+        "texture": "Pixel_Mart/soft_drink_red.png",
+        "building": "Factory",
+        "baseProducts": {
+            "Sugar": 100,
+            "Aluminium": 20
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 1,
+            "amount": 500
         }
     }
 ]
