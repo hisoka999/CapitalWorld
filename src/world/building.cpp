@@ -183,7 +183,7 @@ namespace world
         }
         return result;
     }
-    void Building::updateProduction(int month, int year)
+    void Building::updateProduction(unsigned int month, unsigned int year)
     {
 
         if (hasComponent("StorageComponent"))

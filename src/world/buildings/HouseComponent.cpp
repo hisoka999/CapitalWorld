@@ -30,12 +30,12 @@ namespace world
             return residents;
         }
 
-        void HouseComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void HouseComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
             residents = object->getIntValue("residents");
         }
 
-        void HouseComponent::updateProduction(int month, int year, Building *building)
+        void HouseComponent::updateProduction([[maybe_unused]] int month, [[maybe_unused]] int year, [[maybe_unused]] Building *building)
         {
             // check demands fullfillded
             bool fullfilled = true;

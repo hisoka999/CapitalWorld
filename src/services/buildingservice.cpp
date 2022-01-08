@@ -73,8 +73,7 @@ namespace services
         std::string description = object->getStringValue("description" + lang);
         int buildCosts = object->getIntValue("buildCosts");
         std::shared_ptr<world::Building> building;
-        object->getStringValue("buildingClass");
-        world::BuildingClass buildingClass = magic_enum::enum_cast<world::BuildingClass>(object->getStringValue("buildingClass")).value();
+
         world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(object->getStringValue("type")).value();
         int width = object->getIntValue("block_width");
         int height = object->getIntValue("block_height");

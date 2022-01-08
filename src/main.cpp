@@ -48,7 +48,7 @@ void generateEnumPot(std::string fileName)
     os.close();
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     try
     {
@@ -104,8 +104,6 @@ int main(int argc, char *argv[])
         graphics::Text text;
         text.openFont(utils::os::combine("fonts", "arial.ttf"), 22);
         SDL_Color color = {200, 200, 0, 0};
-
-        unsigned int delay = 0;
 
         bool run = true;
         lastUpdateTime = 0;

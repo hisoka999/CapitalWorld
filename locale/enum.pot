@@ -55,12 +55,12 @@ msgstr ""
 msgid "Huge"
 msgstr ""
 
-msgid "Easy"
+msgid "Hard"
 msgstr ""
 
 msgid "Normal"
 msgstr ""
 
-msgid "Hard"
+msgid "Easy"
 msgstr ""
 

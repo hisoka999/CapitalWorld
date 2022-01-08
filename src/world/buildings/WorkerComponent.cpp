@@ -15,7 +15,7 @@ namespace world
         {
         }
 
-        void WorkerComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void WorkerComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
 
             currentWorkers = object->getIntValue("currentWorkers");

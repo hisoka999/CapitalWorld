@@ -51,9 +51,9 @@ namespace world
     private:
         std::string name;
         float cash;
+        bool player;
         float income;
         float costs;
-        bool player;
         std::vector<std::shared_ptr<world::Building>> buildings;
         std::vector<std::shared_ptr<Research>> researchQueue;
         std::vector<std::shared_ptr<Research>> availableResearch;

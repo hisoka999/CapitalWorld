@@ -16,8 +16,8 @@ namespace UI
     {
 
         std::time_t tt = to_time_t(time);
-        std::tm tm = *std::gmtime(&tt); //GMT (UTC)
-        //std::tm tm = *std::localtime(&tt); //Locale time-zone, usually UTC by default.
+        std::tm tm = *std::gmtime(&tt); // GMT (UTC)
+        // std::tm tm = *std::localtime(&tt); //Locale time-zone, usually UTC by default.
         std::stringstream ss;
         ss << std::put_time(&tm, format.c_str());
         return ss.str();
@@ -33,7 +33,7 @@ namespace UI
         auto nameLabel = std::make_shared<UI::Label>(this);
 
         previewImageButton->setPos(5, 5);
-        //previewImageButton->loadImage("/home/stefan/.local/share/captialworld/screenshot_1626293817153250530.bmp"); //test
+        // previewImageButton->loadImage("/home/stefan/.local/share/captialworld/screenshot_1626293817153250530.bmp"); //test
         nameLabel->setPos(110, 5);
         nameTextItem->setPos(150, 5);
         fileDateLabel->setPos(110, 30);
@@ -57,7 +57,8 @@ namespace UI
         nameLabel->setText(_("Name"));
     }
 
-    SaveGameComponent::SaveGameComponent(UI::Object *parent, bool loadGame, const std::filesystem::directory_entry &entry) : UI::Object(parent), UI::Container()
+    SaveGameComponent::SaveGameComponent(UI::Object *parent, bool loadGame, const std::filesystem::directory_entry &entry)
+        : UI::Container(), UI::Object(parent)
     {
         initUI();
 

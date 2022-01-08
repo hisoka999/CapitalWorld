@@ -30,15 +30,15 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
     generateTileDataFromMap();
 }
 
-graphics::Rect GameMapRenderer::getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
+graphics::Rect GameMapRenderer::getAutoTile(size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
 {
 
     graphics::Rect rect;
-    textureMap->getSourceRect(getAutoTileId(tile, baseTile, tileX, tileY, groundLimit), &rect);
+    textureMap->getSourceRect(getAutoTileId(baseTile, tileX, tileY, groundLimit), &rect);
     return rect;
 }
 
-size_t GameMapRenderer::getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
+size_t GameMapRenderer::getAutoTileId(size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
 {
     const TileType leftTile = gameMap->getTile(tileX, tileY + 1);
     const TileType rightTile = gameMap->getTile(tileX, tileY - 1);
@@ -96,7 +96,7 @@ size_t GameMapRenderer::getSourceTile(const TileType tile, const size_t tileX, c
 
     if (tile < groundLimit)
     {
-        return getAutoTileId(tile, waterHash, tileX, tileY, groundLimit);
+        return getAutoTileId(waterHash, tileX, tileY, groundLimit);
     }
     else if (tile > 12)
     {
@@ -124,7 +124,7 @@ size_t GameMapRenderer::getSourceTile(const TileType tile, const size_t tileX, c
         }
     }
 
-    return getAutoTileId(tile, sandHash, tileX, tileY, groundLimit + 1);
+    return getAutoTileId(sandHash, tileX, tileY, groundLimit + 1);
 }
 
 void GameMapRenderer::fillAutoTileMap()
@@ -154,14 +154,14 @@ Autotile GameMapRenderer::generateAutoTile(std::string base)
     return tile;
 }
 
-const graphics::Rect &GameMapRenderer::getSourceRect(const TileType tile, const size_t tileX, const size_t tileY)
+const graphics::Rect GameMapRenderer::getSourceRect(const TileType tile, const size_t tileX, const size_t tileY)
 {
 
     const int groundLimit = 8;
     graphics::Rect result;
     if (tile < groundLimit)
     {
-        return getAutoTile(tile, waterHash, tileX, tileY, groundLimit);
+        return getAutoTile(waterHash, tileX, tileY, groundLimit);
     }
     else if (tile > 12)
     {
@@ -191,10 +191,10 @@ const graphics::Rect &GameMapRenderer::getSourceRect(const TileType tile, const 
         return result;
     }
 
-    return getAutoTile(tile, sandHash, tileX, tileY, groundLimit + 1);
+    return getAutoTile(sandHash, tileX, tileY, groundLimit + 1);
 }
 
-float GameMapRenderer::getTileYOffset(uint16_t tile, size_t tileX, size_t tileY)
+float GameMapRenderer::getTileYOffset(size_t tileX, size_t tileY)
 {
     graphics::Rect srcRect;
     size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
@@ -292,7 +292,7 @@ void GameMapRenderer::generateTileDataFromMap()
     }
 }
 
-void GameMapRenderer::renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const uint16_t tile, const int tileX, const int tileY, const utils::Vector2 &pos)
+void GameMapRenderer::renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos)
 {
     size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
     graphics::Rect srcRect;
@@ -322,6 +322,8 @@ void GameMapRenderer::renderResource(core::Renderer *renderer, const core::Camer
 
     case world::RawResource::Oil:
         hash = resourceOilHash;
+        break;
+    default:
         break;
     }
 
@@ -455,15 +457,8 @@ void GameMapRenderer::render(core::Renderer *renderer)
             float y = static_cast<float>(tempY) * tileHeight;
             const utils::Vector2 vec(x, y);
             const auto &pos = iso::twoDToIso(vec);
-            const TileType tile = gameMap->getTile(tempX, tempY);
 
-            // displayRect.x = ((pos.getX() - building->getXOffset()) * factor) - camera->getX();
-            // displayRect.width = displayRect.width * factor;
-            // displayRect.height = displayRect.height * factor;
-
-            const float tileYOffset = getTileYOffset(tile, tempX, tempY);
-
-            // displayRect.y = ((pos.getY() - building->getYOffset()) * factor) - (camera->getY() + tileYOffset);
+            const float tileYOffset = getTileYOffset(tempX, tempY);
 
             const auto &srcRect = building->getSourceRect();
 

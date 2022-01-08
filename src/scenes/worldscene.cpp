@@ -9,10 +9,10 @@
 #include <cmath>
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
+#include <engine/utils/vector2.h>
 #include <future>
 #include <iostream>
 #include <random>
-#include <engine/utils/vector2.h>
 
 namespace scenes
 {
@@ -119,7 +119,6 @@ namespace scenes
     void WorldScene::render()
     {
 
-        auto &gameMap = gameState->getGameMap();
         auto &cities = gameState->getCities();
 
         mapRenderer->render(renderer);
@@ -141,7 +140,7 @@ namespace scenes
                 utils::Vector2 vec(tx, ty);
                 const auto &pos = iso::twoDToIso(vec);
 
-                float tileYOffset = mapRenderer->getTileYOffset(gameMap->getTile(cursorPosition.getX(), cursorPosition.getY()), cursorPosition.getX(), cursorPosition.getY());
+                float tileYOffset = mapRenderer->getTileYOffset(cursorPosition.getX(), cursorPosition.getY());
 
                 graphics::Rect srcRect;
                 srcRect.x = 0;
@@ -442,7 +441,7 @@ namespace scenes
         }
     }
 
-    void WorldScene::fixedUpdate(uint32_t delta)
+    void WorldScene::fixedUpdate([[maybe_unused]] uint32_t delta)
     {
 
         hud->update();

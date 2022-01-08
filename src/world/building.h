@@ -69,7 +69,7 @@ namespace world
         void calculateBalance(int month, int year);
         float getCostsPerMonth(int month, int year);
         float getIncomePerMonth(int month, int year);
-        virtual void updateProduction(int month, int year);
+        virtual void updateProduction(unsigned int month, unsigned int year);
         void addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount);
         void addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount);
         bool isAutoSellActive();
@@ -80,7 +80,7 @@ namespace world
         size_t getSubTextureHash();
         void setSubTexture(const std::string &tex);
 
-        virtual void update(GameMap *gameMap){};
+        virtual void update([[maybe_unused]] GameMap *gameMap){};
 
         virtual std::shared_ptr<utils::JSON::Object> toJson();
         static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company);

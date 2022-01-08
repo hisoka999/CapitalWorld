@@ -2,6 +2,7 @@
 #define WORLDSCENE_H
 
 #include "ui/BuildingSelectionWindow.h"
+#include "ui/Console.h"
 #include "ui/buildingwindow.h"
 #include "ui/buildwindow.h"
 #include "ui/hudcontainer.h"
@@ -18,7 +19,6 @@
 #include <engine/core/SceneManager.h>
 #include <map>
 #include <world/gamemap.h>
-#include "ui/Console.h"
 
 namespace scenes
 {
@@ -51,8 +51,16 @@ namespace scenes
         void renderHUD();
         std::shared_ptr<world::Building> createBuilding();
 
-        graphics::Texture uiTexture;
         core::SceneManager *sceneManager;
+        UI::BuildingSelectionWindow buildingSelectionWindow;
+        UI::BuildWindow buildWindow;
+        UI::BuildingWindow buildingWindow;
+        std::shared_ptr<world::GameState> gameState;
+        UI::OptionsWindow optionsWindow;
+        UI::ResearchWindow researchWindow;
+        UI::Console console;
+
+        graphics::Texture uiTexture;
 
         std::shared_ptr<GameMapRenderer> mapRenderer;
         std::shared_ptr<graphics::Texture> cursorTexture;
@@ -60,20 +68,14 @@ namespace scenes
         std::shared_ptr<graphics::Text> hudFont;
         utils::Vector2 cursorPosition;
         graphics::Rect cursorBuildingRect;
-        UI::BuildWindow buildWindow;
-        UI::ResearchWindow researchWindow;
-        std::shared_ptr<world::GameState> gameState;
-        UI::OptionsWindow optionsWindow;
+
         std::unique_ptr<UpdateThread> thread;
-        UI::BuildingWindow buildingWindow;
-        UI::BuildingSelectionWindow buildingSelectionWindow;
-        UI::Console console;
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
         bool wasMoving = false;
         double updateDelta = 0;
         SDL_Surface *previewSurface = nullptr;
         std::shared_ptr<world::Building> selectedBuilding2Build;
-        };
+    };
 }
 #endif // WORLDSCENE_H

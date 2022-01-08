@@ -88,12 +88,8 @@ namespace world
             { // x
                 double x = (double)j / ((double)width);
                 double y = (double)i / ((double)height);
-                int z = dist(gen);
                 double base = 5;
                 double noise = 20 * pn.noise(base * x, base * y, 0.5);
-                // noise = noise-std::floor(noise );
-                // noise = noise*20;
-                // std::cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<" noise: "<<noise<<std::endl;
 
                 mapData[i + (j * height)] = std::floor(noise);
 

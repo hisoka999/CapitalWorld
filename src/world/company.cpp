@@ -1,7 +1,7 @@
 #include "company.h"
 #include "services/buildingservice.h"
-#include "services/researchservice.h"
 #include "services/productservice.h"
+#include "services/researchservice.h"
 #include "world/buildings/WorkerComponent.h"
 #include "world/buildings/street.h"
 #include <algorithm>
@@ -134,7 +134,7 @@ namespace world
     {
         std::string name = object->getStringValue("name");
         float cash = object->getFloatValue("cash");
-        int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
+        // int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
         auto company = std::make_shared<Company>(name, cash, true);
         auto buildings = object->getArray("buildings");
 

@@ -43,7 +43,7 @@ void GameMap::initEmtyMap()
 TileType GameMap::getTile(const int x, const int y) const
 {
     int pos = x + (y * height);
-    if (pos > (width * height))
+    if (pos > int(width * height))
         return 0;
     else if (x < 0 || y < 0)
         return 0;
@@ -63,9 +63,10 @@ TileType GameMap::getDecoration(const utils::Vector2 &pos)
 TileType GameMap::getDecoration(const int x, const int y) const
 {
     int pos = x + (y * height);
-    if (pos > mapDecoration.size())
+
+    if (x < 0 || y < 0)
         return 0;
-    else if (x < 0 || y < 0)
+    else if (pos > int(mapDecoration.size()))
         return 0;
     return mapDecoration[pos];
 }
@@ -73,9 +74,10 @@ TileType GameMap::getDecoration(const int x, const int y) const
 world::RawResource GameMap::getRawResource(const int x, const int y) const
 {
     int pos = x + (y * height);
-    if (pos > mapResources.size())
+
+    if (x < 0 || y < 0)
         return world::RawResource::None;
-    else if (x < 0 || y < 0)
+    else if (pos > int(mapResources.size()))
         return world::RawResource::None;
     return mapResources[pos];
 }
@@ -279,7 +281,7 @@ void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding,
 std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company)
 {
     // Schritt 1 Suche Straße neben dem Startgebäude
-    auto startPos = startBuilding->get2DPosition();
+    // auto startPos = startBuilding->get2DPosition();
 
     std::vector<std::shared_ptr<world::Building>> allStreets;
     // Schritt 2 suche alle Strassen zur Startstrasse
@@ -343,7 +345,7 @@ std::shared_ptr<utils::JSON::Object> GameMap::toJson()
     std::shared_ptr<utils::JSON::Object> json = std::make_shared<utils::JSON::Object>();
 
     std::string tileData = "";
-    for (int i = 0; i < width * height; ++i)
+    for (size_t i = 0; i < width * height; ++i)
     {
         TileType tile = mapData[i];
         tileData += ('0' + tile);

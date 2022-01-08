@@ -21,6 +21,11 @@ namespace world
         font = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 20);
     }
 
+    void City::addCitizen(int people)
+    {
+        numberOfCitizen += people;
+    }
+
     bool City::isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap)
     {
         bool blocked = false;
@@ -133,7 +138,6 @@ namespace world
 
         std::uniform_int_distribution<int> directionGen(1, 4);
 
-        int width = 64;
         int height = 32;
         world::buildings::DemandMap baseDemand;
         baseDemand[world::ProductType::Food] = 0.7f;
@@ -244,7 +248,7 @@ namespace world
     void City::fillStreetsByTree(std::shared_ptr<TreeNode> node)
     {
         graphics::Rect srcRect;
-        int height = 28;
+
         auto street = std::make_shared<world::buildings::Street>();
         // todo change position, or move to new class
         groundTexture->getSourceRect("street1", &srcRect);
@@ -461,7 +465,7 @@ namespace world
         int posY = object->getFloatValue("pos_y");
         utils::Vector2 pos(posX, posY);
         auto city = std::make_shared<City>(name, pos);
-
+        city->addCitizen(numberOfCitizen);
         utils::JSON::JsonArray jsonStreets = object->getArray("streets");
         for (auto s : jsonStreets)
         {

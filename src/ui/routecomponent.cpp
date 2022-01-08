@@ -1,13 +1,13 @@
 #include "routecomponent.h"
-#include "world/gamemap.h"
-#include "translate.h"
 #include "engine/ui/Checkbox.h"
-#include "world/buildings/StorageComponent.h"
 #include "services/productservice.h"
+#include "translate.h"
+#include "world/buildings/StorageComponent.h"
+#include "world/gamemap.h"
 namespace UI
 {
     RouteComponent::RouteComponent(UI::Object *parent, const std::shared_ptr<world::buildings::TransportRoute> &route, GameMap *gameMap, const std::shared_ptr<world::Building> &parentBuilding, const std::shared_ptr<world::Company> &player)
-        : UI::Object(parent), UI::Container(), route(route), gameMap(gameMap), parentBuilding(parentBuilding), player(player)
+        : UI::Container(), UI::Object(parent), route(route), gameMap(gameMap), parentBuilding(parentBuilding), player(player)
     {
 
         setHeight(70);
@@ -60,8 +60,7 @@ namespace UI
                                         {
                                             if (var == nullptr)
                                                 return std::string("empty");
-                                            return var->getName();
-                                        });
+                                            return var->getName(); });
 
         productList->connect("valueChanged", [&](std::shared_ptr<Product> b)
                              { route->product = b; });
@@ -107,8 +106,7 @@ namespace UI
                                     if (route->startBuilding != nullptr && route->startBuilding->getProducts().size() > 0)
                                     {
                                         route->product = route->startBuilding->getProducts()[0];
-                                    }
-                                });
+                                    } });
 
         finishBuildings->setElementFunction(elemFunction);
         finishBuildings->connect("valueChanged", [&](std::shared_ptr<world::Building> b)

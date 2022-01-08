@@ -8,7 +8,7 @@ namespace world
         {
         }
 
-        void BuildingComponent::setMetaData(std::shared_ptr<utils::JSON::Object> jsonData)
+        void BuildingComponent::setMetaData([[maybe_unused]] std::shared_ptr<utils::JSON::Object> jsonData)
         {
         }
 
@@ -24,7 +24,7 @@ namespace world
             return object;
         }
 
-        void BuildingComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void BuildingComponent::fromJson([[maybe_unused]] std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
         }
 
@@ -33,7 +33,7 @@ namespace world
             return name;
         }
 
-        void BuildingComponent::updateProduction(int month, int year, Building *building)
+        void BuildingComponent::updateProduction([[maybe_unused]] int month, [[maybe_unused]] int year, [[maybe_unused]] Building *building)
         {
         }
 
@@ -42,7 +42,7 @@ namespace world
             return std::make_shared<BuildingComponent>(this->getName());
         }
 
-        void BuildingComponent::delayedUpdate(Company *company)
+        void BuildingComponent::delayedUpdate([[maybe_unused]] Company *company)
         {
         }
 

@@ -31,7 +31,7 @@ public:
     void render(core::Renderer *renderer);
     size_t getTileWidth();
     size_t getTileHeight();
-    float getTileYOffset(uint16_t tile, size_t tileX, size_t tileY);
+    float getTileYOffset(size_t tileX, size_t tileY);
     void clearCache();
     void refreshMiniMap();
     std::shared_ptr<graphics::Texture> &getMiniMap();
@@ -40,16 +40,16 @@ public:
 private:
     void renderMiniMap(core::Renderer *renderer);
     void generateTileDataFromMap();
-    graphics::Rect getAutoTile(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
-    size_t getAutoTileId(const TileType tile, size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    graphics::Rect getAutoTile(size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
+    size_t getAutoTileId(size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit);
     size_t getSourceTile(const TileType tile, const size_t tileX, const size_t tileY);
     void fillAutoTileMap();
     Autotile generateAutoTile(std::string base);
 
-    void renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const uint16_t tile, const int tileX, const int tileY, const utils::Vector2 &pos);
+    void renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos);
     void renderResource(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos);
     utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
-    const graphics::Rect &getSourceRect(const TileType tile, const size_t tileX, const size_t tileY);
+    const graphics::Rect getSourceRect(const TileType tile, const size_t tileX, const size_t tileY);
     std::shared_ptr<GameMap> gameMap;
     std::vector<size_t> tileData;
     std::shared_ptr<graphics::Texture> groundTexture;
