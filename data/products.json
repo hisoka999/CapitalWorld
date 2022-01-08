@@ -224,5 +224,21 @@
             "time": 1,
             "amount": 500
         }
+    },
+    {
+        "name": "Cheese",
+        "name_de": "Käse",
+        "type": "Food",
+        "texture": "Pixel_Mart/white_cheese.png",
+        "building": "Factory",
+        "baseProducts": {
+            "Milk": 100
+        },
+        "productionCycle": {
+            "start": 1,
+            "end": 12,
+            "time": 3,
+            "amount": 20
+        }
     }
 ]

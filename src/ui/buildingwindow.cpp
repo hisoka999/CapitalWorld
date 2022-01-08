@@ -151,6 +151,10 @@ namespace UI
                 tabBar->removeTab(productionTab);
                 tabBar->removeTab(storageTab);
             }
+            if (workerTab != nullptr)
+            {
+                tabBar->removeTab(workerTab);
+            }
             labelTypeValue->setText("");
             labelOwnerValue->setText("");
         }
