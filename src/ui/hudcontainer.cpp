@@ -42,10 +42,8 @@ namespace UI
         playButton->setColor(utils::color::WHITE);
         playButton->setPos(700, 0);
         playButton->setBorderless(true);
-        playButton->connect(UI::Button::buttonClickCallback(), [&]
-                            {
-                                updateThread->start();
-                                updateThread->setSpeed(300); });
+        playButton->setToggleAllowed(true);
+
         addObject(playButton);
         pauseButton = std::make_shared<UI::Button>();
         pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
@@ -53,8 +51,8 @@ namespace UI
         pauseButton->setPos(730, 0);
         pauseButton->setColor(utils::color::WHITE);
         pauseButton->setBorderless(true);
-        pauseButton->connect(UI::Button::buttonClickCallback(), [&]
-                             { updateThread->pause(); });
+        pauseButton->setToggleAllowed(true);
+
         addObject(pauseButton);
 
         doubleSpeed = std::make_shared<UI::Button>();
@@ -63,10 +61,8 @@ namespace UI
         doubleSpeed->setPos(760, 0);
         doubleSpeed->setBorderless(true);
         doubleSpeed->setColor(utils::color::WHITE);
-        doubleSpeed->connect(UI::Button::buttonClickCallback(), [&]
-                             {
-                                 updateThread->start();
-                                 updateThread->setSpeed(100); });
+        doubleSpeed->setToggleAllowed(true);
+
         addObject(doubleSpeed);
 
         fullSpeed = std::make_shared<UI::Button>();
@@ -75,11 +71,42 @@ namespace UI
         fullSpeed->setPos(790, 0);
         fullSpeed->setBorderless(true);
         fullSpeed->setColor(utils::color::WHITE);
+        fullSpeed->setToggleAllowed(true);
         fullSpeed->connect(UI::Button::buttonClickCallback(), [&]
                            {
-                               updateThread->start();
-                               updateThread->setSpeed(50); });
+                                updateThread->start();
+                                updateThread->setSpeed(50); 
+                                playButton->setToggled(false);
+                                pauseButton->setToggled(false);
+                                fullSpeed->setToggled(true);
+                                doubleSpeed->setToggled(false); });
         addObject(fullSpeed);
+
+        doubleSpeed->connect(UI::Button::buttonClickCallback(), [&]
+                             {
+                                updateThread->start();
+                                updateThread->setSpeed(100);
+                                playButton->setToggled(false);
+                                pauseButton->setToggled(false);
+                                fullSpeed->setToggled(false);
+                                doubleSpeed->setToggled(true); });
+
+        playButton->connect(UI::Button::buttonClickCallback(), [&]
+                            {
+                                updateThread->start();
+                                updateThread->setSpeed(300);
+                                playButton->setToggled(true);
+                                pauseButton->setToggled(false);
+                                fullSpeed->setToggled(false);
+                                doubleSpeed->setToggled(false); });
+
+        pauseButton->connect(UI::Button::buttonClickCallback(), [&]
+                             { 
+                                updateThread->pause();
+                                playButton->setToggled(false);
+                                pauseButton->setToggled(true);
+                                fullSpeed->setToggled(false);
+                                doubleSpeed->setToggled(false); });
 
         int xLeft = 50;
         int yLeft = 0;
