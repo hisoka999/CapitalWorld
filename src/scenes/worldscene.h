@@ -8,6 +8,7 @@
 #include "ui/hudcontainer.h"
 #include "ui/optionswindow.h"
 #include "ui/researchwindow.h"
+#include "world/AIThread.h"
 #include "world/buildactions.h"
 #include "world/building.h"
 #include "world/city.h"
@@ -70,6 +71,7 @@ namespace scenes
         graphics::Rect cursorBuildingRect;
 
         std::unique_ptr<UpdateThread> thread;
+        std::unique_ptr<world::AIThread> aiThread;
         std::shared_ptr<UI::HUDContainer> hud;
         MovementDirection direction;
         bool wasMoving = false;

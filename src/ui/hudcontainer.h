@@ -1,8 +1,9 @@
 #pragma once
-#include "../world/updatethread.h"
 #include "buildwindow.h"
 #include "researchwindow.h"
+#include "world/updatethread.h"
 #include <engine/ui/Container.h>
+#include <world/AIThread.h>
 
 namespace UI
 {
@@ -15,9 +16,8 @@ namespace UI
     class HUDContainer : public UI::Container
     {
     public:
-        HUDContainer(UpdateThread *updateThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow);
+        HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow);
 
-        virtual void render(core::Renderer *renderer);
         void update();
 
     private:
@@ -28,12 +28,15 @@ namespace UI
         std::shared_ptr<UI::Button> pauseButton;
         std::shared_ptr<UI::Button> doubleSpeed;
         std::shared_ptr<UI::Button> fullSpeed;
+        std::shared_ptr<UI::IconButton> companyButton;
         std::shared_ptr<UI::IconButton> cashButton;
         std::shared_ptr<UI::IconButton> profitButton;
         std::shared_ptr<UI::IconButton> buildButton;
         std::shared_ptr<UI::IconButton> researchButton;
+        std::shared_ptr<UI::IconButton> timeButton;
 
         UpdateThread *updateThread;
+        world::AIThread *aiThread;
         std::shared_ptr<world::GameState> gameState;
         UI::BuildWindow *buildWindow;
         UI::ResearchWindow *researchWindow;

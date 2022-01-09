@@ -2,15 +2,15 @@
 #define GAMESTATE_H
 
 #include "../world/company.h"
+#include "constants.h"
 #include "world/city.h"
 #include "world/gamemap.h"
-#include <ctime>
 #include <chrono>
+#include <ctime>
+#include <engine/utils/json/object.h>
+#include <engine/utils/time/date.h>
 #include <memory>
 #include <vector>
-#include "constants.h"
-#include <engine/utils/time/date.h>
-#include <engine/utils/json/object.h>
 
 namespace world
 {
@@ -26,8 +26,8 @@ namespace world
     class GameState
     {
     public:
-        GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty);
-        GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty, utils::time::Date &time);
+        GameState(const std::vector<std::shared_ptr<world::Company>> &companies, const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty);
+        GameState(const std::vector<std::shared_ptr<world::Company>> &companies, const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty, utils::time::Date &time);
 
         void setTimeState(TimeState state);
         void increaseTime();
@@ -35,6 +35,7 @@ namespace world
         const std::shared_ptr<world::Company> &getPlayer() const;
         const std::shared_ptr<GameMap> &getGameMap() const;
         const std::vector<std::shared_ptr<world::City>> &getCities();
+        const std::vector<std::shared_ptr<world::Company>> &getCompanies();
         Difficulty getDifficulty() const;
         void update();
 

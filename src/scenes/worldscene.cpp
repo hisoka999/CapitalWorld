@@ -41,10 +41,11 @@ namespace scenes
         // uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
+        aiThread = std::make_unique<world::AIThread>(gameState);
         winMgr->addWindow(&buildingWindow);
         winMgr->addWindow(&console);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow, &researchWindow);
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &buildWindow, &researchWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
@@ -61,6 +62,7 @@ namespace scenes
     {
 
         thread->stop();
+        aiThread->stop();
         if (previewSurface != nullptr)
         {
             SDL_FreeSurface(previewSurface);
@@ -70,24 +72,33 @@ namespace scenes
     void WorldScene::renderHUD()
     {
 
-        int height = 40;
+        float height = 40;
+        const int miniMapSize = 150;
+
         buildWindow.setPos(0, height + 50);
 
         renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
-        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, float(height)};
+        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
         renderer->fillRect(hudRect);
+        graphics::Rect miniMapRect = {renderer->getViewPort().width - miniMapSize, height, float(miniMapSize), float(miniMapSize)};
+
+        renderer->fillRect(miniMapRect);
 
         renderer->setDrawColor(0xff, 0xff, 0xff, 128);
         utils::Vector2 start(0, height);
-        utils::Vector2 end(renderer->getViewPort().width, height);
+        utils::Vector2 end(renderer->getViewPort().width - miniMapSize, height);
         renderer->drawLine(start, end);
+        auto newEnd = end + utils::Vector2(0, miniMapSize);
+        auto lastEnd = newEnd + utils::Vector2(miniMapSize, 0);
+        renderer->drawLine(end, newEnd);
+        renderer->drawLine(newEnd, lastEnd);
+
         renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
 
         // render minimap
         auto &miniMap = mapRenderer->getMiniMap();
-        const int miniMapSize = 150;
-        miniMap->renderResized(renderer, renderer->getViewPort().width - miniMapSize, height, miniMapSize, miniMapSize);
+        miniMap->renderResized(renderer, miniMapRect.x, miniMapRect.y, miniMapRect.width, miniMapRect.height);
 
         buildWindow.render(renderer);
     }

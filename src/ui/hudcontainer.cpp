@@ -11,105 +11,29 @@
 
 namespace UI
 {
-    HUDContainer::HUDContainer(UpdateThread *updateThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow)
-        : updateThread(updateThread), gameState(gameState), buildWindow(buildWindow), researchWindow(researchWindow)
+    HUDContainer::HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow)
+        : updateThread(updateThread), aiThread(aiThread), gameState(gameState), buildWindow(buildWindow), researchWindow(researchWindow)
     {
         glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
         uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
         initUI();
     }
 
-    void HUDContainer::render(core::Renderer *renderer)
-    {
-
-        // render time
-        int xLeft = 570;
-        int yLeft = 10;
-        SDL_Color color = {100, 200, 0, 255};
-
-        glyphText->render(renderer, "\uf017", color, xLeft, yLeft);
-        xLeft += 25;
-        auto format = gameState->getTime().format();
-        uiText->render(renderer, format, color, xLeft, yLeft + 3);
-        UI::Container::render(renderer);
-    }
-
     void HUDContainer::initUI()
     {
-        playButton = std::make_shared<UI::Button>();
-        playButton->setFont("fonts/fa-solid-900.ttf", 20);
-        playButton->setLabel("\uf04b");
-        playButton->setColor(utils::color::WHITE);
-        playButton->setPos(700, 0);
-        playButton->setBorderless(true);
-        playButton->setToggleAllowed(true);
-
-        addObject(playButton);
-        pauseButton = std::make_shared<UI::Button>();
-        pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
-        pauseButton->setLabel("\uf04c");
-        pauseButton->setPos(730, 0);
-        pauseButton->setColor(utils::color::WHITE);
-        pauseButton->setBorderless(true);
-        pauseButton->setToggleAllowed(true);
-
-        addObject(pauseButton);
-
-        doubleSpeed = std::make_shared<UI::Button>();
-        doubleSpeed->setFont("fonts/fa-solid-900.ttf", 20);
-        doubleSpeed->setLabel("\uf04e");
-        doubleSpeed->setPos(760, 0);
-        doubleSpeed->setBorderless(true);
-        doubleSpeed->setColor(utils::color::WHITE);
-        doubleSpeed->setToggleAllowed(true);
-
-        addObject(doubleSpeed);
-
-        fullSpeed = std::make_shared<UI::Button>();
-        fullSpeed->setFont("fonts/fa-solid-900.ttf", 20);
-        fullSpeed->setLabel("\uf050");
-        fullSpeed->setPos(790, 0);
-        fullSpeed->setBorderless(true);
-        fullSpeed->setColor(utils::color::WHITE);
-        fullSpeed->setToggleAllowed(true);
-        fullSpeed->connect(UI::Button::buttonClickCallback(), [&]
-                           {
-                                updateThread->start();
-                                updateThread->setSpeed(50); 
-                                playButton->setToggled(false);
-                                pauseButton->setToggled(false);
-                                fullSpeed->setToggled(true);
-                                doubleSpeed->setToggled(false); });
-        addObject(fullSpeed);
-
-        doubleSpeed->connect(UI::Button::buttonClickCallback(), [&]
-                             {
-                                updateThread->start();
-                                updateThread->setSpeed(100);
-                                playButton->setToggled(false);
-                                pauseButton->setToggled(false);
-                                fullSpeed->setToggled(false);
-                                doubleSpeed->setToggled(true); });
-
-        playButton->connect(UI::Button::buttonClickCallback(), [&]
-                            {
-                                updateThread->start();
-                                updateThread->setSpeed(300);
-                                playButton->setToggled(true);
-                                pauseButton->setToggled(false);
-                                fullSpeed->setToggled(false);
-                                doubleSpeed->setToggled(false); });
-
-        pauseButton->connect(UI::Button::buttonClickCallback(), [&]
-                             { 
-                                updateThread->pause();
-                                playButton->setToggled(false);
-                                pauseButton->setToggled(true);
-                                fullSpeed->setToggled(false);
-                                doubleSpeed->setToggled(false); });
 
         int xLeft = 50;
         int yLeft = 0;
+
+        companyButton = std::make_shared<UI::IconButton>();
+        companyButton->setFont("fonts/arial.ttf", 12);
+        companyButton->setLabel(gameState->getPlayer()->getName());
+        companyButton->setIconText("\uf1ad");
+        companyButton->setColor(utils::color::WHITE);
+        companyButton->setPos(xLeft, yLeft);
+        companyButton->setBorderless(true);
+        xLeft += 170;
+
         // cash
         cashButton = std::make_shared<UI::IconButton>();
         cashButton->setFont("fonts/arial.ttf", 12);
@@ -144,6 +68,8 @@ namespace UI
                                     int height = core::GameWindow::Instance().getHeight();
                                     researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
                                     researchWindow->setVisible(true); });
+        xLeft += 200;
+        addObject(companyButton);
         addObject(cashButton);
         addObject(profitButton);
         addObject(researchButton);
@@ -161,6 +87,97 @@ namespace UI
                                  std::cout << "build button clicked" << std::endl;
                                  buildWindow->setVisible(true); });
         addObject(buildButton);
+
+        timeButton = std::make_shared<UI::IconButton>();
+        timeButton->setFont("fonts/arial.ttf", 12);
+        timeButton->setIconText("\uf017");
+        timeButton->setLabel(gameState->getTime().format());
+        timeButton->setColor(utils::color::GREEN);
+        timeButton->setPos(xLeft, 0);
+        timeButton->setBorderless(true);
+        // timeButton->disable();
+        addObject(timeButton);
+        xLeft += 100;
+        playButton = std::make_shared<UI::Button>();
+        playButton->setFont("fonts/fa-solid-900.ttf", 20);
+        playButton->setLabel("\uf04b");
+        playButton->setColor(utils::color::WHITE);
+        playButton->setPos(xLeft, 0);
+        playButton->setBorderless(true);
+        playButton->setToggleAllowed(true);
+        xLeft += 30;
+        addObject(playButton);
+        pauseButton = std::make_shared<UI::Button>();
+        pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
+        pauseButton->setLabel("\uf04c");
+        pauseButton->setPos(xLeft, 0);
+        pauseButton->setColor(utils::color::WHITE);
+        pauseButton->setBorderless(true);
+        pauseButton->setToggleAllowed(true);
+
+        addObject(pauseButton);
+        xLeft += 30;
+
+        doubleSpeed = std::make_shared<UI::Button>();
+        doubleSpeed->setFont("fonts/fa-solid-900.ttf", 20);
+        doubleSpeed->setLabel("\uf04e");
+        doubleSpeed->setPos(xLeft, 0);
+        doubleSpeed->setBorderless(true);
+        doubleSpeed->setColor(utils::color::WHITE);
+        doubleSpeed->setToggleAllowed(true);
+
+        addObject(doubleSpeed);
+        xLeft += 30;
+
+        fullSpeed = std::make_shared<UI::Button>();
+        fullSpeed->setFont("fonts/fa-solid-900.ttf", 20);
+        fullSpeed->setLabel("\uf050");
+        fullSpeed->setPos(xLeft, 0);
+        fullSpeed->setBorderless(true);
+        fullSpeed->setColor(utils::color::WHITE);
+        fullSpeed->setToggleAllowed(true);
+        fullSpeed->connect(UI::Button::buttonClickCallback(), [&]
+                           {
+                                updateThread->start();
+                                updateThread->setSpeed(50); 
+                                aiThread->start();
+                                aiThread->setSpeed(50);
+                                playButton->setToggled(false);
+                                pauseButton->setToggled(false);
+                                fullSpeed->setToggled(true);
+                                doubleSpeed->setToggled(false); });
+        addObject(fullSpeed);
+
+        doubleSpeed->connect(UI::Button::buttonClickCallback(), [&]
+                             {
+                                updateThread->start();
+                                updateThread->setSpeed(100);
+                                aiThread->start();
+                                aiThread->setSpeed(100);
+                                playButton->setToggled(false);
+                                pauseButton->setToggled(false);
+                                fullSpeed->setToggled(false);
+                                doubleSpeed->setToggled(true); });
+
+        playButton->connect(UI::Button::buttonClickCallback(), [&]
+                            {
+                                updateThread->start();
+                                updateThread->setSpeed(300);
+                                aiThread->start();
+                                aiThread->setSpeed(300);
+                                playButton->setToggled(true);
+                                pauseButton->setToggled(false);
+                                fullSpeed->setToggled(false);
+                                doubleSpeed->setToggled(false); });
+
+        pauseButton->connect(UI::Button::buttonClickCallback(), [&]
+                             { 
+                                updateThread->pause();
+                                aiThread->pause();
+                                playButton->setToggled(false);
+                                pauseButton->setToggled(true);
+                                fullSpeed->setToggled(false);
+                                doubleSpeed->setToggled(false); });
     }
 
     void HUDContainer::update()
@@ -192,5 +209,7 @@ namespace UI
         hintText += utils::string_format("Costs:  %.2f €", gameState->getPlayer()->getCosts()) + "\n";
         hintText += utils::string_format("Profit: %.2f €", gameState->getPlayer()->getProfit());
         cashButton->getHint()->setHintText(hintText);
+
+        timeButton->setLabel(gameState->getTime().format());
     }
 }

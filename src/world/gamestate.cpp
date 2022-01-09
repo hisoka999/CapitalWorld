@@ -6,17 +6,17 @@
 namespace world
 {
 
-    GameState::GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty)
-        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty), time(1900, 0, 1)
+    GameState::GameState(const std::vector<std::shared_ptr<world::Company>> &companies, const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty)
+        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty), time(1900, 0, 1), companies(companies)
     {
 
-        companies.push_back(player);
+        this->companies.push_back(player);
     }
 
-    GameState::GameState(const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty, utils::time::Date &time)
-        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty), time(time)
+    GameState::GameState(const std::vector<std::shared_ptr<world::Company>> &companies, const std::shared_ptr<Company> &player, const std::shared_ptr<GameMap> &gameMap, const std::vector<std::shared_ptr<world::City>> &cities, const Difficulty difficulty, utils::time::Date &time)
+        : timeState(TimeState::Normal), player(player), gameMap(gameMap), cities(cities), difficulty(difficulty), time(time), companies(companies)
     {
-        companies.push_back(player);
+        this->companies.push_back(player);
     }
     void GameState::setTimeState(TimeState state)
     {
@@ -47,6 +47,11 @@ namespace world
         return cities;
     }
 
+    const std::vector<std::shared_ptr<world::Company>> &GameState::getCompanies()
+    {
+        return companies;
+    }
+
     Difficulty GameState::getDifficulty() const
     {
         return difficulty;
@@ -54,8 +59,10 @@ namespace world
 
     void GameState::update()
     {
-        player->updateBalance(time.getMonth(), time.getYear());
-
+        for (auto &company : companies)
+        {
+            company->updateBalance(time.getMonth(), time.getYear());
+        }
         // update cities
         for (auto &city : cities)
         {
@@ -92,6 +99,25 @@ namespace world
             }
         }
 
+        utils::JSON::JsonArray jsonCompanies = object->getArray("companies");
+        std::vector<std::shared_ptr<Company>> companies;
+
+        for (auto &jsonCompany : jsonCompanies)
+        {
+            auto company = Company::fromJson(std::get<std::shared_ptr<utils::JSON::Object>>(jsonCompany));
+
+            for (auto &street : company->getBuildings())
+            {
+                if (street->hasComponent("SalesComponent"))
+                {
+                    auto component = street->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                    component->setGameMap(gameMap.get());
+                }
+                gameMap->addBuilding(street);
+            }
+            companies.push_back(company);
+        }
+
         for (auto &street : player->getBuildings())
         {
             if (street->hasComponent("SalesComponent"))
@@ -107,7 +133,7 @@ namespace world
         int month = object->getIntValue("time_month");
         int day = object->getIntValue("time_day");
         utils::time::Date time(year, month, day);
-        return std::make_shared<GameState>(player, gameMap, cities, difficulty, time);
+        return std::make_shared<GameState>(companies, player, gameMap, cities, difficulty, time);
     }
 
     std::string GameState::toJsonString()
@@ -128,6 +154,18 @@ namespace world
             jsonCities.push_back(jsonCity);
         }
         jsonGameState->setArrayAttribute("cities", jsonCities);
+
+        utils::JSON::JsonArray jsonCompanies;
+
+        for (auto &company : companies)
+        {
+            if (!company->isPLayer())
+            {
+                utils::JSON::JsonValue jsonCompany = company->toJson();
+                jsonCompanies.push_back(jsonCompany);
+            }
+        }
+        jsonGameState->setArrayAttribute("companies", jsonCompanies);
 
         return jsonGameState->toJsonString();
     }

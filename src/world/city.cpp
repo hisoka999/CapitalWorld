@@ -516,4 +516,9 @@ namespace world
     {
         return streets;
     }
+
+    long City::getNumberOfCitizen()
+    {
+        return numberOfCitizen;
+    }
 }
