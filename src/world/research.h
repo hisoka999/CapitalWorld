@@ -1,10 +1,10 @@
 #ifndef RESEARCH_H
 #define RESEARCH_H
 
+#include <engine/utils/time/date.h>
 #include <memory>
 #include <string>
 #include <vector>
-#include <engine/utils/time/date.h>
 
 class Research
 {
@@ -39,6 +39,8 @@ public:
 
     int getCurrentCosts() const;
     void reduceCosts(int value);
+
+    utils::time::Date &getResearchDate();
 
 private:
     std::string name;

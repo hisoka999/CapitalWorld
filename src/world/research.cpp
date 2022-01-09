@@ -93,6 +93,11 @@ void Research::reduceCosts(int value)
     }
 }
 
+utils::time::Date &Research::getResearchDate()
+{
+    return date;
+}
+
 bool Research::canEnableObject(const std::string &name)
 {
     auto found = std::find(enabledObjects.begin(), enabledObjects.end(), name);

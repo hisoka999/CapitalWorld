@@ -1,5 +1,6 @@
 #include "researchwindow.h"
 #include "services/researchservice.h"
+#include "ui/ResearchHint.h"
 #include "ui/line.h"
 
 namespace UI
@@ -23,7 +24,7 @@ namespace UI
 
     void ResearchWindow::buildResearchTree(int x, int y, const std::shared_ptr<Research> &baseResearch, const std::vector<std::shared_ptr<Research>> &researchList)
     {
-        //filter List
+        // filter List
         std::vector<std::shared_ptr<Research>> filteredList;
         for (auto res : researchList)
         {
@@ -49,6 +50,9 @@ namespace UI
             researchButton->setPos(x, y);
             researchButton->connect("buttonClicked", [=]()
                                     { gameState->getPlayer()->addResearchToQueue(res); });
+
+            std::shared_ptr<UI::ResearchHint> hint = std::make_shared<UI::ResearchHint>(res);
+            researchButton->setHint(hint);
             if (res->getRequirements().size() > 0)
             {
                 utils::Vector2 start(x + researchButton->getWidth() - 300, y + (researchButton->getHeight() / 2));

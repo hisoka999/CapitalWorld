@@ -8,7 +8,8 @@
             "year": 1900,
             "month": 1
         },
-        "description": "From now on you will be able to fly into space",
+        "description": "With this technology you wil be able to mine natural ressources like coal and iron.",
+        "description_de": "Diese Technologie erlaubt es, naürliche Bodenschätze abzubauen.",
         "costs": 200,
         "enables": [
             "Mine",
@@ -28,7 +29,8 @@
             "year": 1950,
             "month": 1
         },
-        "description": "This will allow you to molt steel",
+        "description": "This will allow you to molt steel.",
+        "description_de": "Erlaubt das schmelzen von Stahl.",
         "costs": 400,
         "enables": [
             "Steel"
@@ -42,7 +44,8 @@
         "name": "Oil Extraction",
         "name_de": "Ölförderung",
         "icon": "\uf613",
-        "description": "enables you to pump and refine oil",
+        "description": "Enables you to pump and refine oil.",
+        "description_de": "Erlaubt die Förderung und Raffenererung von Öl.",
         "start_date": {
             "year": 1900,
             "month": 1
@@ -62,7 +65,8 @@
             "year": 1920,
             "month": 1
         },
-        "description": "From now on you will be able to fly into space",
+        "description": "Allows you to build cars and all its nessecary components. (NOT WORKING YET)",
+        "description_de": "Erlaubt das Herstellen von Autos und allen notwendigen Bestandteilen. (UNFERTIG)",
         "costs": 200,
         "enables": [
             "Car",

@@ -53,7 +53,7 @@ namespace UI
 
         textFont->render(pRender, research->getLocalisedName(), textColor, rect.x + rect.height + 10, rect.y + 5);
 
-        //draw research time
+        // draw research time
         if (research->getResearched())
         {
             smallTextFont->render(pRender, _("researched"), textColor, rect.x + rect.width - 70, rect.y + rect.height - 10);
@@ -69,6 +69,7 @@ namespace UI
 
     void ResearchButton::handleEvents(core::Input *pInput)
     {
+        UI::Object::handleEvents(pInput);
         auto rect = eventRect();
         if (rect.intersects(pInput->getMousePostion()) && research->canResearch(gameState->getTime()) && !research->getResearched())
         {

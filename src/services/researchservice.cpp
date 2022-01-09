@@ -42,6 +42,10 @@ namespace services
         std::string localisedName = object->getStringValue("name" + lang);
 
         std::string description = object->getStringValue("description");
+        if (object->hasAttribute("description" + lang))
+        {
+            description = object->getStringValue("description" + lang);
+        }
 
         auto startDateObj = object->getObjectValue("start_date");
 

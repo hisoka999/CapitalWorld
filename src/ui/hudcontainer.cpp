@@ -1,5 +1,6 @@
 #include "hudcontainer.h"
 #include "translate.h"
+#include "ui/ResearchHint.h"
 #include <engine/core/gamewindow.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/Button.h>
@@ -7,6 +8,7 @@
 #include <engine/ui/iconbutton.h>
 #include <engine/utils/color.h>
 #include <engine/utils/string.h>
+
 namespace UI
 {
     HUDContainer::HUDContainer(UpdateThread *updateThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow)
@@ -20,7 +22,7 @@ namespace UI
     void HUDContainer::render(core::Renderer *renderer)
     {
 
-        //render time
+        // render time
         int xLeft = 570;
         int yLeft = 10;
         SDL_Color color = {100, 200, 0, 255};
@@ -43,8 +45,7 @@ namespace UI
         playButton->connect(UI::Button::buttonClickCallback(), [&]
                             {
                                 updateThread->start();
-                                updateThread->setSpeed(300);
-                            });
+                                updateThread->setSpeed(300); });
         addObject(playButton);
         pauseButton = std::make_shared<UI::Button>();
         pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
@@ -65,8 +66,7 @@ namespace UI
         doubleSpeed->connect(UI::Button::buttonClickCallback(), [&]
                              {
                                  updateThread->start();
-                                 updateThread->setSpeed(100);
-                             });
+                                 updateThread->setSpeed(100); });
         addObject(doubleSpeed);
 
         fullSpeed = std::make_shared<UI::Button>();
@@ -78,13 +78,12 @@ namespace UI
         fullSpeed->connect(UI::Button::buttonClickCallback(), [&]
                            {
                                updateThread->start();
-                               updateThread->setSpeed(50);
-                           });
+                               updateThread->setSpeed(50); });
         addObject(fullSpeed);
 
         int xLeft = 50;
         int yLeft = 0;
-        //cash
+        // cash
         cashButton = std::make_shared<UI::IconButton>();
         cashButton->setFont("fonts/arial.ttf", 12);
         cashButton->setLabel("");
@@ -117,8 +116,7 @@ namespace UI
                                     int width = core::GameWindow::Instance().getWidth();
                                     int height = core::GameWindow::Instance().getHeight();
                                     researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
-                                    researchWindow->setVisible(true);
-                                });
+                                    researchWindow->setVisible(true); });
         addObject(cashButton);
         addObject(profitButton);
         addObject(researchButton);
@@ -134,8 +132,7 @@ namespace UI
         buildButton->connect("buttonClick", [&]()
                              {
                                  std::cout << "build button clicked" << std::endl;
-                                 buildWindow->setVisible(true);
-                             });
+                                 buildWindow->setVisible(true); });
         addObject(buildButton);
     }
 
@@ -147,15 +144,21 @@ namespace UI
         if (researchQueue.size() == 0)
         {
             researchButton->setLabel(_("No active research"));
+            // researchHint = nullptr;
         }
         else
         {
             int resPerMonth = (gameState->getPlayer()->getResearchPerMonth() == 0) ? 1 : gameState->getPlayer()->getResearchPerMonth();
             auto researchTime = researchQueue.at(0)->getCurrentCosts() / resPerMonth;
             researchButton->setLabel(utils::string_format(u8"%s (%i months)", researchQueue.at(0)->getLocalisedName(), researchTime));
+
+            auto pos = (researchButton->getHint() != nullptr) ? researchButton->getHint()->getPosition() : utils::Vector2(0.f, 0.f);
+            auto researchHint = std::make_shared<UI::ResearchHint>(researchQueue.at(0));
+            researchHint->setPosition(pos);
+            researchButton->setHint(researchHint);
         }
 
-        //cashButton->getHint()->setHintText(utils::string_format("Income Balance\n Cash: %'.2f € \nProfit: %'.2f €", gameState->getPlayer()->getCash(), gameState->getPlayer()->getProfit()));
+        // cashButton->getHint()->setHintText(utils::string_format("Income Balance\n Cash: %'.2f € \nProfit: %'.2f €", gameState->getPlayer()->getCash(), gameState->getPlayer()->getProfit()));
         std::string hintText = "Income Balance\n";
         hintText += utils::string_format("Cash:   %.2f €", gameState->getPlayer()->getCash()) + "\n";
         hintText += utils::string_format("Income: %.2f €", gameState->getPlayer()->getIncome()) + "\n";
