@@ -1,10 +1,10 @@
 #ifndef RESEARCH_H
 #define RESEARCH_H
 
+#include <engine/utils/time/date.h>
 #include <memory>
 #include <string>
 #include <vector>
-#include <engine/utils/time/date.h>
 
 class Research
 {
@@ -24,6 +24,7 @@ public:
     std::vector<std::shared_ptr<Research>> getRequirements() const;
 
     bool getResearched() const;
+    void setResearched(bool value);
 
     std::vector<std::string> getRequirementNames() const;
     void setRequirementNames(const std::vector<std::string> &value);
@@ -38,6 +39,8 @@ public:
 
     int getCurrentCosts() const;
     void reduceCosts(int value);
+
+    utils::time::Date &getResearchDate();
 
 private:
     std::string name;

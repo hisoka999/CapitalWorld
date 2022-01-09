@@ -6,15 +6,15 @@
 namespace UI
 {
 
-    FactoryProductionTab::FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building)
-        : UI::Tab(parent, _("Production"))
+    FactoryProductionTab::FactoryProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, const std::shared_ptr<world::Company> &player)
+        : UI::Tab(parent, _("Production")), player(player)
     {
         initUI();
         setBuilding(building);
     }
     void FactoryProductionTab::initUI()
     {
-        productSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
+        productSelectionBox = std::make_shared<UI::ComboBox<std::shared_ptr<Product>>>(this);
         productSelectionBox->setPos(490, 28);
         productSelectionBox->setWidth(100);
         productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory);
@@ -23,31 +23,31 @@ namespace UI
 
         for (auto &product : productList)
         {
-            productSelectionBox->addElement(product->getName());
+            productSelectionBox->addElement(product);
         }
-        productSelectionBox->setElementFunction([&](std::string var)
-                                                { return var; });
+        productSelectionBox->setElementFunction([&](std::shared_ptr<Product> var)
+                                                { return var->getLocalisedName(); });
 
         addObject(productSelectionBox);
 
-        resourceSelectionBox = std::make_shared<UI::ComboBox<std::string>>(this);
+        resourceSelectionBox = std::make_shared<UI::ComboBox<std::shared_ptr<Product>>>(this);
         resourceSelectionBox->setPos(180, 28);
         resourceSelectionBox->setWidth(100);
         resourceSelectionBox->connect("selectionChanged", [&](unsigned int selection)
                                       { resourceSelectionChanged(selection); });
 
-        resourceSelectionBox->setElementFunction([&](std::string var)
-                                                 { return var; });
+        resourceSelectionBox->setElementFunction([&](std::shared_ptr<Product> var)
+                                                 { return var->getLocalisedName(); });
 
-        baseProductList = services::ProductService::Instance().getBaseProductsByBuildingType(world::BuildingType::Factory);
+        baseProductList = player->findAvialableBaseProducts(world::BuildingType::Factory);
         for (auto &res : baseProductList)
         {
-            resourceSelectionBox->addElement(res->getName());
+            resourceSelectionBox->addElement(res);
         }
 
         addObject(resourceSelectionBox);
 
-        productImage = std::make_shared<UI::ImageButton>(this, 100, 100, 0, 0, true);
+        productImage = std::make_shared<UI::ImageButton>(this, 32, 32, 0, 0, true);
         productImage->setPos(490, 70);
         addObject(productImage);
 
@@ -63,7 +63,7 @@ namespace UI
         labelCostsPerPerPiece->setPos(295, 130);
 
         productNameText = std::make_shared<UI::Label>(this);
-        productNameText->setPos(490, 180);
+        productNameText->setPos(490, 110);
         addObject(productNameText);
 
         costsText = std::make_shared<UI::Label>(this);
@@ -93,8 +93,7 @@ namespace UI
                                {
                                    building->removeProduct(product);
                                }
-                               refreshProductList();
-                           });
+                               refreshProductList(); });
         addObject(addButton);
 
         helpButton = std::make_shared<UI::Button>(this);
@@ -123,9 +122,8 @@ namespace UI
             std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
             pc->connect("imageClicked", [=](void)
                         {
-                            resourceSelectionBox->setSelectionByText(product->getBaseProducts().at(0)->product->getName());
-                            productSelectionBox->setSelectionByText(product->getName());
-                        });
+                            resourceSelectionBox->setSelectionByText(product->getBaseProducts().at(0)->product);
+                            productSelectionBox->setSelectionByText(product); });
 
             productComponents.push_back(pc);
             pc->setPos(20, y);
@@ -160,11 +158,11 @@ namespace UI
         auto resource = baseProductList[selection];
 
         // reload products
-        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory);
+        productList = services::ProductService::Instance().getProductsByBuildingType(world::BuildingType::Factory, resource);
         productSelectionBox->clearElements();
         for (auto &product : productList)
         {
-            productSelectionBox->addElement(product->getName());
+            productSelectionBox->addElement(product);
         }
         productSelectionChanged(0);
     }
@@ -173,7 +171,7 @@ namespace UI
         if (productList.size() == 0)
             return;
         auto product = productList[selection];
-        productNameText->setText(product->getName());
+        productNameText->setText(product->getLocalisedName());
         productImage->loadImage(utils::os::combine("images", "products", product->getImage()));
         costsText->setTextF("%'.2f €/m", product->calculateCostsPerMonth());
         costsPerPieceText->setTextF("%'.2f €", product->calculateCostsPerPiece());
@@ -193,7 +191,7 @@ namespace UI
             resourceComponents.push_back(pc);
             pc->setPos(180, y);
             addObject(pc);
-            y += 120;
+            y += 55;
         }
 
         if (building != nullptr)

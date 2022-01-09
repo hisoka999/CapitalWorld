@@ -44,7 +44,7 @@ namespace scenes
         buttonList->addObject(backButton);
         winMgr->addContainer(buttonList.get());
 
-        //add comboboxes and textfields
+        // add comboboxes and textfields
         int yOffset = 30;
         int y = 300;
 
@@ -95,8 +95,8 @@ namespace scenes
         numberOfPlayersCombobox->addElement(2);
         numberOfPlayersCombobox->addElement(4);
         numberOfPlayersCombobox->addElement(8);
-        //numberOfPlayersCombobox->addElement(16);
-        //numberOfPlayersCombobox->addElement(32);
+        // numberOfPlayersCombobox->addElement(16);
+        // numberOfPlayersCombobox->addElement(32);
         numberOfPlayersCombobox->setPos(200, y);
         numberOfPlayersCombobox->setSelectionByText(8);
         numberOfPlayersCombobox->setWidth(200);
@@ -107,7 +107,7 @@ namespace scenes
                                          { numberOfCompanys = size; });
         container->addObject(numberOfPlayersCombobox);
 
-        //numberOfCities
+        // numberOfCities
         numberOfCities = 8;
         auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
         numberOfCitiesLabel->setFont("fonts/arial.ttf", 14);
@@ -212,8 +212,6 @@ namespace scenes
         layout->updateLayout(bounds);
 
         bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
-
-        graphics::Rect scrollbounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
     }
 
     void NewGameScene::render()
@@ -268,7 +266,8 @@ namespace scenes
 
         auto gameMap = gen.generateMap(size, size, numberOfCities, cityName, seed);
         auto cities = gen.getGeneratedCities();
-        auto player = std::make_shared<world::Company>(playerName, 1000000, true);
+        int cash = 1000000 * int(difficulty);
+        auto player = std::make_shared<world::Company>(playerName, cash, true);
         player->setAvailableResearch(services::ResearchService::Instance().getData());
         auto gameState = std::make_shared<world::GameState>(player, gameMap, cities, difficulty);
 

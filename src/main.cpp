@@ -15,11 +15,11 @@
 #include "services/productservice.h"
 #include "services/researchservice.h"
 #include "services/ressourceservice.h"
+#include <chrono>
 #include <engine/core/SceneManager.h>
 #include <engine/core/gamewindow.h>
 #include <engine/core/input.h>
 #include <iostream>
-#include <chrono>
 
 #include <magic_enum.hpp>
 
@@ -48,7 +48,7 @@ void generateEnumPot(std::string fileName)
     os.close();
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     try
     {
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
         world::Building::initComponentMap();
-        services::RessourceService::Instance().loadData("data/ressources.json");
+        services::ResourceService::Instance().loadData("data/ressources.json");
         services::ProductService::Instance().loadData("data/products.json");
         services::BuildingService::Instance().loadData("data/buildings.json");
         services::ResearchService::Instance().loadData("data/research.json");
@@ -105,9 +105,8 @@ int main(int argc, char *argv[])
         text.openFont(utils::os::combine("fonts", "arial.ttf"), 22);
         SDL_Color color = {200, 200, 0, 0};
 
-        unsigned int delay = 0;
-
         bool run = true;
+        lastUpdateTime = 0;
         while (run && mainScene->isRunning())
         {
             ren.setDrawColor(0, 0, 0, 255);
@@ -151,13 +150,16 @@ int main(int argc, char *argv[])
                 //         delay--;
                 // }
             }
-            if (ren.getTickCount() - lastUpdateTime >= 40)
+            lastUpdateTime += ren.getTimeDelta();
+            if (lastUpdateTime >= 40)
             {
+
                 sceneManager.fixedUpdate(40);
-                lastUpdateTime = ren.getTickCount();
+                lastUpdateTime -= 40;
             }
             sceneManager.update();
             text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
+            text.render(&ren, "FT: " + std::to_string(ren.getTimeDelta()) + "ms", color, 850, 25);
             ren.renderPresent();
             if (saveScreenshot)
             {

@@ -12,7 +12,7 @@ namespace UI
         pRender->drawLine(startPos, endPos);
     }
 
-    void Line::handleEvents(core::Input *pInput)
+    void Line::handleEvents([[maybe_unused]] core::Input *pInput)
     {
     }
 } // namespace UI

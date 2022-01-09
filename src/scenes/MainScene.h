@@ -15,6 +15,7 @@
 #include <vector>
 #include <memory>
 #include <ui/SettingsWindow.h>
+#include <ui/SaveGameWindow.h>
 
 namespace scenes
 {
@@ -38,6 +39,7 @@ namespace scenes
                 graphics::Texture uiTexture;
                 graphics::Texture bgTexture;
                 SettingsWindow settingsWindow;
+                UI::SaveGameWindow loadWindow;
 
                 void exitGame();
                 void startGame();

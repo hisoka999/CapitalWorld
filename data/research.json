@@ -8,26 +8,15 @@
             "year": 1900,
             "month": 1
         },
-        "description": "From now on you will be able to fly into space",
+        "description": "With this technology you wil be able to mine natural ressources like coal and iron.",
+        "description_de": "Diese Technologie erlaubt es, naürliche Bodenschätze abzubauen.",
         "costs": 200,
         "enables": [
-            "Shipyard"
-        ],
-        "requires": []
-    },
-    {
-        "id": 2,
-        "name": "Automobile",
-        "name_de": "Automobil",
-        "icon": "\uf1b9",
-        "start_date": {
-            "year": 1920,
-            "month": 1
-        },
-        "description": "From now on you will be able to fly into space",
-        "costs": 200,
-        "enables": [
-            "Shipyard"
+            "Mine",
+            "Coal",
+            "Iron",
+            "Aluminium",
+            "Softdrink"
         ],
         "requires": []
     },
@@ -40,12 +29,51 @@
             "year": 1950,
             "month": 1
         },
-        "description": "From now on you will be able to fly into space",
+        "description": "This will allow you to molt steel.",
+        "description_de": "Erlaubt das schmelzen von Stahl.",
         "costs": 400,
         "enables": [
-            "Shipyard"
+            "Steel"
         ],
         "requires": [
+            "Mining"
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Oil Extraction",
+        "name_de": "Ölförderung",
+        "icon": "\uf613",
+        "description": "Enables you to pump and refine oil.",
+        "description_de": "Erlaubt die Förderung und Raffenererung von Öl.",
+        "start_date": {
+            "year": 1900,
+            "month": 1
+        },
+        "costs": 200,
+        "enables": [
+            "Pumpjack"
+        ],
+        "requires": []
+    },
+    {
+        "id": 4,
+        "name": "Automobile",
+        "name_de": "Automobil",
+        "icon": "\uf1b9",
+        "start_date": {
+            "year": 1920,
+            "month": 1
+        },
+        "description": "Allows you to build cars and all its nessecary components. (NOT WORKING YET)",
+        "description_de": "Erlaubt das Herstellen von Autos und allen notwendigen Bestandteilen. (UNFERTIG)",
+        "costs": 200,
+        "enables": [
+            "Car",
+            "Carframe"
+        ],
+        "requires": [
+            "Oil Extraction",
             "Mining"
         ]
     }

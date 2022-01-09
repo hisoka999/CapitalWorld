@@ -1,11 +1,11 @@
 #include "TransportComponent.h"
-#include "world/building.h"
-#include "world/product.h"
-#include "services/productservice.h"
 #include "services/buildingservice.h"
-#include "world/company.h"
-#include <future>
+#include "services/productservice.h"
+#include "world/building.h"
 #include "world/buildings/StorageComponent.h"
+#include "world/company.h"
+#include "world/product.h"
+#include <future>
 
 namespace world
 {
@@ -42,7 +42,7 @@ namespace world
             return object;
         }
 
-        void TransportComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void TransportComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
             utils::JSON::JsonArray jsonRoutes = object->getArray("routes");
             for (auto &jsonRoute : jsonRoutes)
@@ -92,7 +92,7 @@ namespace world
                 routes.erase(it);
         }
 
-        void TransportComponent::updateProduction(int month, int year, Building *building)
+        void TransportComponent::updateProduction(int month, int year, [[maybe_unused]] Building *building)
         {
             for (auto &route : routes)
             {

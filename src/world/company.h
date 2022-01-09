@@ -38,6 +38,7 @@ namespace world
         std::vector<std::shared_ptr<world::Building>> &getBuildings();
         std::shared_ptr<world::Building> findBuildingByDisplayName(const std::string &name);
         std::vector<std::shared_ptr<world::Building>> findAvailableBuildingsByType(world::BuildingType type);
+        std::vector<std::shared_ptr<Product>> findAvialableBaseProducts(world::BuildingType type);
 
         void research();
 
@@ -50,9 +51,9 @@ namespace world
     private:
         std::string name;
         float cash;
+        bool player;
         float income;
         float costs;
-        bool player;
         std::vector<std::shared_ptr<world::Building>> buildings;
         std::vector<std::shared_ptr<Research>> researchQueue;
         std::vector<std::shared_ptr<Research>> availableResearch;

@@ -42,6 +42,11 @@ bool Research::getResearched() const
     return researched;
 }
 
+void Research::setResearched(bool value)
+{
+    researched = value;
+}
+
 std::vector<std::string> Research::getRequirementNames() const
 {
     return requirementNames;
@@ -86,6 +91,11 @@ void Research::reduceCosts(int value)
         currentCosts = 0;
         researched = true;
     }
+}
+
+utils::time::Date &Research::getResearchDate()
+{
+    return date;
 }
 
 bool Research::canEnableObject(const std::string &name)

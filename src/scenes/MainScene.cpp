@@ -22,7 +22,7 @@ namespace scenes
 {
 
         MainScene::MainScene(core::Renderer *pRenderer,
-                             core::SceneManager *pSceneManager) : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow()
+                             core::SceneManager *pSceneManager) : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow(), loadWindow(true)
         {
                 uiTexture.loadTexture(renderer, "images/ArkanaLook.png");
 
@@ -48,7 +48,7 @@ namespace scenes
                 btnLoadGame->setLabel(_("Load Game"));
                 btnLoadGame->setPos(450, 400);
                 btnLoadGame->setStaticWidth(150);
-                //btnLoadGame->disable();
+                // btnLoadGame->disable();
 
                 btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]()
                                      { loadGame(); });
@@ -79,6 +79,33 @@ namespace scenes
 
                 container->addObject(btnExit);
                 winMgr->addWindow(&settingsWindow);
+                winMgr->addWindow(&loadWindow);
+
+                loadWindow.connect("saveAction", [&](std::string fileName)
+                                   {
+                               std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/saves/" + fileName + ".save";
+                               std::ifstream file;
+                               std::istringstream is;
+                               std::string s;
+                               std::string group;
+                               //  std::cout << filename << std::endl;
+
+                               file.open(saveGameFile.c_str(), std::ios::in);
+                               if (!file.is_open())
+                               {
+                                   throw IOException(saveGameFile, "file does not exists");
+                               }
+                               std::string buffer((std::istreambuf_iterator<char>(file)),
+                                                  std::istreambuf_iterator<char>());
+                               utils::JSON::Parser parser;
+                               auto jsonObject = parser.parseObject(buffer);
+
+                               file.close();
+
+                               auto gameState = world::GameState::fromJson(jsonObject);
+                               auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
+                               sceneManager->addScene("world", starMapScene);
+                               sceneManager->setCurrentScene("world"); });
         }
         void MainScene::render()
         {
@@ -104,30 +131,8 @@ namespace scenes
 
         void MainScene::loadGame()
         {
-                std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/savegame.save";
-                std::ifstream file;
-                std::istringstream is;
-                std::string s;
-                std::string group;
-                //  std::cout << filename << std::endl;
-
-                file.open(saveGameFile.c_str(), std::ios::in);
-                if (!file.is_open())
-                {
-                        throw IOException(saveGameFile, "file does not exists");
-                }
-                std::string buffer((std::istreambuf_iterator<char>(file)),
-                                   std::istreambuf_iterator<char>());
-                utils::JSON::Parser parser;
-                auto jsonObject = parser.parseObject(buffer);
-
-                file.close();
-
-                auto gameState = world::GameState::fromJson(jsonObject);
-
-                auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
-                sceneManager->addScene("world", starMapScene);
-                sceneManager->setCurrentScene("world");
+                loadWindow.updateSaveGames();
+                loadWindow.setVisible(true);
         }
 
         void MainScene::handleEvents(core::Input *pInput)

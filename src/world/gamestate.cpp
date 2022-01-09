@@ -47,12 +47,12 @@ namespace world
         return cities;
     }
 
-    const Difficulty GameState::getDifficulty() const
+    Difficulty GameState::getDifficulty() const
     {
         return difficulty;
     }
 
-    void GameState::update(int month, int year)
+    void GameState::update()
     {
         player->updateBalance(time.getMonth(), time.getYear());
 

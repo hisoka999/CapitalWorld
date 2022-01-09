@@ -10,9 +10,9 @@ enum class WorldSize : int
 
 enum class Difficulty
 {
-    Easy,
-    Normal,
-    Hard,
+    Easy = 4,
+    Normal = 2,
+    Hard = 1,
 };
 
 enum class CityNames

@@ -2,9 +2,9 @@
 #define PRODUCTSERVICE_H
 
 #include "../world/product.h"
+#include <engine/utils/json/jsonservice.h>
 #include <memory>
 #include <mutex>
-#include <engine/utils/json/jsonservice.h>
 
 namespace services
 {
@@ -19,6 +19,7 @@ namespace services
         }
 
         std::vector<std::shared_ptr<Product>> getProductsByBuildingType(world::BuildingType type);
+        std::vector<std::shared_ptr<Product>> getProductsByBuildingType(world::BuildingType type, const std::shared_ptr<Product> &baseProduct);
         std::vector<std::shared_ptr<Product>> getBaseProductsByBuildingType(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(world::BuildingType type, std::shared_ptr<Resource> resource);
         std::shared_ptr<Product> getProductByName(std::string name);

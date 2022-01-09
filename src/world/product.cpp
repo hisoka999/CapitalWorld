@@ -1,17 +1,10 @@
 #include "product.h"
 
-Product::Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type)
-    : name(name), image(image), buildingType(buildingType), cycle(cycle), productType(type)
+Product::Product(const std::string &localizedName, std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type)
+    : ProduceableObject(localizedName, name, image), buildingType(buildingType), cycle(cycle), productType(type)
 {
 }
-std::string Product::getName()
-{
-    return name;
-}
-std::string Product::getImage()
-{
-    return image;
-}
+
 std::vector<std::shared_ptr<ResourceRequirement>> Product::getResources()
 {
     return resources;
@@ -21,7 +14,7 @@ std::vector<std::shared_ptr<ProductRequirement>> Product::getBaseProducts()
     return products;
 }
 
-void Product::addRessource(std::shared_ptr<Resource> resource, int amount)
+void Product::addResource(std::shared_ptr<Resource> resource, int amount)
 {
     std::shared_ptr<ResourceRequirement> requirement = std::make_shared<ResourceRequirement>();
     requirement->amount = amount;
@@ -48,7 +41,7 @@ float Product::calculateCostsPerPiece()
     float result = 0.0f;
     for (auto &res : resources)
     {
-        result += (res->resource->getCostPerMonth() / float(res->amount));
+        result += (res->resource->getCostPerMonth() * float(res->amount)) / this->cycle.amount;
     }
     for (auto &pro : products)
     {

@@ -30,14 +30,14 @@ namespace world
             return residents;
         }
 
-        void HouseComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void HouseComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
             residents = object->getIntValue("residents");
         }
 
-        void HouseComponent::updateProduction(int month, int year, Building *building)
+        void HouseComponent::updateProduction([[maybe_unused]] int month, [[maybe_unused]] int year, [[maybe_unused]] Building *building)
         {
-            //check demands fullfillded
+            // check demands fullfillded
             bool fullfilled = true;
             for (auto &d : demand)
             {
@@ -51,13 +51,13 @@ namespace world
                 }
                 d.second.value = 0;
             }
-            if (fullfilled)
+            if (fullfilled && residents < maxResidents)
             {
                 residents *= 1.2;
             }
 
             updateTexture(building);
-            //update demand
+            // update demand
             for (auto base : baseDemand)
             {
                 demand[base.first].maxDemand = base.second * residents;
@@ -79,7 +79,9 @@ namespace world
                 building->setSubTexture("house_" + std::to_string(houseId));
             }
             auto textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
-            building->setSourceRect(textureMap->getSourceRect(building->getSubTextureHash()));
+            graphics::Rect srcRect;
+            textureMap->getSourceRect(building->getSubTextureHash(), &srcRect);
+            building->setSourceRect(srcRect);
             building->setOffset(0, building->getSourceRect().height - 32);
         }
 

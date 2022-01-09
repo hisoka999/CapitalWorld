@@ -1,12 +1,12 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 
-#include <string>
-#include <engine/graphics/rect.h>
-#include "world/product.h"
 #include "buildingtypes.h"
-#include <engine/utils/json/object.h>
 #include "world/buildings/BuildingComponent.h"
+#include "world/product.h"
+#include <engine/graphics/rect.h>
+#include <engine/utils/json/object.h>
+#include <string>
 class GameMap;
 
 namespace world
@@ -69,18 +69,18 @@ namespace world
         void calculateBalance(int month, int year);
         float getCostsPerMonth(int month, int year);
         float getIncomePerMonth(int month, int year);
-        virtual void updateProduction(int month, int year);
+        virtual void updateProduction(unsigned int month, unsigned int year);
         void addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount);
         void addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount);
         bool isAutoSellActive();
         void autoSell(int month, int year);
         BuildingType getType();
-        //Storage &getStorage();
+        // Storage &getStorage();
         const std::string &getSubTexture();
-        const size_t getSubTextureHash();
+        size_t getSubTextureHash();
         void setSubTexture(const std::string &tex);
 
-        virtual void update(GameMap *gameMap){};
+        virtual void update([[maybe_unused]] GameMap *gameMap){};
 
         virtual std::shared_ptr<utils::JSON::Object> toJson();
         static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company);
@@ -99,6 +99,8 @@ namespace world
         void delayedUpdate(Company *company);
 
         std::map<std::string, std::string> displayData();
+        bool requireResource(world::RawResource rawResource);
+        void addResource(world::RawResource rawResource);
 
     protected:
         void addBalance(ProductBalance value);
@@ -120,6 +122,7 @@ namespace world
         static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;
         std::hash<std::string> hasher;
         size_t hashId = 0;
+        std::vector<world::RawResource> rawResources;
     };
 }
 #endif // BUILDING_H

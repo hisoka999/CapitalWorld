@@ -1,22 +1,22 @@
-#ifndef FARMPRODUCTIONTAB_H
-#define FARMPRODUCTIONTAB_H
+#ifndef RESOURCEPRODUCTIONTAB_H
+#define RESOURCEPRODUCTIONTAB_H
 
-#include <engine/ui/Tab.h>
-#include <engine/ui/Button.h>
-#include <engine/ui/Label.h>
-#include <engine/ui/ImageButton.h>
-#include <engine/ui/ComboBox.h>
 #include "../services/productservice.h"
-#include "../world/building.h"
 #include "../ui/productcomponent.h"
+#include "../world/building.h"
+#include <engine/ui/Button.h>
+#include <engine/ui/ComboBox.h>
+#include <engine/ui/ImageButton.h>
+#include <engine/ui/Label.h>
+#include <engine/ui/Tab.h>
 
 namespace UI
 {
 
-    class FarmProductionTab : public UI::Tab
+    class ResourceProductionTab : public UI::Tab
     {
     public:
-        FarmProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building);
+        ResourceProductionTab(UI::Object *parent, std::shared_ptr<world::Building> building, world::RawResource rawResource);
 
         void setBuilding(std::shared_ptr<world::Building> building);
 
@@ -25,6 +25,7 @@ namespace UI
         void resourceSelectionChanged(unsigned int selection);
         void productSelectionChanged(unsigned int selection);
         void refreshProductList();
+        world::RawResource rawResource;
         std::shared_ptr<world::Building> building;
         std::vector<std::shared_ptr<Product>> productList;
         std::vector<std::shared_ptr<Resource>> resourceList;
@@ -35,8 +36,8 @@ namespace UI
         std::shared_ptr<UI::Label> costsText;
         std::shared_ptr<UI::Label> productNameText;
         std::shared_ptr<UI::Label> resourceNameText;
-        std::shared_ptr<UI::ComboBox<std::string>> productSelectionBox;
-        std::shared_ptr<UI::ComboBox<std::string>> resourceSelectionBox;
+        std::shared_ptr<UI::ComboBox<std::shared_ptr<Product>>> productSelectionBox;
+        std::shared_ptr<UI::ComboBox<std::shared_ptr<Resource>>> resourceSelectionBox;
         std::shared_ptr<UI::ImageButton> productImage;
         std::shared_ptr<UI::ImageButton> resourceImage;
         std::shared_ptr<UI::Button> addButton;
@@ -45,4 +46,4 @@ namespace UI
     };
 }
 
-#endif // FARMPRODUCTIONTAB_H
+#endif // RESOURCEPRODUCTIONTAB_H

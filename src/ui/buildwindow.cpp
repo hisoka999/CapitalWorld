@@ -27,13 +27,11 @@ namespace UI
     {
         int xPos = 15;
         int yPos = 10;
-        int iconSize = 32;
         int offset = 40;
         SDL_Color defaultColor = {255, 255, 255, 255};
         SDL_Color hoverColor = {0xcd, 0xcd, 0xcd, 0xff};
-        SDL_Color clickColor = {0x33, 0x33, 0x33, 0xff};
         auto farmButton = std::make_shared<UI::IconButton>(this);
-        farmButton->setLabel(_("Farm"));
+        farmButton->setLabel(_("Resources"));
         farmButton->setIconText("\uf4d8");
 
         farmButton->setHoverColor(hoverColor);
@@ -43,10 +41,9 @@ namespace UI
         farmButton->connect("buttonClick", [&]()
                             {
                                 setCurrentAction(world::BuildAction::Build);
-                                currentBuildingType = world::BuildingType::Farm;
+                                currentBuildingType = world::BuildingType::Resource;
                                 buildingSelectionWindow->setBuildingType(currentBuildingType);
-                                buildingSelectionWindow->setVisible(true);
-                            });
+                                buildingSelectionWindow->setVisible(true); });
         addObject(farmButton);
 
         yPos += offset;
@@ -55,7 +52,7 @@ namespace UI
         factoryButton->setLabel(_("Factory"));
         factoryButton->setPos(xPos, yPos);
         factoryButton->setStaticWidth(120);
-        //factoryButton->setClickColor(clickColor);
+        // factoryButton->setClickColor(clickColor);
         factoryButton->setHoverColor(hoverColor);
         factoryButton->setColor(defaultColor);
         addObject(factoryButton);
@@ -64,15 +61,14 @@ namespace UI
                                    setCurrentAction(world::BuildAction::Build);
                                    currentBuildingType = world::BuildingType::Factory;
                                    buildingSelectionWindow->setBuildingType(currentBuildingType);
-                                   buildingSelectionWindow->setVisible(true);
-                               });
+                                   buildingSelectionWindow->setVisible(true); });
         yPos += offset;
 
         auto shopButton = std::make_shared<UI::IconButton>(this);
         shopButton->setIconText("\uf54e");
         shopButton->setLabel("Shop");
         shopButton->setStaticWidth(120);
-        //shopButton->setClickColor(clickColor);
+        // shopButton->setClickColor(clickColor);
         shopButton->setHoverColor(hoverColor);
         shopButton->setColor(defaultColor);
         shopButton->setPos(xPos, yPos);
@@ -82,8 +78,7 @@ namespace UI
                                 setCurrentAction(world::BuildAction::Build);
                                 currentBuildingType = world::BuildingType::Shop;
                                 buildingSelectionWindow->setBuildingType(currentBuildingType);
-                                buildingSelectionWindow->setVisible(true);
-                            });
+                                buildingSelectionWindow->setVisible(true); });
 
         addObject(shopButton);
         yPos += offset;
@@ -92,7 +87,7 @@ namespace UI
         transportButton->setIconText("\uf0d1");
         transportButton->setPos(xPos, yPos);
         transportButton->setLabel(_("Transport"));
-        //transportButton->setClickColor(clickColor);
+        // transportButton->setClickColor(clickColor);
         transportButton->setHoverColor(hoverColor);
         transportButton->setColor(defaultColor);
         transportButton->setStaticWidth(120);
@@ -101,8 +96,7 @@ namespace UI
                                      setCurrentAction(world::BuildAction::Build);
                                      currentBuildingType = world::BuildingType::Transport;
                                      buildingSelectionWindow->setBuildingType(currentBuildingType);
-                                     buildingSelectionWindow->setVisible(true);
-                                 });
+                                     buildingSelectionWindow->setVisible(true); });
 
         addObject(transportButton);
         yPos += offset;
@@ -111,7 +105,7 @@ namespace UI
         otherButton->setIconText("\uf0d1");
         otherButton->setPos(xPos, yPos);
         otherButton->setLabel(_("Other"));
-        //transportButton->setClickColor(clickColor);
+        // transportButton->setClickColor(clickColor);
         otherButton->setHoverColor(hoverColor);
         otherButton->setColor(defaultColor);
         otherButton->setStaticWidth(120);
@@ -120,8 +114,7 @@ namespace UI
                                  setCurrentAction(world::BuildAction::Build);
                                  currentBuildingType = world::BuildingType::Other;
                                  buildingSelectionWindow->setBuildingType(currentBuildingType);
-                                 buildingSelectionWindow->setVisible(true);
-                             });
+                                 buildingSelectionWindow->setVisible(true); });
 
         addObject(otherButton);
         yPos += offset;
@@ -130,7 +123,7 @@ namespace UI
         streetButton->setIconText("\uf018");
         streetButton->setLabel(_("Street"));
         streetButton->setPos(xPos, yPos);
-        //destroyButton->setClickColor(clickColor);
+        // destroyButton->setClickColor(clickColor);
         streetButton->setHoverColor(hoverColor);
         streetButton->setColor(defaultColor);
         streetButton->setStaticWidth(120);
@@ -142,8 +135,7 @@ namespace UI
                                   currentBuildingType = world::BuildingType::Street;
                                   auto building = std::make_shared<world::buildings::Street>();
                                   buildingSelectionWindow->setSelectedBuilding(building);
-                                  buildingSelectionWindow->setVisible(false);
-                              });
+                                  buildingSelectionWindow->setVisible(false); });
 
         yPos += offset;
 
@@ -151,7 +143,7 @@ namespace UI
         destroyButton->setIconText("\uf2ed");
         destroyButton->setLabel("Destroy");
         destroyButton->setPos(xPos, yPos);
-        //destroyButton->setClickColor(clickColor);
+        // destroyButton->setClickColor(clickColor);
         destroyButton->setHoverColor(hoverColor);
         destroyButton->setColor(defaultColor);
         destroyButton->setStaticWidth(120);
@@ -160,8 +152,7 @@ namespace UI
                                {
                                    setCurrentAction(world::BuildAction::Destroy);
                                    buildingSelectionWindow->setSelectedBuilding(nullptr);
-                                   buildingSelectionWindow->setVisible(false);
-                               });
+                                   buildingSelectionWindow->setVisible(false); });
     }
 
     void BuildWindow::render(core::Renderer *pRender)

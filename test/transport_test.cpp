@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
+#include <iostream>
+#include <memory>
 #include <world/building.h>
 #include <world/buildings/street.h>
 #include <world/gamemap.h>
-#include <memory>
-#include <iostream>
 /*
  Z
 ----
@@ -11,8 +11,8 @@
 |__|___
       |
       Y
-      
-      
+
+
 Legende:
 Y = Transport Büro
 X = Farm
@@ -22,13 +22,13 @@ Z = Fabrik
 1. Ermittle die Strasse neben Y
 2. gehe alle Strassen basierend von Y aus durch und Baue ein Netz
 3. Suche im Netz die Gebäude mit Produkten
-4. erzeuge einen Weg von X nach Z 
-5. Berechne die Weglänge 
-6. Wird der Weg umgesetzt, dann 
+4. erzeuge einen Weg von X nach Z
+5. Berechne die Weglänge
+6. Wird der Weg umgesetzt, dann
 ==> Berechne Transportkosten
 ==> Transportzeit: Strecke /3 = Drei Tiles pro Tag
 ==> Transportiere Waren von X nach Z, so dass das Lage sich bei X leert und bei Y füllt
-==> Stelle in der Fabrik die Produktion so um, dass der Ressourcenverbrauch auch richtig beachtet wird
+==> Stelle in der Fabrik die Produktion so um, dass der Resourcenverbrauch auch richtig beachtet wird
 
 
 uint16 << 16 + uint16 = index
@@ -52,21 +52,21 @@ TEST(TransportTest, FindStorageBuildings)
     map.addBuilding(addStreet(1, 2));
     map.addBuilding(addStreet(1, 3));
     map.addBuilding(addStreet(1, 4));
-    //add start building
+    // add start building
     auto office = std::make_shared<world::Building>("Transport Office", "Transport Office", "A factory", 50000, world::BuildingType::Transport, 2, 2);
     office->setPosition(1, 5);
     auto component1 = world::Building::createComponentByName("StorageComponent");
     office->addComponent(component1);
     map.addBuilding(office);
-    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Farm);
+    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Resource);
     farm->setPosition(2, 1);
-    farm->addProduct(std::make_shared<Product>("test", "dummy.png", world::BuildingType::Farm, ProductionCycle(0, 12, 5, 5)));
+    farm->addProduct(std::make_shared<Product>("test", "test", "dummy.png", world::BuildingType::Resource, ProductionCycle(0, 12, 5, 5), world::ProductType::Food));
     map.addBuilding(farm);
     auto component2 = world::Building::createComponentByName("StorageComponent");
     farm->addComponent(component2);
     auto factory = std::make_shared<world::Building>("Factory", "Factory", "A Factory", 10000, world::BuildingType::Factory);
     factory->setPosition(2, 2);
-    factory->addProduct(std::make_shared<Product>("test", "dummy.png", world::BuildingType::Farm, ProductionCycle(0, 12, 5, 5)));
+    factory->addProduct(std::make_shared<Product>("test", "test", "dummy.png", world::BuildingType::Resource, ProductionCycle(0, 12, 5, 5), world::ProductType::Food));
     auto component3 = world::Building::createComponentByName("StorageComponent");
     factory->addComponent(component3);
     map.addBuilding(factory);
@@ -74,12 +74,12 @@ TEST(TransportTest, FindStorageBuildings)
     company->addBuilding(farm);
     company->addBuilding(office);
 
-    //TransportOffice office;
+    // TransportOffice office;
 
     auto result = map.findStorageBuildings(office, company);
     int test = 1;
 
-    //EXPECT_EQ(map.getBuildings().size(), 7);
+    // EXPECT_EQ(map.getBuildings().size(), 7);
     EXPECT_EQ(result.size(), 2);
 }
 
@@ -93,22 +93,22 @@ TEST(TransportTest, GenerateRoute)
     map.addBuilding(addStreet(1, 2));
     map.addBuilding(addStreet(1, 3));
     map.addBuilding(addStreet(1, 4));
-    //add start building
+    // add start building
     auto office = std::make_shared<world::Building>("Transport Office", "Transport Office", "A factory", 50000, world::BuildingType::Transport, 2, 2);
     office->setPosition(1, 5);
     map.addBuilding(office);
-    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Farm);
+    auto farm = std::make_shared<world::Building>("Farm", "Farm", "A farm", 10000, world::BuildingType::Resource);
     farm->setPosition(2, 1);
     map.addBuilding(farm);
 
     auto factory = std::make_shared<world::Building>("Factory", "Factory", "A Factory", 10000, world::BuildingType::Factory);
     factory->setPosition(2, 2);
     map.addBuilding(factory);
-    //TransportOffice office;
+    // TransportOffice office;
     company->addBuilding(factory);
     company->addBuilding(farm);
     company->addBuilding(office);
-    //TransportOffice office;
+    // TransportOffice office;
 
     auto result = map.findStorageBuildings(office, company);
 }

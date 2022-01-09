@@ -1,18 +1,10 @@
 #include "ressource.h"
 
-Resource::Resource(std::string name, std::string image, float costPerMonth, world::BuildingType buildingType)
-    : name(name), image(image), costPerMonth(costPerMonth), buildingType(buildingType)
+Resource::Resource(const std::string &localizedName, const std::string &name, const std::string &image, float costPerMonth, world::BuildingType buildingType, world::RawResource rawResource)
+    : ProduceableObject(localizedName, name, image), costPerMonth(costPerMonth), buildingType(buildingType), rawResource(rawResource)
 {
 }
 
-std::string Resource::getName()
-{
-    return name;
-}
-std::string Resource::getImage()
-{
-    return image;
-}
 float Resource::getCostPerMonth()
 {
     return costPerMonth;
@@ -20,4 +12,9 @@ float Resource::getCostPerMonth()
 world::BuildingType Resource::getBuildingType()
 {
     return buildingType;
+}
+
+world::RawResource Resource::getRawResource()
+{
+    return rawResource;
 }

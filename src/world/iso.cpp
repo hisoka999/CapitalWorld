@@ -17,4 +17,9 @@ namespace iso
         y = (pt.getX() + pt.getY()) / 2.0f;
         return utils::Vector2(x, y);
     }
+
+    const utils::Vector2 twoDToIso(int x, int y)
+    {
+        return utils::Vector2(x - y, (x + y) / 2.f);
+    }
 }

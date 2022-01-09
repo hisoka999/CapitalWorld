@@ -6,6 +6,7 @@
 	],
 	"settings": {
 		"files.associations": {
+			"*.save": "json",
 			"vector": "cpp",
 			"memory": "cpp",
 			"fstream": "cpp",
@@ -76,7 +77,12 @@
 			"executor": "cpp",
 			"io_context": "cpp",
 			"netfwd": "cpp",
-			"timer": "cpp"
+			"timer": "cpp",
+			"codecvt": "cpp",
+			"compare": "cpp",
+			"concepts": "cpp",
+			"ranges": "cpp",
+			"stop_token": "cpp"
 		}
 	}
 }

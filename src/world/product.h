@@ -1,16 +1,17 @@
 #ifndef PRODUCT_H
 #define PRODUCT_H
 
+#include "../world/ressource.h"
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include "../world/ressource.h"
+#include "produceableobject.h"
 
 struct ProductionCycle
 {
     unsigned startMonth;
     unsigned endMonth;
-    //production time in days
+    // production time in days
     unsigned productionTime;
     unsigned amount;
 
@@ -33,16 +34,15 @@ struct ResourceRequirement
     int amount;
 };
 
-class Product
+class Product : public ProduceableObject
 {
 public:
-    Product(std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
-    std::string getName();
-    std::string getImage();
+    Product(const std::string &localizedName, std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
+
     std::vector<std::shared_ptr<ResourceRequirement>> getResources();
     std::vector<std::shared_ptr<ProductRequirement>> getBaseProducts();
 
-    void addRessource(std::shared_ptr<Resource> resource, int amount);
+    void addResource(std::shared_ptr<Resource> resource, int amount);
     bool needsResource(std::shared_ptr<Resource> resource);
     void addProduct(std::shared_ptr<Product> product, int amount);
     bool needsProduct(std::shared_ptr<Product> product);
@@ -54,8 +54,6 @@ public:
     world::ProductType getProductType();
 
 private:
-    std::string name;
-    std::string image;
     world::BuildingType buildingType;
     std::vector<std::shared_ptr<ResourceRequirement>> resources;
     std::vector<std::shared_ptr<ProductRequirement>> products;

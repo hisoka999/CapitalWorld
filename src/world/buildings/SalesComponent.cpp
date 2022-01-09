@@ -1,10 +1,10 @@
 #include "SalesComponent.h"
-#include "world/building.h"
-#include <algorithm>
-#include "StorageComponent.h"
-#include "world/gamemap.h"
 #include "HouseComponent.h"
+#include "StorageComponent.h"
 #include "services/productservice.h"
+#include "world/building.h"
+#include "world/gamemap.h"
+#include <algorithm>
 namespace world
 {
     namespace buildings
@@ -24,6 +24,7 @@ namespace world
 
                 return demand;
             }
+            return -1;
         }
 
         bool SalesComponent::isSalesActive(const std::string &product)
@@ -35,6 +36,7 @@ namespace world
                     return item->active;
                 }
             }
+            return false;
         }
 
         SalesComponent::SalesComponent(/* args */)
@@ -173,7 +175,7 @@ namespace world
             return object;
         }
 
-        void SalesComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void SalesComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
             auto items = object->getArray("items");
             for (auto item : items)

@@ -1,7 +1,8 @@
 #include "productservice.h"
-#include "ressourceservice.h"
 #include "magic_enum.hpp"
+#include "ressourceservice.h"
 #include <algorithm>
+#include <engine/utils/localisation.h>
 
 namespace services
 {
@@ -18,6 +19,25 @@ namespace services
         }
         return result;
     }
+
+    std::vector<std::shared_ptr<Product>> ProductService::getProductsByBuildingType(world::BuildingType type, const std::shared_ptr<Product> &baseProduct)
+    {
+        std::vector<std::shared_ptr<Product>> result;
+        for (auto &product : getData())
+        {
+            if (product->getBuildingType() == type)
+            {
+                for (auto &base : product->getBaseProducts())
+                {
+                    if (base->product->getName() == baseProduct->getName())
+                    {
+                        result.push_back(product);
+                    }
+                }
+            }
+        }
+        return result;
+    }
     std::vector<std::shared_ptr<Product>> ProductService::getBaseProductsByBuildingType(world::BuildingType type)
     {
         std::vector<std::shared_ptr<Product>> result;
@@ -29,7 +49,7 @@ namespace services
                 for (auto &baseProduct : baseProducts)
                 {
 
-                    //check if base product is in result list
+                    // check if base product is in result list
                     bool isInList = false;
                     for (auto &resultProduct : result)
                     {
@@ -63,20 +83,35 @@ namespace services
 
     std::shared_ptr<Product> ProductService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
     {
+
+        std::string lang = Localisation::Instance().getLanguage();
+        if (lang == "en")
+            lang = "";
+        else
+        {
+            lang = "_" + lang;
+        }
+        std::string localisedName;
+
+        if (object->hasAttribute("name" + lang))
+            localisedName = object->getStringValue("name" + lang);
+        else
+            localisedName = object->getStringValue("name");
+
         std::string name = object->getStringValue("name");
         std::string texture = object->getStringValue("texture");
         world::BuildingType type = magic_enum::enum_cast<world::BuildingType>(object->getStringValue("building")).value();
         world::ProductType productType = magic_enum::enum_cast<world::ProductType>(object->getStringValue("type")).value();
 
         ProductionCycle cycle = convertJsonObject2Cycle(object->getObjectValue("productionCycle"));
-        auto product = std::make_shared<Product>(name, texture, type, cycle, productType);
+        auto product = std::make_shared<Product>(localisedName, name, texture, type, cycle, productType);
         auto attrs = object->getAttributes();
         if (std::find(attrs.begin(), attrs.end(), std::string("baseResources")) != attrs.end())
         {
             auto baseResources = object->getObjectValue("baseResources");
             for (auto attr : baseResources->getAttributes())
             {
-                product->addRessource(RessourceService::Instance().getResourceByName(attr), baseResources->getIntValue(attr));
+                product->addResource(ResourceService::Instance().getResourceByName(attr), baseResources->getIntValue(attr));
             }
         }
         if (std::find(attrs.begin(), attrs.end(), std::string("baseProducts")) != attrs.end())

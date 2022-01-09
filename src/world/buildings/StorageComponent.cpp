@@ -10,10 +10,10 @@ namespace world
             maximalAmount = 100000;
         }
 
-        bool StorageComponent::canAdd(const std::string &product, int amount)
+        bool StorageComponent::canAdd([[maybe_unused]] const std::string &product, int amount)
         {
             int usage = static_cast<int>(usedStorage());
-            return usage + amount < static_cast<int>(maximalAmount);
+            return usage + amount < static_cast<int>(maximalAmount) && amount > 0;
         }
         void StorageComponent::addEntry(const std::string &product, int amount)
         {
@@ -33,11 +33,11 @@ namespace world
             }
             else
             {
-                if (entries[product].amount - newAmount >= 0)
+                if (int(entries[product].amount) - newAmount >= 0 || newAmount > 0)
                 {
                     entries[product].amount += newAmount;
                 }
-                //count storage usage
+                // count storage usage
             }
         }
         unsigned StorageComponent::usedStorage()
@@ -71,7 +71,7 @@ namespace world
             return json;
         }
 
-        void StorageComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company)
+        void StorageComponent::fromJson(std::shared_ptr<utils::JSON::Object> &object, [[maybe_unused]] Company *company)
         {
             for (auto attr : object->getAttributes())
             {
