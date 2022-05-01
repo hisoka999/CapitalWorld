@@ -129,6 +129,7 @@ namespace world
                     {
                         auto product = products[0];
                         auto sales = m_building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                        sales->setGameMap(gameState->getGameMap().get());
                         sales->addSalesItem(product->getName(), product->calculateCostsPerPiece() * 0.4, true);
 
                         auto storage = m_building->getComponent<world::buildings::StorageComponent>("StorageComponent");
