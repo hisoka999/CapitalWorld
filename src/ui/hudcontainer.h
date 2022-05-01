@@ -1,6 +1,6 @@
 #pragma once
-#include "buildwindow.h"
-#include "researchwindow.h"
+#include "windows/buildwindow.h"
+#include "windows/researchwindow.h"
 #include "world/updatethread.h"
 #include <engine/ui/Container.h>
 #include <world/AIThread.h>

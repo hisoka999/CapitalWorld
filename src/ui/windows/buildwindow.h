@@ -3,8 +3,8 @@
 
 #include <engine/ui/Window.h>
 
-#include "../world/buildactions.h"
-#include "ui/BuildingSelectionWindow.h"
+#include "world/buildactions.h"
+#include "ui/windows/BuildingSelectionWindow.h"
 #include "world/buildingtypes.h"
 #include <engine/graphics/texture.h>
 #include <memory>

@@ -2,7 +2,7 @@
 #define __OPTIONSWINDOW_H__
 
 #include "SaveGameWindow.h"
-#include "ui/SettingsWindow.h"
+#include "ui/windows/SettingsWindow.h"
 #include "world/gamestate.h"
 #include <engine/ui/Window.h>
 #include <engine/ui/scrollarea.h>

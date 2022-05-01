@@ -1,5 +1,5 @@
 #include "SettingsWindow.h"
-#include "../translate.h"
+#include "translate.h"
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/layout/GridLayout.h>
 #include <engine/ui/Label.h>
@@ -49,14 +49,13 @@ SettingsWindow::SettingsWindow()
                             settings->setAttr("Base", "Lang", std::string(magic_enum::enum_name(comboboxLanguage->getSelectionText())));
 
                             settings->write();
-                            closeWindow();
-                        });
+                            closeWindow(); });
 
     cancelButton->setLabel(_("Cancel"));
     cancelButton->setPos(200, 300);
     fullscreen->setPos(30, 50);
     fullscreen->setHeight(25);
-    //fullscreen->setText(_("Fullscreen"));
+    // fullscreen->setText(_("Fullscreen"));
     setTitle(_("Settings"));
     resolutions = std::make_shared<UI::ComboBox<DisplayMode>>(graphicsTab.get());
 
@@ -117,7 +116,7 @@ SettingsWindow::SettingsWindow()
             if (mode.w == screenWidth && mode.h == screenHeight)
                 resolutions->setSelection(displayModes.size() - 1);
         }
-        //FIXME distinct mode list
+        // FIXME distinct mode list
     }
     auto labelResolution = std::make_shared<UI::Label>(graphicsTab.get());
     labelResolution->setFont(uiText.get());

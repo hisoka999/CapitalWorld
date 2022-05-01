@@ -14,8 +14,8 @@
 #include <engine/ui/Container.h>
 #include <vector>
 #include <memory>
-#include <ui/SettingsWindow.h>
-#include <ui/SaveGameWindow.h>
+#include <ui/windows/SettingsWindow.h>
+#include <ui/windows/SaveGameWindow.h>
 
 namespace scenes
 {

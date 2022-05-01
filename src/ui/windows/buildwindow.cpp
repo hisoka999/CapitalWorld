@@ -1,5 +1,5 @@
 #include "buildwindow.h"
-#include "../translate.h"
+#include "translate.h"
 #include "world/buildings/street.h"
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/iconbutton.h>

@@ -1,9 +1,9 @@
 #ifndef BUILDINGWINDOW_H
 #define BUILDINGWINDOW_H
 
-#include "../world/building.h"
-#include "../world/gamestate.h"
-#include "../world/gamemap.h"
+#include "world/building.h"
+#include "world/gamestate.h"
+#include "world/gamemap.h"
 #include <engine/ui/Label.h>
 #include <engine/ui/TabBar.h>
 #include <engine/ui/Window.h>

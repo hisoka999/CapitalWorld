@@ -1,13 +1,13 @@
 #ifndef WORLDSCENE_H
 #define WORLDSCENE_H
 
-#include "ui/BuildingSelectionWindow.h"
-#include "ui/Console.h"
-#include "ui/buildingwindow.h"
-#include "ui/buildwindow.h"
+#include "ui/windows/BuildingSelectionWindow.h"
+#include "ui/windows/Console.h"
+#include "ui/windows/buildingwindow.h"
+#include "ui/windows/buildwindow.h"
 #include "ui/hudcontainer.h"
-#include "ui/optionswindow.h"
-#include "ui/researchwindow.h"
+#include "ui/windows/optionswindow.h"
+#include "ui/windows/researchwindow.h"
 #include "world/AIThread.h"
 #include "world/buildactions.h"
 #include "world/building.h"

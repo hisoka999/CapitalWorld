@@ -1,5 +1,5 @@
 #include "SaveGameWindow.h"
-#include "SaveGameComponent.h"
+#include "ui/SaveGameComponent.h"
 #include <engine/utils/os.h>
 #include <filesystem>
 
@@ -31,8 +31,7 @@ namespace UI
                                     saveGame->setY(yPos);
                                     saveGame->connect("saveAction", [&](std::string fileName)
                                                       { this->fireFuncionCall("saveAction", fileName); });
-                                    saveGameArea->addObject(saveGame);
-                                });
+                                    saveGameArea->addObject(saveGame); });
             addObject(saveButton);
         }
         setFont("fonts/arial.ttf", 12);

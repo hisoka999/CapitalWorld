@@ -1,5 +1,5 @@
 #include "BuildingSelectionWindow.h"
-#include "BuildingSelectionComponent.h"
+#include "ui/BuildingSelectionComponent.h"
 #include "translate.h"
 namespace UI
 {
@@ -27,8 +27,7 @@ namespace UI
                                 this->fireFuncionCall("buildingSelectionChanged", selectedBuilding);
                                 auto component = std::dynamic_pointer_cast<UI::BuildingSelectionComponent>(scrollArea->get(selection));
                                 std::cout << "selected building: " << selectedBuilding->getDisplayName() << std::endl;
-                                setVisible(false);
-                            });
+                                setVisible(false); });
     }
 
     BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 300, 400), company(company)
