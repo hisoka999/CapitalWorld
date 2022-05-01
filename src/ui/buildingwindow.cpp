@@ -63,7 +63,7 @@ namespace UI
         bounds.y = 5;
         layout->updateLayout(bounds);
     }
-    void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, utils::Vector2 &position2D, GameMap *gameMap)
+    void BuildingWindow::open(std::shared_ptr<world::Building> building, std::shared_ptr<world::GameState> &gameState, utils::Vector2 &position2D, GameMap *gameMap)
     {
         this->building = building;
         TileType tile = gameMap->getTile(position2D);
@@ -81,13 +81,15 @@ namespace UI
         if (building != nullptr)
         {
             labelTypeValue->setText(building->getDisplayName());
-            if (company != nullptr)
+            labelOwnerValue->setText("");
+            // find owner
+            for (auto company : gameState->getCompanies())
             {
-                labelOwnerValue->setText(company->getName());
-            }
-            else
-            {
-                labelOwnerValue->setText("");
+                if (company->hasBuilding(building))
+                {
+                    labelOwnerValue->setText(company->getName());
+                    break;
+                }
             }
 
             tabBar->removeTab(productionTab);
@@ -103,10 +105,10 @@ namespace UI
                 productionTab = std::make_shared<UI::ResourceProductionTab>(tabBar.get(), building, rawResource);
                 break;
             case world::BuildingType::Factory:
-                productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building, company);
+                productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building, gameState->getPlayer());
                 break;
             case world::BuildingType::Transport:
-                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap, company);
+                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap, gameState->getPlayer());
                 break;
             case world::BuildingType::Shop:
                 productionTab = std::make_shared<UI::SalesTab>(tabBar.get(), building);

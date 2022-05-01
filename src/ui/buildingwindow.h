@@ -2,7 +2,7 @@
 #define BUILDINGWINDOW_H
 
 #include "../world/building.h"
-#include "../world/company.h"
+#include "../world/gamestate.h"
 #include "../world/gamemap.h"
 #include <engine/ui/Label.h>
 #include <engine/ui/TabBar.h>
@@ -19,7 +19,7 @@ namespace UI
     public:
         BuildingWindow(int x, int y);
 
-        void open(std::shared_ptr<world::Building> building, std::shared_ptr<world::Company> company, utils::Vector2 &position2D, GameMap *gameMap);
+        void open(std::shared_ptr<world::Building> building, std::shared_ptr<world::GameState> &gameState, utils::Vector2 &position2D, GameMap *gameMap);
 
     private:
         std::shared_ptr<UI::TabBar> tabBar;

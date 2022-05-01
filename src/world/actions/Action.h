@@ -8,13 +8,18 @@ namespace world
         class Action
         {
         public:
-            Action(){};
+            Action(const std::shared_ptr<world::Company> &company) : m_company(company){};
             virtual ~Action(){};
 
-            virtual void execute(const std::shared_ptr<world::GameState> &gameState, const std::shared_ptr<world::Company> &company) = 0;
+            virtual void execute(const std::shared_ptr<world::GameState> &gameState) = 0;
+            std::shared_ptr<Action> nextAction();
+            void setNextAction(const std::shared_ptr<Action> &action);
+
+        protected:
+            std::shared_ptr<world::Company> m_company;
 
         private:
-            /* data */
+            std::shared_ptr<Action> m_action = nullptr;
         };
 
     } // namespace actions

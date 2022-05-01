@@ -106,7 +106,7 @@ namespace scenes
         numberOfPlayersCombobox->connect("valueChanged", [&](int size)
                                          { numberOfCompanys = size; });
         container->addObject(numberOfPlayersCombobox);
-
+        numberOfCompanys = 8;
         // numberOfCities
         numberOfCities = 8;
         auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
@@ -274,6 +274,7 @@ namespace scenes
         for (int i = 1; i <= numberOfCompanys; ++i)
         {
             auto company = std::make_shared<world::Company>("Company " + std::to_string(i), 1000000, false);
+            company->setAvailableResearch(services::ResearchService::Instance().getData());
             companies.push_back(company);
         }
 

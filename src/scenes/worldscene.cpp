@@ -256,7 +256,7 @@ namespace scenes
                     int height = core::GameWindow::Instance().getHeight();
                     buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
 
-                    buildingWindow.open(building, company, cursorPosition, gameMap.get());
+                    buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
                 }
             }
             else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))

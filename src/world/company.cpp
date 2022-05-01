@@ -256,6 +256,30 @@ namespace world
         }
         return result;
     }
+
+    std::vector<std::shared_ptr<Product>> Company::findAvailableProducts()
+    {
+        auto products = services::ProductService::Instance().getData();
+        std::vector<std::shared_ptr<Product>> result;
+
+        for (auto &product : products)
+        {
+            bool canProduce = true;
+            for (auto research : availableResearch)
+            {
+                if (research->canEnableObject(product->getName()) && !research->getResearched())
+                {
+                    canProduce = false;
+                    break;
+                }
+            }
+            if (canProduce)
+            {
+                result.push_back(product);
+            }
+        }
+        return result;
+    }
     std::vector<std::shared_ptr<Research>> Company::getResearchQueue() const
     {
         return researchQueue;
@@ -313,6 +337,16 @@ namespace world
             }
         }
         return research;
+    }
+
+    std::shared_ptr<world::actions::Action> Company::currentAction()
+    {
+        return m_currentAction;
+    }
+
+    void Company::setCurrentAction(const std::shared_ptr<world::actions::Action> &action)
+    {
+        m_currentAction = action;
     }
     void Company::research()
     {

@@ -28,6 +28,8 @@ namespace scenes
 
                 bgTexture.loadTexture(renderer, "images/title_background.png");
 
+                this->music->loadMusic("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav");
+
                 container = new UI::Container();
                 SDL_Color white =
                     {255, 255, 255, 0};
@@ -139,6 +141,11 @@ namespace scenes
         {
                 container->handleEvents(pInput);
                 winMgr->handleInput(pInput);
+        }
+
+        void MainScene::load()
+        {
+                music->play(-1);
         }
 
         MainScene::~MainScene()

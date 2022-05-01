@@ -49,6 +49,7 @@ namespace world
         std::vector<std::shared_ptr<world::buildings::Street>> &getStreets();
         void addCitizen(int people);
         long getNumberOfCitizen();
+        utils::Vector2 &getPosition();
 
     protected:
         std::vector<std::shared_ptr<Building>> buildings;

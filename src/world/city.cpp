@@ -521,4 +521,9 @@ namespace world
     {
         return numberOfCitizen;
     }
+
+    utils::Vector2& City::getPosition()
+    {
+        return position;
+    }
 }

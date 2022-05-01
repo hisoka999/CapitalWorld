@@ -29,7 +29,6 @@ namespace world
         std::atomic_bool running;
         bool paused;
         int speed;
-        std::vector<std::shared_ptr<world::actions::Action>> actions;
     };
 
 }

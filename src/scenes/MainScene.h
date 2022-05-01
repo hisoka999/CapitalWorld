@@ -32,6 +32,8 @@ namespace scenes
                         return running;
                 }
 
+                virtual void load();
+
         private:
                 bool running;
                 core::SceneManager *sceneManager;

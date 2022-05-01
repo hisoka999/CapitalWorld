@@ -3,14 +3,14 @@
 #include <ctime>
 #include <engine/utils/os.h>
 #include <iostream>
-#include <world/actions/BuildAction.h>
+#include <world/actions/BaseAction.h>
+#include <world/actions/ProductionAction.h>
+
 namespace world
 {
     AIThread::AIThread(std::shared_ptr<world::GameState> gameState)
         : gameState(gameState), running(false), speed(300)
     {
-
-        actions.push_back(std::make_shared<world::actions::BuildAction>());
 
         running = true;
         thread = std::thread(&AIThread::update, this);
@@ -55,6 +55,7 @@ namespace world
 
     void AIThread::update()
     {
+
         while (this->running)
         {
 
@@ -68,10 +69,14 @@ namespace world
                     if (company->isPLayer())
                         continue;
 
-                    for (auto &action : actions)
+                    auto action = company->currentAction();
+                    if (action == nullptr)
                     {
-                        action->execute(gameState, company);
+                        action = std::make_shared<world::actions::BaseAction>(company);
                     }
+
+                    action->execute(gameState);
+                    company->setCurrentAction(action->nextAction());
                 }
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
                 long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
