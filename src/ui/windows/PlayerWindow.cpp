@@ -3,12 +3,12 @@
 
 namespace UI
 {
-    PlayerWindow::PlayerWindow(const std::shared_ptr<world::GameState> &gameState) : UI::Window(0, 0, 600, 400), m_gameState(gameState)
+    PlayerWindow::PlayerWindow(const std::shared_ptr<world::GameState> &gameState) : UI::Window(0, 0, 700, 400), m_gameState(gameState)
     {
         setTitle("Player");
 
         m_tabBar = std::make_shared<UI::TabBar>(this);
-        m_tabBar->setWidth(480);
+        m_tabBar->setWidth(580);
         m_tabBar->setHeight(400);
         addObject(m_tabBar);
         auto playerTab = std::make_shared<UI::Tab>(m_tabBar.get(), "Company");
@@ -34,7 +34,7 @@ namespace UI
                                           { return utils::string_format(u8"%.2f €", c->getProfit()); });
         m_playerTable->setElementFunction(3, [](std::shared_ptr<world::Company> &c) -> std::string
                                           { return utils::string_format(u8"%.2f €", c->getCash()); });
-        m_playerTable->setWidth(380);
+        m_playerTable->setWidth(480);
         m_playerTable->setHeight(340);
         topCompaniesTab->addObject(m_playerTable);
     }

@@ -3,6 +3,7 @@
 #include "scenes/worldscene.h"
 #include "services/researchservice.h"
 #include "world/mapgenerator.h"
+#include "world/CompanyNameGenerator.h"
 #include <engine/core/SceneManager.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/ComboBox.h>
@@ -220,10 +221,6 @@ namespace scenes
                                  renderer->getMainCamera()->getWidth(),
                                  renderer->getMainCamera()->getHeight());
 
-        // graphics::Texture texture(renderer, renderer->getMainCamera()->getWidth(),
-        //                           renderer->getMainCamera()->getHeight());
-
-        //        renderer->setRenderTarget(texture.getSDLTexture());
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
         renderer->setDrawColor(12, 21, 24, 155);
         graphics::Rect bounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
@@ -271,9 +268,11 @@ namespace scenes
         player->setAvailableResearch(services::ResearchService::Instance().getData());
 
         std::vector<std::shared_ptr<world::Company>> companies;
+
+        world::CompanyNameGenerator nameGen("data/company_names.json", seed);
         for (int i = 1; i <= numberOfCompanys; ++i)
         {
-            auto company = std::make_shared<world::Company>("Company " + std::to_string(i), 1000000, false);
+            auto company = std::make_shared<world::Company>(nameGen.generateName(), 1000000, false);
             company->setAvailableResearch(services::ResearchService::Instance().getData());
             companies.push_back(company);
         }

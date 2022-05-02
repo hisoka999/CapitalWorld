@@ -74,7 +74,8 @@ namespace world
                     {
                         action = std::make_shared<world::actions::BaseAction>(company);
                     }
-
+                    if (!running)
+                        return;
                     action->execute(gameState);
                     company->setCurrentAction(action->nextAction());
                 }

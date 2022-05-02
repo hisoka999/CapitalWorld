@@ -1,0 +1,22 @@
+{
+    "topics": [
+        "Food",
+        "Oil",
+        "General",
+        ""
+    ],
+    "name_helper": [
+        "Trade",
+        "Transport",
+        "Worldwide",
+        "Retail"
+    ],
+    "type": [
+        "AG",
+        "SE",
+        "Inc",
+        "GmbH",
+        "GmbH & Co KG",
+        "Ltd"
+    ]
+}
