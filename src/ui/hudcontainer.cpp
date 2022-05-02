@@ -11,8 +11,8 @@
 
 namespace UI
 {
-    HUDContainer::HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow)
-        : updateThread(updateThread), aiThread(aiThread), gameState(gameState), buildWindow(buildWindow), researchWindow(researchWindow)
+    HUDContainer::HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow)
+        : updateThread(updateThread), aiThread(aiThread), gameState(gameState), buildWindow(buildWindow), researchWindow(researchWindow), playerWindow(playerWindow)
     {
         glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
         uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
@@ -32,6 +32,13 @@ namespace UI
         companyButton->setColor(utils::color::WHITE);
         companyButton->setPos(xLeft, yLeft);
         companyButton->setBorderless(true);
+        companyButton->connect("buttonClick", [&]()
+                               {
+                                   auto rect = playerWindow->displayRect();
+                                   int width = core::GameWindow::Instance().getWidth();
+                                   int height = core::GameWindow::Instance().getHeight();
+                                   playerWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                                   playerWindow->setVisible(true); });
         xLeft += 170;
 
         // cash

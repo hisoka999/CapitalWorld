@@ -22,7 +22,7 @@ namespace scenes
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState)
+          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
@@ -45,11 +45,12 @@ namespace scenes
         winMgr->addWindow(&buildingWindow);
         winMgr->addWindow(&console);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &buildWindow, &researchWindow);
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &buildWindow, &researchWindow, &playerWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
         winMgr->addWindow(&buildingSelectionWindow);
+        winMgr->addWindow(&playerWindow);
         buildingSelectionWindow.connect("buildingSelectionChanged", [&](std::shared_ptr<world::Building> building)
                                         { selectedBuilding2Build = building; });
         optionsWindow.setGameState(gameState);

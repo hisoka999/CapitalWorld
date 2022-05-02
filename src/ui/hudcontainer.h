@@ -1,6 +1,7 @@
 #pragma once
-#include "windows/buildwindow.h"
-#include "windows/researchwindow.h"
+#include "ui/windows/buildwindow.h"
+#include "ui/windows/PlayerWindow.h"
+#include "ui/windows/researchwindow.h"
 #include "world/updatethread.h"
 #include <engine/ui/Container.h>
 #include <world/AIThread.h>
@@ -16,7 +17,7 @@ namespace UI
     class HUDContainer : public UI::Container
     {
     public:
-        HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow);
+        HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow);
 
         void update();
 
@@ -40,5 +41,6 @@ namespace UI
         std::shared_ptr<world::GameState> gameState;
         UI::BuildWindow *buildWindow;
         UI::ResearchWindow *researchWindow;
+        UI::PlayerWindow *playerWindow;
     };
 };

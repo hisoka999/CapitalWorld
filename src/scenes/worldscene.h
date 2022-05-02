@@ -8,6 +8,7 @@
 #include "ui/hudcontainer.h"
 #include "ui/windows/optionswindow.h"
 #include "ui/windows/researchwindow.h"
+#include "ui/windows/PlayerWindow.h"
 #include "world/AIThread.h"
 #include "world/buildactions.h"
 #include "world/building.h"
@@ -60,6 +61,7 @@ namespace scenes
         UI::OptionsWindow optionsWindow;
         UI::ResearchWindow researchWindow;
         UI::Console console;
+        UI::PlayerWindow playerWindow;
 
         graphics::Texture uiTexture;
 
