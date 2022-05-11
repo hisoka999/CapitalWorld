@@ -50,6 +50,7 @@ namespace world
         void addCitizen(int people);
         long getNumberOfCitizen();
         utils::Vector2 &getPosition();
+        std::string &getName();
 
     protected:
         std::vector<std::shared_ptr<Building>> buildings;

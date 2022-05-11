@@ -46,8 +46,10 @@ namespace world
         std::vector<std::shared_ptr<world::Building>> &getBuildings();
         std::shared_ptr<world::Building> findBuildingByDisplayName(const std::string &name);
         std::vector<std::shared_ptr<world::Building>> findAvailableBuildingsByType(world::BuildingType type);
+        std::vector<std::shared_ptr<world::Building>> findBuildingsByType(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> findAvialableBaseProducts(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> findAvailableProducts();
+        std::vector<std::shared_ptr<ProductBalance>> getAccountBalanceForYear(int year);
 
         void research();
 

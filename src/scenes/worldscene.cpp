@@ -29,7 +29,7 @@ namespace scenes
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
         // gameMap = std::make_shared<GameMap>(100,100);
-        mapRenderer = std::make_shared<GameMapRenderer>(gameState->getGameMap());
+        mapRenderer = std::make_shared<GameMapRenderer>(gameState);
 
         renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
@@ -131,13 +131,9 @@ namespace scenes
     void WorldScene::render()
     {
 
-        auto &cities = gameState->getCities();
+        // auto &cities = gameState->getCities();
 
         mapRenderer->render(renderer);
-        for (auto city : cities)
-        {
-            city->renderCity(renderer);
-        }
 
         float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 

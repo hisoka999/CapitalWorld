@@ -3,6 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <world/actions/ProductionAction.h>
+#include <magic_enum.hpp>
 
 namespace world
 {
@@ -26,33 +27,51 @@ namespace world
 
             // select building to build
             std::map<world::BuildingType, size_t> usage;
+
             for (auto &building : m_company->getBuildings())
             {
                 usage[building->getType()]++;
             }
 
-            size_t minUsage = 0;
-            for (auto u : usage)
+            size_t minUsage = (usage.size() > 0) ? (*usage.begin()).second : 0;
+
+            for (auto type : magic_enum::enum_values<world::BuildingType>())
             {
-                minUsage = std::min(u.second, minUsage);
+                if (usage.count(type) == 0)
+                {
+                    usage[type] = 0;
+                    // continue;
+                }
+                minUsage = std::min(usage[type], minUsage);
             }
-            if (m_product != nullptr)
+            if (m_buildingType == world::BuildingType::Street)
+            {
+                targetBuilding = std::make_shared<world::buildings::Street>();
+                graphics::Rect rect;
+                rect.x = 0;
+                rect.y = 128;
+                rect.width = 64;
+                rect.height = 32;
+                targetBuilding->setOffset(0, 0);
+                targetBuilding->setSourceRect(rect);
+            }
+            else if (m_product != nullptr)
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(m_buildingType)[0];
             }
-            else if (usage.count(world::BuildingType::Shop) == minUsage)
+            else if (usage[world::BuildingType::Shop] == minUsage)
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Shop)[0];
             }
-            else if (usage.count(world::BuildingType::Factory) == minUsage)
+            else if (usage[world::BuildingType::Factory] == minUsage)
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Factory)[0];
             }
-            else if (usage.count(world::BuildingType::Resource) == minUsage)
+            else if (usage[world::BuildingType::Resource] == minUsage)
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Resource)[0];
             }
-            else if (usage.count(world::BuildingType::Transport) == minUsage)
+            else if (usage[world::BuildingType::Transport] == minUsage)
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Transport)[0];
             }
@@ -60,8 +79,15 @@ namespace world
                 return;
 
             targetBuilding = services::BuildingService::Instance().create(targetBuilding);
-            for (auto &street : currentCity->getStreets())
+            bool foundPosition = false;
+            auto streets = currentCity->getStreets();
+            for (auto b : m_company->findBuildingsByType(world::BuildingType::Street))
             {
+                streets.push_back(std::dynamic_pointer_cast<world::buildings::Street>(b));
+            }
+            for (auto &street : streets)
+            {
+                foundPosition = false;
                 auto pos = street->get2DPosition();
                 auto northBuilding = gameState->getGameMap()->getBuilding2D({pos.x, pos.y - 1, pos.width, 1});
                 auto southBuilding = gameState->getGameMap()->getBuilding2D({pos.x, pos.y + pos.height, 1, pos.height});
@@ -71,29 +97,42 @@ namespace world
                 if (northBuilding == nullptr)
                 {
                     targetBuilding->setPosition(pos.x, pos.y - 1);
+                    foundPosition = true;
                 }
                 else if (southBuilding == nullptr)
                 {
                     targetBuilding->setPosition(pos.x, pos.y + pos.height);
+                    foundPosition = true;
                 }
                 else if (eastBuilding == nullptr)
                 {
                     targetBuilding->setPosition(pos.x + pos.width, pos.y);
+                    foundPosition = true;
                 }
                 else if (westBuilding == nullptr)
                 {
                     targetBuilding->setPosition(pos.x - 1, pos.y);
+                    foundPosition = true;
                 }
 
-                if (targetBuilding->canBuild(m_company->getCash()) && gameState->getGameMap()->canBuild(targetBuilding->get2DPosition()))
-                {
-                    m_company->addBuilding(targetBuilding);
-                    gameState->getGameMap()->addBuilding(targetBuilding);
-                    m_company->incCash(targetBuilding->getBuildPrice() * -1);
-                    auto productionAction = std::make_shared<world::actions::ProductionAction>(m_company, targetBuilding, m_product);
-                    setNextAction(productionAction);
+                if (targetBuilding->canBuild(m_company->getCash()) && gameState->getGameMap()->canBuild(targetBuilding->get2DPosition()) && foundPosition)
                     break;
-                }
+                        }
+
+            if (!foundPosition)
+            {
+                auto productionAction = std::make_shared<world::actions::BuildAction>(m_company, m_city, world::BuildingType::Street, m_product);
+                setNextAction(productionAction);
+            }
+
+            if (targetBuilding->canBuild(m_company->getCash()) && gameState->getGameMap()->canBuild(targetBuilding->get2DPosition()) && foundPosition)
+            {
+                m_company->addBuilding(targetBuilding);
+                gameState->getGameMap()->addBuilding(targetBuilding);
+
+                m_company->incCash(targetBuilding->getBuildPrice() * -1);
+                auto productionAction = std::make_shared<world::actions::ProductionAction>(m_company, targetBuilding, m_product);
+                setNextAction(productionAction);
             }
         }
     }

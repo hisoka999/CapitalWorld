@@ -81,7 +81,8 @@ namespace world
                 }
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
                 long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-                std::cout << "ai thread time: " << microseconds << "µs" << std::endl;
+                if (microseconds > 1000)
+                    std::cout << "ai thread time: " << microseconds << "µs" << std::endl;
             }
         }
     }

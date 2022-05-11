@@ -3,13 +3,17 @@
         "Food",
         "Oil",
         "General",
+        "My",
+        "Your",
         ""
     ],
     "name_helper": [
         "Trade",
         "Transport",
         "Worldwide",
-        "Retail"
+        "Retail",
+        "Stores",
+        ""
     ],
     "type": [
         "AG",

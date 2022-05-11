@@ -54,7 +54,28 @@ namespace world
                             /* code */
                             break;
                         case world::BuildingType::Resource:
-                            // TODO
+                        {
+                            // todo find available fitting building as an alternative
+                            bool foundProduction = false;
+                            for (auto &productionBuilding : m_company->findBuildingsByType(world::BuildingType::Resource))
+                            {
+                                for (auto res : m_product->getResources())
+                                {
+                                    if (productionBuilding->requireResource(res->resource->getRawResource()))
+                                    {
+                                        productionBuilding->addProduct(m_product);
+                                        foundProduction = true;
+                                    }
+                                }
+                            }
+                            if (!foundProduction)
+                            {
+                                auto targetCity = findTargetCity(gameState, m_building);
+                                auto resourceBuilding = std::make_shared<BuildAction>(m_company, targetCity, world::BuildingType::Resource, base->product);
+                                setNextAction(resourceBuilding);
+                            }
+                            break;
+                        }
                         default:
                             break;
                         }
@@ -65,6 +86,7 @@ namespace world
             case world::BuildingType::Transport:
             {
                 const auto &transport = m_building->getComponent<world::buildings::TransportComponent>("TransportComponent");
+                transport->clearRoutes();
 
                 for (auto &building : m_company->getBuildings())
                 {
@@ -130,7 +152,7 @@ namespace world
                         auto product = products[0];
                         auto sales = m_building->getComponent<world::buildings::SalesComponent>("SalesComponent");
                         sales->setGameMap(gameState->getGameMap().get());
-                        sales->addSalesItem(product->getName(), product->calculateCostsPerPiece() * 0.4, true);
+                        sales->addSalesItem(product->getName(), product->calculateCostsPerPiece() * 1.5, true);
 
                         auto storage = m_building->getComponent<world::buildings::StorageComponent>("StorageComponent");
                         storage->addEntry(product->getName(), 1);
@@ -139,17 +161,7 @@ namespace world
                         // {
                         // case world::BuildingType::Factory:
                         // }
-                        std::shared_ptr<City> targetCity = nullptr;
-                        float distance = MAXFLOAT;
-                        for (auto &city : gameState->getCities())
-                        {
-                            float currentDistance = city->getPosition().distance(m_building->get2DPosition().toVecto2());
-                            if (currentDistance < distance)
-                            {
-                                distance = currentDistance;
-                                targetCity = city;
-                            }
-                        }
+                        auto targetCity = findTargetCity(gameState, m_building);
                         const auto buildAction = std::make_shared<world::actions::BuildAction>(m_company, targetCity, product->getBuildingType(), product);
                         setNextAction(buildAction);
                     }

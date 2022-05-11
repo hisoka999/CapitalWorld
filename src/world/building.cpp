@@ -483,4 +483,18 @@ namespace world
         rawResources.push_back(rawResource);
     }
 
+
+        std::vector<ProductBalance> Building::getBalancePerYear(int year)
+        {
+            std::vector<ProductBalance> result;
+            for (auto b : balance)
+            {
+                if(b.year == year)
+                {
+                    result.push_back(b);
+                }
+            }
+            return result;
+        }
+
 }

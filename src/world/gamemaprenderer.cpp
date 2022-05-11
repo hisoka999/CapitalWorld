@@ -9,8 +9,8 @@ Uint32 ColourToUint(int R, int G, int B)
     return (Uint32)((R << 16) + (G << 8) + (B << 0));
 }
 
-GameMapRenderer::GameMapRenderer(std::shared_ptr<GameMap> gameMap)
-    : gameMap(gameMap), tileWidth(64), tileHeight(32)
+GameMapRenderer::GameMapRenderer(std::shared_ptr<world::GameState> gameState)
+    : gameState(gameState), tileWidth(64), tileHeight(32)
 {
     groundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "landscape.png"));
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 10);
@@ -40,10 +40,10 @@ graphics::Rect GameMapRenderer::getAutoTile(size_t baseTile, const size_t tileX,
 
 size_t GameMapRenderer::getAutoTileId(size_t baseTile, const size_t tileX, const size_t tileY, const TileType groundLimit)
 {
-    const TileType leftTile = gameMap->getTile(tileX, tileY + 1);
-    const TileType rightTile = gameMap->getTile(tileX, tileY - 1);
-    const TileType topTile = gameMap->getTile(tileX - 1, tileY);
-    const TileType bottomTile = gameMap->getTile(tileX + 1, tileY);
+    const TileType leftTile = gameState->getGameMap()->getTile(tileX, tileY + 1);
+    const TileType rightTile = gameState->getGameMap()->getTile(tileX, tileY - 1);
+    const TileType topTile = gameState->getGameMap()->getTile(tileX - 1, tileY);
+    const TileType bottomTile = gameState->getGameMap()->getTile(tileX + 1, tileY);
 
     const Autotile &autoTile = autoTileMap[baseTile];
     size_t resultTile = autoTile.baseHash;
@@ -63,11 +63,11 @@ size_t GameMapRenderer::getAutoTileId(size_t baseTile, const size_t tileX, const
     {
         resultTile = autoTile.bottom_left;
     }
-    else if (gameMap->getTile(tileX + 1, tileY - 1) >= groundLimit && bottomTile < groundLimit && rightTile < groundLimit)
+    else if (gameState->getGameMap()->getTile(tileX + 1, tileY - 1) >= groundLimit && bottomTile < groundLimit && rightTile < groundLimit)
     {
         resultTile = autoTile.bottom_right_corner;
     }
-    else if (gameMap->getTile(tileX - 1, tileY + 1) >= groundLimit && topTile < groundLimit && leftTile < groundLimit)
+    else if (gameState->getGameMap()->getTile(tileX - 1, tileY + 1) >= groundLimit && topTile < groundLimit && leftTile < groundLimit)
     {
         resultTile = autoTile.top_left_corner;
     }
@@ -105,7 +105,7 @@ size_t GameMapRenderer::getSourceTile(const TileType tile, const size_t tileX, c
     else if (tile > groundLimit)
     {
         // find special tiles like rocks, single trees or mountains
-        Decoration decoration = static_cast<Decoration>(gameMap->getDecoration(tileX, tileY));
+        Decoration decoration = static_cast<Decoration>(gameState->getGameMap()->getDecoration(tileX, tileY));
         switch (decoration)
         {
         case Decoration::grass1:
@@ -171,7 +171,7 @@ const graphics::Rect GameMapRenderer::getSourceRect(const TileType tile, const s
     else if (tile > groundLimit)
     {
         // find special tiles like rocks, single trees or mountains
-        Decoration decoration = static_cast<Decoration>(gameMap->getDecoration(tileX, tileY));
+        Decoration decoration = static_cast<Decoration>(gameState->getGameMap()->getDecoration(tileX, tileY));
         switch (decoration)
         {
         case Decoration::grass1:
@@ -197,7 +197,7 @@ const graphics::Rect GameMapRenderer::getSourceRect(const TileType tile, const s
 float GameMapRenderer::getTileYOffset(size_t tileX, size_t tileY)
 {
     graphics::Rect srcRect;
-    size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
+    size_t hash = tileData[tileX + (gameState->getGameMap()->getWidth() * tileY)];
     textureMap->getSourceRect(hash, &srcRect);
 
     return tileHeight - srcRect.height;
@@ -229,8 +229,8 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
     if (!updateMiniMap)
         return;
     miniMap = nullptr;
-    size_t width = gameMap->getWidth() * 2;
-    size_t height = gameMap->getHeight();
+    size_t width = gameState->getGameMap()->getWidth() * 2;
+    size_t height = gameState->getGameMap()->getHeight();
     miniMap = std::make_shared<graphics::Texture>(renderer, width, height, SDL_TEXTUREACCESS_STREAMING);
 
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -240,32 +240,32 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
 
     for (size_t tempY = 0; tempY < height; ++tempY)
     {
-        for (size_t tempX = 0; tempX < gameMap->getWidth(); ++tempX)
+        for (size_t tempX = 0; tempX < gameState->getGameMap()->getWidth(); ++tempX)
         {
-            if (tempX > gameMap->getWidth() - 1 || tempY > height - 1)
+            if (tempX > gameState->getGameMap()->getWidth() - 1 || tempY > height - 1)
                 continue;
             float x = tempX;
             float y = tempY;
 
             const auto &iso = iso::twoDToIso(x, y);
-            const TileType tileType = gameMap->getTile(x, y);
-            const std::shared_ptr<world::Building> &building = gameMap->getBuilding(tempX, tempY);
+            const TileType tileType = gameState->getGameMap()->getTile(x, y);
+            const std::shared_ptr<world::Building> &building = gameState->getGameMap()->getBuilding(tempX, tempY);
 
             if (building != nullptr)
             {
-                miniMap->setPixel(iso.getX() + gameMap->getWidth(), iso.getY(), {255, 255, 255, 255});
+                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {255, 255, 255, 255});
             }
             else if (tileType > 8)
             {
-                miniMap->setPixel(iso.getX() + gameMap->getWidth(), iso.getY(), {125, 139, 46, 255});
+                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {125, 139, 46, 255});
             }
             else if (tileType == 8)
             {
-                miniMap->setPixel(iso.getX() + gameMap->getWidth(), iso.getY(), {246, 226, 197, 255});
+                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {246, 226, 197, 255});
             }
             else
             {
-                miniMap->setPixel(iso.getX() + gameMap->getWidth(), iso.getY(), {46, 80, 125, 255});
+                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {46, 80, 125, 255});
             }
         }
     }
@@ -279,22 +279,22 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
 
 void GameMapRenderer::generateTileDataFromMap()
 {
-    tileData.resize(gameMap->getWidth() * gameMap->getHeight());
+    tileData.resize(gameState->getGameMap()->getWidth() * gameState->getGameMap()->getHeight());
 
-    for (size_t y = 0; y < gameMap->getHeight(); ++y)
+    for (size_t y = 0; y < gameState->getGameMap()->getHeight(); ++y)
     {
-        for (size_t x = 0; x < gameMap->getWidth(); ++x)
+        for (size_t x = 0; x < gameState->getGameMap()->getWidth(); ++x)
         {
-            const TileType tile = gameMap->getTile(x, y);
+            const TileType tile = gameState->getGameMap()->getTile(x, y);
             size_t source = getSourceTile(tile, x, y);
-            tileData[x + (y * gameMap->getWidth())] = source;
+            tileData[x + (y * gameState->getGameMap()->getWidth())] = source;
         }
     }
 }
 
 void GameMapRenderer::renderTile(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos)
 {
-    size_t hash = tileData[tileX + (gameMap->getWidth() * tileY)];
+    size_t hash = tileData[tileX + (gameState->getGameMap()->getWidth() * tileY)];
     graphics::Rect srcRect;
     textureMap->getSourceRect(hash, &srcRect);
     float x = (pos.getX() * factor) - camera->getX();
@@ -307,7 +307,7 @@ void GameMapRenderer::renderTile(core::Renderer *renderer, const core::Camera *c
 
 void GameMapRenderer::renderResource(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos)
 {
-    auto resource = gameMap->getRawResource(tileX, tileY);
+    auto resource = gameState->getGameMap()->getRawResource(tileX, tileY);
     size_t hash = 0;
     switch (resource)
     {
@@ -349,11 +349,11 @@ utils::Vector2 GameMapRenderer::convertVec2(float zoomFactor, utils::Vector2 inp
     float ty = pt.getY() / static_cast<float>(getTileHeight() * zoomFactor);
 
     x = std::floor(tx);
-    if (x > gameMap->getWidth())
-        x = gameMap->getWidth();
+    if (x > gameState->getGameMap()->getWidth())
+        x = gameState->getGameMap()->getWidth();
     y = std::floor(ty);
-    if (y > gameMap->getHeight())
-        y = gameMap->getHeight();
+    if (y > gameState->getGameMap()->getHeight())
+        y = gameState->getGameMap()->getHeight();
 
     return utils::Vector2(x, y);
 }
@@ -396,8 +396,8 @@ void GameMapRenderer::render(core::Renderer *renderer)
     int tilesX = endX - std::max(startX, 0);
     int tilesY = endY - std::max(startY, 0);
 
-    size_t gameMapWidth = gameMap->getWidth();
-    size_t gameMapHeight = gameMap->getHeight();
+    size_t gameMapWidth = gameState->getGameMap()->getWidth();
+    size_t gameMapHeight = gameState->getGameMap()->getHeight();
 
     auto textureMapP = textureMap.get();
 
@@ -449,7 +449,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
             if (tempX > gameMapWidth - 1)
                 continue;
 
-            const std::shared_ptr<world::Building> &building = gameMap->getBuilding(tempX, tempY);
+            const std::shared_ptr<world::Building> &building = gameState->getGameMap()->getBuilding(tempX, tempY);
             if (building == nullptr)
                 continue;
             displayRect = building->getDisplayRect();
@@ -477,6 +477,10 @@ void GameMapRenderer::render(core::Renderer *renderer)
             }
         }
     }
+    for (auto city : gameState->getCities())
+    {
+        city->renderCity(renderer);
+    }
     renderer->setRenderTarget(nullptr);
     cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
     auto elapsed = std::chrono::high_resolution_clock::now() - startTime;
@@ -490,6 +494,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
         std::cout << "\t num tiles: " << (tilesX * tilesY) << std::endl;
         std::cout << "\t factor: " << factor << std::endl;
     }
+
     if (updateMiniMap)
         renderMiniMap(renderer);
 }

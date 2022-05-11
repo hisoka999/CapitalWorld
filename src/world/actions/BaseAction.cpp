@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "BuildAction.h"
 #include "ProductionAction.h"
+#include <iostream>
+
 namespace world
 {
     namespace actions
@@ -79,9 +81,30 @@ namespace world
                         currentCity = city;
                     }
                 }
-                // new city? , more production ???
+                // check production update
+                //  new city? , more production ???
                 std::shared_ptr<Action> buildAction = std::make_shared<world::actions::BuildAction>(m_company, currentCity, world::BuildingType::Transport, nullptr);
                 setNextAction(buildAction);
+                bool noTransport = true;
+                for (auto &building : m_company->getBuildings())
+                {
+                    switch (building->getType())
+                    {
+                    case BuildingType::Transport:
+                    {
+                        std::shared_ptr<Action> transportAction = std::make_shared<world::actions::ProductionAction>(m_company, building, nullptr);
+                        setNextAction(transportAction);
+                        noTransport = false;
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+                }
+                if(noTransport){
+                    std::cout<<"company has no transport building: "<<m_company->getName()<<std::endl;
+                    std::cout<<"city: "<<currentCity->getName()<<std::endl; 
+                }
             }
         }
     }

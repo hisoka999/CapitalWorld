@@ -232,6 +232,17 @@ namespace world
         return result;
     }
 
+    std::vector<std::shared_ptr<world::Building>> Company::findBuildingsByType(world::BuildingType type)
+    {
+        std::vector<std::shared_ptr<world::Building>> result;
+        for (auto &building : buildings)
+        {
+            if (building->getType() == type)
+                result.push_back(building);
+        }
+        return result;
+    }
+
     std::vector<std::shared_ptr<Product>> Company::findAvialableBaseProducts(world::BuildingType type)
     {
         auto products = services::ProductService::Instance().getBaseProductsByBuildingType(type);
@@ -279,6 +290,37 @@ namespace world
             }
         }
         return result;
+    }
+
+    std::vector<std::shared_ptr<ProductBalance>> Company::getAccountBalanceForYear(int year)
+    {
+        std::map<BalanceAccount, std::shared_ptr<ProductBalance>> balanceMap;
+        std::vector<std::shared_ptr<ProductBalance>> balanceList;
+        for (auto &building : buildings)
+        {
+            for (auto &balance : building->getBalancePerYear(year))
+            {
+                if (balanceMap.count(balance.account) > 0)
+                {
+                    balanceMap[balance.account]->costs += balance.costs;
+                    balanceMap[balance.account]->income += balance.income;
+                }
+                else
+                {
+                    std::shared_ptr<ProductBalance> b = std::make_shared<ProductBalance>();
+                    b->account = balance.account;
+                    b->costs = balance.costs;
+                    b->income = balance.income;
+                    b->year = year;
+                    balanceMap[balance.account] = b;
+                }
+            }
+        }
+        for (auto val : balanceMap)
+        {
+            balanceList.push_back(val.second);
+        }
+        return balanceList;
     }
     std::vector<std::shared_ptr<Research>> Company::getResearchQueue() const
     {

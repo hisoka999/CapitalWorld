@@ -17,6 +17,7 @@ namespace world
 
         protected:
             std::shared_ptr<world::Company> m_company;
+            std::shared_ptr<world::City> findTargetCity(const std::shared_ptr<world::GameState> &gameState, const std::shared_ptr<world::Building> &building);
 
         private:
             std::shared_ptr<Action> m_action = nullptr;

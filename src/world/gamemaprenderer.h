@@ -1,7 +1,7 @@
 #ifndef GAMEMAPRENDERER_H
 #define GAMEMAPRENDERER_H
 
-#include "world/gamemap.h"
+#include "world/gamestate.h"
 #include <engine/core/renderer.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/graphics/texture.h>
@@ -26,7 +26,7 @@ struct Autotile
 class GameMapRenderer
 {
 public:
-    GameMapRenderer(std::shared_ptr<GameMap> gameMap);
+    GameMapRenderer(std::shared_ptr<world::GameState> gameState);
 
     void render(core::Renderer *renderer);
     size_t getTileWidth();
@@ -50,7 +50,7 @@ private:
     void renderResource(core::Renderer *renderer, const core::Camera *camera, const float factor, const int tileX, const int tileY, const utils::Vector2 &pos);
     utils::Vector2 convertVec2(float zoomFactor, utils::Vector2 input);
     const graphics::Rect getSourceRect(const TileType tile, const size_t tileX, const size_t tileY);
-    std::shared_ptr<GameMap> gameMap;
+    std::shared_ptr<world::GameState> gameState;
     std::vector<size_t> tileData;
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;

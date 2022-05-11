@@ -141,6 +141,7 @@ namespace world
         int height = 32;
         world::buildings::DemandMap baseDemand;
         baseDemand[world::ProductType::Food] = 0.7f;
+        baseDemand[world::ProductType::Resource] = 0.3f;
 
         generateStreetTree(seed);
         fillStreetsByTree(root);
@@ -301,7 +302,7 @@ namespace world
     {
         root = std::make_shared<TreeNode>(position, 0);
         std::mt19937 gen(seed);
-        long numberOfBuildings = long(std::round(float(numberOfCitizen) / 1000.0f));
+        long numberOfBuildings = long(std::round(float(numberOfCitizen) / 200.0f));
         // numberOfBuildings /= 2.0;
         fillNode(gen, root, &numberOfBuildings);
     }
@@ -522,8 +523,12 @@ namespace world
         return numberOfCitizen;
     }
 
-    utils::Vector2& City::getPosition()
+    utils::Vector2 &City::getPosition()
     {
         return position;
+    }
+    std::string &City::getName()
+    {
+        return name;
     }
 }

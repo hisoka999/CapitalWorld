@@ -1,6 +1,7 @@
 #include "CompanyNameGenerator.h"
 #include <engine/utils/exceptions.h>
 #include <engine/utils/json/parser.h>
+#include <engine/utils/string.h>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -55,7 +56,7 @@ namespace world
         std::string name = m_topics[nameTopic(m_gen)];
         name += " " + m_name_helper[nameHelper(m_gen)];
         name += " " + m_type[nameType(m_gen)];
-
+        name = utils::trim(name, " ");
         return name;
     }
 }

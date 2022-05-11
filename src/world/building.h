@@ -18,7 +18,8 @@ namespace world
         Production,
         Transport,
         Import,
-        Sales,
+        Research,
+        Sales
     };
 
     struct ProductBalance
@@ -101,6 +102,7 @@ namespace world
         std::map<std::string, std::string> displayData();
         bool requireResource(world::RawResource rawResource);
         void addResource(world::RawResource rawResource);
+        std::vector<ProductBalance> getBalancePerYear(int year);
 
     protected:
         void addBalance(ProductBalance value);

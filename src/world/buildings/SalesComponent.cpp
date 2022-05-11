@@ -118,6 +118,11 @@ namespace world
                 int amount = storage->getEntry(storedProduct);
                 auto product = services::ProductService::Instance().getProductByName(storedProduct);
                 int demand = calcDemand(product->getProductType(), building);
+                if (demand == 0)
+                {
+                    std::cout << "demand is zero: " << building->getDisplayName() << std::endl;
+                    demand = calcDemand(product->getProductType(), building);
+                }
                 if (amount > 0)
                 {
                     if (amount > demand)
@@ -187,6 +192,5 @@ namespace world
                 addSalesItem(product, price, active);
             }
         }
-
     }
 }

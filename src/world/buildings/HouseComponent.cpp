@@ -11,6 +11,7 @@ namespace world
             : BuildingComponent("HouseComponent"), residents(0), houseId(1)
         {
             baseDemand[world::ProductType::Food] = 0.7f;
+            baseDemand[world::ProductType::Resource] = 0.3f;
 
             initDemand();
         }
@@ -39,6 +40,7 @@ namespace world
         {
             // check demands fullfillded
             bool fullfilled = true;
+            unsigned int oldResidents = residents;
             for (auto &d : demand)
             {
                 if (d.second.value == d.second.maxDemand)
@@ -55,12 +57,14 @@ namespace world
             {
                 residents *= 1.2;
             }
-
-            updateTexture(building);
-            // update demand
-            for (auto base : baseDemand)
+            if (oldResidents != residents)
             {
-                demand[base.first].maxDemand = base.second * residents;
+                updateTexture(building);
+                // update demand
+                for (auto base : baseDemand)
+                {
+                    demand[base.first].maxDemand = base.second * residents;
+                }
             }
         }
 
