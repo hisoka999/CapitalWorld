@@ -204,15 +204,16 @@ namespace scenes
                     {
                         // remove it
 
-                        gameMap->removeBuilding(building);
-                        // get back cash
+                                                // get back cash
                         if (gameState->getPlayer()->hasBuilding(building))
                         {
+                            gameMap->removeBuilding(building);
                             gameState->getPlayer()->removeBuilding(building);
                             gameState->getPlayer()->incCash(building->getBuildPrice() * 0.2f);
                         }
-                        else
+                        else if (gameState->findBuildingOwner(building) == nullptr)
                         {
+                            gameMap->removeBuilding(building);
                             // if no one owns the building you have to pay for destroying it
                             gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
                         }

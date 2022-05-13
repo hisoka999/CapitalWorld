@@ -42,6 +42,8 @@ namespace world
         std::string toJsonString();
         static std::shared_ptr<GameState> fromJson(std::shared_ptr<utils::JSON::Object> &object);
 
+        const std::shared_ptr<Company> findBuildingOwner(const std::shared_ptr<world::Building> &building);
+
     private:
         TimeState timeState;
         std::shared_ptr<Company> player;

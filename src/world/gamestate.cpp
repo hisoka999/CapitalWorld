@@ -148,6 +148,18 @@ namespace world
         return std::make_shared<GameState>(companies, player, gameMap, cities, difficulty, time);
     }
 
+    const std::shared_ptr<Company> GameState::findBuildingOwner(const std::shared_ptr<world::Building> &building)
+    {
+        for (auto company : getCompanies())
+        {
+            if (company->hasBuilding(building))
+            {
+                return company;
+            }
+        }
+        return nullptr;
+    }
+
     std::string GameState::toJsonString()
     {
         std::shared_ptr<utils::JSON::Object> jsonGameState = std::make_shared<utils::JSON::Object>();

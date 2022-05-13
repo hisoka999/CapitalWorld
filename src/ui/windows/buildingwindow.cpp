@@ -83,13 +83,10 @@ namespace UI
             labelTypeValue->setText(building->getDisplayName());
             labelOwnerValue->setText("");
             // find owner
-            for (auto company : gameState->getCompanies())
+            auto owner = gameState->findBuildingOwner(building);
+            if (owner != nullptr)
             {
-                if (company->hasBuilding(building))
-                {
-                    labelOwnerValue->setText(company->getName());
-                    break;
-                }
+                labelOwnerValue->setText(owner->getName());
             }
 
             tabBar->removeTab(productionTab);
