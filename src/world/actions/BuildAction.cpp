@@ -77,13 +77,17 @@ namespace world
             }
             if (!targetBuilding)
                 return;
-
-            targetBuilding = services::BuildingService::Instance().create(targetBuilding);
+            if (targetBuilding->getType() != world::BuildingType::Street)
+                targetBuilding = services::BuildingService::Instance().create(targetBuilding);
             bool foundPosition = false;
             auto streets = currentCity->getStreets();
-            for (auto b : m_company->findBuildingsByType(world::BuildingType::Street))
+            for (auto company : gameState->getCompanies())
             {
-                streets.push_back(std::dynamic_pointer_cast<world::buildings::Street>(b));
+                for (auto b : company->findBuildingsByType(world::BuildingType::Street))
+                {
+                    auto value = std::dynamic_pointer_cast<world::buildings::Street>(b);
+                    streets.push_back(value);
+                }
             }
             for (auto &street : streets)
             {
@@ -116,8 +120,14 @@ namespace world
                 }
 
                 if (targetBuilding->canBuild(m_company->getCash()) && gameState->getGameMap()->canBuild(targetBuilding->get2DPosition()) && foundPosition)
+                {
                     break;
-                        }
+                }
+                else if (!gameState->getGameMap()->canBuild(targetBuilding->get2DPosition()))
+                {
+                    foundPosition = false;
+                }
+            }
 
             if (!foundPosition)
             {

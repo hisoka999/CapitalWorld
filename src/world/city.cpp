@@ -141,7 +141,7 @@ namespace world
         int height = 32;
         world::buildings::DemandMap baseDemand;
         baseDemand[world::ProductType::Food] = 0.7f;
-        baseDemand[world::ProductType::Resource] = 0.3f;
+        // baseDemand[world::ProductType::Resource] = 0.3f;
 
         generateStreetTree(seed);
         fillStreetsByTree(root);

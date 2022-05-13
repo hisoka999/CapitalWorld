@@ -18,7 +18,7 @@
     {
         "name": "Wheet",
         "name_de": "Weizen",
-        "type": "Resource",
+        "type": "Food",
         "texture": "Pixel_Mart/flour.png",
         "building": "Resource",
         "baseResources": {
