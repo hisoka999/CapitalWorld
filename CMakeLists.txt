@@ -31,28 +31,40 @@ if(MINGW)
     #message("${PROJECT_SOURCE_DIR}/deps/gettext/lib/")
 
     link_directories(${SDL2_DIR}/lib/ ${PROJECT_SOURCE_DIR}/deps/gettext/lib/ )
-elseif (WIN32)
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 
     set(SDL2_LIBRARY sdl2)
     set(SDL2MAIN_LIBRARY SDL2main)
-    set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
+    set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2 )
     set(SDL2_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
 
-    set(SDL2_IMAGE_LIBRARY sdl2_image)
-    set(SDL2_IMAGE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
-    set(SDL2_IMAGE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
+    set(SDL2_IMAGE_LIBRARY SDL2_image CACHE FILEPATH "")
+    set(SDL2_IMAGE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2 CACHE PATH "")
+    set(SDL2_IMAGE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include CACHE PATH "")
 
-    set(SDL2TTF_LIBRARY sdl2ttf)
-    set(SDL2TTF_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
-    set(SDL2TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
+    set(SDL2TTF_LIBRARY sdl2ttf CACHE FILEPATH "")
+    set(SDL2TTF_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2 CACHE PATH "")
+    set(SDL2TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include CACHE PATH "")
 
-    set(SDL2_MIXER_LIBRARY SDL2_mixer)
-    set(SDL2_MIXER_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
-    set(SDL2_MIXER_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
+    set(SDL2_MIXER_LIBRARY SDL2_mixer CACHE FILEPATH "")
+    set(SDL2_MIXER_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2 CACHE PATH "")
+    set(SDL2_MIXER_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include CACHE PATH "")
 
-    link_directories(${SDL2_DIR}/lib/x64)
+    #link_directories(${SDL2_DIR}/lib/x64)
+    if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "x64")
+    # 64 bits
+        link_directories(${SDL2_DIR}/lib/x64)
+    elseif("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
+        # 32 bits
+        link_directories(${SDL2_DIR}/lib/x86)
+        else()
+        message("unknown plattform: ${CMAKE_GENERATOR_PLATFORM}")
+    endif()
+else()
+    message("unknown system: ${CMAKE_CXX_COMPILER_ID}")
 endif()
+message("SDL2 image dir: ${SDL2_IMAGE_DIR}")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
@@ -111,7 +123,7 @@ ${PROJECT_SOURCE_DIR}/cmake
 ${PROJECT_BINARY_DIR}/engine
 )
 
-if (WIN32)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
     
@@ -136,9 +148,9 @@ endif()
 
 
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
-if(WIN32)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)    
-    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2 -mwindows)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2 )
 else()
     target_link_libraries(${PROJECT_NAME} SDL2)
     message("unix "+${SDL2_LIBRARIES})

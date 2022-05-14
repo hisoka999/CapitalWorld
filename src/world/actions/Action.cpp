@@ -1,4 +1,5 @@
 #include "Action.h"
+#include <limits>
 
 namespace world
 {
@@ -24,7 +25,7 @@ namespace world
         std::shared_ptr<world::City> Action::findTargetCity(const std::shared_ptr<world::GameState> &gameState, const std::shared_ptr<world::Building> &building)
         {
             std::shared_ptr<City> targetCity = nullptr;
-            float distance = MAXFLOAT;
+            float distance = std::numeric_limits<float>::max();
             for (auto &city : gameState->getCities())
             {
                 float currentDistance = city->getPosition().distance(building->get2DPosition().toVecto2());

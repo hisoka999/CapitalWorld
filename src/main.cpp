@@ -48,7 +48,7 @@ void generateEnumPot(std::string fileName)
     os.close();
 }
 
-int main()
+int main(int argc, char **argv)
 {
     try
     {
