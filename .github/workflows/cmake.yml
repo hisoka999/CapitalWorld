@@ -12,13 +12,13 @@ jobs:
           - name: Windows (x64)
             os: windows-latest
             triplet: x64-windows
-            arch: amd64
+            arch: x64
             experimental: false
           - name: Windows (x86)
             os: windows-latest
             triplet: x86-windows
             experimental: false
-            arch: amd64_x86
+            arch: Win32
           - name: Ubuntu (GCC)
             os: ubuntu-latest
             triplet: x64-linux
@@ -47,7 +47,7 @@ jobs:
 
       - name: Install Linux dependencies
         run: |
-          sudo apt install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-gfx-dev libsdl2-mixer-dev libz-dev
+          sudo apt install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev
         if: matrix.os == 'ubuntu-latest'
 
       - name: Show content of workspace after cache has been restored
@@ -63,7 +63,7 @@ jobs:
       # Run CMake to generate Ninja project files, using the vcpkg's toolchain file to resolve and install the dependencies as specified in vcpkg.json.
       - name: Install dependencies and generate project files
         run: |
-          cmake -B "${{ env.CMAKE_BUILD_DIR }}" 
+          cmake -B "${{ env.CMAKE_BUILD_DIR }}"  -A ${{matrix.arch}}
       # Build the whole project with Ninja (which is spawn by CMake).
       - name: Build
         run: |
