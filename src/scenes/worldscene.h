@@ -48,6 +48,7 @@ namespace scenes
         void handleEvents(core::Input *pInput);
         virtual void update();
         virtual void fixedUpdate(uint32_t delta);
+        std::shared_ptr<world::GameState> &getGameState();
 
     private:
         void renderHUD();

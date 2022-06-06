@@ -317,7 +317,7 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(cons
     return targets;
 }
 
-std::vector<std::shared_ptr<world::Building>> GameMap::findHousesInDistance(world::Building *startBuilding, const int distance)
+std::vector<std::shared_ptr<world::Building>> GameMap::findByComponentTypeInDistance(const std::string &componentType, world::Building *startBuilding, const int distance)
 {
     std::vector<std::shared_ptr<world::Building>> result;
     auto startRect = startBuilding->get2DPosition();
@@ -331,7 +331,7 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findHousesInDistance(worl
             if (building == nullptr)
                 continue;
 
-            if (building->hasComponent("HouseComponent"))
+            if (building->hasComponent(componentType))
             {
                 result.push_back(building);
             }

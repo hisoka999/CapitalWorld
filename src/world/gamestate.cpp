@@ -62,11 +62,6 @@ namespace world
     {
         // auto start = std::chrono::high_resolution_clock::now();
 
-        for (auto &company : companies)
-        {
-            company->updateBalance(time.getMonth(), time.getYear());
-        }
-
         // auto elapsed = std::chrono::high_resolution_clock::now() - start;
         // long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
         // std::cout << "update companies time: " << milliseconds << "ms" << std::endl;
@@ -80,6 +75,12 @@ namespace world
                 building->updateProduction(time.getMonth(), time.getYear());
             }
         }
+
+        for (auto &company : companies)
+        {
+            company->updateBalance(time.getMonth(), time.getYear());
+        }
+
         // elapsed = std::chrono::high_resolution_clock::now() - start;
         // milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
         // std::cout << "update cities time: " << milliseconds << "ms" << std::endl;

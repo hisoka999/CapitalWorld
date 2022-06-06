@@ -204,7 +204,7 @@ namespace scenes
                     {
                         // remove it
 
-                                                // get back cash
+                        // get back cash
                         if (gameState->getPlayer()->hasBuilding(building))
                         {
                             gameMap->removeBuilding(building);
@@ -454,5 +454,10 @@ namespace scenes
     {
 
         hud->update();
+    }
+
+    std::shared_ptr<world::GameState> &WorldScene::getGameState()
+    {
+        return gameState;
     }
 }

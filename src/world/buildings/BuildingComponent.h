@@ -7,6 +7,7 @@ namespace world
 {
     class Company;
     class Building;
+    class GameState;
 
     namespace buildings
     {
@@ -28,6 +29,10 @@ namespace world
 
             virtual void delayedUpdate(Company *company);
             virtual std::map<std::string, std::string> displayData();
+
+        protected:
+            std::shared_ptr<world::GameState> getGameState();
+            bool isGameRunning();
         };
 
     } // namespace buildings

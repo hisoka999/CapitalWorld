@@ -3,6 +3,10 @@
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
 #include <regex>
+#include <world/gamestate.h>
+#include "SalesComponent.h"
+#include "StorageComponent.h"
+#include "services/productservice.h"
 namespace world
 {
     namespace buildings
@@ -38,6 +42,38 @@ namespace world
 
         void HouseComponent::updateProduction([[maybe_unused]] int month, [[maybe_unused]] int year, [[maybe_unused]] Building *building)
         {
+
+            // step one find shops
+            if (isGameRunning())
+            {
+                auto shops = getGameState()->getGameMap()->findByComponentTypeInDistance("SalesComponent", building, 10);
+
+                for (auto &shop : shops)
+                {
+                    auto storage = shop->getComponent<buildings::StorageComponent>("StorageComponent");
+                    auto sales = shop->getComponent<buildings::SalesComponent>("SalesComponent");
+
+                    for (auto storedProduct : storage->getStoredProducts())
+                    {
+                        if (!sales->isSalesActive(storedProduct))
+                            continue;
+
+                        auto product = services::ProductService::Instance().getProductByName(storedProduct);
+                        int storedAmount = storage->getEntry(storedProduct);
+                        if (storedAmount > 0)
+                        {
+                            int demand = getCurrentDemand(product->getProductType());
+                            if (demand < storedAmount)
+                                storedAmount = demand;
+                            fullfillDemand(product->getProductType(), storedAmount);
+
+                            storage->addEntry(storedProduct, storedAmount * -1);
+                            float orderAmount = storedAmount * sales->getSalesPrice(storedProduct);
+                            shop->addIncome(month, year, storedProduct, world::BalanceAccount::Sales, orderAmount);
+                        }
+                    }
+                }
+            }
             // check demands fullfillded
             bool fullfilled = true;
             unsigned int oldResidents = residents;
