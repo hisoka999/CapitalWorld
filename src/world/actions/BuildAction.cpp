@@ -37,6 +37,9 @@ namespace world
 
             for (auto type : magic_enum::enum_values<world::BuildingType>())
             {
+                if (type == world::BuildingType::Street || type == world::BuildingType::House || type == world::BuildingType::Other)
+                    continue;
+
                 if (usage.count(type) == 0)
                 {
                     usage[type] = 0;
@@ -75,7 +78,7 @@ namespace world
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Transport)[0];
             }
-            else if (usage[world::BuildingType::Other] == minUsage)
+            else if (usage[world::BuildingType::Other] == minUsage && usage[world::BuildingType::Other] <= 2)
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Other)[0];
             }

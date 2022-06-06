@@ -37,5 +37,11 @@ namespace world
             }
             return targetCity;
         }
+
+        bool Action::canExecute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
+        {
+            return true;
+        }
+
     }
 }

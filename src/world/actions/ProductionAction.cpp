@@ -59,11 +59,11 @@ namespace world
                             bool foundProduction = false;
                             for (auto &productionBuilding : m_company->findBuildingsByType(world::BuildingType::Resource))
                             {
-                                for (auto res : m_product->getResources())
+                                for (auto res : base->product->getResources())
                                 {
                                     if (productionBuilding->requireResource(res->resource->getRawResource()))
                                     {
-                                        productionBuilding->addProduct(m_product);
+                                        productionBuilding->addProduct(base->product);
                                         foundProduction = true;
                                     }
                                 }
@@ -162,6 +162,14 @@ namespace world
                         // case world::BuildingType::Factory:
                         // }
                         auto targetCity = findTargetCity(gameState, m_building);
+
+                        for (auto &prodBuilding : m_company->findBuildingsByType(product->getBuildingType()))
+                        {
+                            auto resourceBuilding = std::make_shared<ProductionAction>(m_company, prodBuilding, product);
+                            setNextAction(resourceBuilding);
+                            return;
+                        }
+
                         const auto buildAction = std::make_shared<world::actions::BuildAction>(m_company, targetCity, product->getBuildingType(), product);
                         setNextAction(buildAction);
                     }
@@ -170,6 +178,34 @@ namespace world
             default:
                 break;
             }
+        }
+        bool ProductionAction::canExecute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
+        {
+
+            switch (m_building->getType())
+            {
+            case BuildingType::Transport:
+            {
+                const auto &transport = m_building->getComponent<world::buildings::TransportComponent>("TransportComponent");
+                if (transport->getAllRoutes().size() == world::buildings::MAX_ROUTES)
+                {
+                    return false;
+                }
+
+                break;
+            }
+            case BuildingType::Shop:
+            {
+                auto sales = m_building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                if (sales->getSalesItems().size() == world::buildings::MAX_SALES_ITEMS)
+                {
+                    return false;
+                }
+            }
+            default:
+                break;
+            }
+            return true;
         }
     }
 }

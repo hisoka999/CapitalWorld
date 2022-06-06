@@ -15,11 +15,6 @@ namespace world
 
             auto &avialableResearch = m_company->getAvailableResearch();
 
-            if (!m_company->getResearchQueue().empty())
-            {
-                return;
-            }
-
             auto workers = m_building->getComponent<buildings::WorkerComponent>("WorkerComponent");
 
             if (avialableResearch.empty())
@@ -45,6 +40,21 @@ namespace world
                     m_company->addResearchToQueue(avialableResearch.front());
                 }
             }
+        }
+
+        bool ResearchAction::canExecute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
+        {
+            if (!m_company->getResearchQueue().empty())
+            {
+                return false;
+            }
+            auto &avialableResearch = m_company->getAvailableResearch();
+            auto workers = m_building->getComponent<buildings::WorkerComponent>("WorkerComponent");
+
+            if (avialableResearch.empty() && workers->getCurrentWorkers() == 0)
+                return false;
+
+            return false;
         }
 
     }

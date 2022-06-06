@@ -91,10 +91,24 @@ namespace world
                 {
                     switch (building->getType())
                     {
+
+                    case BuildingType::Shop:
+                    {
+                        std::shared_ptr<Action> shopAction = std::make_shared<world::actions::ProductionAction>(m_company, building, nullptr);
+                        if (shopAction->canExecute(gameState))
+                        {
+                            setNextAction(shopAction);
+                        }
+                        break;
+                    }
                     case BuildingType::Transport:
                     {
                         std::shared_ptr<Action> transportAction = std::make_shared<world::actions::ProductionAction>(m_company, building, nullptr);
-                        setNextAction(transportAction);
+                        if (transportAction->canExecute(gameState))
+                        {
+                            setNextAction(transportAction);
+                        }
+
                         noTransport = false;
                         break;
                     }
@@ -103,7 +117,10 @@ namespace world
                         if (building->getName() == "ResearchLab")
                         {
                             std::shared_ptr<Action> researchAction = std::make_shared<world::actions::ResearchAction>(m_company, building);
-                            setNextAction(researchAction);
+                            if (researchAction->canExecute(gameState))
+                            {
+                                setNextAction(researchAction);
+                            }
                         }
                     }
                     default:

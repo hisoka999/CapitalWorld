@@ -11,6 +11,7 @@ namespace world
 
     namespace buildings
     {
+        const size_t MAX_ROUTES = 10;
 
         struct TransportRoute
         {

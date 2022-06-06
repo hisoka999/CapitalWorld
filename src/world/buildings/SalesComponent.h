@@ -10,7 +10,7 @@ namespace world
 {
     namespace buildings
     {
-
+        const size_t MAX_SALES_ITEMS = 10;
         struct SalesItem
         {
             std::string product;

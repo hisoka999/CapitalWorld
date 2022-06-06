@@ -60,6 +60,9 @@ namespace world
 
         void SalesComponent::addSalesItem(const std::string &product, const float price, const bool active)
         {
+            if (sales.size() == MAX_SALES_ITEMS)
+                return;
+
             sales.push_back(std::make_shared<SalesItem>(product, price, active));
         }
 

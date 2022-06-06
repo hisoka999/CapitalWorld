@@ -12,6 +12,8 @@ namespace world
             virtual ~Action(){};
 
             virtual void execute(const std::shared_ptr<world::GameState> &gameState) = 0;
+
+            virtual bool canExecute(const std::shared_ptr<world::GameState> &gameState); 
             std::shared_ptr<Action> nextAction();
             void setNextAction(const std::shared_ptr<Action> &action);
 
