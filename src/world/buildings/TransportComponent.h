@@ -11,6 +11,7 @@ namespace world
 
     namespace buildings
     {
+        const size_t MAX_ROUTES = 10;
 
         struct TransportRoute
         {
@@ -36,6 +37,7 @@ namespace world
 
             const std::vector<std::shared_ptr<TransportRoute>> &getAllRoutes();
             std::vector<std::shared_ptr<TransportRoute>> getActiveRoutes();
+            void clearRoutes();
             void addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity);
             void removeRoute(const size_t position);
             void updateProduction(int month, int year, Building *building);

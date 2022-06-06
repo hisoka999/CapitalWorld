@@ -10,7 +10,7 @@ namespace world
 {
     namespace buildings
     {
-
+        const size_t MAX_SALES_ITEMS = 10;
         struct SalesItem
         {
             std::string product;
@@ -33,14 +33,13 @@ namespace world
             std::vector<std::shared_ptr<SalesItem>> sales;
             GameMap *gameMap;
             int calcDemand(const ProductType productType, Building *building);
-            bool isSalesActive(const std::string &product);
 
         public:
             SalesComponent(/* args */);
             ~SalesComponent();
 
             void setGameMap(GameMap *gameMap);
-
+            bool isSalesActive(const std::string &product);
             void addSalesItem(const std::string &product, const float price);
             void addSalesItem(const std::string &product, const float price, const bool active);
             void updateSalesItem(const std::string &product, const float price);

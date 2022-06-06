@@ -53,14 +53,16 @@ namespace UI
         if (salesItem->product.empty() && storage->getStoredProducts().size() > 0)
         {
             salesItem->product = productCombobox->getSelectionText();
+            auto product = services::ProductService::Instance().getProductByName(salesItem->product);
+            salesItem->price = product->calculateCostsPerPiece() * 1.5;
+            priceField->setValue(salesItem->price);
         }
         productCombobox->connect("valueChanged", [&](std::string value)
                                  {
                                      salesItem->product = value;
                                      auto product = services::ProductService::Instance().getProductByName(value);
                                      salesItem->price = product->calculateCostsPerPiece() * 1.5;
-                                     priceField->setValue(salesItem->price);
-                                 });
+                                     priceField->setValue(salesItem->price); });
 
         productCombobox->setPos(170, 10);
         productCombobox->setWidth(200);

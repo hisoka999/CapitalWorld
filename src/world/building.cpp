@@ -121,12 +121,12 @@ namespace world
         xOffset = x;
         yOffset = y;
     }
-    void Building::addProduct(std::shared_ptr<Product> product)
+    void Building::addProduct(const std::shared_ptr<Product> &product)
     {
         if (!hasProduct(product))
             products.push_back(product);
     }
-    void Building::removeProduct(std::shared_ptr<Product> product)
+    void Building::removeProduct(const std::shared_ptr<Product> &product)
     {
         auto it = std::find(products.begin(), products.end(), product);
         if (it != products.end())
@@ -139,7 +139,7 @@ namespace world
         return products;
     }
 
-    bool Building::hasProduct(std::shared_ptr<Product> product)
+    bool Building::hasProduct(const std::shared_ptr<Product> &product)
     {
         auto it = std::find(products.begin(), products.end(), product);
         return it != products.end();
@@ -482,5 +482,19 @@ namespace world
     {
         rawResources.push_back(rawResource);
     }
+
+
+        std::vector<ProductBalance> Building::getBalancePerYear(int year)
+        {
+            std::vector<ProductBalance> result;
+            for (auto b : balance)
+            {
+                if(b.year == year)
+                {
+                    result.push_back(b);
+                }
+            }
+            return result;
+        }
 
 }

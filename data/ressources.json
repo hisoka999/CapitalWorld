@@ -21,7 +21,7 @@
         "type": "Resource",
         "texture": "wheat.png",
         "building": "Resource",
-        "costs": 10
+        "costs": 100
     },
     {
         "name": "Crud Oil",

@@ -40,6 +40,9 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+msgid "Research"
+msgstr ""
+
 msgid "Sales"
 msgstr ""
 

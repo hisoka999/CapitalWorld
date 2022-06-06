@@ -46,5 +46,12 @@
         "FontName": "fonts/arial.ttf",
         "FontSize": 12,
         "Color": "#FFFFFFFF"
+    },
+    "table": {
+        "BorderColor": "#5D676CFF",
+        "TitleColor": "#C3812AFF",
+        "FontName": "fonts/arial.ttf",
+        "FontSize": 12,
+        "Color": "#FFFFFFFF"
     }
 }

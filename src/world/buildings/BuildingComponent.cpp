@@ -1,4 +1,6 @@
 #include "BuildingComponent.h"
+#include <engine/core/SceneManager.h>
+#include "scenes/worldscene.h"
 
 namespace world
 {
@@ -51,5 +53,19 @@ namespace world
             std::map<std::string, std::string> result;
             return result;
         }
+
+        std::shared_ptr<world::GameState> BuildingComponent::getGameState()
+        {
+            auto worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
+
+            return worldScene->getGameState();
+        }
+
+        bool BuildingComponent::isGameRunning()
+        {
+            auto worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
+            return worldScene != nullptr && worldScene->getGameState() != nullptr;
+        }
+
     }
 }

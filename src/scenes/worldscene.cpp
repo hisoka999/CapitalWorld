@@ -22,14 +22,14 @@ namespace scenes
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState)
+          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
         // gameMap = std::make_shared<GameMap>(100,100);
-        mapRenderer = std::make_shared<GameMapRenderer>(gameState->getGameMap());
+        mapRenderer = std::make_shared<GameMapRenderer>(gameState);
 
         renderer->setZoomFactor(1);
         buildWindow.setFont(hudFont.get());
@@ -41,14 +41,16 @@ namespace scenes
         // uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
+        aiThread = std::make_unique<world::AIThread>(gameState);
         winMgr->addWindow(&buildingWindow);
         winMgr->addWindow(&console);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), gameState, &buildWindow, &researchWindow);
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &buildWindow, &researchWindow, &playerWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
         winMgr->addWindow(&buildingSelectionWindow);
+        winMgr->addWindow(&playerWindow);
         buildingSelectionWindow.connect("buildingSelectionChanged", [&](std::shared_ptr<world::Building> building)
                                         { selectedBuilding2Build = building; });
         optionsWindow.setGameState(gameState);
@@ -61,6 +63,7 @@ namespace scenes
     {
 
         thread->stop();
+        aiThread->stop();
         if (previewSurface != nullptr)
         {
             SDL_FreeSurface(previewSurface);
@@ -70,24 +73,33 @@ namespace scenes
     void WorldScene::renderHUD()
     {
 
-        int height = 40;
+        float height = 40;
+        const int miniMapSize = 150;
+
         buildWindow.setPos(0, height + 50);
 
         renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
-        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, float(height)};
+        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
         renderer->fillRect(hudRect);
+        graphics::Rect miniMapRect = {renderer->getViewPort().width - miniMapSize, height, float(miniMapSize), float(miniMapSize)};
+
+        renderer->fillRect(miniMapRect);
 
         renderer->setDrawColor(0xff, 0xff, 0xff, 128);
         utils::Vector2 start(0, height);
-        utils::Vector2 end(renderer->getViewPort().width, height);
+        utils::Vector2 end(renderer->getViewPort().width - miniMapSize, height);
         renderer->drawLine(start, end);
+        auto newEnd = end + utils::Vector2(0, miniMapSize);
+        auto lastEnd = newEnd + utils::Vector2(miniMapSize, 0);
+        renderer->drawLine(end, newEnd);
+        renderer->drawLine(newEnd, lastEnd);
+
         renderer->setDrawBlendMode(SDL_BLENDMODE_NONE);
 
         // render minimap
         auto &miniMap = mapRenderer->getMiniMap();
-        const int miniMapSize = 150;
-        miniMap->renderResized(renderer, renderer->getViewPort().width - miniMapSize, height, miniMapSize, miniMapSize);
+        miniMap->renderResized(renderer, miniMapRect.x, miniMapRect.y, miniMapRect.width, miniMapRect.height);
 
         buildWindow.render(renderer);
     }
@@ -119,13 +131,9 @@ namespace scenes
     void WorldScene::render()
     {
 
-        auto &cities = gameState->getCities();
+        // auto &cities = gameState->getCities();
 
         mapRenderer->render(renderer);
-        for (auto city : cities)
-        {
-            city->renderCity(renderer);
-        }
 
         float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
@@ -196,15 +204,16 @@ namespace scenes
                     {
                         // remove it
 
-                        gameMap->removeBuilding(building);
                         // get back cash
                         if (gameState->getPlayer()->hasBuilding(building))
                         {
+                            gameMap->removeBuilding(building);
                             gameState->getPlayer()->removeBuilding(building);
                             gameState->getPlayer()->incCash(building->getBuildPrice() * 0.2f);
                         }
-                        else
+                        else if (gameState->findBuildingOwner(building) == nullptr)
                         {
+                            gameMap->removeBuilding(building);
                             // if no one owns the building you have to pay for destroying it
                             gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
                         }
@@ -245,7 +254,7 @@ namespace scenes
                     int height = core::GameWindow::Instance().getHeight();
                     buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
 
-                    buildingWindow.open(building, company, cursorPosition, gameMap.get());
+                    buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
                 }
             }
             else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
@@ -445,5 +454,10 @@ namespace scenes
     {
 
         hud->update();
+    }
+
+    std::shared_ptr<world::GameState> &WorldScene::getGameState()
+    {
+        return gameState;
     }
 }

@@ -14,7 +14,7 @@ namespace world
         struct StorageEntry
         {
             std::string product;
-            unsigned amount;
+            int amount;
         };
 
         class StorageComponent : public world::buildings::BuildingComponent
@@ -23,7 +23,7 @@ namespace world
             StorageComponent();
             bool canAdd(const std::string &product, int amount);
             void addEntry(const std::string &product, int amount);
-            unsigned getEntry(std::string product);
+            int getEntry(std::string product);
             unsigned usedStorage();
             std::vector<std::string> getStoredProducts();
 

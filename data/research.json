@@ -52,7 +52,8 @@
         },
         "costs": 200,
         "enables": [
-            "Pumpjack"
+            "Pumpjack",
+            "Oil"
         ],
         "requires": []
     },

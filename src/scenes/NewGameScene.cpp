@@ -3,6 +3,7 @@
 #include "scenes/worldscene.h"
 #include "services/researchservice.h"
 #include "world/mapgenerator.h"
+#include "world/CompanyNameGenerator.h"
 #include <engine/core/SceneManager.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/ComboBox.h>
@@ -106,7 +107,7 @@ namespace scenes
         numberOfPlayersCombobox->connect("valueChanged", [&](int size)
                                          { numberOfCompanys = size; });
         container->addObject(numberOfPlayersCombobox);
-
+        numberOfCompanys = 8;
         // numberOfCities
         numberOfCities = 8;
         auto numberOfCitiesLabel = std::make_shared<UI::Label>(nullptr);
@@ -133,29 +134,29 @@ namespace scenes
         container->addObject(numberOfCitiesCombobox);
 
         y += yOffset;
-        auto systemSizeLabel = std::make_shared<UI::Label>(nullptr);
-        systemSizeLabel->setFont("fonts/arial.ttf", 14);
-        systemSizeLabel->setText(_("Map size: "));
-        systemSizeLabel->setPos(20, y);
-        container->addObject(systemSizeLabel);
+        auto mapSizeLabel = std::make_shared<UI::Label>(nullptr);
+        mapSizeLabel->setFont("fonts/arial.ttf", 14);
+        mapSizeLabel->setText(_("Map size: "));
+        mapSizeLabel->setPos(20, y);
+        container->addObject(mapSizeLabel);
 
-        auto systemSizeCombobox = std::make_shared<UI::ComboBox<WorldSize>>();
-        systemSizeCombobox->setFont("fonts/arial.ttf", 14);
-        systemSizeCombobox->connect("valueChanged", [&](WorldSize size)
-                                    { worldSize = size; });
+        auto mapSizeCombobox = std::make_shared<UI::ComboBox<WorldSize>>();
+        mapSizeCombobox->setFont("fonts/arial.ttf", 14);
+        mapSizeCombobox->connect("valueChanged", [&](WorldSize size)
+                                 { worldSize = size; });
         constexpr auto &worldSizes = magic_enum::enum_values<WorldSize>();
 
         for (auto &value : worldSizes)
         {
-            systemSizeCombobox->addElement(value);
+            mapSizeCombobox->addElement(value);
         }
-        systemSizeCombobox->setSelectionByText(WorldSize::Medium);
+        mapSizeCombobox->setSelectionByText(WorldSize::Medium);
 
-        systemSizeCombobox->setPos(200, y);
-        systemSizeCombobox->setWidth(200);
-        systemSizeCombobox->setElementFunction([](WorldSize val) -> std::string
-                                               { return _(std::string(magic_enum::enum_name(val))); });
-        container->addObject(systemSizeCombobox);
+        mapSizeCombobox->setPos(200, y);
+        mapSizeCombobox->setWidth(200);
+        mapSizeCombobox->setElementFunction([](WorldSize val) -> std::string
+                                            { return _(std::string(magic_enum::enum_name(val))); });
+        container->addObject(mapSizeCombobox);
 
         y += yOffset;
         auto difficultyLabel = std::make_shared<UI::Label>(nullptr);
@@ -220,10 +221,6 @@ namespace scenes
                                  renderer->getMainCamera()->getWidth(),
                                  renderer->getMainCamera()->getHeight());
 
-        // graphics::Texture texture(renderer, renderer->getMainCamera()->getWidth(),
-        //                           renderer->getMainCamera()->getHeight());
-
-        //        renderer->setRenderTarget(texture.getSDLTexture());
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
         renderer->setDrawColor(12, 21, 24, 155);
         graphics::Rect bounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
@@ -269,7 +266,18 @@ namespace scenes
         int cash = 1000000 * int(difficulty);
         auto player = std::make_shared<world::Company>(playerName, cash, true);
         player->setAvailableResearch(services::ResearchService::Instance().getData());
-        auto gameState = std::make_shared<world::GameState>(player, gameMap, cities, difficulty);
+
+        std::vector<std::shared_ptr<world::Company>> companies;
+
+        world::CompanyNameGenerator nameGen("data/company_names.json", seed);
+        for (int i = 1; i <= numberOfCompanys; ++i)
+        {
+            auto company = std::make_shared<world::Company>(nameGen.generateName(), 1000000, false);
+            company->setAvailableResearch(services::ResearchService::Instance().getData());
+            companies.push_back(company);
+        }
+
+        auto gameState = std::make_shared<world::GameState>(companies, player, gameMap, cities, difficulty);
 
         auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
         sceneManager->addScene("world", worldScene);

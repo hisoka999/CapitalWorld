@@ -85,8 +85,10 @@ namespace world
             return std::make_shared<StorageComponent>();
         }
 
-        unsigned StorageComponent::getEntry(std::string product)
+        int StorageComponent::getEntry(std::string product)
         {
+            if (entries.count(product) == 0)
+                return 0;
             return entries[product].amount;
         }
 

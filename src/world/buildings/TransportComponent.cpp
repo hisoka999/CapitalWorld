@@ -77,8 +77,15 @@ namespace world
             return result;
         }
 
+        void TransportComponent::clearRoutes()
+        {
+            routes.clear();
+        }
+
         void TransportComponent::addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity)
         {
+            if (routes.size() == MAX_ROUTES)
+                return;
             TransportRoute tmp = {startBuilding, endBuilding, "", "", product, quantity, false};
             std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>(tmp);
             routes.push_back(route);

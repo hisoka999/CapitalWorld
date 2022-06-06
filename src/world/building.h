@@ -18,7 +18,8 @@ namespace world
         Production,
         Transport,
         Import,
-        Sales,
+        Research,
+        Sales
     };
 
     struct ProductBalance
@@ -62,9 +63,9 @@ namespace world
         int getXOffset();
         int getYOffset();
         void setOffset(int x, int y);
-        void addProduct(std::shared_ptr<Product> product);
-        void removeProduct(std::shared_ptr<Product> product);
-        bool hasProduct(std::shared_ptr<Product> product);
+        void addProduct(const std::shared_ptr<Product> &product);
+        void removeProduct(const std::shared_ptr<Product> &product);
+        bool hasProduct(const std::shared_ptr<Product> &product);
         std::vector<std::shared_ptr<Product>> getProducts();
         void calculateBalance(int month, int year);
         float getCostsPerMonth(int month, int year);
@@ -101,6 +102,7 @@ namespace world
         std::map<std::string, std::string> displayData();
         bool requireResource(world::RawResource rawResource);
         void addResource(world::RawResource rawResource);
+        std::vector<ProductBalance> getBalancePerYear(int year);
 
     protected:
         void addBalance(ProductBalance value);

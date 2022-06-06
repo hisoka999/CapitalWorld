@@ -12,6 +12,14 @@
 
 namespace world
 {
+    namespace actions
+    {
+        class Action;
+    };
+};
+
+namespace world
+{
 
     class Company
     {
@@ -38,7 +46,10 @@ namespace world
         std::vector<std::shared_ptr<world::Building>> &getBuildings();
         std::shared_ptr<world::Building> findBuildingByDisplayName(const std::string &name);
         std::vector<std::shared_ptr<world::Building>> findAvailableBuildingsByType(world::BuildingType type);
+        std::vector<std::shared_ptr<world::Building>> findBuildingsByType(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> findAvialableBaseProducts(world::BuildingType type);
+        std::vector<std::shared_ptr<Product>> findAvailableProducts();
+        std::vector<std::shared_ptr<ProductBalance>> getAccountBalanceForYear(int year);
 
         void research();
 
@@ -47,6 +58,9 @@ namespace world
         std::vector<std::shared_ptr<Research>> &getAvailableResearch();
         void setAvailableResearch(const std::vector<std::shared_ptr<Research>> &list);
         int getResearchPerMonth();
+
+        std::shared_ptr<world::actions::Action> currentAction();
+        void setCurrentAction(const std::shared_ptr<world::actions::Action> &action);
 
     private:
         std::string name;
@@ -57,6 +71,7 @@ namespace world
         std::vector<std::shared_ptr<world::Building>> buildings;
         std::vector<std::shared_ptr<Research>> researchQueue;
         std::vector<std::shared_ptr<Research>> availableResearch;
+        std::shared_ptr<world::actions::Action> m_currentAction = nullptr;
     };
 }
 #endif // COMPANY_H
