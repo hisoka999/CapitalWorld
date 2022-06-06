@@ -75,6 +75,10 @@ namespace world
             {
                 targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Transport)[0];
             }
+            else if (usage[world::BuildingType::Other] == minUsage)
+            {
+                targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Other)[0];
+            }
             if (!targetBuilding)
                 return;
             if (targetBuilding->getType() != world::BuildingType::Street)

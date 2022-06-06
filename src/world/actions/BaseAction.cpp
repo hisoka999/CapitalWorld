@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "BuildAction.h"
 #include "ProductionAction.h"
+#include "ResearchAction.h"
 #include <iostream>
 
 namespace world
@@ -97,13 +98,22 @@ namespace world
                         noTransport = false;
                         break;
                     }
+                    case BuildingType::Other:
+                    {
+                        if (building->getName() == "ResearchLab")
+                        {
+                            std::shared_ptr<Action> researchAction = std::make_shared<world::actions::ResearchAction>(m_company, building);
+                            setNextAction(researchAction);
+                        }
+                    }
                     default:
                         break;
                     }
                 }
-                if(noTransport){
-                    std::cout<<"company has no transport building: "<<m_company->getName()<<std::endl;
-                    std::cout<<"city: "<<currentCity->getName()<<std::endl; 
+                if (noTransport)
+                {
+                    std::cout << "company has no transport building: " << m_company->getName() << std::endl;
+                    std::cout << "city: " << currentCity->getName() << std::endl;
                 }
             }
         }
