@@ -14,7 +14,11 @@ set_target_properties(gmock_main PROPERTIES FOLDER extern)
 set(TEST_SRC "")
 
 file(GLOB TEST_SRC ${PROJECT_SOURCE_DIR}/src/world/buildings/*.cpp
+                   ${PROJECT_SOURCE_DIR}/src/world/actions/*.cpp
                    ${PROJECT_SOURCE_DIR}/src/world/*.cpp
+                   ${PROJECT_SOURCE_DIR}/src/scenes/*.cpp
+                   ${PROJECT_SOURCE_DIR}/src/ui/windows/*.cpp
+                   ${PROJECT_SOURCE_DIR}/src/ui/*.cpp
                    ${PROJECT_SOURCE_DIR}/src/services/*.cpp)
 
 macro(package_add_test TESTNAME)
