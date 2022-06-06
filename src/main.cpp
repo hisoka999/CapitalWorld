@@ -50,6 +50,16 @@ void generateEnumPot(std::string fileName)
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
+    if (argc == 2)
+    {
+        std::string arg = std::string(argv[1]);
+        if (arg == "--version")
+        {
+            std::cout << GAME_VERSION_MAJOR << "." << GAME_VERSION_MINOR << std::endl;
+            return 0;
+        }
+    }
+
     try
     {
         //#ifdef NDEBUG

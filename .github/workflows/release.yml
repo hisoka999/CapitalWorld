@@ -1,5 +1,8 @@
 name: CI
-on: [push,pull_request]
+on:
+  push:
+    tags:
+      - '*'
 jobs:
   job:
     name: ${{ matrix.name }}
@@ -24,13 +27,6 @@ jobs:
             triplet: x64-linux
             cc: gcc
             cxx: g++
-            arch: amd64
-            experimental: false
-          - name: Ubuntu (Clang)
-            os: ubuntu-latest
-            triplet: x64-linux
-            cc: clang
-            cxx: clang++
             arch: amd64
             experimental: false
 
@@ -74,6 +70,40 @@ jobs:
       - name: Build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld
-      - name: Show content of workspace at its completion
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+      - name: version
+        run: echo "::set-output name=version::$(./CapitalWorld --version)"
+        id: version
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Build Linux Packages
+        run: |
+          cpack
+          cpack -G TGZ
+        if: matrix.os == 'ubuntu-latest'
+      - name: upload linux artifact (deb)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: CapitalWorld-${{ steps.version.outputs.version }}-Linux.deb
+          asset_name: captialworld.linux-amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
+      - name: upload linux artifact (tgz)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: CapitalWorld-${{ steps.version.outputs.version }}-Linux.tar.gz
+          asset_name: captialworld.linux-amd64.tar.gz
+          asset_content_type: application/gzip
