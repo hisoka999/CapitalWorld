@@ -94,24 +94,23 @@ set (ENGINE_ROOT "deps")
 set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 set (MAGIC_ENUM_ROOT "deps")
 set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/engine/engine-build/${MAGIC_ENUM_ROOT}/magic_enum/magic_enum-src/include/" )
-#message(${MAGIC_ENUM_SRC})
-if( UNIX)
-    option(GAME_TESTS "Build the tests" ON)
-    if(GAME_TESTS)
 
-        include(googletest)
-        include(GoogleTest)
-        fetch_googletest(
-            ${PROJECT_SOURCE_DIR}/cmake
-            ${PROJECT_BINARY_DIR}/googletest
-            )
-        enable_testing() 
-        add_subdirectory(test)
-        #add_executable(SimpleTest )
+if(GAME_TESTS)
+    option(INSTALL_GTEST OFF)
+
+    include(googletest)
+    include(GoogleTest)
+    fetch_googletest(
+        ${PROJECT_SOURCE_DIR}/cmake
+        ${PROJECT_BINARY_DIR}/googletest
+        )
+    enable_testing() 
+    add_subdirectory(test EXCLUDE_FROM_ALL)
+    #add_executable(SimpleTest )
 
 
-    endif()
 endif()
+
 
 
 
@@ -153,13 +152,10 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2 )
 else()
     target_link_libraries(${PROJECT_NAME} SDL2)
-    message("unix "+${SDL2_LIBRARIES})
+    message("unix ${SDL2_LIBRARIES}")
 endif()
 
 
-#ADD_LIBRARY(sgl STATIC IMPORTED)
-#SET_TARGET_PROPERTIES(sgl PROPERTIES
-#    IMPORTED_LOCATION /usr/lib/libboost_unit_test_framework.a)
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE sgl)
 else()
@@ -198,24 +194,27 @@ add_custom_command(TARGET CapitalWorld PRE_BUILD
 add_custom_command(TARGET CapitalWorld PRE_BUILD
                       COMMAND ${CMAKE_COMMAND} -E copy_directory
                           ${CMAKE_SOURCE_DIR}/data/ $<TARGET_FILE_DIR:CapitalWorld>/data/)
+add_custom_command(TARGET CapitalWorld PRE_BUILD
+                          COMMAND ${CMAKE_COMMAND} -E copy_directory
+                              ${CMAKE_SOURCE_DIR}/music/ $<TARGET_FILE_DIR:CapitalWorld>/music/)
 if(WIN32)
     add_custom_command(TARGET CapitalWorld POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/ $<TARGET_FILE_DIR:CapitalWorld>)
-
-else()
-    #copy shared lib ".so" file
-    
+                    ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/ $<TARGET_FILE_DIR:CapitalWorld>)    
 endif()
 INSTALL(TARGETS CapitalWorld DESTINATION capitalworld)
+INSTALL(TARGETS sgl DESTINATION capitalworld)
 INSTALL(DIRECTORY fonts DESTINATION capitalworld )
 INSTALL(DIRECTORY images DESTINATION capitalworld )
 INSTALL(DIRECTORY locale DESTINATION capitalworld )
 INSTALL(DIRECTORY music DESTINATION capitalworld )
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsdl2-2.0-0 (>= 2.0), libsdl2-ttf-2.0-0 (>= 2.0), libsdl2-image-2.0-0 (>= 2.0), libsdl2-gfx-2.0-0 (>= 2.0), libsdl2-mixer-2.0-0 (>= 2.0)")
+set(CPACK_COMPONENTS_ALL "CapitalWorld")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsdl2-2.0-0 (>= 2.0), libsdl2-ttf-2.0-0 (>= 2.0), libsdl2-image-2.0-0 (>= 2.0), libsdl2-gfx-1.0-0 (>= 1.0), libsdl2-mixer-2.0-0 (>= 2.0)")
 set(CPACK_PACKAGE_VERSION "${GAME_VERSION_MAJOR}.${GAME_VERSION_MINOR}")
 SET(CPACK_GENERATOR "DEB")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Stefan Lüdtke") #required
+SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/hisoka999/CapitalWorld")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Capital World is a 2d isometric economy simulation game.")
 set(CPACK_DEBIAN_PACKAGE_SECTION "games")
 INCLUDE(CPack)
