@@ -61,7 +61,23 @@ namespace world
 
             while (!paused && running)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(speed));
+
+                double speedFactor = 1;
+                switch (gameState->getDifficulty())
+                {
+                case Difficulty::Easy:
+                    speedFactor = 4;
+                    break;
+                case Difficulty::Normal:
+                    speedFactor = 2;
+                    break;
+                case Difficulty::Hard:
+                    speedFactor = 1.5;
+                default:
+                    break;
+                }
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(int(speed * speedFactor)));
                 auto start = std::chrono::high_resolution_clock::now();
 
                 for (auto &company : gameState->getCompanies())
