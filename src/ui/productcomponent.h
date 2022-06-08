@@ -14,7 +14,7 @@ namespace UI
     public:
         ProductComponent(std::shared_ptr<ProduceableObject> product, UI::Object *parent);
         virtual void render(core::Renderer *pRender);
-        virtual void handleEvents(core::Input *pInput);
+        virtual bool handleEvents(core::Input *pInput);
 
     private:
         std::shared_ptr<ProduceableObject> product;

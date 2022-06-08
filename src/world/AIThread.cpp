@@ -80,9 +80,9 @@ namespace world
                     company->setCurrentAction(action->nextAction());
                 }
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
-                long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-                if (microseconds > 1000)
-                    std::cout << "ai thread time: " << microseconds << "µs" << std::endl;
+                long long aiExecTime = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+                if (aiExecTime > 100)
+                    std::cout << "ai thread time: " << aiExecTime << "ms" << std::endl;
             }
         }
     }

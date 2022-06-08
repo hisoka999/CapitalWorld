@@ -21,9 +21,9 @@ namespace UI
     {
         UI::Container::render(pRender);
     }
-    void ProductComponent::handleEvents(core::Input *pInput)
+    bool ProductComponent::handleEvents(core::Input *pInput)
     {
-        UI::Container::handleEvents(pInput);
+        return UI::Container::handleEvents(pInput);
     }
 
 }

@@ -17,7 +17,7 @@ namespace UI
         ~OptionsWindow();
 
         virtual void render(core::Renderer *pRender);
-        virtual void handleEvents(core::Input *pInput);
+        virtual bool handleEvents(core::Input *pInput);
         void setGameState(const std::shared_ptr<world::GameState> &gameState);
         const std::shared_ptr<world::GameState> &getGameState();
         void setPreview(SDL_Surface *previewSurface);

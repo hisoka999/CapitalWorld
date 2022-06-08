@@ -55,7 +55,7 @@ namespace world
 
         bool canBuild(float money);
 
-        graphics::Rect &getDisplayRect();
+        const graphics::Rect &getDisplayRect();
         graphics::Rect &getSourceRect();
         void setSourceRect(graphics::Rect rect);
         void setPosition(float x, float y);

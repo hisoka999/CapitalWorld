@@ -41,8 +41,7 @@ namespace UI
         optionsButton->connect(UI::Button::buttonClickCallback(), [&]
                                {
                                    settingsWindow.setPos(300, 300);
-                                   settingsWindow.setVisible(true);
-                               });
+                                   settingsWindow.setVisible(true); });
 
         auto mainMenuButton = std::make_shared<UI::Button>(mainArea.get());
         mainMenuButton->setFont("fonts/arial.ttf", 12);
@@ -78,8 +77,7 @@ namespace UI
                                file.close();
 
                                gameState = world::GameState::fromJson(jsonObject);
-                               this->fireFuncionCall("stateChanged", gameState);
-                           });
+                               this->fireFuncionCall("stateChanged", gameState); });
 
         saveWindow.connect("saveAction", [&](std::string fileName)
                            {
@@ -96,8 +94,7 @@ namespace UI
                                std::filesystem::path previewPath(saveGameFile);
                                previewPath.replace_extension(extention);
                                std::cout << "preview path: " << previewPath << std::endl;
-                               IMG_SavePNG(previewSurface, previewPath.string().c_str());
-                           });
+                               IMG_SavePNG(previewSurface, previewPath.string().c_str()); });
     }
 
     OptionsWindow::~OptionsWindow()
@@ -112,12 +109,16 @@ namespace UI
         loadWindow.render(pRender);
     }
 
-    void OptionsWindow::handleEvents(core::Input *pInput)
+    bool OptionsWindow::handleEvents(core::Input *pInput)
     {
-        UI::Window::handleEvents(pInput);
-        settingsWindow.handleEvents(pInput);
-        saveWindow.handleEvents(pInput);
-        loadWindow.handleEvents((pInput));
+        bool eventsHandled = UI::Window::handleEvents(pInput);
+        if (!eventsHandled)
+            eventsHandled = settingsWindow.handleEvents(pInput);
+        if (!eventsHandled)
+            eventsHandled = saveWindow.handleEvents(pInput);
+        if (!eventsHandled)
+            eventsHandled = loadWindow.handleEvents((pInput));
+        return eventsHandled;
     }
 
     void OptionsWindow::setGameState(const std::shared_ptr<world::GameState> &gameState)

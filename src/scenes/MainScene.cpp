@@ -137,10 +137,12 @@ namespace scenes
                 loadWindow.setVisible(true);
         }
 
-        void MainScene::handleEvents(core::Input *pInput)
+        bool MainScene::handleEvents(core::Input *pInput)
         {
-                container->handleEvents(pInput);
-                winMgr->handleInput(pInput);
+                bool eventHandled = container->handleEvents(pInput);
+                if (eventHandled)
+                        return true;
+                return winMgr->handleInput(pInput);
         }
 
         void MainScene::load()

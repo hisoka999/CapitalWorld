@@ -26,7 +26,7 @@ namespace scenes
                 MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager);
                 virtual ~MainScene();
                 void render();
-                void handleEvents(core::Input *pInput);
+                bool handleEvents(core::Input *pInput);
                 bool isRunning()
                 {
                         return running;

@@ -81,7 +81,7 @@ namespace world
         return buildPrice <= money;
     }
 
-    graphics::Rect &Building::getDisplayRect()
+    const graphics::Rect &Building::getDisplayRect()
     {
         return displayRect;
     }
@@ -483,18 +483,17 @@ namespace world
         rawResources.push_back(rawResource);
     }
 
-
-        std::vector<ProductBalance> Building::getBalancePerYear(int year)
+    std::vector<ProductBalance> Building::getBalancePerYear(int year)
+    {
+        std::vector<ProductBalance> result;
+        for (auto b : balance)
         {
-            std::vector<ProductBalance> result;
-            for (auto b : balance)
+            if (b.year == year)
             {
-                if(b.year == year)
-                {
-                    result.push_back(b);
-                }
+                result.push_back(b);
             }
-            return result;
         }
+        return result;
+    }
 
 }

@@ -60,30 +60,30 @@ namespace world
 
     void GameState::update()
     {
-        // auto start = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
 
-        // auto elapsed = std::chrono::high_resolution_clock::now() - start;
-        // long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-        // std::cout << "update companies time: " << milliseconds << "ms" << std::endl;
-        // start = std::chrono::high_resolution_clock::now();
-        // update cities
         for (auto &city : cities)
         {
 
             for (auto &building : city->getBuildings())
             {
-                building->updateProduction(time.getMonth(), time.getYear());
+                if (building->getType() != world::BuildingType::Street)
+                    building->updateProduction(time.getMonth(), time.getYear());
             }
         }
-
+        auto elapsed = std::chrono::high_resolution_clock::now() - start;
+        long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+        std::cout << "update cities time: " << milliseconds << "ms" << std::endl;
+        start = std::chrono::high_resolution_clock::now();
+        // update cities
         for (auto &company : companies)
         {
             company->updateBalance(time.getMonth(), time.getYear());
         }
 
-        // elapsed = std::chrono::high_resolution_clock::now() - start;
-        // milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-        // std::cout << "update cities time: " << milliseconds << "ms" << std::endl;
+        elapsed = std::chrono::high_resolution_clock::now() - start;
+        milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+        std::cout << "update companies time: " << milliseconds << "ms" << std::endl;
     }
 
     std::shared_ptr<GameState> GameState::fromJson(std::shared_ptr<utils::JSON::Object> &object)

@@ -1,6 +1,7 @@
 #include "gamemap.h"
 #include "translate.h"
 #include <algorithm>
+#include "messages.h"
 
 bool isBuildingSmaller(std::shared_ptr<world::Building> &b1, std::shared_ptr<world::Building> &b2)
 {
@@ -125,6 +126,8 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
     buildings[pos] = building;
     // buildings.push_back(building);
     building->update(this);
+    std::shared_ptr<core::Message<MessageTypes, bool>> message = std::make_shared<core::Message<MessageTypes, bool>>(MessageTypes::ObjectHasBuild, true);
+    core::MessageSystem<MessageTypes>::get().sendMessage(message);
 }
 const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() const
 {
@@ -328,7 +331,7 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findByComponentTypeInDist
         for (int x = startRect.x - distance; x <= startRect.x + distance; ++x)
         {
             auto &building = getBuilding(x, y);
-            if (building == nullptr)
+            if (building == nullptr || building->getType() == world::BuildingType::Street)
                 continue;
 
             if (building->hasComponent(componentType))

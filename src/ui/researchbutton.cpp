@@ -67,9 +67,9 @@ namespace UI
         }
     }
 
-    void ResearchButton::handleEvents(core::Input *pInput)
+    bool ResearchButton::handleEvents(core::Input *pInput)
     {
-        UI::Object::handleEvents(pInput);
+        bool eventHandled = UI::Object::handleEvents(pInput);
         auto rect = eventRect();
         if (rect.intersects(pInput->getMousePostion()) && research->canResearch(gameState->getTime()) && !research->getResearched())
         {
@@ -77,12 +77,14 @@ namespace UI
             if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
             {
                 this->fireFuncionCall("buttonClicked");
+                eventHandled = true;
             }
         }
         else
         {
             hovered = false;
         }
+        return eventHandled;
     }
 
 }

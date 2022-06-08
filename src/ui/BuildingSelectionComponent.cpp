@@ -32,10 +32,11 @@ namespace UI
         UI::Container::render(pRender);
     }
 
-    void BuildingSelectionComponent::handleEvents(core::Input *pInput)
+    bool BuildingSelectionComponent::handleEvents(core::Input *pInput)
     {
-        UI::Container::handleEvents(pInput);
+        bool eventHandled = UI::Container::handleEvents(pInput);
         selected = eventRect().intersects(pInput->getMousePostion());
+        return eventHandled;
     }
 
     void BuildingSelectionComponent::initUI()

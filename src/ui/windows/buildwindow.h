@@ -18,7 +18,7 @@ namespace UI
         BuildWindow(int x, int y, UI::BuildingSelectionWindow *buildingSelectionWindow);
         ~BuildWindow();
         virtual void render(core::Renderer *pRender);
-        virtual void handleEvents(core::Input *pInput);
+        virtual bool handleEvents(core::Input *pInput);
 
         world::BuildAction getCurrentAction()
         {

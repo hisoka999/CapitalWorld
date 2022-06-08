@@ -19,7 +19,7 @@ namespace UI
         SalesItemComponent(UI::Object *parent, const std::shared_ptr<world::buildings::SalesItem> &salesItem, std::shared_ptr<world::Building> &building);
         ~SalesItemComponent();
         virtual void render(core::Renderer *pRender);
-        virtual void handleEvents(core::Input *pInput);
+        virtual bool handleEvents(core::Input *pInput);
 
         std::shared_ptr<UI::Button> closeButton;
         std::shared_ptr<UI::NumberTextItem> priceField;

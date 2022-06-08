@@ -93,8 +93,8 @@ namespace UI
         UI::Container::render(pRender);
     }
 
-    void SalesItemComponent::handleEvents(core::Input *pInput)
+    bool SalesItemComponent::handleEvents(core::Input *pInput)
     {
-        UI::Container::handleEvents(pInput);
+        return UI::Container::handleEvents(pInput);
     }
 }

@@ -13,6 +13,7 @@
 #include <future>
 #include <iostream>
 #include <random>
+#include "messages.h"
 
 namespace scenes
 {
@@ -58,6 +59,11 @@ namespace scenes
                               {
                                   auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
                                   core::SceneManager::Instance().changeScene("world", worldScene); });
+
+        core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [&]([[maybe_unused]] bool dummy)
+                                                                 { 
+                                                                     if(mapRenderer != nullptr)
+                                                                     mapRenderer->clearCache(); });
     }
     WorldScene::~WorldScene()
     {
@@ -178,17 +184,26 @@ namespace scenes
         }
     }
 
-    void WorldScene::handleEvents(core::Input *pInput)
+    bool WorldScene::handleEvents(core::Input *pInput)
     {
+        bool eventHandled = false;
         auto &gameMap = gameState->getGameMap();
-        bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
+        // bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
         float height = 50;
         //
 
+        eventHandled = winMgr->handleInput(pInput);
+        if (eventHandled)
+            return true;
+
+        eventHandled = buildWindow.handleEvents(pInput);
+        if (eventHandled)
+            return true;
+
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
 
-        if (!mouseIntersectsWindow && !winMgr->isWindowOpen() && !hudRect.intersects(pInput->getMousePostion()))
+        if (!hudRect.intersects(pInput->getMousePostion()))
         {
             if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
             {
@@ -218,12 +233,13 @@ namespace scenes
                             gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
                         }
                         mapRenderer->clearCache();
+                        eventHandled = true;
                     }
                 }
                 else if (action == world::BuildAction::Build)
                 {
                     if (!selectedBuilding2Build)
-                        return;
+                        return eventHandled;
                     auto building = createBuilding();
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
@@ -238,6 +254,7 @@ namespace scenes
                         gameState->getPlayer()->addBuilding(building);
                         gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
                         mapRenderer->clearCache();
+                        eventHandled = true;
                     }
                 }
                 else
@@ -255,12 +272,14 @@ namespace scenes
                     buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
 
                     buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
+                    eventHandled = true;
                 }
             }
             else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
             {
                 buildWindow.setCurrentAction(world::BuildAction::None);
                 buildingSelectionWindow.setSelectedBuilding(nullptr);
+                eventHandled = true;
             }
             if (pInput->isScrollWheel())
             {
@@ -278,6 +297,7 @@ namespace scenes
                 }
 
                 std::cout << "factor: " << factor << std::endl;
+                eventHandled = true;
             }
             if (pInput->isMouseMoving())
             {
@@ -318,38 +338,45 @@ namespace scenes
                     cursorBuildingRect = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
                     cursorTexture->setColorKey(255, 255, 255);
                 }
+                eventHandled = true;
             }
 
             if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
             {
                 direction.bottom = true;
                 direction.top = false;
+                eventHandled = true;
             }
             else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
             {
                 direction.top = true;
                 direction.bottom = false;
+                eventHandled = true;
             }
             else
             {
                 direction.top = false;
                 direction.bottom = false;
+                eventHandled = true;
             }
 
             if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
             {
                 direction.left = true;
                 direction.right = false;
+                eventHandled = true;
             }
             else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
             {
                 direction.left = false;
                 direction.right = true;
+                eventHandled = true;
             }
             else
             {
                 direction.left = false;
                 direction.right = false;
+                eventHandled = true;
             }
 
             if (utils::areSame(pInput->getMousePostion().getX(), 0.f))
@@ -377,6 +404,7 @@ namespace scenes
             if (pInput->isKeyDown(SDLK_PAGEDOWN))
             {
                 console.setVisible(true);
+                eventHandled = true;
             }
         }
 
@@ -390,16 +418,17 @@ namespace scenes
             }
             optionsWindow.setPos(renderer->getViewPort().width / 2, renderer->getViewPort().height / 2);
             optionsWindow.setVisible(true);
+            eventHandled = true;
         }
         else if (pInput->isKeyDown(SDLK_r) && !SDL_IsTextInputActive())
         {
             auto rect = researchWindow.displayRect();
             researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));
             researchWindow.setVisible(true);
+            eventHandled = true;
         }
 
-        buildWindow.handleEvents(pInput);
-        winMgr->handleInput(pInput);
+        return eventHandled;
     }
 
     void WorldScene::update()

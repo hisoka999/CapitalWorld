@@ -242,9 +242,9 @@ namespace scenes
     {
     }
 
-    void NewGameScene::handleEvents(core::Input *pInput)
+    bool NewGameScene::handleEvents(core::Input *pInput)
     {
-        winMgr->handleInput(pInput);
+        return winMgr->handleInput(pInput);
     }
 
     void NewGameScene::load()

@@ -160,9 +160,9 @@ namespace UI
 
         UI::Window::render(pRender);
     }
-    void BuildWindow::handleEvents(core::Input *pInput)
+    bool BuildWindow::handleEvents(core::Input *pInput)
     {
-        UI::Window::handleEvents(pInput);
+        return UI::Window::handleEvents(pInput);
     }
 
     void BuildWindow::setCurrentAction(world::BuildAction action)
