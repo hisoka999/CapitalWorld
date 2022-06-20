@@ -433,6 +433,7 @@ namespace scenes
 
     void WorldScene::update()
     {
+        core::MessageSystem<MessageTypes>::get().processMessages();
         float speed = renderer->getTimeDelta() / 1000.f * 400.f;
 
         float moveX = 0.f;
