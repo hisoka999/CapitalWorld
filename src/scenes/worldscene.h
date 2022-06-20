@@ -45,7 +45,7 @@ namespace scenes
                    core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState);
         ~WorldScene();
         void render();
-        void handleEvents(core::Input *pInput);
+        bool handleEvents(core::Input *pInput);
         virtual void update();
         virtual void fixedUpdate(uint32_t delta);
         std::shared_ptr<world::GameState> &getGameState();

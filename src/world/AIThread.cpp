@@ -61,7 +61,23 @@ namespace world
 
             while (!paused && running)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(speed));
+
+                double speedFactor = 1;
+                switch (gameState->getDifficulty())
+                {
+                case Difficulty::Easy:
+                    speedFactor = 4;
+                    break;
+                case Difficulty::Normal:
+                    speedFactor = 2;
+                    break;
+                case Difficulty::Hard:
+                    speedFactor = 1.5;
+                default:
+                    break;
+                }
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(int(speed * speedFactor)));
                 auto start = std::chrono::high_resolution_clock::now();
 
                 for (auto &company : gameState->getCompanies())
@@ -80,9 +96,9 @@ namespace world
                     company->setCurrentAction(action->nextAction());
                 }
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
-                long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-                if (microseconds > 1000)
-                    std::cout << "ai thread time: " << microseconds << "µs" << std::endl;
+                long long aiExecTime = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+                if (aiExecTime > 100)
+                    std::cout << "ai thread time: " << aiExecTime << "ms" << std::endl;
             }
         }
     }

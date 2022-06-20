@@ -67,13 +67,13 @@ void UpdateThread::update()
                     return;
                 gameState->update();
 
-                std::cout << time.format() << ": update game state" << std::endl;
                 auto &msgSystem = core::MessageSystem<MessageTypes>::get();
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
                 msgSystem.sendMessage(msg);
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
                 long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-                std::cout << "update thread time: " << milliseconds << "ms" << std::endl;
+                if (milliseconds > 100)
+                    std::cout << "update thread time: " << milliseconds << "ms" << std::endl;
             }
         }
     }

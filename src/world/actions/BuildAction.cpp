@@ -125,6 +125,24 @@ namespace world
                     targetBuilding->setPosition(pos.x - 1, pos.y);
                     foundPosition = true;
                 }
+                if (targetBuilding->getType() == world::BuildingType::Street)
+                {
+                    pos = targetBuilding->get2DPosition();
+
+                    auto northWestBuilding = gameState->getGameMap()->getBuilding2D({pos.x - 1, pos.y - 1, pos.width, 1});
+                    auto nortEastBuilding = gameState->getGameMap()->getBuilding2D({pos.x - 1, pos.y + 1, 1, pos.height});
+                    auto southWestBuilding = gameState->getGameMap()->getBuilding2D({pos.x + 1, pos.y - 1, pos.width, 1});
+                    auto southEastBuilding = gameState->getGameMap()->getBuilding2D({pos.x + 1, pos.y + 1, 1, pos.height});
+
+                    if (((northWestBuilding != nullptr && northWestBuilding->getType() == world::BuildingType::Street) //
+                         && (southEastBuilding != nullptr && southEastBuilding->getType() == world::BuildingType::Street)) ||
+                        ((nortEastBuilding != nullptr && nortEastBuilding->getType() == world::BuildingType::Street)       //
+                         && (southWestBuilding != nullptr && southWestBuilding->getType() == world::BuildingType::Street)) //
+                    )
+                    {
+                        foundPosition = false;
+                    }
+                }
 
                 if (targetBuilding->canBuild(m_company->getCash()) && gameState->getGameMap()->canBuild(targetBuilding->get2DPosition()) && foundPosition)
                 {

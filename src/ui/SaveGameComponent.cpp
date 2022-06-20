@@ -97,8 +97,8 @@ namespace UI
         UI::Container::render(pRender);
     }
 
-    void SaveGameComponent::handleEvents(core::Input *pInput)
+    bool SaveGameComponent::handleEvents(core::Input *pInput)
     {
-        UI::Container::handleEvents(pInput);
+        return UI::Container::handleEvents(pInput);
     }
 }

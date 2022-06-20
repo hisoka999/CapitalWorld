@@ -167,11 +167,9 @@ namespace scenes
 
         auto difficultyCombobox = std::make_shared<UI::ComboBox<Difficulty>>();
         difficultyCombobox->setFont("fonts/arial.ttf", 14);
-        constexpr auto &difficulties = magic_enum::enum_values<Difficulty>();
-        for (auto &value : difficulties)
-        {
-            difficultyCombobox->addElement(value);
-        }
+        difficultyCombobox->addElement(Difficulty::Easy);
+        difficultyCombobox->addElement(Difficulty::Normal);
+        difficultyCombobox->addElement(Difficulty::Hard);
         difficulty = Difficulty::Normal;
         difficultyCombobox->setSelectionByText(difficulty);
 
@@ -242,9 +240,9 @@ namespace scenes
     {
     }
 
-    void NewGameScene::handleEvents(core::Input *pInput)
+    bool NewGameScene::handleEvents(core::Input *pInput)
     {
-        winMgr->handleInput(pInput);
+        return winMgr->handleInput(pInput);
     }
 
     void NewGameScene::load()

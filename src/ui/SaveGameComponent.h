@@ -23,7 +23,7 @@ namespace UI
         SaveGameComponent(UI::Object *parent, bool loadGame, const std::filesystem::directory_entry &entry);
         ~SaveGameComponent();
         virtual void render(core::Renderer *pRender);
-        virtual void handleEvents(core::Input *pInput);
+        virtual bool handleEvents(core::Input *pInput);
 
         std::shared_ptr<UI::Button> actionButton;
         std::shared_ptr<UI::Button> deleteButton;

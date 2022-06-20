@@ -22,7 +22,7 @@ namespace scenes
 
         void render();
         void update();
-        void handleEvents(core::Input *pInput);
+        bool handleEvents(core::Input *pInput);
         virtual void load();
 
     private:

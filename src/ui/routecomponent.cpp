@@ -33,9 +33,9 @@ namespace UI
         UI::Container::render(pRender);
     }
 
-    void RouteComponent::handleEvents(core::Input *pInput)
+    bool RouteComponent::handleEvents(core::Input *pInput)
     {
-        UI::Container::handleEvents(pInput);
+        return UI::Container::handleEvents(pInput);
     }
 
     void RouteComponent::fillProductListByBuilding(std::shared_ptr<world::Building> &building)

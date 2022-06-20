@@ -12,7 +12,7 @@ namespace UI
     public:
         Line(UI::Object *parent, const utils::Vector2 &start, const utils::Vector2 &end);
         virtual void render(core::Renderer *pRender);
-        virtual void handleEvents(core::Input *pInput);
+        virtual bool handleEvents(core::Input *pInput);
 
     private:
         utils::Vector2 startPos;
