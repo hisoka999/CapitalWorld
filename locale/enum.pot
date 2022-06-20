@@ -67,3 +67,27 @@ msgstr ""
 msgid "Easy"
 msgstr ""
 
+msgid "None"
+msgstr ""
+
+msgid "Oil"
+msgstr ""
+
+msgid "Iron"
+msgstr ""
+
+msgid "Coal"
+msgstr ""
+
+msgid "Aluminum"
+msgstr ""
+
+msgid "Gold"
+msgstr ""
+
+msgid "Copper"
+msgstr ""
+
+msgid "Silicon"
+msgstr ""
+

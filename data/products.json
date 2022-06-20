@@ -33,6 +33,7 @@
     },
     {
         "name": "Bread",
+        "name_de": "Brot",
         "type": "Food",
         "texture": "bread.png",
         "building": "Factory",
@@ -49,6 +50,7 @@
     },
     {
         "name": "Beer",
+        "name_de": "Bier",
         "type": "Food",
         "texture": "beer.png",
         "building": "Factory",
