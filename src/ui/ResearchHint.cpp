@@ -37,7 +37,7 @@ namespace UI
 
         // TODO add price
         std::string costs = utils::string_format(_("Researchtime: %d months"), m_research->getCosts());
-        std::string researchDate = utils::string_format(_("Available at: %s €"), m_research->getResearchDate().format());
+        std::string researchDate = utils::string_format(_("Available at: %s"), m_research->getResearchDate().format());
 
         contentFont->render(renderer, costs, utils::color::RED, pos.getX() + 10, pos.getY() + 80);
         contentFont->render(renderer, researchDate, utils::color::WHITE, pos.getX() + 10, pos.getY() + 95);

@@ -7,50 +7,85 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-14 22:17+0200\n"
-"PO-Revision-Date: 2021-07-14 22:22+0200\n"
+"POT-Creation-Date: 2022-06-20 20:48+0200\n"
+"PO-Revision-Date: 2022-06-20 20:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: src/ui/factoryproductiontab.cpp:75 src/ui/factoryproductiontab.cpp:196
+#: src/ui/factoryproductiontab.cpp:134 src/ui/factoryproductiontab.cpp:195
+#: src/ui/factoryproductiontab.cpp:82 src/ui/factoryproductiontab.cpp:139
+#: src/ui/factoryproductiontab.cpp:201 src/ui/resourceproductiontab.cpp:96
+#: src/ui/resourceproductiontab.cpp:158 src/ui/resourceproductiontab.cpp:211
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/scenes/NewGameScene.cpp:39
+#: src/ui/SalesTab.cpp:16
+msgid "Add Product to sell"
+msgstr "Produkt verkaufen"
+
+#: src/ui/ResearchHint.cpp:40
+#, c-format
+msgid "Available at: %s"
+msgstr "Verfügbar seit: %s"
+
+#: src/ui/ResearchHint.cpp:40
+#, c-format
+msgid "Available at: %s €"
+msgstr "Verfügbar für: %s €"
+
+#: src/scenes/NewGameScene.cpp:39 src/scenes/NewGameScene.cpp:41
 msgid "Back"
 msgstr "Zurück"
 
-#: src/ui/buildwindow.cpp:14
+#: src/ui/buildwindow.cpp:14 src/ui/windows/buildwindow.cpp:15
 msgid "Build"
 msgstr "Bauen"
 
-#: src/ui/SettingsWindow.cpp:40
+#: src/ui/SettingsWindow.cpp:40 src/ui/windows/SettingsWindow.cpp:54
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/scenes/NewGameScene.cpp:52
+#: src/scenes/NewGameScene.cpp:187
+msgid "City Names: "
+msgstr "Stadtnamen"
+
+#: src/scenes/NewGameScene.cpp:52 src/scenes/NewGameScene.cpp:54
 msgid "Companyname: "
 msgstr "Firmenname:"
 
-#: src/ui/factoryproductiontab.cpp:58
+#: src/ui/windows/SettingsWindow.cpp:19
+msgid "Controls"
+msgstr "Steuerung"
+
+#: src/ui/factoryproductiontab.cpp:62
+msgid "Costs per Piece:"
+msgstr "Kosten pro Einheit:"
+
+#: src/ui/factoryproductiontab.cpp:58 src/ui/resourceproductiontab.cpp:79
 msgid "Costs:"
 msgstr "Kosten:"
 
-#: src/scenes/NewGameScene.cpp:162
+#: src/ui/SaveGameComponent.cpp:56
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/scenes/NewGameScene.cpp:162 src/scenes/NewGameScene.cpp:164
 msgid "Difficultiy: "
 msgstr "Schwierigkeitsgrad:"
 
 #: src/scenes/MainScene.cpp:69 src/scenes/MainScene.cpp:73
+#: src/scenes/MainScene.cpp:75
 msgid "Exit Game"
 msgstr "Spiel beenden"
 
 #: src/ui/buildwindow.cpp:50 src/scenes/worldscene.cpp:69
-#: src/ui/buildwindow.cpp:52
+#: src/ui/buildwindow.cpp:52 src/ui/windows/buildwindow.cpp:52
 msgid "Factory"
 msgstr "Fabrik"
 
@@ -58,94 +93,177 @@ msgstr "Fabrik"
 msgid "Farm"
 msgstr "Farm"
 
-#: src/ui/SettingsWindow.cpp:100
+#: src/ui/SettingsWindow.cpp:100 src/ui/windows/SettingsWindow.cpp:127
 msgid "Fullscreen"
 msgstr "Vollbild"
 
-#: src/ui/buildingwindow.cpp:36
+#: src/ui/windows/SettingsWindow.cpp:16
+msgid "General"
+msgstr "Allgemein"
+
+#: src/ui/windows/SettingsWindow.cpp:17
+msgid "Graphics"
+msgstr "Grafik"
+
+#: src/world/gamemap.cpp:338 src/world/gamemap.cpp:430
+msgid "Grass"
+msgstr "Grass"
+
+#: src/ui/buildingwindow.cpp:36 src/ui/windows/buildingwindow.cpp:54
 msgid "Ground: "
 msgstr "Boden:"
 
-#: src/ui/factoryproductiontab.cpp:94
+#: src/ui/factoryproductiontab.cpp:94 src/ui/factoryproductiontab.cpp:100
+#: src/ui/resourceproductiontab.cpp:114
 msgid "Help"
 msgstr "Hilfe"
 
-#: src/world/city.cpp:136 src/world/city.cpp:432
+#: src/world/city.cpp:136 src/world/city.cpp:432 src/world/city.cpp:435
+#: src/world/city.cpp:151 src/world/city.cpp:492
 msgid "House"
 msgstr "Haus"
 
+#: src/ui/resourceproductiontab.cpp:75
+msgid "Land Type:"
+msgstr "Bodentyp:"
+
+#: src/ui/windows/SettingsWindow.cpp:136
+msgid "Language"
+msgstr "Sprache"
+
 #: src/scenes/MainScene.cpp:44 src/scenes/MainScene.cpp:48
+#: src/ui/SaveGameComponent.cpp:70 src/scenes/MainScene.cpp:50
 msgid "Load Game"
 msgstr "Spiel laden"
 
-#: src/scenes/NewGameScene.cpp:137
+#: src/scenes/NewGameScene.cpp:137 src/scenes/NewGameScene.cpp:139
 msgid "Map size: "
 msgstr "Kartengröße:"
 
+#: src/ui/SaveGameComponent.cpp:57
+msgid "Name"
+msgstr "Name"
+
+#: src/ui/SalesItemComponent.cpp:29
+msgid "Name: "
+msgstr "Name:"
+
 #: src/scenes/MainScene.cpp:33 src/scenes/MainScene.cpp:37
+#: src/scenes/MainScene.cpp:39
 msgid "New Game"
 msgstr "Neues Spiel"
 
-#: src/ui/buildingwindow.cpp:32
+#: src/ui/hudcontainer.cpp:197
+msgid "No active research"
+msgstr "keine aktive Forschung"
+
+#: src/ui/windows/buildwindow.cpp:107
+msgid "Other"
+msgstr "Sonstiges"
+
+#: src/ui/buildingwindow.cpp:32 src/ui/windows/buildingwindow.cpp:47
 msgid "Owner: "
 msgstr "Eigentümer:"
 
-#: src/ui/routecomponent.cpp:51
+#: src/ui/SalesItemComponent.cpp:71
+msgid "Price: "
+msgstr "Preis:"
+
+#: src/ui/routecomponent.cpp:51 src/ui/routecomponent.cpp:70
 msgid "Product:"
 msgstr "Produkt:"
 
-#: src/ui/factoryproductiontab.cpp:10
+#: src/ui/factoryproductiontab.cpp:10 src/ui/resourceproductiontab.cpp:10
 msgid "Production"
 msgstr "Produktion"
 
-#: src/ui/factoryproductiontab.cpp:54
+#: src/ui/factoryproductiontab.cpp:54 src/ui/resourceproductiontab.cpp:71
 msgid "Production Cycle:"
 msgstr "Produktionszyklus:"
 
-#: src/ui/factoryproductiontab.cpp:200
+#: src/ui/factoryproductiontab.cpp:200 src/ui/factoryproductiontab.cpp:138
+#: src/ui/factoryproductiontab.cpp:199 src/ui/factoryproductiontab.cpp:143
+#: src/ui/factoryproductiontab.cpp:205 src/ui/resourceproductiontab.cpp:162
+#: src/ui/resourceproductiontab.cpp:215
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/ui/SettingsWindow.cpp:96
+#: src/ui/ResearchHint.cpp:45
+msgid "Requirements:"
+msgstr "Voraussetzungen:"
+
+#. TODO add price
+#: src/ui/ResearchHint.cpp:39
+#, c-format
+msgid "Researchtime: %d months"
+msgstr "Forschungszeit: %d Monate"
+
+#: src/ui/SettingsWindow.cpp:96 src/ui/windows/SettingsWindow.cpp:123
 msgid "Resolution"
 msgstr "Auflösung"
 
-#: src/ui/SettingsWindow.cpp:25
+#: src/ui/windows/buildingwindow.cpp:40
+msgid "Resource: "
+msgstr "Ressource:"
+
+#: src/ui/windows/buildwindow.cpp:34
+msgid "Resources"
+msgstr "Ressourcen"
+
+#: src/world/buildings/WorkerComponent.cpp:50
+msgid "Salary:"
+msgstr "Gehalt:"
+
+#: src/world/gamemap.cpp:427
+msgid "Sand"
+msgstr "Sand"
+
+#: src/ui/SettingsWindow.cpp:25 src/ui/windows/SettingsWindow.cpp:37
 msgid "Save"
 msgstr "Speichern"
 
-#: src/scenes/NewGameScene.cpp:70
+#: src/ui/SaveGameComponent.cpp:74
+msgid "Save Game"
+msgstr "Spiel speichern"
+
+#: src/scenes/NewGameScene.cpp:70 src/scenes/NewGameScene.cpp:72
 msgid "Seed: "
 msgstr "Zufallswert:"
 
 #. fullscreen->setText(_("Fullscreen"));
 #: src/ui/SettingsWindow.cpp:44 src/scenes/MainScene.cpp:57
-#: src/scenes/MainScene.cpp:61
+#: src/scenes/MainScene.cpp:61 src/ui/windows/SettingsWindow.cpp:59
+#: src/scenes/MainScene.cpp:63
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/ui/buildingwindow.cpp:17
+#: src/ui/buildingwindow.cpp:17 src/ui/windows/buildingwindow.cpp:21
 msgid "Show Building"
 msgstr "Gebäude anzeigen"
 
-#: src/scenes/NewGameScene.cpp:30
+#: src/ui/windows/SettingsWindow.cpp:18
+msgid "Sound"
+msgstr "Musik"
+
+#: src/scenes/NewGameScene.cpp:30 src/scenes/NewGameScene.cpp:32
 msgid "Start Game"
 msgstr "Spiel starten"
 
-#: src/ui/routecomponent.cpp:49
+#: src/ui/routecomponent.cpp:49 src/ui/routecomponent.cpp:68
 msgid "Start: "
 msgstr "Start:"
 
 #: src/ui/buildwindow.cpp:92 src/world/buildings/street.cpp:9
-#: src/ui/buildwindow.cpp:104
+#: src/ui/buildwindow.cpp:104 src/ui/windows/buildwindow.cpp:124
 msgid "Street"
 msgstr "Straße"
 
-#: src/ui/routecomponent.cpp:50
+#: src/ui/routecomponent.cpp:50 src/ui/routecomponent.cpp:69
 msgid "Target: "
 msgstr "Ziel:"
 
 #: src/ui/buildwindow.cpp:77 src/ui/buildwindow.cpp:87
+#: src/ui/windows/buildwindow.cpp:89
 msgid "Transport"
 msgstr "Transport"
 
@@ -153,19 +271,47 @@ msgstr "Transport"
 msgid "Transport Office"
 msgstr "Transportbüro"
 
+#: src/world/gamemap.cpp:335 src/world/gamemap.cpp:423
+msgid "Trees"
+msgstr "Bäume"
+
 #. fill info tab
-#: src/ui/buildingwindow.cpp:28
+#: src/ui/buildingwindow.cpp:28 src/ui/windows/buildingwindow.cpp:33
 msgid "Type: "
 msgstr "Typ:"
 
-#: src/ui/routecomponent.cpp:53
+#: src/ui/windows/SettingsWindow.cpp:131
+msgid "VSync"
+msgstr "VSync"
+
+#: src/world/gamemap.cpp:331 src/world/gamemap.cpp:419
+msgid "Water"
+msgstr "Wasser"
+
+#: src/world/buildings/WorkerComponent.cpp:49
+msgid "Workers:"
+msgstr "Arbeiter:"
+
+#: src/ui/SalesItemComponent.cpp:78
+msgid "active"
+msgstr "ist aktiv"
+
+#: src/ui/routecomponent.cpp:53 src/ui/routecomponent.cpp:72
 msgid "is active"
 msgstr "ist aktiv"
 
-#: src/scenes/NewGameScene.cpp:113
+#: src/scenes/NewGameScene.cpp:113 src/scenes/NewGameScene.cpp:115
 msgid "number of cities: "
-msgstr "Anzahl der Städte"
+msgstr "Anzahl der Städte:"
 
-#: src/scenes/NewGameScene.cpp:88
+#: src/scenes/NewGameScene.cpp:88 src/scenes/NewGameScene.cpp:90
 msgid "number of companies: "
-msgstr "Anzahl der Firmen"
+msgstr "Anzahl der Firmen:"
+
+#: src/ui/researchbutton.cpp:59
+msgid "researched"
+msgstr "erforscht"
+
+#: src/ui/windows/BuildingSelectionWindow.cpp:35
+msgid "select a building"
+msgstr "Gebäude auswählen"

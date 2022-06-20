@@ -43,6 +43,7 @@ void generateEnumPot(std::string fileName)
     writeEnumArray(magic_enum::enum_names<world::BalanceAccount>(), os);
     writeEnumArray(magic_enum::enum_names<WorldSize>(), os);
     writeEnumArray(magic_enum::enum_names<Difficulty>(), os);
+    writeEnumArray(magic_enum::enum_names<world::RawResource>(), os);
 
     os.flush();
     os.close();
