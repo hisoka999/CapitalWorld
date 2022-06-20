@@ -70,20 +70,14 @@ jobs:
       - name: Build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld
-      - name: version
+      - name: version linux
         run: echo "::set-output name=version::$(./CapitalWorld --version)"
-        id: version
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        id: version-linux
+        if: matrix.os == 'ubuntu-latest'
+      - name: version windows
+        run: echo "::set-output name=version::$(./CapitalWorld.exe --version)"
+        id: version-windows
+        if: matrix.os == 'windows-latest'
       - name: Build Linux Packages
         run: |
           cpack
@@ -95,15 +89,27 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: CapitalWorld-${{ steps.version.outputs.version }}-Linux.deb
+          asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
           asset_name: captialworld.linux-amd64.deb
           asset_content_type: application/vnd.debian.binary-package
+        if: matrix.os == 'ubuntu-latest'
       - name: upload linux artifact (tgz)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: CapitalWorld-${{ steps.version.outputs.version }}-Linux.tar.gz
+          asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
           asset_name: captialworld.linux-amd64.tar.gz
           asset_content_type: application/gzip
+        if: matrix.os == 'ubuntu-latest'
+      - name: upload windows artifact (zip)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Windows.zip
+          asset_name: captialworld.windows-amd64.zip
+          asset_content_type: application/gzip
+        if: matrix.os == 'ubuntu-latest'
