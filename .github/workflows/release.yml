@@ -111,5 +111,5 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Windows.zip
           asset_name: captialworld.windows-amd64.zip
-          asset_content_type: application/gzip
+          asset_content_type: application/zip
         if: matrix.os == 'ubuntu-latest'
