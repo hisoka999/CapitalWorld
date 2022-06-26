@@ -17,6 +17,10 @@ namespace world
             : dueDate(dueDate), installmentAmount(installmentAmount), interest(interest)
         {
         }
+        Installment()
+            : dueDate(1900, 1, 1)
+        {
+        }
     };
 
     class Loan
@@ -26,6 +30,8 @@ namespace world
         ~Loan();
         std::vector<Installment> getInstallments();
         size_t calculateNumberOfInstallments();
+        double calculateRepaymentWithInterest();
+        bool repayInstallment(Installment &installment);
 
     protected:
         void generateInstallments();
@@ -36,6 +42,7 @@ namespace world
         utils::time::Date m_startDay;
         utils::time::Date m_endOfContract;
         std::vector<Installment> m_installments;
+        size_t m_currentInstallment = 0;
     };
 
 } // namespace world

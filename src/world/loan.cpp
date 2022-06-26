@@ -59,4 +59,23 @@ namespace world
             m_installments.push_back(installment);
         }
     }
+    double Loan::calculateRepaymentWithInterest()
+    {
+        double value = 0.0;
+        for (int idx = m_currentInstallment; i < m_installments.size(); ++idx)
+        {
+            value += m_installments[idx].installmentAmount;
+            value += m_installments[idx].interest;
+        }
+        return value;
+    }
+
+    bool Loan::repayInstallment(Installment &installment)
+    {
+
+        installment = m_installments[m_currentInstallment];
+        m_currentInstallment++;
+        return m_currentInstallment < m_installments.size();
+    }
+
 }

@@ -81,6 +81,19 @@ namespace world
 
             income += building->getIncomePerMonth(month, year);
         }
+
+        for (auto iter = activeLoans.begin(); iter != activeLoans.end(); iter++)
+        {
+            auto loan = *iter;
+            world::Installment installment;
+            bool repayed = loan.repayInstallment(installment);
+
+            if (repayed)
+            {
+                activeLoans.erase(iter);
+            }
+        }
+
         incCash(income - costs);
         research();
     }
@@ -389,6 +402,21 @@ namespace world
     void Company::setCurrentAction(const std::shared_ptr<world::actions::Action> &action)
     {
         m_currentAction = action;
+    }
+
+    double Company::calculateCompanyValue()
+    {
+        double value = 0.0;
+        for (auto &building : buildings)
+        {
+            value += (building->getBuildPrice() * 0.5);
+        }
+        value += getProfit();
+        for (auto &loan : activeLoans)
+        {
+            value -= loan.calculateRepaymentWithInterest();
+        }
+        return value;
     }
     void Company::research()
     {

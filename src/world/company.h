@@ -5,11 +5,11 @@
 #include <string>
 #include <world/building.h>
 
+#include "loan.h"
 #include <engine/utils/json/object.h>
 #include <engine/utils/time/date.h>
 #include <memory>
 #include <vector>
-
 namespace world
 {
     namespace actions
@@ -61,6 +61,7 @@ namespace world
 
         std::shared_ptr<world::actions::Action> currentAction();
         void setCurrentAction(const std::shared_ptr<world::actions::Action> &action);
+        double calculateCompanyValue();
 
     private:
         std::string name;
@@ -72,6 +73,8 @@ namespace world
         std::vector<std::shared_ptr<Research>> researchQueue;
         std::vector<std::shared_ptr<Research>> availableResearch;
         std::shared_ptr<world::actions::Action> m_currentAction = nullptr;
+        std::vector<world::Loan> activeLoans;
+        std::vector<world::ProductBalance> balance;
     };
 }
 #endif // COMPANY_H
