@@ -114,7 +114,7 @@ namespace world
                     startStorage->addEntry(route->product->getName(), amount * -1);
                     endStorage->addEntry(route->product->getName(), amount);
 
-                    route->endBuilding->addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
+                    route->endBuilding->getBalance().addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
                 }
             }
         }

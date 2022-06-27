@@ -62,7 +62,7 @@ namespace world
     double Loan::calculateRepaymentWithInterest()
     {
         double value = 0.0;
-        for (int idx = m_currentInstallment; i < m_installments.size(); ++idx)
+        for (size_t idx = m_currentInstallment; idx < m_installments.size(); ++idx)
         {
             value += m_installments[idx].installmentAmount;
             value += m_installments[idx].interest;
@@ -75,7 +75,11 @@ namespace world
 
         installment = m_installments[m_currentInstallment];
         m_currentInstallment++;
-        return m_currentInstallment < m_installments.size();
+        return m_currentInstallment == m_installments.size() - 1;
     }
 
+    double Loan::getAmount()
+    {
+        return m_amount;
+    }
 }

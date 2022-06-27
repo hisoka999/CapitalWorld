@@ -32,6 +32,7 @@ namespace world
         size_t calculateNumberOfInstallments();
         double calculateRepaymentWithInterest();
         bool repayInstallment(Installment &installment);
+        double getAmount();
 
     protected:
         void generateInstallments();

@@ -144,45 +144,7 @@ namespace world
         auto it = std::find(products.begin(), products.end(), product);
         return it != products.end();
     }
-    void Building::calculateBalance(int month, int year)
-    {
-        for (auto &product : products)
-        {
-            ProductBalance productBalance;
-            productBalance.name = product->getName();
-            productBalance.year = year;
-            productBalance.month = month;
-            productBalance.costs = product->calculateCostsPerMonth();
-            productBalance.income = 0; // TODO
-            productBalance.account = BalanceAccount::Production;
-            balance.push_back(productBalance);
-        }
-    }
-    float Building::getCostsPerMonth(int month, int year)
-    {
-        float result = .0f;
-        for (auto &b : balance)
-        {
-            if (b.month == month && b.year == year)
-            {
-                result += b.costs;
-            }
-        }
-        return result;
-    }
 
-    float Building::getIncomePerMonth(int month, int year)
-    {
-        float result = .0f;
-        for (auto &b : balance)
-        {
-            if (b.month == month && b.year == year)
-            {
-                result += b.income;
-            }
-        }
-        return result;
-    }
     void Building::updateProduction(unsigned int month, unsigned int year)
     {
 
@@ -231,53 +193,6 @@ namespace world
         }
     }
 
-    void Building::addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount)
-    {
-
-        bool found = false;
-        for (auto &b : balance)
-        {
-            if (b.name == productName && b.year == year && b.month == month && b.account == account)
-            {
-                b.costs += amount;
-            }
-        }
-        if (!found)
-        {
-            ProductBalance productBalance;
-            productBalance.name = productName;
-            productBalance.year = year;
-            productBalance.month = month;
-            productBalance.costs = amount;
-            productBalance.income = 0;
-            productBalance.account = account;
-            balance.push_back(productBalance);
-        }
-    }
-
-    void Building::addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount)
-    {
-        bool found = false;
-        for (auto &b : balance)
-        {
-            if (b.name == productName && b.year == year && b.month == month && b.account == account)
-            {
-                b.income += amount;
-            }
-        }
-        if (!found)
-        {
-            ProductBalance productBalance;
-            productBalance.name = productName;
-            productBalance.year = year;
-            productBalance.month = month;
-            productBalance.income = amount;
-            productBalance.costs = 0;
-            productBalance.account = account;
-            balance.push_back(productBalance);
-        }
-    }
-
     bool Building::isAutoSellActive()
     {
         return false; // type == BuildingType::Factory;
@@ -295,13 +210,8 @@ namespace world
                 double income = amount * product->calculateCostsPerPiece() * 1.5;
 
                 // find balance
-                for (auto &b : balance)
-                {
-                    if (b.name == product->getName() && b.year == year && b.month == month && b.account == BalanceAccount::Production)
-                    {
-                        b.income += income;
-                    }
-                }
+                m_balance.addIncome(month, year, product->getName(), BalanceAccount::Production, income);
+
                 storage->addEntry(product->getName(), amount * -1);
             }
         }
@@ -355,23 +265,8 @@ namespace world
             utils::JSON::JsonValue value = product->getName();
             productsArray.push_back(value);
         }
+        myBuilding->setAttribute("balance", m_balance.toJson());
         myBuilding->setArrayAttribute("products", productsArray);
-
-        utils::JSON::JsonArray balanceArray;
-        for (auto &b : balance)
-        {
-            std::shared_ptr<utils::JSON::Object> jBalance = std::make_shared<utils::JSON::Object>();
-            jBalance->setAttribute("year", b.year);
-            jBalance->setAttribute("month", b.month);
-            jBalance->setAttribute("product", b.name);
-            jBalance->setAttribute("costs", float(b.costs));
-            jBalance->setAttribute("income", float(b.income));
-            jBalance->setAttribute("account", std::string(magic_enum::enum_name(b.account)));
-            utils::JSON::JsonValue value = jBalance;
-            balanceArray.push_back(value);
-        }
-
-        myBuilding->setArrayAttribute("balance", balanceArray);
 
         utils::JSON::JsonArray componentsArray;
         for (auto &component : components)
@@ -402,19 +297,7 @@ namespace world
             result->addProduct(product);
         }
         // add balance
-        utils::JSON::JsonArray balanceArray = object->getArray("balance");
-        for (auto b : balanceArray)
-        {
-            auto balanceObject = std::get<std::shared_ptr<utils::JSON::Object>>(b);
-            ProductBalance balance;
-            balance.account = magic_enum::enum_cast<BalanceAccount>(balanceObject->getStringValue("account")).value();
-            balance.costs = balanceObject->getFloatValue("costs");
-            balance.income = balanceObject->getFloatValue("income");
-            balance.month = balanceObject->getIntValue("month");
-            balance.year = balanceObject->getIntValue("year");
-            balance.name = balanceObject->getStringValue("product");
-            result->addBalance(balance);
-        }
+        result->m_balance = Balance::fromJson(object);
 
         utils::JSON::JsonArray componentsArray = object->getArray("components");
         for (auto &c : componentsArray)
@@ -468,11 +351,6 @@ namespace world
         }
     }
 
-    void Building::addBalance(ProductBalance value)
-    {
-        balance.push_back(value);
-    }
-
     bool Building::requireResource(world::RawResource rawResource)
     {
         auto it = std::find(rawResources.begin(), rawResources.end(), rawResource);
@@ -483,17 +361,9 @@ namespace world
         rawResources.push_back(rawResource);
     }
 
-    std::vector<ProductBalance> Building::getBalancePerYear(int year)
+    Balance &Building::getBalance()
     {
-        std::vector<ProductBalance> result;
-        for (auto b : balance)
-        {
-            if (b.year == year)
-            {
-                result.push_back(b);
-            }
-        }
-        return result;
+        return m_balance;
     }
 
 }
