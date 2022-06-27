@@ -4,6 +4,7 @@
 #include "BuildAction.h"
 #include "ProductionAction.h"
 #include "ResearchAction.h"
+#include "LoanAction.h"
 #include <iostream>
 
 namespace world
@@ -48,24 +49,6 @@ namespace world
                 }
                 std::shared_ptr<Action> buildShopAction = std::make_shared<world::actions::BuildAction>(m_company, currentCity, world::BuildingType::Shop, nullptr);
                 setNextAction(buildShopAction);
-
-                // build shop
-
-                // set shop production
-                // the selected product needs to be the base for further acitons
-                // set production for X -> build factory for X -> start production of x at factory
-                //
-                // build factory
-
-                // set production
-
-                // build resource building(s)
-
-                // set production
-
-                // build transport office
-
-                // set transport
             }
             else
             {
@@ -132,6 +115,8 @@ namespace world
                     std::cout << "company has no transport building: " << m_company->getName() << std::endl;
                     std::cout << "city: " << currentCity->getName() << std::endl;
                 }
+                auto loanAction = std::make_shared<world::actions::LoanAction>(m_company);
+                setNextAction(loanAction);
             }
         }
     }
