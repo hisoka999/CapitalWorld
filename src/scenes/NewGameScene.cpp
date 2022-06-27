@@ -93,6 +93,7 @@ namespace scenes
 
         auto numberOfPlayersCombobox = std::make_shared<UI::ComboBox<int>>();
         numberOfPlayersCombobox->setFont("fonts/arial.ttf", 14);
+        numberOfPlayersCombobox->addElement(0);
         numberOfPlayersCombobox->addElement(2);
         numberOfPlayersCombobox->addElement(4);
         numberOfPlayersCombobox->addElement(8);

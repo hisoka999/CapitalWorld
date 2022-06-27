@@ -98,6 +98,14 @@ namespace UI
         {
             startBuildings->setSelectionByText(route->startBuilding);
             fillProductListByBuilding(route->startBuilding);
+            if (route->product == nullptr)
+            {
+
+                if (route->startBuilding != nullptr && route->startBuilding->getProducts().size() > 0)
+                {
+                    route->product = route->startBuilding->getProducts()[0];
+                }
+            }
         }
         startBuildings->connect("valueChanged", [&](std::shared_ptr<world::Building> b)
                                 {
