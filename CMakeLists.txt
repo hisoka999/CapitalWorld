@@ -94,7 +94,7 @@ set (ENGINE_ROOT "deps")
 set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 set (MAGIC_ENUM_ROOT "deps")
 set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/engine/engine-build/${MAGIC_ENUM_ROOT}/magic_enum/magic_enum-src/include/" )
-
+set(GAME_TESTS BOOL ON)
 if(GAME_TESTS)
     option(INSTALL_GTEST OFF)
 
