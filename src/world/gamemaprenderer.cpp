@@ -4,6 +4,7 @@
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
 #include <algorithm>
+#include <engine/utils/color.h>
 
 Uint32 ColourToUint(int R, int G, int B)
 {
@@ -224,6 +225,11 @@ std::shared_ptr<graphics::TextureMap> &GameMapRenderer::getTextureMap()
     return textureMap;
 }
 
+void GameMapRenderer::toggleDebug()
+{
+    debugRender = !debugRender;
+}
+
 void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
 {
 
@@ -365,6 +371,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
     graphics::Rect viewPort = camera->getViewPortRect();
     auto startTime = std::chrono::high_resolution_clock::now();
     float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+    auto &font = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
     if (!fillCache && cacheTexture != nullptr)
     {
         cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
@@ -468,7 +475,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
             const utils::Vector2 vec(x, y);
             const auto &pos = iso::twoDToIso(vec);
 
-            const float tileYOffset = getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
+            const float tileYOffset = 0.0; // getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
 
             const auto &srcRect = building->getSourceRect();
 
@@ -506,14 +513,17 @@ void GameMapRenderer::render(core::Renderer *renderer)
             // }
         }
     }
-    std::sort(visibleBuildings.begin(), visibleBuildings.end(), [&](std::shared_ptr<world::Building> &o1, std::shared_ptr<world::Building> &o2)
-              {
-                  if (o1->get2DPosition().x < o2->get2DPosition().x)
-                      return true;
-                  else if (o1->get2DPosition().x == o2->get2DPosition().x)
-                      return o1->get2DPosition().y < o2->get2DPosition().y;
 
-                  return false; });
+    auto sortFunction = [&](std::shared_ptr<world::Building> &o1, std::shared_ptr<world::Building> &o2)
+    {
+        if (o1->get2DPosition().x < o2->get2DPosition().x)
+            return true;
+        else if (o1->get2DPosition().x == o2->get2DPosition().x)
+            return o1->get2DPosition().y + o1->get2DPosition().height < o2->get2DPosition().y + o2->get2DPosition().height;
+        return false;
+    };
+
+    std::sort(visibleBuildings.begin(), visibleBuildings.end(), sortFunction);
 
     for (auto &building : visibleBuildings)
     {
@@ -545,6 +555,11 @@ void GameMapRenderer::render(core::Renderer *renderer)
         else
         {
             groundTexture->render(renderer, building->getSourceRect(), displayRect);
+        }
+        if (debugRender)
+        {
+            std::string text = utils::string_format("x: %d | y: %d", int(building->get2DPosition().x), int(building->get2DPosition().y));
+            font->render(renderer, text, utils::color::RED, displayRect.x + (displayRect.width / 2), displayRect.y + (displayRect.height / 2));
         }
     }
     auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
