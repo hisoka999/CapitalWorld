@@ -84,7 +84,7 @@ namespace scenes
 
         buildWindow.setPos(0, height + 50);
 
-        renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
+        renderer->setDrawColor(0x22, 0x22, 0x22, 255);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
         renderer->fillRect(hudRect);
