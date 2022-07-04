@@ -112,6 +112,7 @@ namespace UI
         playButton->setPos(xLeft, 0);
         playButton->setBorderless(true);
         playButton->setToggleAllowed(true);
+        playButton->setToggled(true);
         xLeft += 30;
         addObject(playButton);
         pauseButton = std::make_shared<UI::Button>();

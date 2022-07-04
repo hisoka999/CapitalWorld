@@ -12,7 +12,7 @@
         "Color": "#FFFFFFFF",
         "HoverColor": "#AD676CFF",
         "DisabledColor": "#CCCCCCFF",
-        "BackgroundColor": "#222222FF",
+        "BackgroundColor": "#333333FF",
         "BorderColor": "#5D676CFF"
     },
     "SalesItemComponent": {
@@ -27,7 +27,7 @@
         "IconFontName": "fonts/fa-solid-900.ttf",
         "IconFontSize": 16,
         "Color": "#FFFFFFFF",
-        "BackgroundColor": "#10BCFFFF",
+        "BackgroundColor": "#333333FF",
         "BorderColor": "#FFFFFFFF"
     },
     "tabbar": {
@@ -59,7 +59,7 @@
         "Color": "#FFFFFFFF",
         "HoverColor": "#AD676CFF",
         "DisabledColor": "#CCCCCCFF",
-        "BackgroundColor": "#222222FF",
+        "BackgroundColor": "#333333FF",
         "BorderColor": "#5D676CFF"
     },
     "hint": {

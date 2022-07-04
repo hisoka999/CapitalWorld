@@ -169,8 +169,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
                 lastUpdateTime -= 40;
             }
             sceneManager.update();
-            text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
-            text.render(&ren, "FT: " + std::to_string(ren.getTimeDelta()) + "ms", color, 850, 25);
+            int textPosX = mainCamera.getWidth() - 120;
+            int textPosY = mainCamera.getHeight() - 50;
+            text.render(&ren, "FPS: " + std::to_string(fps), color, textPosX, textPosY);
+            text.render(&ren, "FT: " + std::to_string(ren.getTimeDelta()) + "ms", color, textPosX, textPosY + 20);
             ren.renderPresent();
             if (saveScreenshot)
             {
