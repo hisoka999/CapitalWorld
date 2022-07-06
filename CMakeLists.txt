@@ -95,22 +95,23 @@ set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 set (MAGIC_ENUM_ROOT "deps")
 set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/engine/engine-build/${MAGIC_ENUM_ROOT}/magic_enum/magic_enum-src/include/" )
 
-if(GAME_TESTS)
-    option(INSTALL_GTEST OFF)
+if ( UNIX)
+    if(GAME_TESTS)
+        option(INSTALL_GTEST OFF)
 
-    include(googletest)
-    include(GoogleTest)
-    fetch_googletest(
-        ${PROJECT_SOURCE_DIR}/cmake
-        ${PROJECT_BINARY_DIR}/googletest
-        )
-    enable_testing() 
-    add_subdirectory(test EXCLUDE_FROM_ALL)
-    #add_executable(SimpleTest )
+        include(googletest)
+        include(GoogleTest)
+        fetch_googletest(
+            ${PROJECT_SOURCE_DIR}/cmake
+            ${PROJECT_BINARY_DIR}/googletest
+            )
+        enable_testing() 
+        add_subdirectory(test EXCLUDE_FROM_ALL)
+        #add_executable(SimpleTest )
 
 
+    endif()
 endif()
-
 
 
 
