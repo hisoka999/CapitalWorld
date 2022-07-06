@@ -89,10 +89,10 @@ namespace UI
         buildButton->setLabel(" ");
         buildButton->setPos(10, yLeft);
         buildButton->setBorderless(true);
-        buildButton->connect("buttonClick", [&]()
-                             {
-                                 std::cout << "build button clicked" << std::endl;
-                                 buildWindow->setVisible(true); });
+        // buildButton->connect("buttonClick", [&]()
+        //                      {
+        //                          std::cout << "build button clicked" << std::endl;
+        //                          buildWindow->setVisible(true); });
         addObject(buildButton);
 
         timeButton = std::make_shared<UI::IconButton>();

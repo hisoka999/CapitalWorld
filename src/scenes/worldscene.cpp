@@ -33,8 +33,8 @@ namespace scenes
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
 
         renderer->setZoomFactor(1);
-        buildWindow.setFont(hudFont.get());
-        buildWindow.setVisible(false);
+        // buildWindow.setFont(hudFont.get());
+        // buildWindow.setVisible(false);
 
         console.setFont(hudFont.get());
         console.setVisible(false);
@@ -82,7 +82,8 @@ namespace scenes
         float height = 40;
         const int miniMapSize = 150;
 
-        buildWindow.setPos(0, height + 50);
+        buildWindow.setPos(0, height);
+        buildWindow.setSize(150, renderer->getViewPort().height - 40);
 
         renderer->setDrawColor(0x22, 0x22, 0x22, 255);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
@@ -108,6 +109,7 @@ namespace scenes
         miniMap->renderResized(renderer, miniMapRect.x, miniMapRect.y, miniMapRect.width, miniMapRect.height);
 
         buildWindow.render(renderer);
+        buildWindow.postRender(renderer);
     }
 
     std::shared_ptr<world::Building> WorldScene::createBuilding()

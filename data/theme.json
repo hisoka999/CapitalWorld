@@ -69,5 +69,9 @@
     "ResearchButton": {
         "BackgroundColor": "#222222FF",
         "BorderColor": "#5D676CFF"
+    },
+    "BuildingSelectionComponent": {
+        "BackgroundColor": "#222222FF",
+        "HoverColor": "#AD676CFF"
     }
 }

@@ -30,10 +30,10 @@ namespace UI
                                 setVisible(false); });
     }
 
-    BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 300, 400), company(company)
+    BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 300, 600), company(company)
     {
         setTitle(_("select a building"));
-        scrollArea = std::make_shared<UI::ScrollArea>(280, 380, this);
+        scrollArea = std::make_shared<UI::ScrollArea>(280, 540, this);
         addObject(scrollArea);
         selectedBuilding = nullptr;
     }
