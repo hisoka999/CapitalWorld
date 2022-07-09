@@ -8,6 +8,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+
 if(MINGW)
     set(SDL2_LIBRARY sdl2)
     set(SDL2MAIN_LIBRARY SDL2main)
@@ -147,6 +148,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif()
 
 
+
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)    
@@ -155,7 +157,13 @@ else()
     target_link_libraries(${PROJECT_NAME} SDL2)
     message("unix ${SDL2_LIBRARIES}")
 endif()
-
+target_compile_definitions(${PROJECT_NAME} 
+    PUBLIC
+      $<$<CONFIG:Debug>:GAME_DEBUG>
+      $<$<CONFIG:RelWithDebInfo>:GAME_DEBUG>
+      $<$<CONFIG:Release>:GAME_RELEASE>
+      $<$<CONFIG:MinSizeRel>:GAME_RELEASE>
+)
 
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE sgl)

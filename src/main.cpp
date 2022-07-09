@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include <magic_enum.hpp>
-
+#ifdef GAME_DEBUG
 template <size_t SIZE>
 void writeEnumArray(std::array<std::string_view, SIZE> names, std::ofstream &stream)
 {
@@ -48,6 +48,7 @@ void generateEnumPot(std::string fileName)
     os.flush();
     os.close();
 }
+#endif
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
@@ -63,16 +64,16 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
     try
     {
-        //#ifdef NDEBUG
+#ifdef GAME_DEBUG
         std::string fileName = "locale/enum.pot";
         generateEnumPot(fileName);
-        //#endif
+#endif
         Localisation::Instance().detectLanguage("capitalworld");
         Localisation::Instance().detectLanguage("enum");
 
         auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
         win.open(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "captialworld");
-
+        win.setWindowIcon("logo.png");
         auto lang = win.getSettings()->getValue("Base", "Lang");
         if (!lang.empty())
         {
@@ -99,10 +100,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         services::ResearchService::Instance().loadData("data/research.json");
 
         auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
-        // auto worldScene = std::make_shared<scenes::WorldScene>(&ren, &sceneManager);
         auto newGameScene = std::make_shared<scenes::NewGameScene>(&ren, &sceneManager);
         sceneManager.addScene("main", mainScene);
-        // sceneManager.addScene("world", worldScene);
         sceneManager.addScene("newGameScene", newGameScene);
         sceneManager.setCurrentScene("main");
 
@@ -123,14 +122,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
             ren.setDrawColor(0, 0, 0, 255);
             ren.clear();
             bool saveScreenshot = false;
-            // try
-            //{
+
             while (input.poll())
             {
                 if (input.isQuit())
                     run = false;
-                // else if (input.isKeyDown(SDLK_ESCAPE))
-                //     sceneManager.setCurrentScene("main");
+
                 else if (input.isKeyDown(SDLK_p))
                 {
                     saveScreenshot = true;
@@ -138,11 +135,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
                 sceneManager.handleEvents(&input);
             }
-            //}
-            // catch (std::exception &e)
-            // {
-            //     std::cerr << e.what() << std::endl;
-            // }
             sceneManager.render();
             frames++;
             if ((ren.getTickCount() - lastTime) >= 1000)
@@ -150,16 +142,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
                 lastTime = ren.getTickCount();
                 fps = frames;
                 frames = 0;
-                // if (fps > 300)
-                // {
-                //     delay++;
-                //     std::cout << "delay => " << delay << std::endl;
-                // }
-                // else
-                // {
-                //     if (delay > 0)
-                //         delay--;
-                // }
             }
             lastUpdateTime += ren.getTimeDelta();
             if (lastUpdateTime >= 40)
@@ -169,8 +151,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
                 lastUpdateTime -= 40;
             }
             sceneManager.update();
+
             int textPosX = mainCamera.getWidth() - 120;
             int textPosY = mainCamera.getHeight() - 50;
+
             text.render(&ren, "FPS: " + std::to_string(fps), color, textPosX, textPosY);
             text.render(&ren, "FT: " + std::to_string(ren.getTimeDelta()) + "ms", color, textPosX, textPosY + 20);
             ren.renderPresent();

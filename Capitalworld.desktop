@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment[de_DE]=
+Comment=
+Exec=capitalworld
+GenericName[de_DE]=
+GenericName=
+Icon=/home/stefan/projects/capitalworld/CapitalWorld/logo.png
+MimeType=
+Name[de_DE]=Capitalworld
+Name=Capitalworld
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
