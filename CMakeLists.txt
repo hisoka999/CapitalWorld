@@ -148,8 +148,17 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif()
 
 
+if(WIN32)
+    set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/appicon.rc")
 
-add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
+    add_executable(${PROJECT_NAME}
+            WIN32
+            "src/main.cpp" ${SRC}
+            ${APP_ICON_RESOURCE_WINDOWS}
+        )
+else()
+    add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
+endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)    
     target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2 )

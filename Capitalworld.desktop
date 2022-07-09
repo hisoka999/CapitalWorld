@@ -1,14 +1,14 @@
 [Desktop Entry]
 Comment[de_DE]=
 Comment=
-Exec=capitalworld
+Exec=/opt/capitalworld/capitalworld
 GenericName[de_DE]=
 GenericName=
-Icon=/home/stefan/projects/capitalworld/CapitalWorld/logo.png
+Icon=/opt/capitalworld/logo.png
 MimeType=
 Name[de_DE]=Capitalworld
 Name=Capitalworld
-Path=
+Path=/opt/capitalworld/
 StartupNotify=true
 Terminal=false
 TerminalOptions=
