@@ -73,5 +73,18 @@
     "BuildingSelectionComponent": {
         "BackgroundColor": "#222222FF",
         "HoverColor": "#AD676CFF"
+    },
+    "TextItem": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "NumberTextItem": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "ProgressBar": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF",
+        "ForgroundColor": "#AD676CFF"
     }
 }
