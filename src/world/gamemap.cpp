@@ -352,7 +352,8 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findByComponentTypeInDist
 
             if (building->hasComponent(componentType))
             {
-                result.push_back(building);
+                if (std::find(result.begin(), result.end(), building) == std::end(result))
+                    result.push_back(building);
             }
         }
     }
