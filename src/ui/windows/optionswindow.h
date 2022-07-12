@@ -25,7 +25,6 @@ namespace UI
     private:
         void saveGame();
         void loadGame();
-        std::shared_ptr<UI::ScrollArea> mainArea;
         SettingsWindow settingsWindow;
         std::shared_ptr<world::GameState> gameState;
         UI::SaveGameWindow saveWindow;

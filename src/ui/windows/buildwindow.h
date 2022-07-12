@@ -19,6 +19,7 @@ namespace UI
         ~BuildWindow();
         virtual void render(core::Renderer *pRender);
         virtual bool handleEvents(core::Input *pInput);
+        void postRender(core::Renderer *pRender);
 
         world::BuildAction getCurrentAction()
         {
@@ -35,6 +36,7 @@ namespace UI
         SDL_Cursor *cursor;
         UI::BuildingSelectionWindow *buildingSelectionWindow;
         std::shared_ptr<world::Building> selectedBuilding;
+        size_t m_lastHeight = 0;
     };
 
 }

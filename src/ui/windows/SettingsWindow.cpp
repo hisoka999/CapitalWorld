@@ -5,6 +5,8 @@
 #include <engine/ui/Label.h>
 #include "magic_enum.hpp"
 #include <functional>
+#include <engine/ui/ProgressBar.h>
+
 SettingsWindow::SettingsWindow()
     : UI::Window(50, 50, 520, 400)
 {
@@ -25,6 +27,9 @@ SettingsWindow::SettingsWindow()
     auto layout = std::make_shared<UI::layout::GridLayout>(graphicsTab.get(), 2);
     layout->setPadding(utils::Vector2(20, 10));
 
+    auto soundTabLayout = std::make_shared<UI::layout::GridLayout>(soundTab.get(), 2);
+    soundTabLayout->setPadding(utils::Vector2(20, 10));
+
     uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
 
     setFont(uiText.get());
@@ -36,20 +41,6 @@ SettingsWindow::SettingsWindow()
 
     saveButton->setLabel(_("Save"));
     saveButton->setPos(30, 300);
-    saveButton->connect(UI::Button::buttonClickCallback(), [=]()
-                        {
-                            auto settings = core::GameWindow::Instance().getSettings();
-                            settings->setAttrI("Base", "Fullscreen", int(fullscreen->getSelectionText()));
-                            core::GameWindow::Instance().setFullScreen(fullscreen->getSelectionText());
-                            settings->setAttrB("Base", "VSync", vsync->isChecked());
-                            int i = resolutions->getSelection();
-
-                            settings->setAttrI("Base", "Height", displayModes[i].height);
-                            settings->setAttrI("Base", "Width", displayModes[i].width);
-                            settings->setAttr("Base", "Lang", std::string(magic_enum::enum_name(comboboxLanguage->getSelectionText())));
-
-                            settings->write();
-                            closeWindow(); });
 
     cancelButton->setLabel(_("Cancel"));
     cancelButton->setPos(200, 300);
@@ -137,8 +128,7 @@ SettingsWindow::SettingsWindow()
     labelLanguage->setPos(5, 5);
 
     comboboxLanguage->setFont("fonts/arial.ttf", 14);
-    // comboboxLanguage->connect("valueChanged", [&](Language size)
-    //                           { worldSize = size; });
+
     constexpr auto &languages = magic_enum::enum_values<Language>();
 
     for (auto &value : languages)
@@ -169,9 +159,49 @@ SettingsWindow::SettingsWindow()
     addObject(cancelButton);
     addObject(saveButton);
 
+    // music
+    auto musicVolumeLabel = std::make_shared<UI::Label>("Music Volume", soundTab.get());
+    soundTab->addObject(musicVolumeLabel);
+
+    auto musicVolumeProgress = std::make_shared<UI::ProgressBar>(soundTab.get(), 200, 25);
+    if (!settings->getValue("Volume", "Music").empty())
+    {
+        musicVolumeProgress->setCurrentValue(settings->getValueI("Volume", "Music"));
+    }
+    soundTab->addObject(musicVolumeProgress);
+
+    auto soundVolumeLabel = std::make_shared<UI::Label>("Sound Volume", soundTab.get());
+    soundTab->addObject(soundVolumeLabel);
+
+    auto soundVolumeProgress = std::make_shared<UI::ProgressBar>(soundTab.get(), 200, 25);
+    if (!settings->getValue("Volume", "Sound").empty())
+    {
+        soundVolumeProgress->setCurrentValue(settings->getValueI("Volume", "Sound"));
+    }
+    soundTab->addObject(soundVolumeProgress);
+
     graphics::Rect bounds = {10, 10, float(graphicsTab->getWidth()), float(graphicsTab->getHeight())};
 
     layout->updateLayout(bounds);
+    soundTabLayout->updateLayout(bounds);
+
+    saveButton->connect(UI::Button::buttonClickCallback(), [=]()
+                        {
+        auto settings = core::GameWindow::Instance().getSettings();
+        settings->setAttrI("Base", "Fullscreen", int(fullscreen->getSelectionText()));
+        core::GameWindow::Instance().setFullScreen(fullscreen->getSelectionText());
+        settings->setAttrB("Base", "VSync", vsync->isChecked());
+        int i = resolutions->getSelection();
+
+        settings->setAttrI("Base", "Height", displayModes[i].height);
+        settings->setAttrI("Base", "Width", displayModes[i].width);
+        settings->setAttr("Base", "Lang", std::string(magic_enum::enum_name(comboboxLanguage->getSelectionText())));
+
+        settings->setAttrI("Volume", "Music", musicVolumeProgress->getCurrentValue());
+        settings->setAttrI("Volume", "Sound", soundVolumeProgress->getCurrentValue());
+
+        settings->write();
+        closeWindow(); });
 }
 
 SettingsWindow::~SettingsWindow()

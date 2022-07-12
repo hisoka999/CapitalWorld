@@ -5,19 +5,20 @@
 #include <engine/ui/iconbutton.h>
 #include <engine/utils/os.h>
 #include <iostream>
+#include <engine/ui/StringHint.h>
 namespace UI
 {
     BuildWindow::BuildWindow(int x, int y, UI::BuildingSelectionWindow *buildingSelectionWindow)
-        : UI::Window(x, y, 180, 320), cursor(nullptr), buildingSelectionWindow(buildingSelectionWindow), selectedBuilding(nullptr)
+        : UI::Window(0, 0, 180, 320), cursor(nullptr), buildingSelectionWindow(buildingSelectionWindow), selectedBuilding(nullptr)
     {
         setCurrentAction(world::BuildAction::None);
-        backgroundTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "BuildMenu.png"));
-        setTitle(_("Build"));
         setPos(x, y);
         setFont("fonts/Audiowide-Regular.ttf", 14);
+        setWithoutTitle(true);
+        setVisible(true);
 
-        setWidth(backgroundTexture->getWidth());
-        setHeight(backgroundTexture->getHeight());
+        // setWidth(backgroundTexture->getWidth());
+        // setHeight(backgroundTexture->getHeight());
         initUI();
     }
     BuildWindow::~BuildWindow()
@@ -25,19 +26,21 @@ namespace UI
     }
     void BuildWindow::initUI()
     {
-        int xPos = 15;
-        int yPos = 10;
+        int xPos = 5;
+        int yPos = (getHeight() / 2);
         int offset = 40;
         SDL_Color defaultColor = {255, 255, 255, 255};
         SDL_Color hoverColor = {0xcd, 0xcd, 0xcd, 0xff};
         auto farmButton = std::make_shared<UI::IconButton>(this);
         farmButton->setLabel(_("Resources"));
         farmButton->setIconText("\uf4d8");
+        // farmButton->setBorderless(true);
 
         farmButton->setHoverColor(hoverColor);
         farmButton->setColor(defaultColor);
         farmButton->setPos(xPos, yPos);
         farmButton->setStaticWidth(120);
+        farmButton->setHeight(35);
         farmButton->connect("buttonClick", [&]()
                             {
                                 setCurrentAction(world::BuildAction::Build);
@@ -52,9 +55,13 @@ namespace UI
         factoryButton->setLabel(_("Factory"));
         factoryButton->setPos(xPos, yPos);
         factoryButton->setStaticWidth(120);
+        factoryButton->setHeight(35);
+        factoryButton->setHint(std::make_shared<UI::StringHint>());
+        factoryButton->getHint()->setHintText(_("Factory"));
         // factoryButton->setClickColor(clickColor);
         factoryButton->setHoverColor(hoverColor);
         factoryButton->setColor(defaultColor);
+        // factoryButton->setBorderless(true);
         addObject(factoryButton);
         factoryButton->connect("buttonClick", [&]()
                                {
@@ -141,7 +148,7 @@ namespace UI
 
         auto destroyButton = std::make_shared<UI::IconButton>(this);
         destroyButton->setIconText("\uf2ed");
-        destroyButton->setLabel("Destroy");
+        destroyButton->setLabel(_("Destroy"));
         destroyButton->setPos(xPos, yPos);
         // destroyButton->setClickColor(clickColor);
         destroyButton->setHoverColor(hoverColor);
@@ -157,12 +164,22 @@ namespace UI
 
     void BuildWindow::render(core::Renderer *pRender)
     {
-
+        if (m_lastHeight != pRender->getViewPort().height)
+        {
+            m_lastHeight = pRender->getViewPort().height;
+            clear();
+            initUI();
+        }
         UI::Window::render(pRender);
     }
     bool BuildWindow::handleEvents(core::Input *pInput)
     {
         return UI::Window::handleEvents(pInput);
+    }
+
+    void BuildWindow::postRender(core::Renderer *pRender)
+    {
+        UI::Container::postRender(pRender);
     }
 
     void BuildWindow::setCurrentAction(world::BuildAction action)

@@ -29,6 +29,8 @@ namespace scenes
                 bgTexture.loadTexture(renderer, "images/title_background.png");
 
                 this->music->loadMusic("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav");
+                int volume = core::GameWindow::Instance().getSettings()->getValueI("Volume", "Music");
+                this->music->setVolume(volume);
 
                 container = new UI::Container();
                 SDL_Color white =

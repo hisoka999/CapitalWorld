@@ -8,6 +8,7 @@ namespace UI
     ResearchButton::ResearchButton(const std::shared_ptr<Research> &research, const std::shared_ptr<world::GameState> &gameState, UI::Object *parent)
         : UI::Object(parent), research(research), gameState(gameState)
     {
+        setObjectName("ResearchButton");
         iconFont = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
         textFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "Audiowide-Regular.ttf"), 12);
 
@@ -16,6 +17,12 @@ namespace UI
 
         setWidth(250);
         setHeight(40);
+        if (parent == nullptr || getTheme() == nullptr)
+        {
+            setTheme(graphics::TextureManager::Instance().getDefaultTheme());
+        }
+        backgroundColor = getTheme()->getStyleColor(this, UI::StyleType::BackgroundColor);
+        // = getTheme()->getStyleColor(this,UI::StyleType::BackgroundColor);
     }
 
     ResearchButton::~ResearchButton()
@@ -29,7 +36,7 @@ namespace UI
     void ResearchButton::render(core::Renderer *pRender)
     {
         auto rect = displayRect();
-        pRender->setDrawColor(12, 21, 24, 255);
+        pRender->setDrawColor(backgroundColor);
 
         pRender->fillRect(rect);
         if (research->canResearch(gameState->getTime()))

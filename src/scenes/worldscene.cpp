@@ -29,24 +29,19 @@ namespace scenes
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
-        // gameMap = std::make_shared<GameMap>(100,100);
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
 
         renderer->setZoomFactor(1);
-        buildWindow.setFont(hudFont.get());
-        buildWindow.setVisible(false);
 
         console.setFont(hudFont.get());
         console.setVisible(false);
-
-        // uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
         aiThread = std::make_unique<world::AIThread>(gameState);
         winMgr->addWindow(&buildingWindow);
         winMgr->addWindow(&console);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &buildWindow, &researchWindow, &playerWindow);
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &optionsWindow, &researchWindow, &playerWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
@@ -82,9 +77,12 @@ namespace scenes
         float height = 40;
         const int miniMapSize = 150;
 
-        buildWindow.setPos(0, height + 50);
+        buildWindow.setPos(0, height);
+        buildWindow.setSize(200, renderer->getViewPort().height - 40);
+        buildingSelectionWindow.setSize(300, renderer->getViewPort().height - 40);
+        buildingSelectionWindow.setPos(200, height);
 
-        renderer->setDrawColor(0x00, 0xbc, 0xff, 128);
+        renderer->setDrawColor(0x22, 0x22, 0x22, 255);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
         renderer->fillRect(hudRect);
@@ -108,6 +106,7 @@ namespace scenes
         miniMap->renderResized(renderer, miniMapRect.x, miniMapRect.y, miniMapRect.width, miniMapRect.height);
 
         buildWindow.render(renderer);
+        buildWindow.postRender(renderer);
     }
 
     std::shared_ptr<world::Building> WorldScene::createBuilding()
@@ -137,8 +136,6 @@ namespace scenes
     void WorldScene::render()
     {
 
-        // auto &cities = gameState->getCities();
-
         mapRenderer->render(renderer);
 
         float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
@@ -154,7 +151,7 @@ namespace scenes
                 utils::Vector2 vec(tx, ty);
                 const auto &pos = iso::twoDToIso(vec);
 
-                float tileYOffset = mapRenderer->getTileYOffset(cursorPosition.getX(), cursorPosition.getY());
+                float tileYOffset = 0.0;
 
                 graphics::Rect srcRect;
                 srcRect.x = 0;
@@ -167,6 +164,10 @@ namespace scenes
                 destRect.width = srcRect.width * factor;
                 destRect.height = srcRect.height * factor;
                 cursorTexture->render(renderer, srcRect, destRect);
+                SDL_Color red = {255, 0, 0, 255};
+
+                std::string cursorPositionText = utils::string_format("%i / %i", int(cursorPosition.getX()), int(cursorPosition.getY()));
+                hudFont->render(renderer, cursorPositionText, red, 0, 700);
             }
         }
         auto &win = core::GameWindow::Instance();
@@ -304,20 +305,21 @@ namespace scenes
                 float camX = renderer->getMainCamera()->getX();
                 float camY = renderer->getMainCamera()->getY();
 
-                utils::Vector2 pt = iso::isoTo2D(pInput->getMousePostion() + utils::Vector2(camX, camY));
+                float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
-                float x, y = 0.0;
+                float mouse_x = pInput->getMousePostion().getX() + camX;
+                float mouse_y = pInput->getMousePostion().getY() + camY;
+                float tile_height = float(mapRenderer->getTileHeight()) * factor;
+                float tile_width = float(mapRenderer->getTileWidth()) * factor;
 
-                float tx = pt.getX() / float(mapRenderer->getTileHeight() * renderer->getZoomFactor());
-                float ty = pt.getY() / float(mapRenderer->getTileHeight() * renderer->getZoomFactor());
+                mouse_x -= tile_width / 2;
+                mouse_y -= tile_height / 2;
 
-                x = std::round(tx - 0.5f);
-                y = std::round(ty - 0.5f);
+                float mouse_grid_x = floor((mouse_y / tile_height) + (mouse_x / tile_width));
+                float mouse_grid_y = floor((-mouse_x / tile_width) + (mouse_y / tile_height));
+                cursorPosition = utils::Vector2(mouse_grid_x, mouse_grid_y);
 
-                cursorPosition = utils::Vector2(x, y);
-                // std::cout << "mouse position x: " << x << " y:" << y << std::endl;
-
-                auto building = selectedBuilding2Build; // (buildWindow.getCurrentAction() == world::BuildAction::Build) ? findBuilding(buildWindow.getCurrentBuildingType()) : nullptr;
+                auto building = selectedBuilding2Build;
                 if (building != nullptr)
                     building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
@@ -426,6 +428,10 @@ namespace scenes
             researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));
             researchWindow.setVisible(true);
             eventHandled = true;
+        }
+        else if (pInput->isKeyDown(SDLK_l))
+        {
+            mapRenderer->toggleDebug();
         }
 
         return eventHandled;

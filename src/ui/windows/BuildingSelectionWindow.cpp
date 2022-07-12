@@ -5,36 +5,31 @@ namespace UI
 {
     void BuildingSelectionWindow::initUI()
     {
-        scrollArea->clear();
         auto buildings = company->findAvailableBuildingsByType(buildingType);
 
         int yPos = 0;
+        clear();
 
         for (auto &building : buildings)
         {
-            auto comp = std::make_shared<UI::BuildingSelectionComponent>(scrollArea.get(), building, company);
+            auto comp = std::make_shared<UI::BuildingSelectionComponent>(this, building, company);
             comp->setPos(0, yPos);
             yPos += 110;
-            scrollArea->addObject(comp);
+
+            addObject(comp);
+            comp->connect("clicked", [&](std::shared_ptr<world::Building> _building)
+                          {
+                
+                setSelectedBuilding(_building);
+                setVisible(false); });
         }
-        scrollArea->reset(false);
-
-        scrollArea->connect("selectItem", [&](int selection)
-                            {
-                                auto buildings = company->findAvailableBuildingsByType(buildingType);
-
-                                selectedBuilding = buildings.at(selection);
-                                this->fireFuncionCall("buildingSelectionChanged", selectedBuilding);
-                                auto component = std::dynamic_pointer_cast<UI::BuildingSelectionComponent>(scrollArea->get(selection));
-                                std::cout << "selected building: " << selectedBuilding->getDisplayName() << std::endl;
-                                setVisible(false); });
     }
 
-    BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 300, 400), company(company)
+    BuildingSelectionWindow::BuildingSelectionWindow(int x, int y, const std::shared_ptr<world::Company> &company) : UI::Window(x, y, 300, 600), company(company)
     {
         setTitle(_("select a building"));
-        scrollArea = std::make_shared<UI::ScrollArea>(280, 380, this);
-        addObject(scrollArea);
+        setObjectName("BuildingSelectionWindow");
+
         selectedBuilding = nullptr;
     }
 
@@ -45,6 +40,7 @@ namespace UI
     void BuildingSelectionWindow::setBuildingType(world::BuildingType buildingType)
     {
         this->buildingType = buildingType;
+        setSelectedBuilding(nullptr);
         initUI();
     }
 
