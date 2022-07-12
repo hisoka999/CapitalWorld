@@ -56,4 +56,4 @@ macro(package_add_test_with_libraries TESTNAME FILES LIBRARIES TEST_WORKING_DIRE
 endmacro()
 
 
-package_add_test(transport transport_test.cpp )
+package_add_test(capitalworld_tests transport_test.cpp loan_test.cpp )

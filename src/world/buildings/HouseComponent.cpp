@@ -69,7 +69,7 @@ namespace world
 
                             storage->addEntry(storedProduct, storedAmount * -1);
                             float orderAmount = storedAmount * sales->getSalesPrice(storedProduct);
-                            shop->addIncome(month, year, storedProduct, world::BalanceAccount::Sales, orderAmount);
+                            shop->getBalance().addIncome(month, year, storedProduct, world::BalanceAccount::Sales, orderAmount);
                         }
                     }
                 }

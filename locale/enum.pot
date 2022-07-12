@@ -46,6 +46,12 @@ msgstr ""
 msgid "Sales"
 msgstr ""
 
+msgid "Interest"
+msgstr ""
+
+msgid "Repayment"
+msgstr ""
+
 msgid "Small"
 msgstr ""
 

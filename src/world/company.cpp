@@ -6,6 +6,7 @@
 #include "world/buildings/street.h"
 #include <algorithm>
 #include <magic_enum.hpp>
+#include "translate.h"
 
 namespace world
 {
@@ -72,15 +73,32 @@ namespace world
         income = 0;
         for (auto &building : buildings)
         {
-            building->calculateBalance(month, year);
+            building->getBalance().calculateBalance(month, year, building->getProducts());
             building->updateProduction(month, year);
             if (building->isAutoSellActive())
                 building->autoSell(month, year);
 
-            costs += building->getCostsPerMonth(month, year);
+            costs += building->getBalance().getCostsPerMonth(month, year);
 
-            income += building->getIncomePerMonth(month, year);
+            income += building->getBalance().getIncomePerMonth(month, year);
         }
+
+        for (auto iter = activeLoans.begin(); iter != activeLoans.end(); iter++)
+        {
+            auto loan = *iter;
+            world::Installment installment;
+            bool repayed = loan.repayInstallment(installment);
+            m_balance.addCosts(month, year, "", BalanceAccount::Interest, installment.interest);
+            m_balance.addCosts(month, year, "", BalanceAccount::Repayment, installment.installmentAmount);
+
+            if (repayed)
+            {
+                activeLoans.erase(iter);
+            }
+        }
+        costs += m_balance.getCostsPerMonth(month, year);
+
+        income += m_balance.getIncomePerMonth(month, year);
         incCash(income - costs);
         research();
     }
@@ -298,7 +316,7 @@ namespace world
         std::vector<std::shared_ptr<ProductBalance>> balanceList;
         for (auto &building : buildings)
         {
-            for (auto &balance : building->getBalancePerYear(year))
+            for (auto &balance : building->getBalance().getBalancePerYear(year))
             {
                 if (balanceMap.count(balance.account) > 0)
                 {
@@ -316,6 +334,25 @@ namespace world
                 }
             }
         }
+
+        for (auto &balance : m_balance.getBalancePerYear(year))
+        {
+            if (balanceMap.count(balance.account) > 0)
+            {
+                balanceMap[balance.account]->costs += balance.costs;
+                balanceMap[balance.account]->income += balance.income;
+            }
+            else
+            {
+                std::shared_ptr<ProductBalance> b = std::make_shared<ProductBalance>();
+                b->account = balance.account;
+                b->costs = balance.costs;
+                b->income = balance.income;
+                b->year = year;
+                balanceMap[balance.account] = b;
+            }
+        }
+
         for (auto val : balanceMap)
         {
             balanceList.push_back(val.second);
@@ -389,6 +426,39 @@ namespace world
     void Company::setCurrentAction(const std::shared_ptr<world::actions::Action> &action)
     {
         m_currentAction = action;
+    }
+
+    double Company::calculateCompanyValue()
+    {
+        double value = 0.0;
+        for (auto &building : buildings)
+        {
+            value += (building->getBuildPrice() * 0.5);
+        }
+        value += getProfit();
+
+        for (auto &loan : activeLoans)
+        {
+            value -= loan.calculateRepaymentWithInterest();
+        }
+        return value;
+    }
+
+    void Company::addLoan(Loan &loan)
+    {
+        activeLoans.push_back(loan);
+        cash += loan.getAmount();
+    }
+
+    std::unordered_map<std::string, std::string> Company::displayData()
+    {
+        std::unordered_map<std::string, std::string> dataMap;
+        dataMap[_("Company Value: ")] = utils::string_format("%.2f €", calculateCompanyValue());
+        dataMap[_("Number of Buildings: ")] = utils::string_format("%i", getBuildings().size());
+        dataMap[_("Cash: ")] = utils::string_format("%.2f €", getCash());
+        dataMap[_("Company Name: ")] = getName();
+
+        return dataMap;
     }
     void Company::research()
     {

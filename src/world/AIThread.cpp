@@ -92,7 +92,8 @@ namespace world
                     }
                     if (!running)
                         return;
-                    action->execute(gameState);
+                    if (action->canExecute(gameState))
+                        action->execute(gameState);
                     company->setCurrentAction(action->nextAction());
                 }
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;

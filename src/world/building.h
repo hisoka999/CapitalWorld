@@ -7,30 +7,13 @@
 #include <engine/graphics/rect.h>
 #include <engine/utils/json/object.h>
 #include <string>
+#include "balance.h"
+
 class GameMap;
 
 namespace world
 {
     class Company;
-
-    enum class BalanceAccount
-    {
-        Production,
-        Transport,
-        Import,
-        Research,
-        Sales
-    };
-
-    struct ProductBalance
-    {
-        int month;
-        int year;
-        std::string name;
-        double costs;
-        double income;
-        BalanceAccount account;
-    };
 
     enum class BuildingClass
     {
@@ -67,12 +50,9 @@ namespace world
         void removeProduct(const std::shared_ptr<Product> &product);
         bool hasProduct(const std::shared_ptr<Product> &product);
         std::vector<std::shared_ptr<Product>> getProducts();
-        void calculateBalance(int month, int year);
-        float getCostsPerMonth(int month, int year);
-        float getIncomePerMonth(int month, int year);
+
         virtual void updateProduction(unsigned int month, unsigned int year);
-        void addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount);
-        void addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount);
+
         bool isAutoSellActive();
         void autoSell(int month, int year);
         BuildingType getType();
@@ -102,10 +82,7 @@ namespace world
         std::map<std::string, std::string> displayData();
         bool requireResource(world::RawResource rawResource);
         void addResource(world::RawResource rawResource);
-        std::vector<ProductBalance> getBalancePerYear(int year);
-
-    protected:
-        void addBalance(ProductBalance value);
+        Balance &getBalance();
 
     private:
         std::string name;
@@ -118,13 +95,13 @@ namespace world
         int blockWidth, blockHeight;
         int xOffset, yOffset;
         std::vector<std::shared_ptr<Product>> products;
-        std::vector<ProductBalance> balance;
         std::string subTexture;
         std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> components;
         static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;
         std::hash<std::string> hasher;
         size_t hashId = 0;
         std::vector<world::RawResource> rawResources;
+        Balance m_balance;
     };
 }
 #endif // BUILDING_H
