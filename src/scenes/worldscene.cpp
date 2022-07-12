@@ -29,24 +29,19 @@ namespace scenes
         hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
-        // gameMap = std::make_shared<GameMap>(100,100);
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
 
         renderer->setZoomFactor(1);
-        // buildWindow.setFont(hudFont.get());
-        // buildWindow.setVisible(false);
 
         console.setFont(hudFont.get());
         console.setVisible(false);
-
-        // uiTexture.loadTexture(renderer, utils::os::combine("images", "ArkanaLook.png"));
 
         thread = std::make_unique<UpdateThread>(gameState);
         aiThread = std::make_unique<world::AIThread>(gameState);
         winMgr->addWindow(&buildingWindow);
         winMgr->addWindow(&console);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &buildWindow, &researchWindow, &playerWindow);
+        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &optionsWindow, &researchWindow, &playerWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
@@ -138,8 +133,6 @@ namespace scenes
 
     void WorldScene::render()
     {
-
-        // auto &cities = gameState->getCities();
 
         mapRenderer->render(renderer);
 
