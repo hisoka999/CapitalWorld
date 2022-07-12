@@ -8,6 +8,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+
 if(MINGW)
     set(SDL2_LIBRARY sdl2)
     set(SDL2MAIN_LIBRARY SDL2main)
@@ -94,23 +95,22 @@ set (ENGINE_ROOT "deps")
 set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 set (MAGIC_ENUM_ROOT "deps")
 set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/engine/engine-build/${MAGIC_ENUM_ROOT}/magic_enum/magic_enum-src/include/" )
-set(GAME_TESTS BOOL ON)
-if(GAME_TESTS)
-    option(INSTALL_GTEST OFF)
+if ( UNIX)
+    if(GAME_TESTS)
+        option(INSTALL_GTEST OFF)
+        include(googletest)
+        include(GoogleTest)
+        fetch_googletest(
+            ${PROJECT_SOURCE_DIR}/cmake
+            ${PROJECT_BINARY_DIR}/googletest
+            )
+        enable_testing() 
+        add_subdirectory(test EXCLUDE_FROM_ALL)
+        #add_executable(SimpleTest )
 
-    include(googletest)
-    include(GoogleTest)
-    fetch_googletest(
-        ${PROJECT_SOURCE_DIR}/cmake
-        ${PROJECT_BINARY_DIR}/googletest
-        )
-    enable_testing() 
-    add_subdirectory(test EXCLUDE_FROM_ALL)
-    #add_executable(SimpleTest )
 
-
+    endif()
 endif()
-
 
 
 
@@ -146,7 +146,17 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif()
 
 
-add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
+if(WIN32)
+    set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/appicon.rc")
+
+    add_executable(${PROJECT_NAME}
+            WIN32
+            "src/main.cpp" ${SRC}
+            ${APP_ICON_RESOURCE_WINDOWS}
+        )
+else()
+    add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC} )
+endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)    
     target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2 )
@@ -154,7 +164,13 @@ else()
     target_link_libraries(${PROJECT_NAME} SDL2)
     message("unix ${SDL2_LIBRARIES}")
 endif()
-
+target_compile_definitions(${PROJECT_NAME} 
+    PUBLIC
+      $<$<CONFIG:Debug>:GAME_DEBUG>
+      $<$<CONFIG:RelWithDebInfo>:GAME_DEBUG>
+      $<$<CONFIG:Release>:GAME_RELEASE>
+      $<$<CONFIG:MinSizeRel>:GAME_RELEASE>
+)
 
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE sgl)

@@ -4,6 +4,7 @@
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
 #include <algorithm>
+#include <engine/utils/color.h>
 
 Uint32 ColourToUint(int R, int G, int B)
 {
@@ -224,6 +225,11 @@ std::shared_ptr<graphics::TextureMap> &GameMapRenderer::getTextureMap()
     return textureMap;
 }
 
+void GameMapRenderer::toggleDebug()
+{
+    debugRender = !debugRender;
+}
+
 void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
 {
 
@@ -365,6 +371,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
     graphics::Rect viewPort = camera->getViewPortRect();
     auto startTime = std::chrono::high_resolution_clock::now();
     float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+    auto &font = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
     if (!fillCache && cacheTexture != nullptr)
     {
         cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
@@ -444,34 +451,37 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
     graphics::Rect displayRect;
 
-    std::vector<std::shared_ptr<world::Building>> visibleBuildings;
+    const std::vector<std::shared_ptr<world::Building>> &buildings = gameState->getGameMap()->getBuildings();
 
-    for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
+    for (size_t y = std::max(startY, 0); y < endY; ++y)
 
     {
-        if (tempY > gameMapHeight - 1)
+        if (y > gameMapHeight - 1)
             break;
 
-        for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
+        for (size_t x = std::max(startX, 0); x < endX; ++x)
 
         {
-            if (tempX > gameMapWidth - 1)
+            if (x > gameMapWidth - 1)
                 continue;
 
-            const std::shared_ptr<world::Building> &building = gameState->getGameMap()->getBuilding(tempX, tempY);
+            const std::shared_ptr<world::Building> &building = buildings[x + (gameMapWidth * y)];
             if (building == nullptr)
                 continue;
+            auto twoDPosition = building->get2DPosition();
+            int xOffset = x - twoDPosition.x;
+            int yOffset = y - twoDPosition.y;
+            if (xOffset != twoDPosition.width - 1 || yOffset != twoDPosition.height - 1)
+                continue;
 
-            // displayRect = building->getDisplayRect();
-            float x = static_cast<float>(building->get2DPosition().x) * tileWidth / 2.0f;
-            float y = static_cast<float>(building->get2DPosition().y) * tileHeight;
-            const utils::Vector2 vec(x, y);
+            float tx = float(twoDPosition.x) * tileWidth / 2.0f;
+            float ty = float(twoDPosition.y) * tileHeight;
+            const utils::Vector2 vec(tx, ty);
             const auto &pos = iso::twoDToIso(vec);
-
-            const float tileYOffset = getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
 
             const auto &srcRect = building->getSourceRect();
 
+            const float tileYOffset = getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
             displayRect.x = ((pos.getX() - building->getXOffset()) * factor);
             displayRect.y = ((pos.getY() - building->getYOffset() - tileYOffset) * factor);
             displayRect.width = srcRect.width * factor;
@@ -480,74 +490,26 @@ void GameMapRenderer::render(core::Renderer *renderer)
             if (!displayRect.intersects(viewPort))
                 continue;
 
-            visibleBuildings.push_back(building);
-            // displayRect = building->getDisplayRect();
-            // float x = static_cast<float>(tempX) * tileWidth / 2.0f;
-            // float y = static_cast<float>(tempY) * tileHeight;
-            // const utils::Vector2 vec(x, y);
-            // const auto &pos = iso::twoDToIso(vec);
+            displayRect.x -= camera->getX();
+            displayRect.y -= camera->getY();
 
-            // const float tileYOffset = getTileYOffset(tempX, tempY);
-
-            // const auto &srcRect = building->getSourceRect();
-
-            // displayRect.x = ((pos.getX() - building->getXOffset()) * factor) - camera->getX();
-            // displayRect.y = ((pos.getY() - building->getYOffset() - tileYOffset) * factor) - camera->getY();
-            // displayRect.width = srcRect.width * factor;
-            // displayRect.height = srcRect.height * factor;
-
-            // if (building->getSubTextureHash())
-            // {
-            //     textureMap->render(building->getSubTextureHash(), displayRect, renderer);
-            // }
-            // else
-            // {
-            //     groundTexture->render(renderer, building->getSourceRect(), displayRect);
-            // }
+            if (building->getSubTextureHash())
+            {
+                textureMap->render(building->getSubTextureHash(), displayRect, renderer);
+            }
+            else
+            {
+                groundTexture->render(renderer, building->getSourceRect(), displayRect);
+            }
+            if (debugRender)
+            {
+                std::string text = utils::string_format("x: %d | y: %d", x, y);
+                font->render(renderer, text, utils::color::RED, displayRect.x + (displayRect.width / 2), displayRect.y + (displayRect.height / 2));
+            }
         }
     }
-    std::sort(visibleBuildings.begin(), visibleBuildings.end(), [&](std::shared_ptr<world::Building> &o1, std::shared_ptr<world::Building> &o2)
-              {
-                  if (o1->get2DPosition().x < o2->get2DPosition().x)
-                      return true;
-                  else if (o1->get2DPosition().x == o2->get2DPosition().x)
-                      return o1->get2DPosition().y < o2->get2DPosition().y;
 
-                  return false; });
-
-    for (auto &building : visibleBuildings)
-    {
-        // displayRect = building->getDisplayRect();
-        float x = static_cast<float>(building->get2DPosition().x) * tileWidth / 2.0f;
-        float y = static_cast<float>(building->get2DPosition().y) * tileHeight;
-        const utils::Vector2 vec(x, y);
-        const auto &pos = iso::twoDToIso(vec);
-
-        const float tileYOffset = getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
-
-        const auto &srcRect = building->getSourceRect();
-
-        displayRect.x = ((pos.getX() - building->getXOffset()) * factor);
-        displayRect.y = ((pos.getY() - building->getYOffset() - tileYOffset) * factor);
-        displayRect.width = srcRect.width * factor;
-        displayRect.height = srcRect.height * factor;
-
-        if (!displayRect.intersects(viewPort))
-            continue;
-
-        displayRect.x -= camera->getX();
-        displayRect.y -= camera->getY();
-
-        if (building->getSubTextureHash())
-        {
-            textureMap->render(building->getSubTextureHash(), displayRect, renderer);
-        }
-        else
-        {
-            groundTexture->render(renderer, building->getSourceRect(), displayRect);
-        }
-    }
-    auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
+      auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
 
     for (auto city : gameState->getCities())
     {
@@ -564,7 +526,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
         std::cout << "update building time: " << milliBuildings << "ms" << std::endl;
         std::cout << "\t num tiles: " << (tilesX * tilesY) << std::endl;
         std::cout << "\t factor: " << factor << std::endl;
-        std::cout << "\t num buildings: " << visibleBuildings.size() << std::endl;
+        // std::cout << "\t num buildings: " << visibleBuildings.size() << std::endl;
     }
 
     if (updateMiniMap)

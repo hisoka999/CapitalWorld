@@ -22,6 +22,12 @@ GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std
         this->mapData[i] = mapData[i];
 }
 
+GameMap::~GameMap()
+{
+    buildings.clear();
+    delete[] mapData;
+}
+
 void GameMap::initEmtyMap()
 {
     if (mapData != nullptr)
@@ -120,11 +126,15 @@ bool compareBuilding(std::shared_ptr<world::Building> b1, std::shared_ptr<world:
 
 void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
-    int x = building->get2DPosition().x;
-    int y = building->get2DPosition().y;
-    size_t pos = x + (y * height);
-    buildings[pos] = building;
-    // buildings.push_back(building);
+    auto position = building->get2DPosition();
+    for (int x = position.x; x < position.x + position.width; ++x)
+    {
+        for (int y = position.y; y < position.y + position.height; ++y)
+        {
+            size_t pos = x + (y * height);
+            buildings[pos] = building;
+        }
+    }
     building->update(this);
     std::shared_ptr<core::Message<MessageTypes, bool>> message = std::make_shared<core::Message<MessageTypes, bool>>(MessageTypes::ObjectHasBuild, true);
     core::MessageSystem<MessageTypes>::get().sendMessage(message);
@@ -184,8 +194,14 @@ void GameMap::removeBuilding(std::shared_ptr<world::Building> building)
 {
     auto pos = building->get2DPosition();
 
-    size_t posInMap = pos.x + (pos.y * height);
-    buildings[posInMap] = nullptr;
+    for (int x = pos.x; x < pos.x + pos.width; ++x)
+    {
+        for (int y = pos.y; y < pos.y + pos.height; ++y)
+        {
+            size_t pos = x + (y * height);
+            buildings[pos] = nullptr;
+        }
+    }
 
     auto posNorth = pos;
     posNorth.y -= 1;
@@ -336,7 +352,8 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findByComponentTypeInDist
 
             if (building->hasComponent(componentType))
             {
-                result.push_back(building);
+                if (std::find(result.begin(), result.end(), building) == std::end(result))
+                    result.push_back(building);
             }
         }
     }

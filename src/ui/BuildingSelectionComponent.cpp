@@ -5,14 +5,21 @@
 #include <engine/ui/Label.h>
 #include <engine/utils/color.h>
 #include <engine/utils/os.h>
+#include "translate.h"
 namespace UI
 {
     BuildingSelectionComponent::BuildingSelectionComponent(UI::Object *parent, std::shared_ptr<world::Building> &building, const std::shared_ptr<world::Company> &company)
         : UI::Container(), UI::Object(parent), building(building), company(company)
     {
+        setObjectName("BuildingSelectionComponent");
         initUI();
         setWidth(270);
         setHeight(110);
+        if (getTheme() == nullptr)
+            setTheme(graphics::TextureManager::Instance().getDefaultTheme());
+
+        m_backgroundColor = getTheme()->getStyleColor(this, UI::StyleType::BackgroundColor);
+        m_selectedColor = getTheme()->getStyleColor(this, UI::StyleType::HoverColor);
     }
 
     BuildingSelectionComponent::~BuildingSelectionComponent()
@@ -22,9 +29,9 @@ namespace UI
     void BuildingSelectionComponent::render(core::Renderer *pRender)
     {
         if (selected)
-            pRender->setDrawColor(0x1e, 0xb9, 0xe5, 0xFF);
+            pRender->setDrawColor(m_selectedColor);
         else
-            pRender->setDrawColor(0x0e, 0xa9, 0xe5, 0xFF);
+            pRender->setDrawColor(m_backgroundColor);
 
         pRender->fillRect(displayRect());
 
@@ -36,6 +43,11 @@ namespace UI
     {
         bool eventHandled = UI::Container::handleEvents(pInput);
         selected = eventRect().intersects(pInput->getMousePostion());
+        if(selected && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)){
+            fireFuncionCall("clicked",building);
+            eventHandled = true;
+        }
+
         return eventHandled;
     }
 
@@ -58,7 +70,7 @@ namespace UI
 
         auto costsLabel = std::make_shared<UI::Label>(this);
         costsLabel->setFont("fonts/arial.ttf", 12);
-        costsLabel->setTextF("Price: %d €", building->getBuildPrice());
+        costsLabel->setTextF(_("Price: %d €"), building->getBuildPrice());
         costsLabel->setPos(140, 30);
         if (building->canBuild(company->getCash()))
         {

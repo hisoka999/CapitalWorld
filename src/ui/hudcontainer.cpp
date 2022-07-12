@@ -11,8 +11,8 @@
 
 namespace UI
 {
-    HUDContainer::HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::BuildWindow *buildWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow)
-        : updateThread(updateThread), aiThread(aiThread), gameState(gameState), buildWindow(buildWindow), researchWindow(researchWindow), playerWindow(playerWindow)
+    HUDContainer::HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::OptionsWindow *optionsWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow)
+        : updateThread(updateThread), aiThread(aiThread), gameState(gameState), optionsWindow(optionsWindow), researchWindow(researchWindow), playerWindow(playerWindow)
     {
         glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
         uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
@@ -81,19 +81,22 @@ namespace UI
         addObject(profitButton);
         addObject(researchButton);
 
-        buildButton = std::make_shared<UI::IconButton>();
-        buildButton->setIconText("\uf0c9");
+        optionsButton = std::make_shared<UI::IconButton>();
+        optionsButton->setIconText("\uf0c9");
 
-        buildButton->setColor(utils::color::WHITE);
-        buildButton->setFont("fonts/arial.ttf", 12);
-        buildButton->setLabel(" ");
-        buildButton->setPos(10, yLeft);
-        buildButton->setBorderless(true);
-        buildButton->connect("buttonClick", [&]()
-                             {
-                                 std::cout << "build button clicked" << std::endl;
-                                 buildWindow->setVisible(true); });
-        addObject(buildButton);
+        optionsButton->setColor(utils::color::WHITE);
+        optionsButton->setFont("fonts/arial.ttf", 12);
+        optionsButton->setLabel(" ");
+        optionsButton->setPos(10, yLeft);
+        optionsButton->setBorderless(true);
+        optionsButton->connect("buttonClick", [&]()
+                               {
+            auto rect = optionsWindow->displayRect();
+            int width = core::GameWindow::Instance().getWidth();
+            int height = core::GameWindow::Instance().getHeight();
+            optionsWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+            optionsWindow->setVisible(true); });
+        addObject(optionsButton);
 
         timeButton = std::make_shared<UI::IconButton>();
         timeButton->setFont("fonts/arial.ttf", 12);
@@ -112,6 +115,7 @@ namespace UI
         playButton->setPos(xLeft, 0);
         playButton->setBorderless(true);
         playButton->setToggleAllowed(true);
+        playButton->setToggled(true);
         xLeft += 30;
         addObject(playButton);
         pauseButton = std::make_shared<UI::Button>();

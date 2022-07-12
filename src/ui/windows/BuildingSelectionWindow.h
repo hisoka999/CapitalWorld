@@ -10,7 +10,6 @@ namespace UI
     class BuildingSelectionWindow : public UI::Window
     {
     private:
-        std::shared_ptr<UI::ScrollArea> scrollArea;
         world::BuildingType buildingType;
         std::shared_ptr<world::Company> company;
         std::shared_ptr<world::Building> selectedBuilding;

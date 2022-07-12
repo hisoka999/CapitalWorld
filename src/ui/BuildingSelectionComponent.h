@@ -18,6 +18,8 @@ namespace UI
         std::shared_ptr<world::Building> building;
         std::shared_ptr<world::Company> company;
         bool selected = false;
+        SDL_Color m_selectedColor;
+        SDL_Color m_backgroundColor;
     };
 
 };

@@ -31,6 +31,7 @@ namespace UI
 
         bool hovered = false;
         bool clicked = false;
+        SDL_Color backgroundColor;
     };
 
 }

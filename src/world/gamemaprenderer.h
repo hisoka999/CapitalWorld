@@ -36,6 +36,7 @@ public:
     void refreshMiniMap();
     std::shared_ptr<graphics::Texture> &getMiniMap();
     std::shared_ptr<graphics::TextureMap> &getTextureMap();
+    void toggleDebug();
 
 private:
     void renderMiniMap(core::Renderer *renderer);
@@ -72,6 +73,7 @@ private:
     size_t resourceOilHash;
     bool fillCache = false;
     std::map<size_t, Autotile> autoTileMap;
+    bool debugRender = false;
 };
 
 #endif // GAMEMAPRENDERER_H

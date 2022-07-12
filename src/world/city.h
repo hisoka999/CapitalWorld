@@ -29,6 +29,11 @@ namespace world
         {
         }
 
+        virtual ~TreeNode()
+        {
+            children.clear();
+        }
+
         utils::Vector2 position;
         int direction;
 

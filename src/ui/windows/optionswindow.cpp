@@ -13,47 +13,43 @@ namespace UI
     {
 
         setTitle("Options");
-        mainArea = std::make_shared<UI::ScrollArea>(150, 250, this);
-        mainArea->setPos(5, 5);
-        addObject(mainArea);
 
-        auto layout = std::make_shared<UI::layout::GridLayout>(mainArea.get(), 1);
+        auto layout = std::make_shared<UI::layout::GridLayout>(this, 1);
         layout->setPadding(utils::Vector2(20, 10));
 
-        auto loadButton = std::make_shared<UI::Button>(mainArea.get());
+        auto loadButton = std::make_shared<UI::Button>(this);
         loadButton->setFont("fonts/arial.ttf", 12);
         loadButton->setLabel("Load Game");
         loadButton->connect(UI::Button::buttonClickCallback(), [&]()
                             { loadGame(); });
-        mainArea->addObject(loadButton);
+        addObject(loadButton);
 
-        auto saveButton = std::make_shared<UI::Button>(mainArea.get());
+        auto saveButton = std::make_shared<UI::Button>(this);
         saveButton->setFont("fonts/arial.ttf", 12);
         saveButton->setLabel("Save Game");
         saveButton->connect(UI::Button::buttonClickCallback(), [&]()
                             { saveGame(); });
-        mainArea->addObject(saveButton);
+        addObject(saveButton);
 
-        auto optionsButton = std::make_shared<UI::Button>(mainArea.get());
+        auto optionsButton = std::make_shared<UI::Button>(this);
         optionsButton->setFont("fonts/arial.ttf", 12);
         optionsButton->setLabel("Options");
-        mainArea->addObject(optionsButton);
+        addObject(optionsButton);
         optionsButton->connect(UI::Button::buttonClickCallback(), [&]
                                {
                                    settingsWindow.setPos(300, 300);
                                    settingsWindow.setVisible(true); });
 
-        auto mainMenuButton = std::make_shared<UI::Button>(mainArea.get());
+        auto mainMenuButton = std::make_shared<UI::Button>(this);
         mainMenuButton->setFont("fonts/arial.ttf", 12);
         mainMenuButton->setLabel("Back to main");
-        mainArea->addObject(mainMenuButton);
+        addObject(mainMenuButton);
         mainMenuButton->connect(UI::Button::buttonClickCallback(), []
                                 { core::SceneManager::Instance().setCurrentScene("main"); });
 
-        graphics::Rect bounds = {10, 10, float(mainArea->getWidth()), float(mainArea->getHeight())};
+        graphics::Rect bounds = {10, 10, float(getWidth()), float(getHeight())};
 
         layout->updateLayout(bounds);
-        mainArea->reset();
 
         loadWindow.connect("saveAction", [&](std::string fileName)
                            {
@@ -62,7 +58,6 @@ namespace UI
                                std::istringstream is;
                                std::string s;
                                std::string group;
-                               //  std::cout << filename << std::endl;
 
                                file.open(saveGameFile.c_str(), std::ios::in);
                                if (!file.is_open())

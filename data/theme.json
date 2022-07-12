@@ -4,7 +4,7 @@
         "IconFontSize": 16,
         "TitleColor": "#C3812AFF",
         "ForgroundColor": "#C3812AFF",
-        "BackgroundColor": "#0ea9e5FF",
+        "BackgroundColor": "#222222FF",
         "BorderColor": "#5D676CFF"
     },
     "button": {
@@ -12,7 +12,7 @@
         "Color": "#FFFFFFFF",
         "HoverColor": "#AD676CFF",
         "DisabledColor": "#CCCCCCFF",
-        "BackgroundColor": "#10BCFFFF",
+        "BackgroundColor": "#333333FF",
         "BorderColor": "#5D676CFF"
     },
     "SalesItemComponent": {
@@ -27,7 +27,7 @@
         "IconFontName": "fonts/fa-solid-900.ttf",
         "IconFontSize": 16,
         "Color": "#FFFFFFFF",
-        "BackgroundColor": "#10BCFFFF",
+        "BackgroundColor": "#333333FF",
         "BorderColor": "#FFFFFFFF"
     },
     "tabbar": {
@@ -35,11 +35,11 @@
         "Color": "#FFFFFFFF",
         "HoverColor": "#AD676CFF",
         "DisabledColor": "#CCCCCCFF",
-        "BackgroundColor": "#10BCFFFF",
+        "BackgroundColor": "#222222FF",
         "BorderColor": "#5D676CFF"
     },
     "scrollarea": {
-        "BackgroundColor": "#0ea9e5FF",
+        "BackgroundColor": "#222222FF",
         "ForgroundColor": "#FFFFFFFF"
     },
     "label": {
@@ -53,5 +53,46 @@
         "FontName": "fonts/arial.ttf",
         "FontSize": 12,
         "Color": "#FFFFFFFF"
+    },
+    "combobox": {
+        "BackgroundImage": "",
+        "Color": "#FFFFFFFF",
+        "HoverColor": "#AD676CFF",
+        "DisabledColor": "#CCCCCCFF",
+        "BackgroundColor": "#333333FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "hint": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "ResearchButton": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "BuildingSelectionComponent": {
+        "BackgroundColor": "#222222FF",
+        "HoverColor": "#AD676CFF"
+    },
+    "TextItem": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "NumberTextItem": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF"
+    },
+    "ProgressBar": {
+        "BackgroundColor": "#222222FF",
+        "BorderColor": "#5D676CFF",
+        "ForgroundColor": "#AD676CFF"
+    },
+    "BuildingSelectionWindow": {
+        "IconFontName": "fonts/fa-solid-900.ttf",
+        "IconFontSize": 16,
+        "TitleColor": "#C3812AFF",
+        "ForgroundColor": "#C3812AFF",
+        "BackgroundColor": "#333333FF",
+        "BorderColor": "#5D676CFF"
     }
 }
