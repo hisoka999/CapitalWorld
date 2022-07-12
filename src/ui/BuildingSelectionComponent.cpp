@@ -43,6 +43,11 @@ namespace UI
     {
         bool eventHandled = UI::Container::handleEvents(pInput);
         selected = eventRect().intersects(pInput->getMousePostion());
+        if(selected && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)){
+            fireFuncionCall("clicked",building);
+            eventHandled = true;
+        }
+
         return eventHandled;
     }
 

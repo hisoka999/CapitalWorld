@@ -86,5 +86,13 @@
         "BackgroundColor": "#222222FF",
         "BorderColor": "#5D676CFF",
         "ForgroundColor": "#AD676CFF"
+    },
+    "BuildingSelectionWindow": {
+        "IconFontName": "fonts/fa-solid-900.ttf",
+        "IconFontSize": 16,
+        "TitleColor": "#C3812AFF",
+        "ForgroundColor": "#C3812AFF",
+        "BackgroundColor": "#333333FF",
+        "BorderColor": "#5D676CFF"
     }
 }

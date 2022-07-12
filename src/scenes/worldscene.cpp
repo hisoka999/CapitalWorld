@@ -78,7 +78,9 @@ namespace scenes
         const int miniMapSize = 150;
 
         buildWindow.setPos(0, height);
-        buildWindow.setSize(150, renderer->getViewPort().height - 40);
+        buildWindow.setSize(200, renderer->getViewPort().height - 40);
+        buildingSelectionWindow.setSize(300, renderer->getViewPort().height - 40);
+        buildingSelectionWindow.setPos(200, height);
 
         renderer->setDrawColor(0x22, 0x22, 0x22, 255);
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
