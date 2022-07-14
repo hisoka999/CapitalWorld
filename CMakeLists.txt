@@ -106,21 +106,23 @@ if ( UNIX)
             )
         enable_testing() 
         add_subdirectory(test EXCLUDE_FROM_ALL)
-        #add_executable(SimpleTest )
 
 
     endif()
 endif()
 
 
-
-  message(${ENGINE_SRC})
+set (ENGINE_ROOT "deps/libsgl")
+set (ENGINE_SRC "deps/libsgl" )
 option(ENGINE_TESTS off)
-include(engine)
-fetch_engine(
-${PROJECT_SOURCE_DIR}/cmake
-${PROJECT_BINARY_DIR}/engine
-)
+
+add_subdirectory(
+    ${ENGINE_SRC}
+    ${PROJECT_BINARY_DIR}/engine-build
+    )
+
+
+
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")

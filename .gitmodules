@@ -1,0 +1,3 @@
+[submodule "deps/libsgl"]
+	path = deps/libsgl
+	url = https://github.com/hisoka999/libsgl
