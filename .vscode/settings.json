@@ -91,7 +91,9 @@
         "xutility": "cpp",
         "codecvt": "cpp",
         "ranges": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp"
     },
     "cmakeExplorer.buildDir": "build/",
     "editor.formatOnSave": true,
