@@ -2,6 +2,7 @@
 
 #include <engine/utils/time/date.h>
 #include <vector>
+#include <engine/utils/json/object.h>
 
 namespace world
 {
@@ -33,6 +34,10 @@ namespace world
         double calculateRepaymentWithInterest();
         bool repayInstallment(Installment &installment);
         double getAmount();
+        utils::time::Date &getStartDay();
+        utils::time::Date &getEndOfContract();
+        virtual std::shared_ptr<utils::JSON::Object> toJson();
+        static std::shared_ptr<Loan> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
 
     protected:
         void generateInstallments();

@@ -82,4 +82,45 @@ namespace world
     {
         return m_amount;
     }
+
+    std::shared_ptr<utils::JSON::Object> Loan::toJson()
+    {
+        std::shared_ptr<utils::JSON::Object> object = std::make_shared<utils::JSON::Object>();
+        object->setAttribute("amount", float(m_amount));
+        object->setAttribute("currentInstallment", int(m_currentInstallment));
+        object->setAttribute("interestRate", float(m_interestRate));
+        object->setAttribute("endOfContract_year", m_endOfContract.getYear());
+        object->setAttribute("endOfContract_month", m_endOfContract.getMonth());
+        object->setAttribute("endOfContract_day", m_endOfContract.getDay());
+
+        object->setAttribute("startDay_year", m_startDay.getYear());
+        object->setAttribute("startDay_month", m_startDay.getMonth());
+        object->setAttribute("startDay_day", m_startDay.getDay());
+
+        return object;
+    }
+    std::shared_ptr<Loan> Loan::fromJson(const std::shared_ptr<utils::JSON::Object> &object)
+    {
+        float amount = object->getFloatValue("amount");
+        int currentInstallment = object->getIntValue("currentInstallment");
+        float interestRate = object->getFloatValue("interestRate");
+
+        utils::time::Date startDay(object->getIntValue("startDay_year"), object->getIntValue("startDay_month"), object->getIntValue("startDay_day"));
+        utils::time::Date endOfContract(object->getIntValue("endOfContract_year"), object->getIntValue("endOfContract_month"), object->getIntValue("startDay_day"));
+
+        std::shared_ptr<Loan> loan = std::make_shared<Loan>(amount, interestRate, startDay, endOfContract);
+
+        loan->m_currentInstallment = currentInstallment;
+        loan->generateInstallments();
+
+        return loan;
+    }
+    utils::time::Date &Loan::getStartDay()
+    {
+        return m_startDay;
+    }
+    utils::time::Date &Loan::getEndOfContract()
+    {
+        return m_endOfContract;
+    }
 }

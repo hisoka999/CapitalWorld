@@ -297,7 +297,7 @@ namespace world
             result->addProduct(product);
         }
         // add balance
-        result->m_balance = Balance::fromJson(object);
+        result->m_balance = Balance::fromJson(object->getObjectValue("balance"));
 
         utils::JSON::JsonArray componentsArray = object->getArray("components");
         for (auto &c : componentsArray)

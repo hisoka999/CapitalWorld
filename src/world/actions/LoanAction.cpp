@@ -21,7 +21,7 @@ namespace world
             if (amount > 0)
             {
                 utils::time::Date contractEnd(gameState->getTime().getYear() + 3, 1, 1);
-                world::Loan loan(amount, 5, gameState->getTime(), contractEnd);
+                std::shared_ptr<world::Loan> loan = std::make_shared<world::Loan>(amount, 5, gameState->getTime(), contractEnd);
 
                 m_company->addLoan(loan);
             }
@@ -29,7 +29,7 @@ namespace world
 
         bool LoanAction::canExecute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
         {
-            return m_company->calculateCompanyValue() > 0 && m_company->getProfit() > 0;
+            return m_company->calculateCompanyValue() > 0 && m_company->getProfit() > 0 && m_company->numberOfLoans() <= 10;
         }
     }
 }

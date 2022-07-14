@@ -65,7 +65,9 @@ namespace world
         std::shared_ptr<world::actions::Action> currentAction();
         void setCurrentAction(const std::shared_ptr<world::actions::Action> &action);
         double calculateCompanyValue();
-        void addLoan(Loan &loan);
+        void addLoan(const std::shared_ptr<world::Loan> &loan);
+        size_t numberOfLoans();
+        std::vector<std::shared_ptr<world::Loan>> &getActiveLoans();
         std::unordered_map<std::string, std::string> displayData();
 
     private:
@@ -78,7 +80,7 @@ namespace world
         std::vector<std::shared_ptr<Research>> researchQueue;
         std::vector<std::shared_ptr<Research>> availableResearch;
         std::shared_ptr<world::actions::Action> m_currentAction = nullptr;
-        std::vector<world::Loan> activeLoans;
+        std::vector<std::shared_ptr<world::Loan>> m_activeLoans;
         Balance m_balance;
     };
 }
