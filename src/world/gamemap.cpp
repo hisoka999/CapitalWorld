@@ -177,6 +177,9 @@ bool GameMap::canBuild(graphics::Rect buildRect)
     {
         for (int x = buildRect.x - buildRect.width; x <= buildRect.x + buildRect.width; ++x)
         {
+            if (x + (y * height) >= width * height)
+                return false;
+
             const std::shared_ptr<world::Building> &building = getBuilding(x, y);
             if (building == nullptr)
                 continue;
