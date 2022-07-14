@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(CapitalWorld VERSION 0.1 DESCRIPTION "Capital World is a 2d isometric economy simulation game.")
+project(CapitalWorld VERSION 0.2 DESCRIPTION "Capital World is a 2d isometric economy simulation game.")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -80,7 +80,7 @@ file(GLOB_RECURSE SRC
     src/*.cpp)
 
 set (GAME_VERSION_MAJOR 0)
-set (GAME_VERSION_MINOR 1)
+set (GAME_VERSION_MINOR 2)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -90,9 +90,11 @@ configure_file (
   )
 
 
+set (ENGINE_ROOT "deps/libsgl")
+set (ENGINE_SRC "deps/libsgl" )
+option(ENGINE_TESTS off)
+  
 
-set (ENGINE_ROOT "deps")
-set (ENGINE_SRC "${PROJECT_BINARY_DIR}/engine/engine-src" )
 set (MAGIC_ENUM_ROOT "deps")
 set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/engine/engine-build/${MAGIC_ENUM_ROOT}/magic_enum/magic_enum-src/include/" )
 if ( UNIX)
@@ -112,9 +114,6 @@ if ( UNIX)
 endif()
 
 
-set (ENGINE_ROOT "deps/libsgl")
-set (ENGINE_SRC "deps/libsgl" )
-option(ENGINE_TESTS off)
 
 add_subdirectory(
     ${ENGINE_SRC}

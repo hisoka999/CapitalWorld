@@ -36,6 +36,8 @@ namespace scenes
         console.setFont(hudFont.get());
         console.setVisible(false);
 
+        renderer->getMainCamera()->move(renderer->getMainCamera()->getWidth() / 2.0f * -1.f, 0.0f);
+
         thread = std::make_unique<UpdateThread>(gameState);
         aiThread = std::make_unique<world::AIThread>(gameState);
         winMgr->addWindow(&buildingWindow);
@@ -102,6 +104,21 @@ namespace scenes
         // render minimap
         auto &miniMap = mapRenderer->getMiniMap();
         miniMap->renderResized(renderer, miniMapRect.x, miniMapRect.y, miniMapRect.width, miniMapRect.height);
+
+        // render camera position
+        auto cameraRect = renderer->getMainCamera()->getViewPortRect();
+        // map site
+        int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
+        int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
+
+        float relativeX = miniMapRect.width / renderer->getZoomFactor() / float(mapWidth);
+        float relativeY = miniMapRect.height / renderer->getZoomFactor() / float(mapHeight);
+        cameraRect.x = miniMapRect.x + (miniMapRect.width / 2.0f) + (relativeX * cameraRect.x);
+        cameraRect.y = miniMapRect.y + (relativeY * cameraRect.y);
+        cameraRect.width *= relativeX;
+        cameraRect.height *= relativeY;
+
+        renderer->drawRect(cameraRect);
 
         buildWindow.render(renderer);
         buildWindow.postRender(renderer);
@@ -464,15 +481,40 @@ namespace scenes
         }
         if (moveX != 0.0f || moveY != 0.0f)
         {
+            int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
+            int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
+            float factor = renderer->getZoomFactor();
+
+            const auto &cameraRect = renderer->getMainCamera()->getViewPortRect();
+            int targetX = cameraRect.x + moveX;
+            int targetY = cameraRect.y + moveY;
+            if (targetX < (mapWidth / 2 * -1 * factor))
+            {
+                moveX = 0;
+            }
+            else if (targetX + (cameraRect.width) > (mapWidth / 2 * factor))
+            {
+                moveX = 0;
+            }
+
+            if (targetY + (cameraRect.height) > (mapHeight * factor))
+            {
+                moveY = 0;
+            }
+            else if (targetY < 0)
+            {
+                moveY = 0;
+            }
             renderer->getMainCamera()->move(moveX, moveY);
             moveX = 0;
             moveY = 0;
             wasMoving = true;
 
-            if (renderer->getMainCamera()->getY() < 0)
-            {
-                moveY = renderer->getMainCamera()->getY() * -1;
-            }
+            // if (renderer->getMainCamera()->getY() < 0)
+            // {
+            //     moveY = renderer->getMainCamera()->getY() * -1;
+            // }
+
             renderer->getMainCamera()->move(moveX, moveY);
         }
         updateDelta += renderer->getTimeDelta();
