@@ -67,10 +67,15 @@ namespace UI
 
         auto &msgSystem = core::MessageSystem<MessageTypes>::get();
 
-        msgSystem.registerForType(MessageTypes::NewMonth, [=]()
-                                  { needsRefresh(); });
+        m_messageId = msgSystem.registerForType(MessageTypes::NewMonth, [=]()
+                                                { needsRefresh(); });
 
         refresh();
+    }
+
+    PlayerWindow::~PlayerWindow()
+    {
+        core::MessageSystem<MessageTypes>::get().deregister(m_messageId);
     }
 
     void PlayerWindow::refresh()
