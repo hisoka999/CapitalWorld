@@ -55,14 +55,12 @@ namespace scenes
                                   auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
                                   core::SceneManager::Instance().changeScene("world", worldScene); });
 
-        core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [&]([[maybe_unused]] bool dummy)
-                                                                 { 
-                                                                     if(mapRenderer != nullptr)
-                                                                     mapRenderer->clearCache(); });
+        buildMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [this]([[maybe_unused]] bool dummy)
+                                                                                     { refresh(); });
     }
     WorldScene::~WorldScene()
     {
-
+        core::MessageSystem<MessageTypes>::get().deregister(buildMessageRefId);
         thread->stop();
         aiThread->stop();
         if (previewSurface != nullptr)
@@ -495,5 +493,11 @@ namespace scenes
     std::shared_ptr<world::GameState> &WorldScene::getGameState()
     {
         return gameState;
+    }
+
+    void WorldScene::refresh()
+    {
+        if (mapRenderer != nullptr)
+            mapRenderer->clearCache();
     }
 }

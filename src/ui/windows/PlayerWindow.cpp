@@ -24,25 +24,8 @@ namespace UI
         auto profitTab = std::make_shared<UI::Tab>(m_tabBar.get(), _("Profit/Loss"));
         m_tabBar->addTab(profitTab);
 
-        auto bankTab = std::make_shared<UI::Tab>(m_tabBar.get(), _("Bank"));
-        m_tabBar->addTab(bankTab);
-
-        auto createLoanButton = std::make_shared<UI::Button>(bankTab.get());
-        createLoanButton->setPos(10, 10);
-        bankTab->addObject(createLoanButton);
-        createLoanButton->setFont("fonts/arial.ttf", 12);
-        createLoanButton->setLabel("Add Loan");
-
-        createLoanButton->connect(UI::Button::buttonClickCallback(), [&]()
-                                  {
-            double amount = m_gameState->getPlayer()->calculateCompanyValue()*0.7;
-
-            if(amount > 0){
-                utils::time::Date contractEnd(m_gameState->getTime().getYear()+3,1,1);
-                world::Loan loan(amount,5,m_gameState->getTime(),contractEnd);
-
-                m_gameState->getPlayer()->addLoan(loan);
-            } });
+        m_loanTab = std::make_shared<UI::LoanTab>(m_gameState, m_tabBar.get());
+        m_tabBar->addTab(m_loanTab);
 
         m_balanceTable = std::make_shared<UI::Table<world::ProductBalance>>(profitTab.get());
         m_balanceTable->setPos(5, 5);
@@ -115,5 +98,7 @@ namespace UI
         bounds.x = 5;
         bounds.y = 5;
         m_playerTabLayout->updateLayout(bounds);
+
+        m_loanTab->updateData();
     }
 }

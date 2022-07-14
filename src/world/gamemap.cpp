@@ -2,6 +2,9 @@
 #include "translate.h"
 #include <algorithm>
 #include "messages.h"
+#include <mutex>
+
+std::mutex gGameMapMutex;
 
 bool isBuildingSmaller(std::shared_ptr<world::Building> &b1, std::shared_ptr<world::Building> &b2)
 {
@@ -126,6 +129,8 @@ bool compareBuilding(std::shared_ptr<world::Building> b1, std::shared_ptr<world:
 
 void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
+    std::lock_guard<std::mutex> guard(gGameMapMutex);
+
     auto position = building->get2DPosition();
     for (int x = position.x; x < position.x + position.width; ++x)
     {

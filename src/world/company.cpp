@@ -82,18 +82,22 @@ namespace world
 
             income += building->getBalance().getIncomePerMonth(month, year);
         }
-
-        for (auto iter = activeLoans.begin(); iter != activeLoans.end(); iter++)
+        auto iter = m_activeLoans.begin();
+        while (iter != m_activeLoans.end())
         {
-            auto loan = *iter;
+            std::shared_ptr<world::Loan> &loan = *iter;
             world::Installment installment;
-            bool repayed = loan.repayInstallment(installment);
+            bool repayed = loan->repayInstallment(installment);
             m_balance.addCosts(month, year, "", BalanceAccount::Interest, installment.interest);
             m_balance.addCosts(month, year, "", BalanceAccount::Repayment, installment.installmentAmount);
 
             if (repayed)
             {
-                activeLoans.erase(iter);
+                iter = m_activeLoans.erase(iter);
+            }
+            else
+            {
+                iter++;
             }
         }
         costs += m_balance.getCostsPerMonth(month, year);
@@ -145,6 +149,14 @@ namespace world
         }
         obj->setAttribute("research", jsonResearch);
 
+        utils::JSON::JsonArray activeLoans;
+        for (auto &loan : m_activeLoans)
+        {
+            activeLoans.push_back(loan->toJson());
+        }
+
+        obj->setArrayAttribute("active_loans", activeLoans);
+
         return obj;
     }
 
@@ -190,6 +202,14 @@ namespace world
         for (auto &building : company->buildings)
         {
             building->delayedUpdate(company.get());
+        }
+
+        utils::JSON::JsonArray activeLoans = object->getArray("active_loans");
+
+        for (auto &jsonLoan : activeLoans)
+        {
+            auto obj = std::get<std::shared_ptr<utils::JSON::Object>>(jsonLoan);
+            company->m_activeLoans.push_back(Loan::fromJson(obj));
         }
 
         company->setAvailableResearch(services::ResearchService::Instance().getData());
@@ -437,17 +457,27 @@ namespace world
         }
         value += getProfit();
 
-        for (auto &loan : activeLoans)
+        for (auto &loan : m_activeLoans)
         {
-            value -= loan.calculateRepaymentWithInterest();
+            value -= loan->calculateRepaymentWithInterest();
         }
         return value;
     }
 
-    void Company::addLoan(Loan &loan)
+    void Company::addLoan(const std::shared_ptr<world::Loan> &loan)
     {
-        activeLoans.push_back(loan);
-        cash += loan.getAmount();
+        m_activeLoans.push_back(loan);
+        cash += loan->getAmount();
+    }
+
+    size_t Company::numberOfLoans()
+    {
+        return m_activeLoans.size();
+    }
+
+    std::vector<std::shared_ptr<world::Loan>> &Company::getActiveLoans()
+    {
+        return m_activeLoans;
     }
 
     std::unordered_map<std::string, std::string> Company::displayData()

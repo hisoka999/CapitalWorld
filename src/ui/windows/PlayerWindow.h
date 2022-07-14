@@ -4,6 +4,8 @@
 #include <engine/ui/Table.h>
 #include <world/gamestate.h>
 #include <engine/ui/layout/Layout.h>
+#include <ui/LoanTab.h>
+
 namespace UI
 {
 #pragma once
@@ -23,5 +25,6 @@ namespace UI
         std::shared_ptr<UI::Table<world::Company>> m_playerTable;
         std::shared_ptr<UI::Table<world::ProductBalance>> m_balanceTable;
         std::vector<std::shared_ptr<UI::Object>> optionalItems;
+        std::shared_ptr<UI::LoanTab> m_loanTab;
     };
 }

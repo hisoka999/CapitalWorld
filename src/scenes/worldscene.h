@@ -51,6 +51,7 @@ namespace scenes
         std::shared_ptr<world::GameState> &getGameState();
 
     private:
+        void refresh();
         void renderHUD();
         std::shared_ptr<world::Building> createBuilding();
 
@@ -81,6 +82,7 @@ namespace scenes
         double updateDelta = 0;
         SDL_Surface *previewSurface = nullptr;
         std::shared_ptr<world::Building> selectedBuilding2Build;
+        int buildMessageRefId;
     };
 }
 #endif // WORLDSCENE_H
