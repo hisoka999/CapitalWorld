@@ -481,7 +481,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
             const auto &srcRect = building->getSourceRect();
 
-            const float tileYOffset = getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
+            const float tileYOffset = 0.0; // getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
             displayRect.x = ((pos.getX() - building->getXOffset()) * factor);
             displayRect.y = ((pos.getY() - building->getYOffset() - tileYOffset) * factor);
             displayRect.width = srcRect.width * factor;
@@ -509,7 +509,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
         }
     }
 
-      auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
+    auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
 
     for (auto city : gameState->getCities())
     {
