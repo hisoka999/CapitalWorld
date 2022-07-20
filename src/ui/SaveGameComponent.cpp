@@ -38,7 +38,7 @@ namespace UI
         nameTextItem->setPos(150, 5);
         fileDateLabel->setPos(110, 30);
         actionButton->setPos(110, 50);
-        deleteButton->setPos(200, 50);
+        deleteButton->setPos(220, 50);
 
         actionButton->connect(UI::Button::buttonClickCallback(), [&]()
                               { this->fireFuncionCall("saveAction", nameTextItem->getText()); });
