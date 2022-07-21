@@ -18,7 +18,6 @@ namespace world
         std::istringstream is;
         std::string s;
         std::string group;
-        //  std::cout << filename << std::endl;
 
         file.open(fileName.c_str(), std::ios::in);
         if (!file.is_open())

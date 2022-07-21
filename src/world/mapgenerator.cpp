@@ -4,8 +4,8 @@
 #include <engine/utils/perlinnoise.h>
 #include <engine/utils/string.h>
 #include <fstream>
-#include <iostream>
 #include <random>
+#include <engine/utils/logger.h>
 
 namespace world
 {
@@ -60,7 +60,7 @@ namespace world
     }
     std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities, CityNames cityName, unsigned long seed)
     {
-        std::cout << "seed: " << seed << std::endl;
+        APP_LOG_INFO("seed: " + std::to_string(seed));
         auto definitions = getCityDefinitions(cityName);
 
         utils::PerlinNoise pn(seed);
@@ -103,16 +103,6 @@ namespace world
                         {
                             int value = mountainDistribution(gen);
                             mapResources[i + (j * height)] = static_cast<RawResource>(value);
-                            switch (mapResources[i + (j * height)])
-                            {
-                            case RawResource::Aluminum:
-                            case RawResource::Copper:
-                            case RawResource::Gold:
-                                std::cout << magic_enum::enum_name(mapResources[i + (j * height)]) << " pos: " << i << "," << j << std::endl;
-                                break;
-                            default:
-                                break;
-                            }
                         }
                     }
                 }

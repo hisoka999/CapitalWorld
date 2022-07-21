@@ -36,7 +36,6 @@ void writeEnumArray(std::array<std::string_view, SIZE> names, std::ofstream &str
 void generateEnumPot(std::string fileName)
 {
     std::ofstream os(fileName, std::ios::trunc | std::ios::out);
-    std::cout << "test file: " << fileName << std::endl;
 
     writeEnumArray(magic_enum::enum_names<world::BuildingType>(), os);
     writeEnumArray(magic_enum::enum_names<world::CityType>(), os);
@@ -82,8 +81,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
             Localisation::Instance().loadLanguage(lng, "enum");
         }
         setlocale(LC_ALL, Localisation::Instance().getLocale().name().c_str());
-        utils::Logger logger(utils::LogLevel::trace);
-        core::Renderer ren(logger);
+
+        core::Renderer ren;
         graphics::TextureManager::Instance().setRenderer(&ren);
         graphics::TextureManager::Instance().loadTheme("data/theme.json", true);
         core::Input input;

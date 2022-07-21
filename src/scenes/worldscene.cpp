@@ -26,7 +26,6 @@ namespace scenes
           buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
-        hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
@@ -204,7 +203,6 @@ namespace scenes
     {
         bool eventHandled = false;
         auto &gameMap = gameState->getGameMap();
-        // bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
         float height = 50;
         //
@@ -223,7 +221,6 @@ namespace scenes
         {
             if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
             {
-                std::cout << "build here" << std::endl;
                 auto action = buildWindow.getCurrentAction();
                 if (action == world::BuildAction::Destroy)
                 {
@@ -312,7 +309,7 @@ namespace scenes
                     mapRenderer->clearCache();
                 }
 
-                std::cout << "factor: " << factor << std::endl;
+                APP_LOG_TRACE("factor: " + std::to_string(factor));
                 eventHandled = true;
             }
             if (pInput->isMouseMoving())
@@ -437,7 +434,7 @@ namespace scenes
             optionsWindow.setVisible(true);
             eventHandled = true;
         }
-        else if (pInput->isKeyDown(SDLK_r) && !SDL_IsTextInputActive())
+        else if (pInput->isKeyDown(SDLK_r) && !pInput->isTextInputActive())
         {
             auto rect = researchWindow.displayRect();
             researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));

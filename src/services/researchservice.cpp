@@ -25,7 +25,6 @@ namespace services
         }
         std::string name = object->getStringValue("name");
         std::string icon = object->getStringValue("icon");
-        // std::transform(icon.begin(), icon.end(), icon.begin(), ::toupper);
         std::istringstream hex_chars_stream(icon.substr(2));
 
         int c;
@@ -37,8 +36,6 @@ namespace services
 
         std::string test = "\uf197";
 
-        std::cout << "icon: " << icon.substr(2) << " ICON: " << icon2 << " :: " << c << " " << utils::utf8chr(c) << "TEST: " << test << std::endl;
-        std::cout << "test 1: " << utils::codepoint(test) << " " << utils::codepoint(icon2) << std::endl;
         std::string localisedName = object->getStringValue("name" + lang);
 
         std::string description = object->getStringValue("description");

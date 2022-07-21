@@ -1,11 +1,11 @@
 #include "BaseAction.h"
 #include <random>
 #include <algorithm>
+#include <engine/utils/logger.h>
 #include "BuildAction.h"
 #include "ProductionAction.h"
 #include "ResearchAction.h"
 #include "LoanAction.h"
-#include <iostream>
 
 namespace world
 {
@@ -112,8 +112,8 @@ namespace world
                 }
                 if (noTransport)
                 {
-                    std::cout << "company has no transport building: " << m_company->getName() << std::endl;
-                    std::cout << "city: " << currentCity->getName() << std::endl;
+                    APP_LOG_WARN("company has no transport building: " + m_company->getName());
+                    APP_LOG_WARN("city: " + currentCity->getName());
                 }
                 auto loanAction = std::make_shared<world::actions::LoanAction>(m_company);
                 setNextAction(loanAction);

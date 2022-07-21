@@ -8,8 +8,8 @@
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/color.h>
 #include <engine/utils/os.h>
-#include <iostream>
 #include <random>
+#include <engine/utils/logger.h>
 
 namespace world
 {
@@ -123,9 +123,9 @@ namespace world
 
         numberOfCitizen = peopleGen(gen);
         long numberOfBuildings = static_cast<long>(std::round(static_cast<float>(numberOfCitizen) / 1000.0f));
-        std::cout << "city name: " << this->name << std ::endl;
-        std::cout << "numberOfCitizen = " << numberOfCitizen << std::endl;
-        std::cout << "numberOfBuildings = " << numberOfBuildings << std::endl;
+        APP_LOG_TRACE("city name: " + this->name);
+        APP_LOG_TRACE("numberOfCitizen = " + std::to_string(numberOfCitizen));
+        APP_LOG_TRACE("numberOfBuildings = " + std::to_string(numberOfBuildings));
 
         graphics::Rect buildRect = {position.getX(), position.getY(), 1, 1};
 
@@ -207,9 +207,7 @@ namespace world
                       utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
                       auto v22 = iso::twoDToIso(v2);
 
-                      return v11.getY() < v22.getY();
-                      //  o1->get2DPosition().x > o2->get2DPosition().x
-                      ; });
+                      return v11.getY() < v22.getY(); });
 
         std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2)
                   {
@@ -219,9 +217,7 @@ namespace world
                       utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
                       auto v22 = iso::twoDToIso(v2);
 
-                      return v11.getY() < v22.getY();
-                      //  o1->get2DPosition().x > o2->get2DPosition().x
-                      ; });
+                      return v11.getY() < v22.getY(); });
 
         for (auto &street : streets)
         {
@@ -335,19 +331,17 @@ namespace world
 
         if ((*nodesLeft) <= 0)
             return;
-        // std::cout << "nodes left: " << *nodesLeft << std::endl;
 
         std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
 
         int directions = directionGen(gen);
-        // std::cout << "directions:" << directions << std::endl;
 
         if (root->children.size() > 0)
         {
             if (noDirectionGen(gen) <= 1)
             {
-                std::cout << " no direction " << std::endl;
+                APP_LOG_ERROR(" no direction found");
                 return;
             }
         }

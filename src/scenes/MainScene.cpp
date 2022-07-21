@@ -24,7 +24,6 @@ namespace scenes
         MainScene::MainScene(core::Renderer *pRenderer,
                              core::SceneManager *pSceneManager) : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow(), loadWindow(true)
         {
-                uiTexture.loadTexture(renderer, "images/ArkanaLook.png");
 
                 bgTexture.loadTexture(renderer, "images/title_background.png");
 
@@ -92,7 +91,6 @@ namespace scenes
                                std::istringstream is;
                                std::string s;
                                std::string group;
-                               //  std::cout << filename << std::endl;
 
                                file.open(saveGameFile.c_str(), std::ios::in);
                                if (!file.is_open())
@@ -128,7 +126,7 @@ namespace scenes
 
         void MainScene::startGame()
         {
-                std::cout << "start game" << std::endl;
+                APP_LOG_INFO("start game");
 
                 sceneManager->setCurrentScene("newGameScene");
         }
