@@ -78,7 +78,7 @@ namespace UI
                            {
                                setlocale(LC_ALL, "C");
                                std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/saves/" + fileName + ".save";
-                               std::cout << "savegame: " << saveGameFile << std::endl;
+                               APP_LOG_INFO("savegame: "+ saveGameFile);
                                std::ofstream ostream(saveGameFile, std::ios::trunc | std::ios::out);
 
                                ostream << gameState->toJsonString();
@@ -88,7 +88,7 @@ namespace UI
                                std::filesystem::path extention(".png");
                                std::filesystem::path previewPath(saveGameFile);
                                previewPath.replace_extension(extention);
-                               std::cout << "preview path: " << previewPath << std::endl;
+                               APP_LOG_INFO("preview path: " + previewPath.string());
                                IMG_SavePNG(previewSurface, previewPath.string().c_str()); });
     }
 

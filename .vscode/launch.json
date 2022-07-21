@@ -28,8 +28,13 @@
                     "description": "Automatische Strukturierung und Einrückung für \"gdb\" aktivieren",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
+                },
+                {
+                    "description": "Disassemblierungsvariante auf Intel festlegen",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
                 }
-            ]
+            ],
         },
         {
             "name": "(Release) Starten",
@@ -55,8 +60,13 @@
                     "description": "Automatische Strukturierung und Einrückung für \"gdb\" aktivieren",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
+                },
+                {
+                    "description": "Disassemblierungsvariante auf Intel festlegen",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
                 }
-            ]
+            ],
         }
     ]
 }

@@ -26,7 +26,6 @@ namespace scenes
           buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
-        hudTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "ui_base.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
@@ -35,6 +34,8 @@ namespace scenes
 
         console.setFont(hudFont.get());
         console.setVisible(false);
+
+        renderer->getMainCamera()->move(renderer->getMainCamera()->getWidth() / 2.0f * -1.f, 0.0f);
 
         thread = std::make_unique<UpdateThread>(gameState);
         aiThread = std::make_unique<world::AIThread>(gameState);
@@ -84,7 +85,7 @@ namespace scenes
         renderer->setDrawBlendMode(SDL_BLENDMODE_BLEND);
         graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
         renderer->fillRect(hudRect);
-        graphics::Rect miniMapRect = {renderer->getViewPort().width - miniMapSize, height, float(miniMapSize), float(miniMapSize)};
+        miniMapRect = {renderer->getViewPort().width - miniMapSize, height, float(miniMapSize), float(miniMapSize)};
 
         renderer->fillRect(miniMapRect);
 
@@ -103,39 +104,27 @@ namespace scenes
         auto &miniMap = mapRenderer->getMiniMap();
         miniMap->renderResized(renderer, miniMapRect.x, miniMapRect.y, miniMapRect.width, miniMapRect.height);
 
+        // render camera position
+        auto cameraRect = renderer->getMainCamera()->getViewPortRect();
+        // map site
+        int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
+        int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
+
+        float relativeX = miniMapRect.width / renderer->getZoomFactor() / float(mapWidth);
+        float relativeY = miniMapRect.height / renderer->getZoomFactor() / float(mapHeight);
+        cameraRect.x = miniMapRect.x + (miniMapRect.width / 2.0f) + (relativeX * cameraRect.x);
+        cameraRect.y = miniMapRect.y + (relativeY * cameraRect.y);
+        cameraRect.width *= relativeX;
+        cameraRect.height *= relativeY;
+
+        renderer->drawRect(cameraRect);
+
         buildWindow.render(renderer);
         buildWindow.postRender(renderer);
     }
 
-    std::shared_ptr<world::Building> WorldScene::createBuilding()
+    void WorldScene::renderCursor()
     {
-        std::shared_ptr<world::Building> building = nullptr;
-        graphics::Rect rect;
-        rect.width = static_cast<float>(mapRenderer->getTileWidth());
-        rect.height = static_cast<float>(mapRenderer->getTileHeight());
-        int nextIndex = gameState->getPlayer()->getMaxBuildingIndex() + 1;
-        std::string index = std::to_string(nextIndex);
-        switch (selectedBuilding2Build->getType())
-        {
-
-        case world::BuildingType::Street:
-            building = std::make_shared<world::buildings::Street>();
-            rect.x = 0;
-            rect.y = 128;
-            building->setOffset(0, 0);
-            building->setSourceRect(rect);
-            break;
-        default:
-            building = services::BuildingService::Instance().create(selectedBuilding2Build);
-        }
-        return building;
-    }
-
-    void WorldScene::render()
-    {
-
-        mapRenderer->render(renderer);
-
         float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
         auto camera = renderer->getMainCamera();
@@ -168,8 +157,39 @@ namespace scenes
                 hudFont->render(renderer, cursorPositionText, red, 0, 700);
             }
         }
-        auto &win = core::GameWindow::Instance();
+    }
 
+    std::shared_ptr<world::Building> WorldScene::createBuilding()
+    {
+        std::shared_ptr<world::Building> building = nullptr;
+        graphics::Rect rect;
+        rect.width = static_cast<float>(mapRenderer->getTileWidth());
+        rect.height = static_cast<float>(mapRenderer->getTileHeight());
+        int nextIndex = gameState->getPlayer()->getMaxBuildingIndex() + 1;
+        std::string index = std::to_string(nextIndex);
+        switch (selectedBuilding2Build->getType())
+        {
+
+        case world::BuildingType::Street:
+            building = std::make_shared<world::buildings::Street>();
+            rect.x = 0;
+            rect.y = 128;
+            building->setOffset(0, 0);
+            building->setSourceRect(rect);
+            break;
+        default:
+            building = services::BuildingService::Instance().create(selectedBuilding2Build);
+        }
+        return building;
+    }
+
+    void WorldScene::render()
+    {
+
+        mapRenderer->render(renderer);
+
+        auto &win = core::GameWindow::Instance();
+        renderCursor();
         renderHUD();
 
         winMgr->render(renderer);
@@ -183,13 +203,153 @@ namespace scenes
         }
     }
 
+    bool WorldScene::handleMouseEvents(core::Input *pInput)
+    {
+        auto &gameMap = gameState->getGameMap();
+
+        bool eventHandled = false;
+        if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
+        {
+            auto action = buildWindow.getCurrentAction();
+            if (action == world::BuildAction::Destroy)
+            {
+                // check if building exists and then destroy it
+                const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+
+                auto building = gameMap->getBuilding2D(sourceBuilding);
+                if (building != nullptr)
+                {
+                    // remove it
+
+                    // get back cash
+                    if (gameState->getPlayer()->hasBuilding(building))
+                    {
+                        gameMap->removeBuilding(building);
+                        gameState->getPlayer()->removeBuilding(building);
+                        gameState->getPlayer()->incCash(building->getBuildPrice() * 0.2f);
+                    }
+                    else if (gameState->findBuildingOwner(building) == nullptr)
+                    {
+                        gameMap->removeBuilding(building);
+                        // if no one owns the building you have to pay for destroying it
+                        gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
+                    }
+                    mapRenderer->clearCache();
+                    eventHandled = true;
+                }
+            }
+            else if (action == world::BuildAction::Build)
+            {
+                if (!selectedBuilding2Build)
+                    return eventHandled;
+                auto building = createBuilding();
+                building->setPosition(cursorPosition.getX(), cursorPosition.getY());
+
+                if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                {
+                    if (building->hasComponent("SalesComponent"))
+                    {
+                        auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                        sales->setGameMap(gameMap.get());
+                    }
+                    gameMap->addBuilding(building);
+                    gameState->getPlayer()->addBuilding(building);
+                    gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
+                    mapRenderer->clearCache();
+                    eventHandled = true;
+                }
+            }
+            else
+            {
+                const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+                auto building = gameMap->getBuilding2D(sourceBuilding);
+                std::shared_ptr<world::Company> company = nullptr;
+                if (gameState->getPlayer()->hasBuilding(building))
+                {
+                    company = gameState->getPlayer();
+                }
+                auto rect = buildingWindow.displayRect();
+                int width = core::GameWindow::Instance().getWidth();
+                int height = core::GameWindow::Instance().getHeight();
+                buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+
+                buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
+                eventHandled = true;
+            }
+        }
+        else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
+        {
+            buildWindow.setCurrentAction(world::BuildAction::None);
+            buildingSelectionWindow.setSelectedBuilding(nullptr);
+            eventHandled = true;
+        }
+        if (pInput->isScrollWheel())
+        {
+            auto wheelPosition = pInput->getMouseWheelPosition();
+            float offset = (wheelPosition.getY() / 10.f);
+            float factor = renderer->getZoomFactor() + offset;
+            if (factor >= 0.5f)
+            {
+                renderer->setZoomFactor(factor);
+                float camX = renderer->getMainCamera()->getX();
+                float camY = renderer->getMainCamera()->getY();
+                renderer->getMainCamera()->reset();
+                renderer->getMainCamera()->move(camX * (1.f + offset), camY * (1.f + offset));
+                mapRenderer->clearCache();
+            }
+
+            APP_LOG_TRACE("factor: " + std::to_string(factor));
+            eventHandled = true;
+        }
+        if (pInput->isMouseMoving())
+        {
+            float camX = renderer->getMainCamera()->getX();
+            float camY = renderer->getMainCamera()->getY();
+
+            float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+
+            float mouse_x = pInput->getMousePostion().getX() + camX;
+            float mouse_y = pInput->getMousePostion().getY() + camY;
+            float tile_height = float(mapRenderer->getTileHeight()) * factor;
+            float tile_width = float(mapRenderer->getTileWidth()) * factor;
+
+            mouse_x -= tile_width / 2;
+            mouse_y -= tile_height / 2;
+
+            float mouse_grid_x = floor((mouse_y / tile_height) + (mouse_x / tile_width));
+            float mouse_grid_y = floor((-mouse_x / tile_width) + (mouse_y / tile_height));
+            cursorPosition = utils::Vector2(mouse_grid_x, mouse_grid_y);
+
+            auto building = selectedBuilding2Build;
+            if (building != nullptr)
+                building->setPosition(cursorPosition.getX(), cursorPosition.getY());
+
+            cursorTexture->setBlendMode(SDL_BLENDMODE_BLEND);
+            cursorTexture->setAlphaMod(150);
+            if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+            {
+                cursorBuildingRect = building->get2DPosition();
+                cursorTexture->setColorKey(0, 255, 0);
+            }
+            else if (building != nullptr)
+            {
+                cursorBuildingRect = building->get2DPosition();
+                cursorTexture->setColorKey(255, 0, 0);
+            }
+            else
+            {
+                cursorBuildingRect = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+                cursorTexture->setColorKey(255, 255, 255);
+            }
+            eventHandled = true;
+        }
+        return eventHandled;
+    }
+
     bool WorldScene::handleEvents(core::Input *pInput)
     {
         bool eventHandled = false;
-        auto &gameMap = gameState->getGameMap();
-        // bool mouseIntersectsWindow = buildWindow.displayRect().intersects(pInput->getMousePostion());
 
-        float height = 50;
         //
 
         eventHandled = winMgr->handleInput(pInput);
@@ -200,212 +360,94 @@ namespace scenes
         if (eventHandled)
             return true;
 
-        graphics::Rect hudRect = {0, 0, renderer->getViewPort().width, height};
-
-        if (!hudRect.intersects(pInput->getMousePostion()))
+        if (miniMapRect.intersects(pInput->getMousePostion()) && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
         {
-            if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
-            {
-                std::cout << "build here" << std::endl;
-                auto action = buildWindow.getCurrentAction();
-                if (action == world::BuildAction::Destroy)
-                {
-                    // check if building exists and then destroy it
-                    const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+            // render camera position
+            // map size
+            int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
+            int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
 
-                    auto building = gameMap->getBuilding2D(sourceBuilding);
-                    if (building != nullptr)
-                    {
-                        // remove it
+            // reletive size incl. zoom
+            float relativeX = miniMapRect.width / renderer->getZoomFactor() / float(mapWidth);
+            float relativeY = miniMapRect.height / renderer->getZoomFactor() / float(mapHeight);
 
-                        // get back cash
-                        if (gameState->getPlayer()->hasBuilding(building))
-                        {
-                            gameMap->removeBuilding(building);
-                            gameState->getPlayer()->removeBuilding(building);
-                            gameState->getPlayer()->incCash(building->getBuildPrice() * 0.2f);
-                        }
-                        else if (gameState->findBuildingOwner(building) == nullptr)
-                        {
-                            gameMap->removeBuilding(building);
-                            // if no one owns the building you have to pay for destroying it
-                            gameState->getPlayer()->incCash(building->getBuildPrice() * -1.0f);
-                        }
-                        mapRenderer->clearCache();
-                        eventHandled = true;
-                    }
-                }
-                else if (action == world::BuildAction::Build)
-                {
-                    if (!selectedBuilding2Build)
-                        return eventHandled;
-                    auto building = createBuilding();
-                    building->setPosition(cursorPosition.getX(), cursorPosition.getY());
+            // new position  = -(half of camera size) + (mouse position  - minimap position) / relative size - (half of map size)
+            int newX = (renderer->getMainCamera()->getWidth() / 2.0f * -1.0f) + ((pInput->getMousePostion().getX() - miniMapRect.x) / relativeX) - (mapWidth / 2.0f * renderer->getZoomFactor());
+            int newY = (renderer->getMainCamera()->getHeight() / 2.0f * -1.0f) + (pInput->getMousePostion().getY() - miniMapRect.y) / relativeY;
+            renderer->getMainCamera()->reset();
+            renderer->getMainCamera()->move(newX, newY);
+            mapRenderer->clearCache();
+            return true;
+        }
 
-                    if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
-                    {
-                        if (building->hasComponent("SalesComponent"))
-                        {
-                            auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
-                            sales->setGameMap(gameMap.get());
-                        }
-                        gameMap->addBuilding(building);
-                        gameState->getPlayer()->addBuilding(building);
-                        gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
-                        mapRenderer->clearCache();
-                        eventHandled = true;
-                    }
-                }
-                else
-                {
-                    const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
-                    auto building = gameMap->getBuilding2D(sourceBuilding);
-                    std::shared_ptr<world::Company> company = nullptr;
-                    if (gameState->getPlayer()->hasBuilding(building))
-                    {
-                        company = gameState->getPlayer();
-                    }
-                    auto rect = buildingWindow.displayRect();
-                    int width = core::GameWindow::Instance().getWidth();
-                    int height = core::GameWindow::Instance().getHeight();
-                    buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+        eventHandled = handleMouseEvents(pInput);
+        if (eventHandled)
+            return true;
 
-                    buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
-                    eventHandled = true;
-                }
-            }
-            else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
-            {
-                buildWindow.setCurrentAction(world::BuildAction::None);
-                buildingSelectionWindow.setSelectedBuilding(nullptr);
-                eventHandled = true;
-            }
-            if (pInput->isScrollWheel())
-            {
-                auto wheelPosition = pInput->getMouseWheelPosition();
-                float offset = (wheelPosition.getY() / 10.f);
-                float factor = renderer->getZoomFactor() + offset;
-                if (factor >= 0.5f)
-                {
-                    renderer->setZoomFactor(factor);
-                    float camX = renderer->getMainCamera()->getX();
-                    float camY = renderer->getMainCamera()->getY();
-                    renderer->getMainCamera()->reset();
-                    renderer->getMainCamera()->move(camX * (1.f + offset), camY * (1.f + offset));
-                    mapRenderer->clearCache();
-                }
+        if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
+        {
+            direction.bottom = true;
+            direction.top = false;
+            eventHandled = true;
+        }
+        else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
+        {
+            direction.top = true;
+            direction.bottom = false;
+            eventHandled = true;
+        }
+        else
+        {
+            direction.top = false;
+            direction.bottom = false;
+            eventHandled = true;
+        }
 
-                std::cout << "factor: " << factor << std::endl;
-                eventHandled = true;
-            }
-            if (pInput->isMouseMoving())
-            {
-                float camX = renderer->getMainCamera()->getX();
-                float camY = renderer->getMainCamera()->getY();
+        if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
+        {
+            direction.left = true;
+            direction.right = false;
+            eventHandled = true;
+        }
+        else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
+        {
+            direction.left = false;
+            direction.right = true;
+            eventHandled = true;
+        }
+        else
+        {
+            direction.left = false;
+            direction.right = false;
+            eventHandled = true;
+        }
 
-                float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+        if (utils::areSame(pInput->getMousePostion().getX(), 0.f))
+        {
+            direction.left = true;
+            direction.right = false;
+        }
+        else if (renderer->getMainCamera()->getWidth() - pInput->getMousePostion().getX() <= 5)
+        {
+            direction.left = false;
+            direction.right = true;
+        }
 
-                float mouse_x = pInput->getMousePostion().getX() + camX;
-                float mouse_y = pInput->getMousePostion().getY() + camY;
-                float tile_height = float(mapRenderer->getTileHeight()) * factor;
-                float tile_width = float(mapRenderer->getTileWidth()) * factor;
+        if (utils::areSame(pInput->getMousePostion().getY(), 0.f))
+        {
+            direction.top = true;
+            direction.bottom = false;
+        }
+        else if (renderer->getMainCamera()->getHeight() - pInput->getMousePostion().getY() <= 5)
+        {
+            direction.top = false;
+            direction.bottom = true;
+        }
 
-                mouse_x -= tile_width / 2;
-                mouse_y -= tile_height / 2;
-
-                float mouse_grid_x = floor((mouse_y / tile_height) + (mouse_x / tile_width));
-                float mouse_grid_y = floor((-mouse_x / tile_width) + (mouse_y / tile_height));
-                cursorPosition = utils::Vector2(mouse_grid_x, mouse_grid_y);
-
-                auto building = selectedBuilding2Build;
-                if (building != nullptr)
-                    building->setPosition(cursorPosition.getX(), cursorPosition.getY());
-
-                cursorTexture->setBlendMode(SDL_BLENDMODE_BLEND);
-                cursorTexture->setAlphaMod(150);
-                if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
-                {
-                    cursorBuildingRect = building->get2DPosition();
-                    cursorTexture->setColorKey(0, 255, 0);
-                }
-                else if (building != nullptr)
-                {
-                    cursorBuildingRect = building->get2DPosition();
-                    cursorTexture->setColorKey(255, 0, 0);
-                }
-                else
-                {
-                    cursorBuildingRect = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
-                    cursorTexture->setColorKey(255, 255, 255);
-                }
-                eventHandled = true;
-            }
-
-            if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
-            {
-                direction.bottom = true;
-                direction.top = false;
-                eventHandled = true;
-            }
-            else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
-            {
-                direction.top = true;
-                direction.bottom = false;
-                eventHandled = true;
-            }
-            else
-            {
-                direction.top = false;
-                direction.bottom = false;
-                eventHandled = true;
-            }
-
-            if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
-            {
-                direction.left = true;
-                direction.right = false;
-                eventHandled = true;
-            }
-            else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
-            {
-                direction.left = false;
-                direction.right = true;
-                eventHandled = true;
-            }
-            else
-            {
-                direction.left = false;
-                direction.right = false;
-                eventHandled = true;
-            }
-
-            if (utils::areSame(pInput->getMousePostion().getX(), 0.f))
-            {
-                direction.left = true;
-                direction.right = false;
-            }
-            else if (renderer->getMainCamera()->getWidth() - pInput->getMousePostion().getX() <= 5)
-            {
-                direction.left = false;
-                direction.right = true;
-            }
-
-            if (utils::areSame(pInput->getMousePostion().getY(), 0.f))
-            {
-                direction.top = true;
-                direction.bottom = false;
-            }
-            else if (renderer->getMainCamera()->getHeight() - pInput->getMousePostion().getY() <= 5)
-            {
-                direction.top = false;
-                direction.bottom = true;
-            }
-
-            if (pInput->isKeyDown(SDLK_PAGEDOWN))
-            {
-                console.setVisible(true);
-                eventHandled = true;
-            }
+        if (pInput->isKeyDown(SDLK_PAGEDOWN))
+        {
+            console.setVisible(true);
+            eventHandled = true;
         }
 
         if (pInput->isKeyDown(SDLK_ESCAPE))
@@ -420,7 +462,7 @@ namespace scenes
             optionsWindow.setVisible(true);
             eventHandled = true;
         }
-        else if (pInput->isKeyDown(SDLK_r) && !SDL_IsTextInputActive())
+        else if (pInput->isKeyDown(SDLK_r) && !pInput->isTextInputActive())
         {
             auto rect = researchWindow.displayRect();
             researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));
@@ -464,15 +506,40 @@ namespace scenes
         }
         if (moveX != 0.0f || moveY != 0.0f)
         {
+            int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
+            int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
+            float factor = renderer->getZoomFactor();
+
+            const auto &cameraRect = renderer->getMainCamera()->getViewPortRect();
+            int targetX = cameraRect.x + moveX;
+            int targetY = cameraRect.y + moveY;
+            if (targetX < (mapWidth / 2 * -1 * factor))
+            {
+                moveX = 0;
+            }
+            else if (targetX + (cameraRect.width) > (mapWidth / 2 * factor))
+            {
+                moveX = 0;
+            }
+
+            if (targetY + (cameraRect.height) > (mapHeight * factor))
+            {
+                moveY = 0;
+            }
+            else if (targetY < 0)
+            {
+                moveY = 0;
+            }
             renderer->getMainCamera()->move(moveX, moveY);
             moveX = 0;
             moveY = 0;
             wasMoving = true;
 
-            if (renderer->getMainCamera()->getY() < 0)
-            {
-                moveY = renderer->getMainCamera()->getY() * -1;
-            }
+            // if (renderer->getMainCamera()->getY() < 0)
+            // {
+            //     moveY = renderer->getMainCamera()->getY() * -1;
+            // }
+
             renderer->getMainCamera()->move(moveX, moveY);
         }
         updateDelta += renderer->getTimeDelta();

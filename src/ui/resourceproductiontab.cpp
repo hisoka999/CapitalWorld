@@ -136,7 +136,6 @@ namespace UI
             std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
             pc->connect("imageClicked", [=](void)
                         {
-                            std::cout << "click: " << product->getName() << std::endl;
                             resourceSelectionBox->setSelectionByText(product->getResources().at(0)->resource);
                             productSelectionBox->setSelectionByText(product); });
 
@@ -174,7 +173,7 @@ namespace UI
     {
         if (resourceList.size() == 0)
         {
-            std::cout << "no resource available" << std::endl;
+            APP_LOG_WARN("no resource available");
             return;
         }
         auto resource = resourceList[selection];
@@ -195,7 +194,7 @@ namespace UI
     {
         if (productList.size() == 0)
         {
-            std::cout << "no products available" << std::endl;
+            APP_LOG_WARN("no products available");
             return;
         }
         auto product = productList[selection];

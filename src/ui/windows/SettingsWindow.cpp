@@ -3,9 +3,10 @@
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/layout/GridLayout.h>
 #include <engine/ui/Label.h>
+#include <engine/utils/logger.h>
+#include <engine/ui/ProgressBar.h>
 #include "magic_enum.hpp"
 #include <functional>
-#include <engine/ui/ProgressBar.h>
 
 SettingsWindow::SettingsWindow()
     : UI::Window(50, 50, 520, 400)
@@ -85,7 +86,7 @@ SettingsWindow::SettingsWindow()
     {
         if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0)
         {
-            SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+            APP_LOG_ERROR(std::string("SDL_GetDisplayMode failed: ") + SDL_GetError());
             return;
         }
         DisplayMode displayMode;
@@ -99,9 +100,8 @@ SettingsWindow::SettingsWindow()
         }
         if (!exists)
         {
-            std::cout << "mode: " << std::to_string(mode.w) + " x " + std::to_string(mode.h) << std::endl;
 
-            std::cout << "mode: " << displayMode.toString() << std::endl;
+            APP_LOG_TRACE("mode: " + displayMode.toString());
             displayModes.push_back(displayMode);
             resolutions->addElement(displayMode);
             if (mode.w == screenWidth && mode.h == screenHeight)

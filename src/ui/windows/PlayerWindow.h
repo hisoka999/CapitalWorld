@@ -13,6 +13,7 @@ namespace UI
     {
     public:
         PlayerWindow(const std::shared_ptr<world::GameState> &gameState);
+        virtual ~PlayerWindow();
 
     protected:
         void refresh();
@@ -26,5 +27,6 @@ namespace UI
         std::shared_ptr<UI::Table<world::ProductBalance>> m_balanceTable;
         std::vector<std::shared_ptr<UI::Object>> optionalItems;
         std::shared_ptr<UI::LoanTab> m_loanTab;
+        int m_messageId = -1;
     };
 }

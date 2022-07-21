@@ -5,6 +5,7 @@
 #include <engine/utils/string.h>
 #include <algorithm>
 #include <engine/utils/color.h>
+#include <engine/utils/logger.h>
 
 Uint32 ColourToUint(int R, int G, int B)
 {
@@ -281,7 +282,7 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
     updateMiniMap = false;
     auto elapsed = std::chrono::high_resolution_clock::now() - startTime;
     long long microseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-    std::cout << "create minimap time: " << microseconds << "ms" << std::endl;
+    APP_LOG_TRACE("create minimap time: " + std::to_string(microseconds) + "ms");
 }
 
 void GameMapRenderer::generateTileDataFromMap()
@@ -512,7 +513,6 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
     auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
 
-
     for (auto city : gameState->getCities())
     {
         city->renderCity(renderer);
@@ -524,11 +524,10 @@ void GameMapRenderer::render(core::Renderer *renderer)
     int64_t milliBuildings = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedBuildings).count();
     if (milliseconds >= 10)
     {
-        std::cout << "update map time: " << milliseconds << "ms" << std::endl;
-        std::cout << "update building time: " << milliBuildings << "ms" << std::endl;
-        std::cout << "\t num tiles: " << (tilesX * tilesY) << std::endl;
-        std::cout << "\t factor: " << factor << std::endl;
-        // std::cout << "\t num buildings: " << visibleBuildings.size() << std::endl;
+        APP_LOG_TRACE("update map time: " + std::to_string(milliseconds) + "ms");
+        APP_LOG_TRACE("update building time: " + std::to_string(milliBuildings) + "ms");
+        APP_LOG_TRACE("number of tiles: " + std::to_string(tilesX * tilesY));
+        APP_LOG_TRACE("factor: " + std::to_string(factor));
     }
 
     if (updateMiniMap)

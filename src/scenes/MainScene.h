@@ -38,7 +38,6 @@ namespace scenes
                 bool running;
                 core::SceneManager *sceneManager;
                 UI::Container *container;
-                graphics::Texture uiTexture;
                 graphics::Texture bgTexture;
                 SettingsWindow settingsWindow;
                 UI::SaveGameWindow loadWindow;

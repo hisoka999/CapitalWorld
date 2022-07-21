@@ -111,49 +111,6 @@ namespace world
 
         void SalesComponent::updateProduction([[maybe_unused]] int month, [[maybe_unused]] int year, [[maybe_unused]] Building *building)
         {
-            // how to determen builings in the near area >> houses
-
-            // auto storage = building->getComponent<world::buildings::StorageComponent>("StorageComponent");
-            // for (auto &storedProduct : storage->getStoredProducts())
-            // {
-            //     if (!isSalesActive(storedProduct))
-            //         continue;
-            //     int amount = storage->getEntry(storedProduct);
-            //     auto product = services::ProductService::Instance().getProductByName(storedProduct);
-            //     int demand = calcDemand(product->getProductType(), building);
-            //     if (demand == 0)
-            //     {
-            //         std::cout << "demand is zero: " << building->getDisplayName() << std::endl;
-            //         demand = calcDemand(product->getProductType(), building);
-            //     }
-            //     if (amount > 0)
-            //     {
-            //         if (amount > demand)
-            //         {
-            //             amount = demand;
-            //         }
-            //         float income = amount * getSalesPrice(storedProduct);
-            //         if (income > 0)
-            //         {
-            //             storage->addEntry(storedProduct, amount * -1);
-            //             building->addIncome(month, year, storedProduct, BalanceAccount::Sales, income);
-            //         }
-
-            //         if (gameMap != nullptr)
-            //         {
-
-            //             auto houses = gameMap->findHousesInDistance(building, 10);
-            //             demand = amount;
-            //             for (auto house : houses)
-            //             {
-            //                 auto comp = house->getComponent<world::buildings::HouseComponent>("HouseComponent");
-            //                 demand = comp->fullfillDemand(product->getProductType(), demand);
-            //                 if (demand == 0)
-            //                     break;
-            //             }
-            //         }
-            //     }
-            // }
         }
 
         std::shared_ptr<BuildingComponent> SalesComponent::clone()

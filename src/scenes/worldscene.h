@@ -53,6 +53,8 @@ namespace scenes
     private:
         void refresh();
         void renderHUD();
+        void renderCursor();
+        bool handleMouseEvents(core::Input *pInput);
         std::shared_ptr<world::Building> createBuilding();
 
         core::SceneManager *sceneManager;
@@ -69,7 +71,6 @@ namespace scenes
 
         std::shared_ptr<GameMapRenderer> mapRenderer;
         std::shared_ptr<graphics::Texture> cursorTexture;
-        std::shared_ptr<graphics::Texture> hudTexture;
         std::shared_ptr<graphics::Text> hudFont;
         utils::Vector2 cursorPosition;
         graphics::Rect cursorBuildingRect;
@@ -83,6 +84,7 @@ namespace scenes
         SDL_Surface *previewSurface = nullptr;
         std::shared_ptr<world::Building> selectedBuilding2Build;
         int buildMessageRefId;
+        graphics::Rect miniMapRect;
     };
 }
 #endif // WORLDSCENE_H

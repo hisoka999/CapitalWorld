@@ -177,6 +177,9 @@ bool GameMap::canBuild(graphics::Rect buildRect)
     {
         for (int x = buildRect.x - buildRect.width; x <= buildRect.x + buildRect.width; ++x)
         {
+            if (x + (y * height) >= width * height)
+                return false;
+
             const std::shared_ptr<world::Building> &building = getBuilding(x, y);
             if (building == nullptr)
                 continue;
@@ -319,12 +322,10 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(cons
     std::vector<std::shared_ptr<world::Building>> targets;
     for (auto &street : allStreets)
     {
-        // std::cout << "steet x: " << street->get2DPosition().x << " y: " << street->get2DPosition().y << std::endl;
 
         auto borderBuildings = borderingBuilding(street, world::BuildingType::Street, true);
         for (auto &b : borderBuildings)
         {
-            // std::cout << "b x: " << b->get2DPosition().x << " y: " << b->get2DPosition().y << std::endl;
             if (b != startBuilding && (b->hasComponent("StorageComponent")) && company->hasBuilding(b))
             {
                 auto it = std::find_if(targets.begin(), targets.end(), [=](std::shared_ptr<world::Building> &b2)
