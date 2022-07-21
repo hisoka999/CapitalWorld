@@ -67,6 +67,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         std::string fileName = "locale/enum.pot";
         generateEnumPot(fileName);
 #endif
+        std::filesystem::path loggingFolder = std::filesystem::path(utils::os::get_pref_dir("", "captialworld")) / "logs";
+        g_appLogger.init(loggingFolder, utils::LogLevel::trace);
+        g_sglLogger.init(loggingFolder, utils::LogLevel::trace);
         Localisation::Instance().detectLanguage("capitalworld");
         Localisation::Instance().detectLanguage("enum");
 
