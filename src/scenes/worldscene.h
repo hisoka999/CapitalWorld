@@ -53,6 +53,8 @@ namespace scenes
     private:
         void refresh();
         void renderHUD();
+        void renderCursor();
+        bool handleMouseEvents(core::Input *pInput);
         std::shared_ptr<world::Building> createBuilding();
 
         core::SceneManager *sceneManager;
@@ -82,6 +84,7 @@ namespace scenes
         SDL_Surface *previewSurface = nullptr;
         std::shared_ptr<world::Building> selectedBuilding2Build;
         int buildMessageRefId;
+        graphics::Rect miniMapRect;
     };
 }
 #endif // WORLDSCENE_H
