@@ -42,7 +42,7 @@ namespace world
         graphics::Rect &getSourceRect();
         void setSourceRect(graphics::Rect rect);
         void setPosition(float x, float y);
-        graphics::Rect get2DPosition();
+        graphics::Rect &get2DPosition();
         int getXOffset();
         int getYOffset();
         void setOffset(int x, int y);
@@ -92,6 +92,7 @@ namespace world
         int buildPrice;
         graphics::Rect sourceRect;
         graphics::Rect displayRect;
+        graphics::Rect twoDRect;
         int blockWidth, blockHeight;
         int xOffset, yOffset;
         std::vector<std::shared_ptr<Product>> products;

@@ -82,11 +82,14 @@ namespace world
     {
 
         bool found = false;
-        for (auto &b : m_balance)
+        for (int i = m_balance.size() - 1; i >= 0; i--)
         {
+            auto &b = m_balance[i];
             if (b.name == productName && b.year == year && b.month == month && b.account == account)
             {
                 b.costs += amount;
+                found = true;
+                break;
             }
         }
         if (!found)
@@ -105,11 +108,15 @@ namespace world
     void Balance::addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount)
     {
         bool found = false;
-        for (auto &b : m_balance)
+        // for (auto &b : m_balance)
+        for (int i = m_balance.size() - 1; i >= 0; i--)
         {
+            auto &b = m_balance[i];
             if (b.name == productName && b.year == year && b.month == month && b.account == account)
             {
                 b.income += amount;
+                found = true;
+                break;
             }
         }
         if (!found)

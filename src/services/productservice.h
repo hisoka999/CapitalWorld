@@ -22,7 +22,7 @@ namespace services
         std::vector<std::shared_ptr<Product>> getProductsByBuildingType(world::BuildingType type, const std::shared_ptr<Product> &baseProduct);
         std::vector<std::shared_ptr<Product>> getBaseProductsByBuildingType(world::BuildingType type);
         std::vector<std::shared_ptr<Product>> getProductsByTypeAndResource(world::BuildingType type, std::shared_ptr<Resource> resource);
-        std::shared_ptr<Product> getProductByName(std::string name);
+        std::shared_ptr<Product> getProductByName(const std::string &name);
 
     protected:
         virtual std::shared_ptr<Product> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object);

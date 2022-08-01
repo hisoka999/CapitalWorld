@@ -67,7 +67,7 @@ namespace world
         bool isBorderingStreet(std::shared_ptr<Building> &building);
         void generateStreetTree(unsigned int seed);
         void fillStreetsByTree(std::shared_ptr<TreeNode> node);
-        void fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft);
+        void fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft, int depth);
         bool existsNode(std::shared_ptr<TreeNode> node, utils::Vector2 &pos);
 
         utils::Vector2 position;

@@ -384,39 +384,34 @@ void GameMapRenderer::render(core::Renderer *renderer)
     if (cacheTexture == nullptr)
         cacheTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
     // cacheBuildingTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
-    renderer->setRenderTarget(cacheTexture->getSDLTexture());
+    renderer->setRenderTarget(cacheTexture.get());
 
     renderer->clear();
-    auto start = convertVec2(factor, utils::Vector2(viewPort.x, viewPort.y));
 
-    float tempEndX = viewPort.width / (factor * getTileHeight() / 2.f);
-    float tempEndY = viewPort.height / (factor * getTileHeight() / 2.f);
+    int gameMapWidth = gameState->getGameMap()->getWidth();
+    int gameMapHeight = gameState->getGameMap()->getHeight();
 
-    utils::Vector2 end(tempEndX, tempEndY);
+    auto start = convertVec2(factor, utils::Vector2(viewPort.x + (viewPort.width / 2), viewPort.y));
+    int tilesX = (viewPort.width / getTileWidth()) * 2.5f / factor;
+    int tilesY = viewPort.height / tileHeight * 2 / factor;
+    int startX = start.getX() - (tilesX / 4);
+    int startY = start.getY() - (tilesY / 4);
 
-    int startX = std::round(start.getX() - (end.getX() / 2.f));
-    int startY = std::round(start.getY() - (end.getY() / 2.f));
-
-    size_t endY = std::max(startY, 0) + std::round((viewPort.height / (tileWidth / 4)) / (factor - 0.1f));
-    size_t endX = std::max(startX, 0) + std::round((viewPort.width / (tileHeight / 2)) / (factor - 0.1f));
-    graphics::Rect destRect;
-    graphics::Rect srcRect;
-
-    int tilesX = endX - std::max(startX, 0);
-    int tilesY = endY - std::max(startY, 0);
-
-    size_t gameMapWidth = gameState->getGameMap()->getWidth();
-    size_t gameMapHeight = gameState->getGameMap()->getHeight();
+    int endX = startX + tilesX;
+    int endY = startY + tilesY;
 
     auto textureMapPtr = textureMap.get();
     size_t oldHash = 0;
+    graphics::Rect srcRect;
+    graphics::Rect srcRectRes;
+    graphics::Rect destRect;
 
-    for (size_t tempY = std::max(startY, 0); tempY < endY; ++tempY)
+    for (int tempY = std::max(startY, 0); tempY < endY; ++tempY)
     {
         if (tempY > gameMapHeight - 1)
             break;
 
-        for (size_t tempX = std::max(startX, 0); tempX < endX; ++tempX)
+        for (int tempX = std::max(startX, 0); tempX < endX; ++tempX)
         {
             if (tempX > gameMapWidth - 1)
                 continue;
@@ -445,22 +440,23 @@ void GameMapRenderer::render(core::Renderer *renderer)
             textureMapPtr->render(hash, destRect, renderer);
 
             renderResource(renderer, camera, factor, tempX, tempY, iso);
-        }
+            }
     }
 
     auto startTimeBuildings = std::chrono::high_resolution_clock::now();
 
     graphics::Rect displayRect;
+    graphics::Rect twoDPosition;
 
     const std::vector<std::shared_ptr<world::Building>> &buildings = gameState->getGameMap()->getBuildings();
 
-    for (size_t y = std::max(startY, 0); y < endY; ++y)
+    for (int y = std::max(startY, 0); y < endY; ++y)
 
     {
         if (y > gameMapHeight - 1)
             break;
 
-        for (size_t x = std::max(startX, 0); x < endX; ++x)
+        for (int x = std::max(startX, 0); x < endX; ++x)
 
         {
             if (x > gameMapWidth - 1)
@@ -469,7 +465,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
             const std::shared_ptr<world::Building> &building = buildings[x + (gameMapWidth * y)];
             if (building == nullptr)
                 continue;
-            auto twoDPosition = building->get2DPosition();
+            twoDPosition = building->get2DPosition();
             int xOffset = x - twoDPosition.x;
             int yOffset = y - twoDPosition.y;
             if (xOffset != twoDPosition.width - 1 || yOffset != twoDPosition.height - 1)
@@ -478,9 +474,10 @@ void GameMapRenderer::render(core::Renderer *renderer)
             float tx = float(twoDPosition.x) * tileWidth / 2.0f;
             float ty = float(twoDPosition.y) * tileHeight;
             const utils::Vector2 vec(tx, ty);
-            const auto &pos = iso::twoDToIso(vec);
+            // const auto &pos = iso::twoDToIso(vec);
+            const utils::Vector2 pos(tx - ty, (tx + ty) / 2.f);
 
-            const auto &srcRect = building->getSourceRect();
+            srcRect = building->getSourceRect();
 
             const float tileYOffset = 0.0; // getTileYOffset(building->get2DPosition().x, building->get2DPosition().y);
 

@@ -58,10 +58,10 @@ namespace world
                         if (!sales->isSalesActive(storedProduct))
                             continue;
 
-                        auto product = services::ProductService::Instance().getProductByName(storedProduct);
                         int storedAmount = storage->getEntry(storedProduct);
                         if (storedAmount > 0)
                         {
+                            auto product = services::ProductService::Instance().getProductByName(storedProduct);
                             int demand = getCurrentDemand(product->getProductType());
                             if (demand < storedAmount)
                                 storedAmount = demand;

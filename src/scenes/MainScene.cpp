@@ -30,8 +30,8 @@ namespace scenes
                 this->music->loadMusic("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav");
                 int volume = core::GameWindow::Instance().getSettings()->getValueI("Volume", "Music");
                 this->music->setVolume(volume);
+                winMgr->addContainer(&container);
 
-                container = new UI::Container();
                 SDL_Color white =
                     {255, 255, 255, 0};
                 auto btnStart = std::make_shared<UI::Button>();
@@ -40,7 +40,7 @@ namespace scenes
                 btnStart->setLabel(_("New Game"));
                 btnStart->setPos(450, 350);
                 btnStart->setStaticWidth(150);
-                container->addObject(btnStart);
+                container.addObject(btnStart);
 
                 btnStart->connect(UI::Button::buttonClickCallback(), [&]()
                                   { startGame(); });
@@ -56,7 +56,7 @@ namespace scenes
                 btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]()
                                      { loadGame(); });
 
-                container->addObject(btnLoadGame);
+                container.addObject(btnLoadGame);
 
                 auto btnSettings = std::make_shared<UI::Button>();
                 btnSettings->setFont("fonts/arial.ttf", 14);
@@ -68,7 +68,7 @@ namespace scenes
                 btnSettings->connect(UI::Button::buttonClickCallback(), [&]()
                                      { settingsWindow.setVisible(true); });
 
-                container->addObject(btnSettings);
+                container.addObject(btnSettings);
 
                 auto btnExit = std::make_shared<UI::Button>();
                 btnExit->setFont("fonts/arial.ttf", 14);
@@ -80,7 +80,7 @@ namespace scenes
                 btnExit->connect(UI::Button::buttonClickCallback(), [&]()
                                  { exitGame(); });
 
-                container->addObject(btnExit);
+                container.addObject(btnExit);
                 winMgr->addWindow(&settingsWindow);
                 winMgr->addWindow(&loadWindow);
 
@@ -115,7 +115,6 @@ namespace scenes
                                         renderer->getMainCamera()->getWidth(),
                                         renderer->getMainCamera()->getHeight());
 
-                container->render(renderer);
                 winMgr->render(renderer);
         }
 
@@ -139,9 +138,6 @@ namespace scenes
 
         bool MainScene::handleEvents(core::Input *pInput)
         {
-                bool eventHandled = container->handleEvents(pInput);
-                if (eventHandled)
-                        return true;
                 return winMgr->handleInput(pInput);
         }
 
@@ -152,7 +148,6 @@ namespace scenes
 
         MainScene::~MainScene()
         {
-                delete container;
         }
 
 } /* namespace scenes */

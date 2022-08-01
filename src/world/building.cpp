@@ -99,14 +99,16 @@ namespace world
         displayRect.y = y;
         displayRect.width = sourceRect.width;
         displayRect.height = sourceRect.height;
+
+        twoDRect.x = x;
+        twoDRect.y = y;
+        twoDRect.width = blockWidth;
+        twoDRect.height = blockHeight;
     }
 
-    graphics::Rect Building::get2DPosition()
+    graphics::Rect &Building::get2DPosition()
     {
-        graphics::Rect r = displayRect;
-        r.width = blockWidth;
-        r.height = blockHeight;
-        return r;
+        return twoDRect;
     }
     int Building::getXOffset()
     {
