@@ -47,7 +47,7 @@ namespace world
         {
             std::map<std::string, std::string> result;
             result[_("Workers:")] = std::to_string(currentWorkers) + "/" + std::to_string(maxWorkers);
-            result[_("Salary:")] = utils::string_format(u8"%d €", salary);
+            result[_("Salary:")] = format_currency(salary);
             return result;
         }
 

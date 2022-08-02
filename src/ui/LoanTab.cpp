@@ -71,16 +71,16 @@ namespace UI
         std::vector<std::string> headerNames = {"Amount", "Start Date", "End Date", "Repayment", "Interest"};
         m_loanTable->setHeaderNames(headerNames);
         m_loanTable->setElementFunction(0, [](std::shared_ptr<world::Loan> &c) -> std::string
-                                        { return utils::string_format("%.2f €", c->getAmount()); });
+                                        { return format_currency(c->getAmount()); });
 
         m_loanTable->setElementFunction(1, [](std::shared_ptr<world::Loan> &c) -> std::string
                                         { return c->getStartDay().format(); });
         m_loanTable->setElementFunction(2, [](std::shared_ptr<world::Loan> &c) -> std::string
                                         { return c->getEndOfContract().format(); });
         m_loanTable->setElementFunction(3, [](std::shared_ptr<world::Loan> &c) -> std::string
-                                        { return utils::string_format(u8"%.2f €", c->calculateRepaymentWithInterest()); });
+                                        { return format_currency(c->calculateRepaymentWithInterest()); });
         m_loanTable->setElementFunction(4, [](std::shared_ptr<world::Loan> &c) -> std::string
-                                        { return utils::string_format(u8"%.2f €", c->calculateRepaymentWithInterest()); });
+                                        { return format_currency(c->calculateRepaymentWithInterest()); });
         m_loanTable->setWidth(480);
         m_loanTable->setHeight(200);
         m_loanTable->setPos(5, 150);

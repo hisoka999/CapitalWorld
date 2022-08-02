@@ -70,7 +70,7 @@ namespace UI
         costsText->setPos(400, 100);
         addObject(costsText);
 
-        costsPerPieceText = std::make_shared<UI::Label>("0,00 €", this);
+        costsPerPieceText = std::make_shared<UI::Label>(format_currency(0), this);
         costsPerPieceText->setPos(400, 130);
         addObject(costsPerPieceText);
 
@@ -174,7 +174,7 @@ namespace UI
         productNameText->setText(product->getLocalisedName());
         productImage->loadImage(utils::os::combine("images", "products", product->getImage()));
         costsText->setTextF("%'.2f €/m", product->calculateCostsPerMonth());
-        costsPerPieceText->setTextF("%'.2f €", product->calculateCostsPerPiece());
+        costsPerPieceText->setText(format_currency(product->calculateCostsPerPiece()));
 
         productionCycleText->setTextF("%'d  - %'d", product->getProductionCycle().startMonth, product->getProductionCycle().endMonth);
 
