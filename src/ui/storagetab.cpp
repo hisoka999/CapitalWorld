@@ -5,6 +5,7 @@
 #include "../services/productservice.h"
 #include "../messages.h"
 #include "world/buildings/StorageComponent.h"
+#include "engine/ui/StringHint.h"
 
 namespace UI
 {
@@ -16,7 +17,7 @@ namespace UI
 
         auto &sys = core::MessageSystem<MessageTypes>::get();
         msgRef = sys.registerForType(MessageTypes::NewMonth, [&]()
-                                     { refreshUI = true; });
+                                     { needsRefresh(); });
     }
 
     StorageTab::~StorageTab()
@@ -33,27 +34,21 @@ namespace UI
         this->building = building;
     }
 
-    void StorageTab::render(core::Renderer *render)
-    {
-        if (refreshUI)
-        {
-            initUI();
-            refreshUI = false;
-        }
-        UI::Tab::render(render);
-    }
-
     void StorageTab::initUI()
     {
         this->clear();
+        int offset = 20;
+        int size = 55;
         for (size_t y = 0; y < 4; ++y)
         {
             for (size_t x = 0; x < 4; ++x)
             {
                 auto cell = std::make_shared<UI::ImageButton>(this, 53, 53, 0, 0, false);
                 cell->setImage(cellTexture);
-                cell->setPos(x * 55, y * 55);
+                cell->setPos(offset + (x * size), offset + (y * size));
                 addObject(cell);
+                // cell->connect(UI::Button::buttonClickCallback(), [&]()
+                //               { itemComponent->setProduct(nullptr); });
             }
         }
 
@@ -66,12 +61,15 @@ namespace UI
             auto amount = std::make_shared<UI::Label>(this);
             amount->setFont("fonts/arial.ttf", 12);
             amount->setTextF("%d", storage->getEntry(productName));
-            amount->setPos(x * 55, (y * 55) + 40);
+            amount->setPos(offset + (x * size), offset + 40 + (y * size));
             auto icon = std::make_shared<UI::ImageButton>(this, 50, 50, 0, 0, true);
             auto product = services::ProductService::Instance().getProductByName(productName);
             icon->loadImage(utils::os::combine("images", "products", product->getImage()));
-            icon->setPos(x * 55, y * 55);
-
+            icon->setPos(offset + (x * size), offset + (y * size));
+            icon->setHint(std::make_shared<UI::StringHint>(product->getLocalisedName()));
+            icon->connect(UI::Button::buttonClickCallback(), [=]()
+                          { itemComponent->setProduct(product); 
+                          lastProduct = product; });
             x++;
             if (x == 4)
             {
@@ -82,5 +80,16 @@ namespace UI
             addObject(icon);
             addObject(amount);
         }
+
+        itemComponent = std::make_shared<UI::StorageItemComponent>(this);
+        itemComponent->setPos(150, offset);
+        itemComponent->setProduct(lastProduct);
+        addObject(itemComponent);
+    }
+
+    void StorageTab::refresh()
+    {
+        initUI();
+        endRefresh();
     }
 }
