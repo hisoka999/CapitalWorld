@@ -11,6 +11,7 @@ namespace UI
         StorageItemComponent(UI::Object *parent = nullptr);
         ~StorageItemComponent();
         void setProduct(const std::shared_ptr<Product> &product);
+        void setAmount(int amount);
         virtual void render(core::Renderer *pRender);
         virtual bool handleEvents(core::Input *pInput);
 
@@ -19,6 +20,7 @@ namespace UI
         void updateUI();
 
         std::shared_ptr<Product> m_product = nullptr;
+        int m_amount = 0;
     };
 
 } // namespace UI

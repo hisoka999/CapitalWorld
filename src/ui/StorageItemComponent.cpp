@@ -22,6 +22,12 @@ namespace UI
         updateUI();
     }
 
+    void StorageItemComponent::setAmount(int amount)
+    {
+        m_amount = amount;
+        updateUI();
+    }
+
     void StorageItemComponent::render(core::Renderer *pRender)
     {
         UI::Container::render(pRender);
@@ -44,12 +50,13 @@ namespace UI
         {
 
             std::vector<KeyValue> displayData;
-            displayData.push_back({"Productname:", m_product->getLocalisedName()});
-            displayData.push_back({"Production costs per Item:", std::to_string(m_product->calculateCostsPerPiece())});
-            displayData.push_back({"Start month:", std::to_string(m_product->getProductionCycle().startMonth)});
-            displayData.push_back({"End month:", std::to_string(m_product->getProductionCycle().endMonth)});
-            displayData.push_back({"Production time:", std::to_string(m_product->getProductionCycle().productionTime)});
-            displayData.push_back({"Production amount:", std::to_string(m_product->getProductionCycle().amount)});
+            displayData.push_back({_("Productname:"), m_product->getLocalisedName()});
+            displayData.push_back({_("Production costs per Item:"), format_currency(m_product->calculateCostsPerPiece())});
+            displayData.push_back({_("Start month:"), std::to_string(m_product->getProductionCycle().startMonth)});
+            displayData.push_back({_("End month:"), std::to_string(m_product->getProductionCycle().endMonth)});
+            displayData.push_back({_("Production time:"), std::to_string(m_product->getProductionCycle().productionTime)});
+            displayData.push_back({_("Production amount:"), std::to_string(m_product->getProductionCycle().amount)});
+            displayData.push_back({_("Storage amount:"), std::to_string(m_amount)});
 
             for (auto &data : displayData)
             {
