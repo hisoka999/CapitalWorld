@@ -6,34 +6,34 @@
 #include <engine/utils/os.h>
 #include <filesystem>
 #include <fstream>
-
+#include "translate.h"
 namespace UI
 {
     OptionsWindow::OptionsWindow(int x, int y) : UI::Window(x, y, 200, 300), saveWindow(false), loadWindow(true), previewSurface(nullptr)
     {
 
-        setTitle("Options");
+        setTitle(_("Options"));
 
         auto layout = std::make_shared<UI::layout::GridLayout>(this, 1);
         layout->setPadding(utils::Vector2(20, 10));
 
         auto loadButton = std::make_shared<UI::Button>(this);
         loadButton->setFont("fonts/arial.ttf", 12);
-        loadButton->setLabel("Load Game");
+        loadButton->setLabel(_("Load Game"));
         loadButton->connect(UI::Button::buttonClickCallback(), [&]()
                             { loadGame(); });
         addObject(loadButton);
 
         auto saveButton = std::make_shared<UI::Button>(this);
         saveButton->setFont("fonts/arial.ttf", 12);
-        saveButton->setLabel("Save Game");
+        saveButton->setLabel(_("Save Game"));
         saveButton->connect(UI::Button::buttonClickCallback(), [&]()
                             { saveGame(); });
         addObject(saveButton);
 
         auto optionsButton = std::make_shared<UI::Button>(this);
         optionsButton->setFont("fonts/arial.ttf", 12);
-        optionsButton->setLabel("Options");
+        optionsButton->setLabel(_("Options"));
         addObject(optionsButton);
         optionsButton->connect(UI::Button::buttonClickCallback(), [&]
                                {
@@ -42,7 +42,7 @@ namespace UI
 
         auto mainMenuButton = std::make_shared<UI::Button>(this);
         mainMenuButton->setFont("fonts/arial.ttf", 12);
-        mainMenuButton->setLabel("Back to main");
+        mainMenuButton->setLabel(_("Back to main"));
         addObject(mainMenuButton);
         mainMenuButton->connect(UI::Button::buttonClickCallback(), []
                                 { core::SceneManager::Instance().setCurrentScene("main"); });

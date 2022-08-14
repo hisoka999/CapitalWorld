@@ -135,7 +135,7 @@ namespace services
         return cycle;
     }
 
-    std::shared_ptr<Product> ProductService::getProductByName(std::string name)
+    std::shared_ptr<Product> ProductService::getProductByName(const std::string &name)
     {
         for (auto &product : getData())
         {

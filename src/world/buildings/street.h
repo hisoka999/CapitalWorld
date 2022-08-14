@@ -11,6 +11,7 @@ namespace world
         {
         public:
             Street();
+            virtual ~Street() = default;
             virtual void update(GameMap *gameMap);
             void updateWithParent(GameMap *gameMap, Street *sourceStreet, const unsigned level);
         };

@@ -300,7 +300,7 @@ namespace world
         std::mt19937 gen(seed);
         long numberOfBuildings = long(std::round(float(numberOfCitizen) / 200.0f));
         // numberOfBuildings /= 2.0;
-        fillNode(gen, root, &numberOfBuildings);
+        fillNode(gen, root, &numberOfBuildings, 0);
     }
 
     bool City::existsNode(std::shared_ptr<TreeNode> node, utils::Vector2 &pos)
@@ -318,7 +318,7 @@ namespace world
         return false;
     }
 
-    void City::fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft)
+    void City::fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft, int depth)
     {
 
         int base = 4;
@@ -331,6 +331,12 @@ namespace world
 
         if ((*nodesLeft) <= 0)
             return;
+
+        if (node == root)
+        {
+            APP_LOG_WARN("depth = " + std::to_string(depth));
+            APP_LOG_ERROR("node is root node");
+        }
 
         std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
@@ -415,7 +421,7 @@ namespace world
             if (!existsNode(root, child->position) && child->lastNode)
             {
                 node->children.push_back(child);
-                fillNode(gen, child, nodesLeft);
+                fillNode(gen, child, nodesLeft, depth + 1);
             }
             else
             {

@@ -32,6 +32,8 @@ namespace world
         std::vector<Installment> getInstallments();
         size_t calculateNumberOfInstallments();
         double calculateRepaymentWithInterest();
+        double calculateRepayment();
+        double calculateInterest();
         bool repayInstallment(Installment &installment);
         double getAmount();
         utils::time::Date &getStartDay();

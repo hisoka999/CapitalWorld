@@ -193,8 +193,8 @@ namespace UI
 
     void HUDContainer::update()
     {
-        cashButton->setLabel(utils::string_format(u8"%.2f €", gameState->getPlayer()->getCash()));
-        profitButton->setLabel(utils::string_format(u8"%.2f €", gameState->getPlayer()->getProfit()));
+        cashButton->setLabel(format_currency(gameState->getPlayer()->getCash()));
+        profitButton->setLabel(format_currency(gameState->getPlayer()->getProfit()));
         auto researchQueue = gameState->getPlayer()->getResearchQueue();
         if (researchQueue.size() == 0)
         {
@@ -213,12 +213,11 @@ namespace UI
             researchButton->setHint(researchHint);
         }
 
-        // cashButton->getHint()->setHintText(utils::string_format("Income Balance\n Cash: %'.2f € \nProfit: %'.2f €", gameState->getPlayer()->getCash(), gameState->getPlayer()->getProfit()));
-        std::string hintText = "Income Balance\n";
-        hintText += utils::string_format("Cash:   %.2f €", gameState->getPlayer()->getCash()) + "\n";
-        hintText += utils::string_format("Income: %.2f €", gameState->getPlayer()->getIncome()) + "\n";
-        hintText += utils::string_format("Costs:  %.2f €", gameState->getPlayer()->getCosts()) + "\n";
-        hintText += utils::string_format("Profit: %.2f €", gameState->getPlayer()->getProfit());
+        std::string hintText = _("Income Balance\n");
+        hintText += utils::string_format(_("Cash:   %s"), format_currency(gameState->getPlayer()->getCash())) + "\n";
+        hintText += utils::string_format(_("Income: %s"), format_currency(gameState->getPlayer()->getIncome())) + "\n";
+        hintText += utils::string_format(_("Costs:  %s"), format_currency(gameState->getPlayer()->getCosts())) + "\n";
+        hintText += utils::string_format(_("Profit: %s"), format_currency(gameState->getPlayer()->getProfit()));
         cashButton->getHint()->setHintText(hintText);
 
         timeButton->setLabel(gameState->getTime().format());

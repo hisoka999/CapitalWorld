@@ -36,14 +36,14 @@ namespace UI
                                            { return std::string(magic_enum::enum_name<world::BalanceAccount>(c->account)); });
 
         m_balanceTable->setElementFunction(1, [](std::shared_ptr<world::ProductBalance> &c) -> std::string
-                                           { return utils::string_format(u8"%.2f €", c->costs); });
+                                           { return format_currency(c->costs); });
         m_balanceTable->setElementFunction(2, [](std::shared_ptr<world::ProductBalance> &c) -> std::string
-                                           { return utils::string_format(u8"%.2f €", c->income); });
+                                           { return format_currency(c->income); });
         m_balanceTable->setWidth(480);
         profitTab->addObject(m_balanceTable);
         m_balanceTable->setHeight(340);
 
-        auto topCompaniesTab = std::make_shared<UI::Tab>(m_tabBar.get(), "Top Companies");
+        auto topCompaniesTab = std::make_shared<UI::Tab>(m_tabBar.get(), _("Top Companies"));
         m_tabBar->addTab(topCompaniesTab);
 
         m_playerTable = std::make_shared<UI::Table<world::Company>>(topCompaniesTab.get());
@@ -56,11 +56,11 @@ namespace UI
                                           { return c->getName(); });
 
         m_playerTable->setElementFunction(1, [](std::shared_ptr<world::Company> &c) -> std::string
-                                          { return utils::string_format(u8"%.2f €", c->getIncome()); });
+                                          { return format_currency(c->getIncome()); });
         m_playerTable->setElementFunction(2, [](std::shared_ptr<world::Company> &c) -> std::string
-                                          { return utils::string_format(u8"%.2f €", c->getProfit()); });
+                                          { return format_currency(c->getProfit()); });
         m_playerTable->setElementFunction(3, [](std::shared_ptr<world::Company> &c) -> std::string
-                                          { return utils::string_format(u8"%.2f €", c->getCash()); });
+                                          { return format_currency(c->getCash()); });
         m_playerTable->setWidth(480);
         m_playerTable->setHeight(340);
         topCompaniesTab->addObject(m_playerTable);
@@ -90,10 +90,10 @@ namespace UI
             m_playerTab->removeObject(item);
         }
         optionalItems.clear();
-        for (auto data : player->displayData())
+        for (auto &data : player->displayData())
         {
-            auto labelName = std::make_shared<UI::Label>(data.first, m_playerTab.get());
-            auto labelValue = std::make_shared<UI::Label>(data.second, m_playerTab.get());
+            auto labelName = std::make_shared<UI::Label>(data.key, m_playerTab.get());
+            auto labelValue = std::make_shared<UI::Label>(data.value, m_playerTab.get());
             optionalItems.push_back(labelName);
             optionalItems.push_back(labelValue);
             m_playerTab->addObject(labelName);

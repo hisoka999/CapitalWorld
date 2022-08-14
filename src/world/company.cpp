@@ -204,14 +204,16 @@ namespace world
             building->delayedUpdate(company.get());
         }
 
-        utils::JSON::JsonArray activeLoans = object->getArray("active_loans");
-
-        for (auto &jsonLoan : activeLoans)
+        if (object->hasArray("active_loans"))
         {
-            auto obj = std::get<std::shared_ptr<utils::JSON::Object>>(jsonLoan);
-            company->m_activeLoans.push_back(Loan::fromJson(obj));
-        }
+            utils::JSON::JsonArray activeLoans = object->getArray("active_loans");
 
+            for (auto &jsonLoan : activeLoans)
+            {
+                auto obj = std::get<std::shared_ptr<utils::JSON::Object>>(jsonLoan);
+                company->m_activeLoans.push_back(Loan::fromJson(obj));
+            }
+        }
         company->setAvailableResearch(services::ResearchService::Instance().getData());
 
         auto research = object->getObjectValue("research");
@@ -480,13 +482,13 @@ namespace world
         return m_activeLoans;
     }
 
-    std::unordered_map<std::string, std::string> Company::displayData()
+    std::vector<KeyValue> Company::displayData()
     {
-        std::unordered_map<std::string, std::string> dataMap;
-        dataMap[_("Company Value: ")] = utils::string_format("%.2f €", calculateCompanyValue());
-        dataMap[_("Number of Buildings: ")] = utils::string_format("%i", getBuildings().size());
-        dataMap[_("Cash: ")] = utils::string_format("%.2f €", getCash());
-        dataMap[_("Company Name: ")] = getName();
+        std::vector<KeyValue> dataMap;
+        dataMap.push_back({_("Company Name: "), getName()});
+        dataMap.push_back({_("Cash: "), format_currency(getCash())});
+        dataMap.push_back({_("Company Value: "), format_currency(calculateCompanyValue())});
+        dataMap.push_back({_("Number of Buildings: "), utils::string_format("%i", getBuildings().size())});
 
         return dataMap;
     }

@@ -381,8 +381,6 @@ namespace scenes
         }
 
         eventHandled = handleMouseEvents(pInput);
-        if (eventHandled)
-            return true;
 
         if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
         {

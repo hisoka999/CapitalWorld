@@ -8,7 +8,7 @@
 #include <engine/ui/ComboBox.h>
 #include "../services/productservice.h"
 #include "../world/building.h"
-
+#include "StorageItemComponent.h"
 namespace UI
 {
 
@@ -19,12 +19,15 @@ namespace UI
         virtual ~StorageTab();
 
         void setBuilding(std::shared_ptr<world::Building> building);
-        virtual void render(core::Renderer *render);
 
     private:
         void initUI();
+        virtual void refresh();
+
         std::shared_ptr<world::Building> building;
         std::shared_ptr<graphics::Texture> cellTexture;
+        std::shared_ptr<StorageItemComponent> itemComponent;
+        std::shared_ptr<Product> lastProduct = nullptr;
         int msgRef = -1;
         bool refreshUI = false;
     };

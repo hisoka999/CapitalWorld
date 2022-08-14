@@ -53,15 +53,15 @@ namespace world
                     auto storage = shop->getComponent<buildings::StorageComponent>("StorageComponent");
                     auto sales = shop->getComponent<buildings::SalesComponent>("SalesComponent");
 
-                    for (auto storedProduct : storage->getStoredProducts())
+                    for (auto &[storedProduct, entry] : storage->getEntries())
                     {
                         if (!sales->isSalesActive(storedProduct))
                             continue;
 
-                        auto product = services::ProductService::Instance().getProductByName(storedProduct);
-                        int storedAmount = storage->getEntry(storedProduct);
+                        int storedAmount = entry.amount;
                         if (storedAmount > 0)
                         {
+                            auto product = services::ProductService::Instance().getProductByName(storedProduct);
                             int demand = getCurrentDemand(product->getProductType());
                             if (demand < storedAmount)
                                 storedAmount = demand;

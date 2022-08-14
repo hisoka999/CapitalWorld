@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-20 20:48+0200\n"
+"POT-Creation-Date: 2022-08-14 12:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,16 +17,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/ui/windows/PlayerWindow.cpp:33
+msgid "Account"
+msgstr ""
+
 #: src/ui/factoryproductiontab.cpp:75 src/ui/factoryproductiontab.cpp:196
 #: src/ui/factoryproductiontab.cpp:134 src/ui/factoryproductiontab.cpp:195
 #: src/ui/factoryproductiontab.cpp:82 src/ui/factoryproductiontab.cpp:139
 #: src/ui/factoryproductiontab.cpp:201 src/ui/resourceproductiontab.cpp:96
 #: src/ui/resourceproductiontab.cpp:158 src/ui/resourceproductiontab.cpp:211
+#: src/ui/resourceproductiontab.cpp:157 src/ui/resourceproductiontab.cpp:210
 msgid "Add"
+msgstr ""
+
+#: src/ui/LoanTab.cpp:53
+msgid "Add Loan"
 msgstr ""
 
 #: src/ui/SalesTab.cpp:16
 msgid "Add Product to sell"
+msgstr ""
+
+#: src/ui/routestab.cpp:33
+msgid "Add Route"
 msgstr ""
 
 #: src/ui/ResearchHint.cpp:40
@@ -43,24 +56,58 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
+#: src/ui/windows/optionswindow.cpp:45
+msgid "Back to main"
+msgstr ""
+
 #: src/ui/buildwindow.cpp:14 src/ui/windows/buildwindow.cpp:15
 msgid "Build"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:40 src/ui/windows/SettingsWindow.cpp:54
+#: src/ui/windows/SettingsWindow.cpp:46
 msgid "Cancel"
 msgstr ""
 
-#: src/scenes/NewGameScene.cpp:187
+#: src/ui/windows/PlayerWindow.cpp:53
+msgid "Cash"
+msgstr ""
+
+#: src/world/company.cpp:489
+msgid "Cash: "
+msgstr ""
+
+#: src/ui/hudcontainer.cpp:217
+#, c-format
+msgid "Cash:   %s"
+msgstr ""
+
+#: src/scenes/NewGameScene.cpp:187 src/scenes/NewGameScene.cpp:188
 msgid "City Names: "
+msgstr ""
+
+#: src/ui/windows/PlayerWindow.cpp:20 src/ui/windows/PlayerWindow.cpp:53
+msgid "Company"
+msgstr ""
+
+#: src/world/company.cpp:488
+msgid "Company Name: "
+msgstr ""
+
+#: src/world/company.cpp:490
+msgid "Company Value: "
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:52 src/scenes/NewGameScene.cpp:54
 msgid "Companyname: "
 msgstr ""
 
-#: src/ui/windows/SettingsWindow.cpp:19
+#: src/ui/windows/SettingsWindow.cpp:19 src/ui/windows/SettingsWindow.cpp:22
 msgid "Controls"
+msgstr ""
+
+#: src/ui/windows/PlayerWindow.cpp:33
+msgid "Costs"
 msgstr ""
 
 #: src/ui/factoryproductiontab.cpp:62
@@ -71,21 +118,40 @@ msgstr ""
 msgid "Costs:"
 msgstr ""
 
+#: src/ui/hudcontainer.cpp:219
+#, c-format
+msgid "Costs:  %s"
+msgstr ""
+
 #: src/ui/SaveGameComponent.cpp:56
 msgid "Delete"
 msgstr ""
 
+#: src/ui/windows/buildwindow.cpp:151
+msgid "Destroy"
+msgstr ""
+
 #: src/scenes/NewGameScene.cpp:162 src/scenes/NewGameScene.cpp:164
+#: src/scenes/NewGameScene.cpp:165
 msgid "Difficultiy: "
 msgstr ""
 
+#: src/ui/LoanTab.cpp:71
+msgid "End Date"
+msgstr ""
+
+#: src/ui/StorageItemComponent.cpp:56
+msgid "End month:"
+msgstr ""
+
 #: src/scenes/MainScene.cpp:69 src/scenes/MainScene.cpp:73
-#: src/scenes/MainScene.cpp:75
+#: src/scenes/MainScene.cpp:75 src/scenes/MainScene.cpp:76
 msgid "Exit Game"
 msgstr ""
 
 #: src/ui/buildwindow.cpp:50 src/scenes/worldscene.cpp:69
 #: src/ui/buildwindow.cpp:52 src/ui/windows/buildwindow.cpp:52
+#: src/ui/windows/buildwindow.cpp:55 src/ui/windows/buildwindow.cpp:60
 msgid "Factory"
 msgstr ""
 
@@ -94,18 +160,20 @@ msgid "Farm"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:100 src/ui/windows/SettingsWindow.cpp:127
+#: src/ui/windows/SettingsWindow.cpp:118
 msgid "Fullscreen"
 msgstr ""
 
-#: src/ui/windows/SettingsWindow.cpp:16
+#: src/ui/windows/SettingsWindow.cpp:16 src/ui/windows/SettingsWindow.cpp:19
 msgid "General"
 msgstr ""
 
-#: src/ui/windows/SettingsWindow.cpp:17
+#: src/ui/windows/SettingsWindow.cpp:17 src/ui/windows/SettingsWindow.cpp:20
 msgid "Graphics"
 msgstr ""
 
 #: src/world/gamemap.cpp:338 src/world/gamemap.cpp:430
+#: src/world/gamemap.cpp:462
 msgid "Grass"
 msgstr ""
 
@@ -123,21 +191,61 @@ msgstr ""
 msgid "House"
 msgstr ""
 
+#: src/ui/windows/PlayerWindow.cpp:33 src/ui/windows/PlayerWindow.cpp:53
+msgid "Income"
+msgstr ""
+
+#: src/ui/hudcontainer.cpp:216
+msgid "Income Balance\n"
+msgstr ""
+
+#: src/ui/hudcontainer.cpp:218
+#, c-format
+msgid "Income: %s"
+msgstr ""
+
+#: src/ui/LoanTab.cpp:71
+msgid "Interest"
+msgstr ""
+
+#: src/ui/LoanTab.cpp:41
+msgid "Interest rate: "
+msgstr ""
+
 #: src/ui/resourceproductiontab.cpp:75
 msgid "Land Type:"
 msgstr ""
 
-#: src/ui/windows/SettingsWindow.cpp:136
+#: src/ui/windows/SettingsWindow.cpp:136 src/ui/windows/SettingsWindow.cpp:127
 msgid "Language"
 msgstr ""
 
 #: src/scenes/MainScene.cpp:44 src/scenes/MainScene.cpp:48
 #: src/ui/SaveGameComponent.cpp:70 src/scenes/MainScene.cpp:50
+#: src/scenes/MainScene.cpp:51 src/ui/windows/optionswindow.cpp:22
 msgid "Load Game"
 msgstr ""
 
+#: src/ui/LoanTab.cpp:71
+msgid "Loan"
+msgstr ""
+
+#: src/ui/LoanTab.cpp:18
+msgid "Loan size: "
+msgstr ""
+
+#: src/ui/LoanTab.cpp:9
+msgid "Loans"
+msgstr ""
+
 #: src/scenes/NewGameScene.cpp:137 src/scenes/NewGameScene.cpp:139
+#: src/scenes/NewGameScene.cpp:140
 msgid "Map size: "
+msgstr ""
+
+#. music
+#: src/ui/windows/SettingsWindow.cpp:163
+msgid "Music Volume"
 msgstr ""
 
 #: src/ui/SaveGameComponent.cpp:57
@@ -149,15 +257,23 @@ msgid "Name: "
 msgstr ""
 
 #: src/scenes/MainScene.cpp:33 src/scenes/MainScene.cpp:37
-#: src/scenes/MainScene.cpp:39
+#: src/scenes/MainScene.cpp:39 src/scenes/MainScene.cpp:40
 msgid "New Game"
 msgstr ""
 
-#: src/ui/hudcontainer.cpp:197
+#: src/ui/hudcontainer.cpp:197 src/ui/hudcontainer.cpp:201
 msgid "No active research"
 msgstr ""
 
-#: src/ui/windows/buildwindow.cpp:107
+#: src/world/company.cpp:491
+msgid "Number of Buildings: "
+msgstr ""
+
+#: src/ui/windows/optionswindow.cpp:15 src/ui/windows/optionswindow.cpp:36
+msgid "Options"
+msgstr ""
+
+#: src/ui/windows/buildwindow.cpp:107 src/ui/windows/buildwindow.cpp:114
 msgid "Other"
 msgstr ""
 
@@ -167,6 +283,11 @@ msgstr ""
 
 #: src/ui/SalesItemComponent.cpp:71
 msgid "Price: "
+msgstr ""
+
+#: src/ui/BuildingSelectionComponent.cpp:74
+#, c-format
+msgid "Price: %s"
 msgstr ""
 
 #: src/ui/routecomponent.cpp:51 src/ui/routecomponent.cpp:70
@@ -181,11 +302,45 @@ msgstr ""
 msgid "Production Cycle:"
 msgstr ""
 
+#: src/ui/StorageItemComponent.cpp:58
+msgid "Production amount:"
+msgstr ""
+
+#: src/ui/StorageItemComponent.cpp:54
+msgid "Production costs per Item:"
+msgstr ""
+
+#: src/ui/StorageItemComponent.cpp:57
+msgid "Production time:"
+msgstr ""
+
+#: src/ui/StorageItemComponent.cpp:53
+msgid "Productname:"
+msgstr ""
+
+#: src/ui/windows/PlayerWindow.cpp:53
+msgid "Profit"
+msgstr ""
+
+#: src/ui/windows/PlayerWindow.cpp:24
+msgid "Profit/Loss"
+msgstr ""
+
+#: src/ui/hudcontainer.cpp:220
+#, c-format
+msgid "Profit: %s"
+msgstr ""
+
 #: src/ui/factoryproductiontab.cpp:200 src/ui/factoryproductiontab.cpp:138
 #: src/ui/factoryproductiontab.cpp:199 src/ui/factoryproductiontab.cpp:143
 #: src/ui/factoryproductiontab.cpp:205 src/ui/resourceproductiontab.cpp:162
-#: src/ui/resourceproductiontab.cpp:215
+#: src/ui/resourceproductiontab.cpp:215 src/ui/resourceproductiontab.cpp:161
+#: src/ui/resourceproductiontab.cpp:214
 msgid "Remove"
+msgstr ""
+
+#: src/ui/LoanTab.cpp:71
+msgid "Repayment"
 msgstr ""
 
 #: src/ui/ResearchHint.cpp:45
@@ -199,6 +354,7 @@ msgid "Researchtime: %d months"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:96 src/ui/windows/SettingsWindow.cpp:123
+#: src/ui/windows/SettingsWindow.cpp:114
 msgid "Resolution"
 msgstr ""
 
@@ -206,7 +362,7 @@ msgstr ""
 msgid "Resource: "
 msgstr ""
 
-#: src/ui/windows/buildwindow.cpp:34
+#: src/ui/windows/buildwindow.cpp:34 src/ui/windows/buildwindow.cpp:35
 msgid "Resources"
 msgstr ""
 
@@ -214,15 +370,20 @@ msgstr ""
 msgid "Salary:"
 msgstr ""
 
-#: src/world/gamemap.cpp:427
+#: src/ui/SalesTab.cpp:9
+msgid "Sales"
+msgstr ""
+
+#: src/world/gamemap.cpp:427 src/world/gamemap.cpp:459
 msgid "Sand"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:25 src/ui/windows/SettingsWindow.cpp:37
+#: src/ui/windows/SettingsWindow.cpp:43
 msgid "Save"
 msgstr ""
 
-#: src/ui/SaveGameComponent.cpp:74
+#: src/ui/SaveGameComponent.cpp:74 src/ui/windows/optionswindow.cpp:29
 msgid "Save Game"
 msgstr ""
 
@@ -233,7 +394,8 @@ msgstr ""
 #. fullscreen->setText(_("Fullscreen"));
 #: src/ui/SettingsWindow.cpp:44 src/scenes/MainScene.cpp:57
 #: src/scenes/MainScene.cpp:61 src/ui/windows/SettingsWindow.cpp:59
-#: src/scenes/MainScene.cpp:63
+#: src/scenes/MainScene.cpp:63 src/ui/windows/SettingsWindow.cpp:51
+#: src/scenes/MainScene.cpp:64
 msgid "Settings"
 msgstr ""
 
@@ -241,20 +403,41 @@ msgstr ""
 msgid "Show Building"
 msgstr ""
 
-#: src/ui/windows/SettingsWindow.cpp:18
+#: src/ui/windows/SettingsWindow.cpp:18 src/ui/windows/SettingsWindow.cpp:21
 msgid "Sound"
+msgstr ""
+
+#: src/ui/windows/SettingsWindow.cpp:173
+msgid "Sound Volume"
+msgstr ""
+
+#: src/ui/LoanTab.cpp:71
+msgid "Start Date"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:30 src/scenes/NewGameScene.cpp:32
 msgid "Start Game"
 msgstr ""
 
+#: src/ui/StorageItemComponent.cpp:55
+msgid "Start month:"
+msgstr ""
+
 #: src/ui/routecomponent.cpp:49 src/ui/routecomponent.cpp:68
 msgid "Start: "
 msgstr ""
 
+#: src/ui/storagetab.cpp:14
+msgid "Storage"
+msgstr ""
+
+#: src/ui/StorageItemComponent.cpp:59
+msgid "Storage amount:"
+msgstr ""
+
 #: src/ui/buildwindow.cpp:92 src/world/buildings/street.cpp:9
 #: src/ui/buildwindow.cpp:104 src/ui/windows/buildwindow.cpp:124
+#: src/ui/windows/buildwindow.cpp:131
 msgid "Street"
 msgstr ""
 
@@ -262,8 +445,12 @@ msgstr ""
 msgid "Target: "
 msgstr ""
 
+#: src/ui/windows/PlayerWindow.cpp:46
+msgid "Top Companies"
+msgstr ""
+
 #: src/ui/buildwindow.cpp:77 src/ui/buildwindow.cpp:87
-#: src/ui/windows/buildwindow.cpp:89
+#: src/ui/windows/buildwindow.cpp:89 src/ui/windows/buildwindow.cpp:96
 msgid "Transport"
 msgstr ""
 
@@ -271,7 +458,12 @@ msgstr ""
 msgid "Transport Office"
 msgstr ""
 
+#: src/ui/routestab.cpp:6
+msgid "Transport routes"
+msgstr ""
+
 #: src/world/gamemap.cpp:335 src/world/gamemap.cpp:423
+#: src/world/gamemap.cpp:455
 msgid "Trees"
 msgstr ""
 
@@ -280,16 +472,25 @@ msgstr ""
 msgid "Type: "
 msgstr ""
 
-#: src/ui/windows/SettingsWindow.cpp:131
+#: src/ui/windows/SettingsWindow.cpp:131 src/ui/windows/SettingsWindow.cpp:122
 msgid "VSync"
 msgstr ""
 
 #: src/world/gamemap.cpp:331 src/world/gamemap.cpp:419
+#: src/world/gamemap.cpp:451
 msgid "Water"
+msgstr ""
+
+#: src/ui/WorkerTab.cpp:37
+msgid "Workers"
 msgstr ""
 
 #: src/world/buildings/WorkerComponent.cpp:49
 msgid "Workers:"
+msgstr ""
+
+#: src/ui/WorkerTab.cpp:11
+msgid "Workers: "
 msgstr ""
 
 #: src/ui/SalesItemComponent.cpp:78
@@ -301,6 +502,7 @@ msgid "is active"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:113 src/scenes/NewGameScene.cpp:115
+#: src/scenes/NewGameScene.cpp:116
 msgid "number of cities: "
 msgstr ""
 
@@ -308,10 +510,11 @@ msgstr ""
 msgid "number of companies: "
 msgstr ""
 
-#: src/ui/researchbutton.cpp:59
+#: src/ui/researchbutton.cpp:59 src/ui/researchbutton.cpp:66
 msgid "researched"
 msgstr ""
 
 #: src/ui/windows/BuildingSelectionWindow.cpp:35
+#: src/ui/windows/BuildingSelectionWindow.cpp:30
 msgid "select a building"
 msgstr ""

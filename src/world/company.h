@@ -10,7 +10,6 @@
 #include <engine/utils/time/date.h>
 #include <memory>
 #include <vector>
-#include <unordered_map>
 #include "balance.h"
 
 namespace world
@@ -19,6 +18,12 @@ namespace world
     {
         class Action;
     };
+};
+
+struct KeyValue
+{
+    std::string key;
+    std::string value;
 };
 
 namespace world
@@ -68,7 +73,7 @@ namespace world
         void addLoan(const std::shared_ptr<world::Loan> &loan);
         size_t numberOfLoans();
         std::vector<std::shared_ptr<world::Loan>> &getActiveLoans();
-        std::unordered_map<std::string, std::string> displayData();
+        std::vector<KeyValue> displayData();
 
     private:
         std::string name;

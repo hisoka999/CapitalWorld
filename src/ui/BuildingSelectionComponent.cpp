@@ -43,8 +43,9 @@ namespace UI
     {
         bool eventHandled = UI::Container::handleEvents(pInput);
         selected = eventRect().intersects(pInput->getMousePostion());
-        if(selected && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)){
-            fireFuncionCall("clicked",building);
+        if (selected && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
+        {
+            fireFuncionCall("clicked", building);
             eventHandled = true;
         }
 
@@ -70,7 +71,7 @@ namespace UI
 
         auto costsLabel = std::make_shared<UI::Label>(this);
         costsLabel->setFont("fonts/arial.ttf", 12);
-        costsLabel->setTextF(_("Price: %d €"), building->getBuildPrice());
+        costsLabel->setTextF(_("Price: %s"), format_currency(building->getBuildPrice()));
         costsLabel->setPos(140, 30);
         if (building->canBuild(company->getCash()))
         {

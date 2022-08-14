@@ -70,8 +70,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         std::filesystem::path loggingFolder = std::filesystem::path(utils::os::get_pref_dir("", "captialworld")) / "logs";
         g_appLogger.init(loggingFolder, utils::LogLevel::trace);
         g_sglLogger.init(loggingFolder, utils::LogLevel::trace);
-        Localisation::Instance().detectLanguage("capitalworld");
-        Localisation::Instance().detectLanguage("enum");
 
         auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
         win.open(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "captialworld");
@@ -82,6 +80,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
             Language lng = magic_enum::enum_cast<Language>(lang).value();
             Localisation::Instance().loadLanguage(lng, "capitalworld");
             Localisation::Instance().loadLanguage(lng, "enum");
+        }
+        else
+        {
+            Localisation::Instance().detectLanguage("capitalworld");
+            Localisation::Instance().detectLanguage("enum");
         }
         setlocale(LC_ALL, Localisation::Instance().getLocale().name().c_str());
 

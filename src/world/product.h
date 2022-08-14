@@ -39,14 +39,14 @@ class Product : public ProduceableObject
 public:
     Product(const std::string &localizedName, std::string name, std::string image, world::BuildingType buildingType, ProductionCycle cycle, world::ProductType type);
 
-    std::vector<std::shared_ptr<ResourceRequirement>> getResources();
-    std::vector<std::shared_ptr<ProductRequirement>> getBaseProducts();
+    std::vector<std::shared_ptr<ResourceRequirement>> &getResources();
+    std::vector<std::shared_ptr<ProductRequirement>> &getBaseProducts();
 
     void addResource(std::shared_ptr<Resource> resource, int amount);
     bool needsResource(std::shared_ptr<Resource> resource);
     void addProduct(std::shared_ptr<Product> product, int amount);
     bool needsProduct(std::shared_ptr<Product> product);
-    ProductionCycle getProductionCycle();
+    ProductionCycle &getProductionCycle();
 
     float calculateCostsPerMonth();
     float calculateCostsPerPiece();
