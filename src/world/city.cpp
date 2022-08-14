@@ -338,7 +338,7 @@ namespace world
             APP_LOG_ERROR("node is root node");
         }
 
-          std::uniform_int_distribution<int> directionGen(base, max);
+        std::uniform_int_distribution<int> directionGen(base, max);
         std::uniform_int_distribution<int> noDirectionGen(1, 100);
 
         int directions = directionGen(gen);

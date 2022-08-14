@@ -440,7 +440,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
             textureMapPtr->render(hash, destRect, renderer);
 
             renderResource(renderer, camera, factor, tempX, tempY, iso);
-            }
+        }
     }
 
     auto startTimeBuildings = std::chrono::high_resolution_clock::now();
@@ -494,7 +494,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
             if (building->getSubTextureHash())
             {
-                textureMap->render(building->getSubTextureHash(), displayRect, renderer);
+                textureMapPtr->render(building->getSubTextureHash(), displayRect, renderer);
             }
             else
             {
@@ -510,7 +510,7 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
     auto elapsedBuildings = std::chrono::high_resolution_clock::now() - startTimeBuildings;
 
-    for (auto city : gameState->getCities())
+    for (auto &city : gameState->getCities())
     {
         city->renderCity(renderer);
     }

@@ -28,7 +28,16 @@ GameMap::GameMap(size_t width, size_t height, std::vector<TileType> mapData, std
 GameMap::~GameMap()
 {
     buildings.clear();
+    mapDecoration.clear();
+    buildings.resize(0);
+    mapDecoration.resize(0);
     delete[] mapData;
+}
+
+GameMap::GameMap(const GameMap &copy)
+{
+    width = copy.width;
+    height = copy.height;
 }
 
 void GameMap::initEmtyMap()

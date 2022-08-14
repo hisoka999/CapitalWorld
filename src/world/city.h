@@ -45,6 +45,7 @@ namespace world
     {
     public:
         City(std::string name, utils::Vector2 &position);
+        virtual ~City() = default;
         void generate(unsigned int seed, std::shared_ptr<GameMap> gameMap, long people);
         void renderCity(core::Renderer *renderer);
 

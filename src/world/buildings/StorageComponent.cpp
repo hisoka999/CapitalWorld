@@ -60,6 +60,11 @@ namespace world
             return result;
         }
 
+        StorageMap &StorageComponent::getEntries()
+        {
+            return entries;
+        }
+
         std::shared_ptr<utils::JSON::Object> StorageComponent::toJson()
         {
             std::shared_ptr<utils::JSON::Object> json = BuildingComponent::toJson();
@@ -85,7 +90,7 @@ namespace world
             return std::make_shared<StorageComponent>();
         }
 
-        int StorageComponent::getEntry(std::string product)
+        int StorageComponent::getEntry(const std::string &product)
         {
             if (entries.count(product) == 0)
                 return 0;

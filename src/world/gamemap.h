@@ -28,6 +28,8 @@ public:
     GameMap(size_t width, size_t height);
     GameMap(size_t width, size_t height, std::vector<TileType> mapData, std::vector<TileType> mapDecoration, std::vector<world::RawResource> mapResources);
     virtual ~GameMap();
+    GameMap(const GameMap &copy);
+
     void initEmtyMap();
 
     TileType getTile(const int x, const int y) const;

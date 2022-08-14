@@ -157,7 +157,7 @@ namespace world
             for (auto &product : products)
             {
 
-                auto cycle = product->getProductionCycle();
+                auto &cycle = product->getProductionCycle();
                 if (month >= cycle.startMonth && month <= cycle.endMonth)
                 {
                     if (product->getBaseProducts().size() > 0)
@@ -169,6 +169,7 @@ namespace world
                             if (amount < base->amount)
                             {
                                 requirementsFullfilled = false;
+                                break;
                             }
                         }
                         if (requirementsFullfilled)
@@ -321,7 +322,7 @@ namespace world
         components[component->getName()] = component;
     }
 
-    std::shared_ptr<world::buildings::BuildingComponent> Building::getComponentByName(const std::string &name)
+    const std::shared_ptr<world::buildings::BuildingComponent> &Building::getComponentByName(const std::string &name)
     {
         return components.at(name);
     }

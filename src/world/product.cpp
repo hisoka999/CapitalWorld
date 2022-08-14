@@ -5,11 +5,11 @@ Product::Product(const std::string &localizedName, std::string name, std::string
 {
 }
 
-std::vector<std::shared_ptr<ResourceRequirement>> Product::getResources()
+std::vector<std::shared_ptr<ResourceRequirement>> &Product::getResources()
 {
     return resources;
 }
-std::vector<std::shared_ptr<ProductRequirement>> Product::getBaseProducts()
+std::vector<std::shared_ptr<ProductRequirement>> &Product::getBaseProducts()
 {
     return products;
 }
@@ -84,7 +84,7 @@ bool Product::needsProduct(std::shared_ptr<Product> product)
     return result;
 }
 
-ProductionCycle Product::getProductionCycle()
+ProductionCycle &Product::getProductionCycle()
 {
     return cycle;
 }

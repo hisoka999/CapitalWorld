@@ -204,14 +204,16 @@ namespace world
             building->delayedUpdate(company.get());
         }
 
-        utils::JSON::JsonArray activeLoans = object->getArray("active_loans");
-
-        for (auto &jsonLoan : activeLoans)
+        if (object->hasArray("active_loans"))
         {
-            auto obj = std::get<std::shared_ptr<utils::JSON::Object>>(jsonLoan);
-            company->m_activeLoans.push_back(Loan::fromJson(obj));
-        }
+            utils::JSON::JsonArray activeLoans = object->getArray("active_loans");
 
+            for (auto &jsonLoan : activeLoans)
+            {
+                auto obj = std::get<std::shared_ptr<utils::JSON::Object>>(jsonLoan);
+                company->m_activeLoans.push_back(Loan::fromJson(obj));
+            }
+        }
         company->setAvailableResearch(services::ResearchService::Instance().getData());
 
         auto research = object->getObjectValue("research");

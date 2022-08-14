@@ -66,13 +66,13 @@ namespace world
         virtual std::shared_ptr<utils::JSON::Object> toJson();
         static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company);
         void addComponent(std::shared_ptr<world::buildings::BuildingComponent> &component);
-        std::shared_ptr<world::buildings::BuildingComponent> getComponentByName(const std::string &name);
+        const std::shared_ptr<world::buildings::BuildingComponent> &getComponentByName(const std::string &name);
         bool hasComponent(const std::string &name);
 
         template <typename T>
         std::shared_ptr<T> getComponent(const std::string &name)
         {
-            return std::dynamic_pointer_cast<T>(getComponentByName(name));
+            return std::static_pointer_cast<T>(getComponentByName(name));
         }
         static void initComponentMap();
         static std::shared_ptr<world::buildings::BuildingComponent> createComponentByName(const std::string &name);
