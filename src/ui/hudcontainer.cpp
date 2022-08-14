@@ -213,11 +213,11 @@ namespace UI
             researchButton->setHint(researchHint);
         }
 
-        std::string hintText = "Income Balance\n";
-        hintText += utils::string_format("Cash:   %s", format_currency(gameState->getPlayer()->getCash())) + "\n";
-        hintText += utils::string_format("Income: %s", format_currency(gameState->getPlayer()->getIncome())) + "\n";
-        hintText += utils::string_format("Costs:  %s", format_currency(gameState->getPlayer()->getCosts())) + "\n";
-        hintText += utils::string_format("Profit: %s", format_currency(gameState->getPlayer()->getProfit()));
+        std::string hintText = _("Income Balance\n");
+        hintText += utils::string_format(_("Cash:   %s"), format_currency(gameState->getPlayer()->getCash())) + "\n";
+        hintText += utils::string_format(_("Income: %s"), format_currency(gameState->getPlayer()->getIncome())) + "\n";
+        hintText += utils::string_format(_("Costs:  %s"), format_currency(gameState->getPlayer()->getCosts())) + "\n";
+        hintText += utils::string_format(_("Profit: %s"), format_currency(gameState->getPlayer()->getProfit()));
         cashButton->getHint()->setHintText(hintText);
 
         timeButton->setLabel(gameState->getTime().format());

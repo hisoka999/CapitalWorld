@@ -6,11 +6,12 @@
 #include "../messages.h"
 #include "world/buildings/StorageComponent.h"
 #include "engine/ui/StringHint.h"
+#include "translate.h"
 
 namespace UI
 {
     StorageTab::StorageTab(UI::Object *parent, std::shared_ptr<world::Building> building)
-        : UI::Tab(parent, "Storage"), building(building)
+        : UI::Tab(parent, _("Storage")), building(building)
     {
         cellTexture = graphics::TextureManager::Instance().loadTexture("images/Cell01.png");
         initUI();

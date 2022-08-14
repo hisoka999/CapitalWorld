@@ -9,11 +9,11 @@
 #include <functional>
 
 SettingsWindow::SettingsWindow()
-    : UI::Window(50, 50, 520, 400)
+    : UI::Window(50, 50, 620, 400)
 {
     tabBar = std::make_shared<UI::TabBar>(this);
     tabBar->setPos(5, 5);
-    tabBar->setWidth(400);
+    tabBar->setWidth(500);
     tabBar->setHeight(300);
     addObject(tabBar);
     auto generalTab = std::make_shared<UI::Tab>(tabBar.get(), _("General"));
@@ -160,7 +160,7 @@ SettingsWindow::SettingsWindow()
     addObject(saveButton);
 
     // music
-    auto musicVolumeLabel = std::make_shared<UI::Label>("Music Volume", soundTab.get());
+    auto musicVolumeLabel = std::make_shared<UI::Label>(_("Music Volume"), soundTab.get());
     soundTab->addObject(musicVolumeLabel);
 
     auto musicVolumeProgress = std::make_shared<UI::ProgressBar>(soundTab.get(), 200, 25);
@@ -170,7 +170,7 @@ SettingsWindow::SettingsWindow()
     }
     soundTab->addObject(musicVolumeProgress);
 
-    auto soundVolumeLabel = std::make_shared<UI::Label>("Sound Volume", soundTab.get());
+    auto soundVolumeLabel = std::make_shared<UI::Label>(_("Sound Volume"), soundTab.get());
     soundTab->addObject(soundVolumeLabel);
 
     auto soundVolumeProgress = std::make_shared<UI::ProgressBar>(soundTab.get(), 200, 25);

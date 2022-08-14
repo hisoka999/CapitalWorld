@@ -2,13 +2,13 @@
 #include <engine/ui/ComboBox.h>
 #include <engine/ui/Label.h>
 #include "world/buildings/WorkerComponent.h"
-
+#include <translate.h>
 namespace UI
 {
     void WorkerTab::initUI()
     {
         clear();
-        auto labelNumberOfWorker = std::make_shared<UI::Label>("Workers: ", this);
+        auto labelNumberOfWorker = std::make_shared<UI::Label>(_("Workers: "), this);
         labelNumberOfWorker->setPos(5, 5);
         addObject(labelNumberOfWorker);
 
@@ -28,14 +28,13 @@ namespace UI
                                    {
                                        //
                                        auto component2 = building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
-                                       component2->setCurrentWorkers(value);
-                                   });
+                                       component2->setCurrentWorkers(value); });
 
         addObject(cbxNumberOfWorker);
     }
 
     WorkerTab::WorkerTab(UI::Object *parent, const std::shared_ptr<world::Building> &building)
-        : UI::Tab(parent, "Workers")
+        : UI::Tab(parent, _("Workers"))
     {
         setBuilding(building);
     }

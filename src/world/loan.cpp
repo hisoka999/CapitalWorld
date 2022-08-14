@@ -70,6 +70,25 @@ namespace world
         return value;
     }
 
+    double Loan::calculateRepayment()
+    {
+        double value = 0.0;
+        for (size_t idx = m_currentInstallment; idx < m_installments.size(); ++idx)
+        {
+            value += m_installments[idx].installmentAmount;
+        }
+        return value;
+    }
+    double Loan::calculateInterest()
+    {
+        double value = 0.0;
+        for (size_t idx = m_currentInstallment; idx < m_installments.size(); ++idx)
+        {
+            value += m_installments[idx].interest;
+        }
+        return value;
+    }
+
     bool Loan::repayInstallment(Installment &installment)
     {
 

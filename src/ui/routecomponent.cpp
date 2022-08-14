@@ -60,7 +60,7 @@ namespace UI
                                         {
                                             if (var == nullptr)
                                                 return std::string("empty");
-                                            return var->getName(); });
+                                            return var->getLocalisedName(); });
 
         productList->connect("valueChanged", [&](std::shared_ptr<Product> b)
                              { route->product = b; });

@@ -6,7 +6,7 @@
 namespace UI
 {
 
-    SalesTab::SalesTab(UI::Object *parent, const std::shared_ptr<world::Building> &building) : UI::Tab(parent, "Sales")
+    SalesTab::SalesTab(UI::Object *parent, const std::shared_ptr<world::Building> &building) : UI::Tab(parent, _("Sales"))
     {
 
         scrollArea = std::make_shared<UI::ScrollArea>(parent->getWidth() - 100, parent->getHeight() - 50, this);
@@ -19,8 +19,7 @@ namespace UI
                            {
                                auto component = this->building->getComponent<world::buildings::SalesComponent>("SalesComponent");
                                component->addSalesItem("", 0);
-                               refreshUI();
-                           });
+                               refreshUI(); });
         addObject(addButton);
 
         setBuilding(building);
@@ -46,8 +45,7 @@ namespace UI
             itemComponent->closeButton->connect(UI::Button::buttonClickCallback(), [=]()
                                                 {
                                                     component->removeSalesItem(value);
-                                                    needsRefresh();
-                                                });
+                                                    needsRefresh(); });
 
             yOffset += 100;
             i++;

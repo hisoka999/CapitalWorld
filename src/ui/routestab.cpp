@@ -1,9 +1,9 @@
 #include "routestab.h"
 #include <future>
-
+#include <translate.h>
 namespace UI
 {
-    RoutesTab::RoutesTab(UI::Object *parent, const std::shared_ptr<world::Building> &building, GameMap *gameMap, const std::shared_ptr<world::Company> &player) : UI::Tab(parent, "Transport routes"), gameMap(gameMap), player(player)
+    RoutesTab::RoutesTab(UI::Object *parent, const std::shared_ptr<world::Building> &building, GameMap *gameMap, const std::shared_ptr<world::Company> &player) : UI::Tab(parent, _("Transport routes")), gameMap(gameMap), player(player)
     {
         setWidth(parent->getWidth() - 100);
         setHeight(parent->getHeight() - 10);
@@ -30,15 +30,14 @@ namespace UI
         addObject(scrollArea);
         refreshComponents();
         std::shared_ptr<UI::Button> newRouteButton = std::make_shared<UI::Button>(this);
-        newRouteButton->setLabel("Add Route");
+        newRouteButton->setLabel(_("Add Route"));
         newRouteButton->setPos(5, getHeight() - 50);
         newRouteButton->connect(UI::Button::buttonClickCallback(), [&]()
                                 {
                                     std::shared_ptr<world::buildings::TransportComponent> transportComp = building->getComponent<world::buildings::TransportComponent>("TransportComponent");
 
                                     transportComp->addRoute(nullptr, nullptr, nullptr, 0);
-                                    needsRefresh();
-                                });
+                                    needsRefresh(); });
         addObject(newRouteButton);
     }
 
@@ -59,8 +58,7 @@ namespace UI
             routeComp->closeButton->connect(UI::Button::buttonClickCallback(), [=]()
                                             {
                                                 transportComp->removeRoute(value);
-                                                needsRefresh();
-                                            });
+                                                needsRefresh(); });
             routeComp->setY(yoffset);
             scrollArea->addObject(routeComp);
             yoffset += routeComp->getHeight() + 10;

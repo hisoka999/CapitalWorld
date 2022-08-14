@@ -50,7 +50,7 @@ namespace UI
         createLoanButton->setPos(10, 10);
         m_loanDataContainer->addObject(createLoanButton);
         createLoanButton->setFont("fonts/arial.ttf", 12);
-        createLoanButton->setLabel("Add Loan");
+        createLoanButton->setLabel(_("Add Loan"));
 
         createLoanButton->connect(UI::Button::buttonClickCallback(), [&]()
                                   {
@@ -68,7 +68,7 @@ namespace UI
 
         m_loanTable = std::make_shared<UI::Table<world::Loan>>(this);
         addObject(m_loanTable);
-        std::vector<std::string> headerNames = {"Amount", "Start Date", "End Date", "Repayment", "Interest"};
+        std::vector<std::string> headerNames = {_("Loan"), _("Start Date"), _("End Date"), _("Repayment"), _("Interest")};
         m_loanTable->setHeaderNames(headerNames);
         m_loanTable->setElementFunction(0, [](std::shared_ptr<world::Loan> &c) -> std::string
                                         { return format_currency(c->getAmount()); });
@@ -78,9 +78,9 @@ namespace UI
         m_loanTable->setElementFunction(2, [](std::shared_ptr<world::Loan> &c) -> std::string
                                         { return c->getEndOfContract().format(); });
         m_loanTable->setElementFunction(3, [](std::shared_ptr<world::Loan> &c) -> std::string
-                                        { return format_currency(c->calculateRepaymentWithInterest()); });
+                                        { return format_currency(c->calculateRepayment()); });
         m_loanTable->setElementFunction(4, [](std::shared_ptr<world::Loan> &c) -> std::string
-                                        { return format_currency(c->calculateRepaymentWithInterest()); });
+                                        { return format_currency(c->calculateInterest()); });
         m_loanTable->setWidth(480);
         m_loanTable->setHeight(200);
         m_loanTable->setPos(5, 150);

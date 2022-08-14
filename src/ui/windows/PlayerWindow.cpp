@@ -43,7 +43,7 @@ namespace UI
         profitTab->addObject(m_balanceTable);
         m_balanceTable->setHeight(340);
 
-        auto topCompaniesTab = std::make_shared<UI::Tab>(m_tabBar.get(), "Top Companies");
+        auto topCompaniesTab = std::make_shared<UI::Tab>(m_tabBar.get(), _("Top Companies"));
         m_tabBar->addTab(topCompaniesTab);
 
         m_playerTable = std::make_shared<UI::Table<world::Company>>(topCompaniesTab.get());
