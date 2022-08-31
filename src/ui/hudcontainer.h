@@ -17,12 +17,12 @@ namespace UI
     class HUDContainer : public UI::Container
     {
     public:
-        HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::OptionsWindow *optionsWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow);
+        HUDContainer(core::Renderer *renderer, UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::OptionsWindow *optionsWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow);
 
         void update();
 
     private:
-        void initUI();
+        void initUI(core::Renderer *renderer);
         std::shared_ptr<graphics::Text> uiText;
         std::shared_ptr<graphics::Text> glyphText;
         std::shared_ptr<UI::Button> playButton;

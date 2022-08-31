@@ -9,7 +9,7 @@
 #include "translate.h"
 namespace UI
 {
-    OptionsWindow::OptionsWindow(int x, int y) : UI::Window(x, y, 200, 300), saveWindow(false), loadWindow(true), previewSurface(nullptr)
+    OptionsWindow::OptionsWindow(int x, int y, std::shared_ptr<utils::IniBase> settings) : UI::Window(x, y, 200, 300), saveWindow(false), loadWindow(true), previewSurface(nullptr), settingsWindow(settings)
     {
 
         setTitle(_("Options"));

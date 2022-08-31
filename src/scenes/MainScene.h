@@ -23,7 +23,7 @@ namespace scenes
         class MainScene : public core::Scene
         {
         public:
-                MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager);
+                MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager, std::shared_ptr<utils::IniBase> settings);
                 virtual ~MainScene();
                 void render();
                 bool handleEvents(core::Input *pInput);

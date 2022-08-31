@@ -22,13 +22,14 @@ namespace scenes
 {
 
         MainScene::MainScene(core::Renderer *pRenderer,
-                             core::SceneManager *pSceneManager) : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow(), loadWindow(true)
+                             core::SceneManager *pSceneManager, std::shared_ptr<utils::IniBase> settings)
+            : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow(settings), loadWindow(true)
         {
 
                 bgTexture.loadTexture(renderer, "images/title_background.png");
 
                 this->music->loadMusic("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav");
-                int volume = core::GameWindow::Instance().getSettings()->getValueI("Volume", "Music");
+                int volume = settings->getValueI("Volume", "Music");
                 this->music->setVolume(volume);
                 winMgr->addContainer(&container);
 
@@ -105,8 +106,8 @@ namespace scenes
                                file.close();
 
                                auto gameState = world::GameState::fromJson(jsonObject);
-                               auto starMapScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
-                               sceneManager->addScene("world", starMapScene);
+                               auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState,m_gameWindow->getSettings());
+                               sceneManager->addScene("world", worldScene);
                                sceneManager->setCurrentScene("world"); });
         }
         void MainScene::render()

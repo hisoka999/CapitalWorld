@@ -67,12 +67,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         std::string fileName = "locale/enum.pot";
         generateEnumPot(fileName);
 #endif
-        std::filesystem::path loggingFolder = std::filesystem::path(utils::os::get_pref_dir("", "captialworld")) / "logs";
+        std::filesystem::path loggingFolder = std::filesystem::path(utils::os::get_pref_dir("", "capitalworld")) / "logs";
         g_appLogger.init(loggingFolder, utils::LogLevel::trace);
         g_sglLogger.init(loggingFolder, utils::LogLevel::trace);
 
-        auto &win = core::GameWindow::Instance(); //(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720);
-        win.open(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "captialworld");
+        core::GameWindow win(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "capitalworld");
         win.setWindowIcon("logo.png");
         auto lang = win.getSettings()->getValue("Base", "Lang");
         if (!lang.empty())
@@ -104,8 +103,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         services::BuildingService::Instance().loadData("data/buildings.json");
         services::ResearchService::Instance().loadData("data/research.json");
 
-        auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager);
+        auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager, win.getSettings());
+        mainScene->setGameWindow(&win);
         auto newGameScene = std::make_shared<scenes::NewGameScene>(&ren, &sceneManager);
+        newGameScene->setGameWindow(&win);
         sceneManager.addScene("main", mainScene);
         sceneManager.addScene("newGameScene", newGameScene);
         sceneManager.setCurrentScene("main");
@@ -186,6 +187,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
             ren.calcDelta();
         }
+        sceneManager.freeScenes();
+        graphics::TextureManager::Instance().clear();
     }
     catch (SDLException &e)
     {

@@ -1,5 +1,4 @@
 #include "researchwindow.h"
-#include "services/researchservice.h"
 #include "ui/ResearchHint.h"
 #include "ui/line.h"
 

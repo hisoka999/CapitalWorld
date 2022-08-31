@@ -10,6 +10,7 @@ namespace world
 
         {
             setSubTexture("street1");
+            m_dragBuild = true;
         }
 
         void Street::update(GameMap *gameMap)
@@ -63,33 +64,7 @@ namespace world
                 westStreet = std::dynamic_pointer_cast<Street>(westBuilding);
                 isBorderingWest = true;
             }
-            // for (auto &tmp : gameMap->getBuildings())
-            // {
 
-            //     if (street->getType() != BuildingType::Street)
-            //         continue;
-
-            //     if (street->get2DPosition().intersectsNoLine(posNorth))
-            //     {
-            //         isBorderingNorth = true;
-            //         northStreet = static_cast<Street>(street);
-            //     }
-            //     if (street->get2DPosition().intersectsNoLine(posSouth))
-            //     {
-            //         isBorderingSouth = true;
-            //         southStreet = static_cast<Street>(street);
-            //     }
-            //     if (street->get2DPosition().intersectsNoLine(posEast))
-            //     {
-            //         isBorderingEast = true;
-            //         eastStreet = static_cast<Street>(street);
-            //     }
-            //     if (street->get2DPosition().intersectsNoLine(posWest))
-            //     {
-            //         westStreet = static_cast<Street>(street);
-            //         isBorderingWest = true;
-            //     }
-            // }
             if (isBorderingEast && isBorderingSouth && isBorderingNorth && isBorderingWest)
             {
                 setSubTexture("street_cross_center");

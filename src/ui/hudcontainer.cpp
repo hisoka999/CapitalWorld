@@ -11,15 +11,15 @@
 
 namespace UI
 {
-    HUDContainer::HUDContainer(UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::OptionsWindow *optionsWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow)
+    HUDContainer::HUDContainer(core::Renderer *renderer, UpdateThread *updateThread, world::AIThread *aiThread, const std::shared_ptr<world::GameState> &gameState, UI::OptionsWindow *optionsWindow, UI::ResearchWindow *researchWindow, UI::PlayerWindow *playerWindow)
         : updateThread(updateThread), aiThread(aiThread), gameState(gameState), optionsWindow(optionsWindow), researchWindow(researchWindow), playerWindow(playerWindow)
     {
         glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
         uiText = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
-        initUI();
+        initUI(renderer);
     }
 
-    void HUDContainer::initUI()
+    void HUDContainer::initUI(core::Renderer *renderer)
     {
 
         int xLeft = 50;
@@ -35,8 +35,8 @@ namespace UI
         companyButton->connect("buttonClick", [&]()
                                {
                                    auto rect = playerWindow->displayRect();
-                                   int width = core::GameWindow::Instance().getWidth();
-                                   int height = core::GameWindow::Instance().getHeight();
+                                   int width = renderer->getMainCamera()->getWidth();
+                                   int height = renderer->getMainCamera()->getHeight();
                                    playerWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
                                    playerWindow->setVisible(true); });
         xLeft += 170;
@@ -70,11 +70,11 @@ namespace UI
         researchButton->setBorderless(true);
         researchButton->connect("buttonClick", [&]()
                                 {
-                                    auto rect = researchWindow->displayRect();
-                                    int width = core::GameWindow::Instance().getWidth();
-                                    int height = core::GameWindow::Instance().getHeight();
-                                    researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
-                                    researchWindow->setVisible(true); });
+            auto rect = researchWindow->displayRect();
+            int width = renderer->getMainCamera()->getWidth();
+            int height = renderer->getMainCamera()->getHeight();
+            researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+            researchWindow->setVisible(true); });
         xLeft += 200;
         addObject(companyButton);
         addObject(cashButton);
@@ -92,8 +92,8 @@ namespace UI
         optionsButton->connect("buttonClick", [&]()
                                {
             auto rect = optionsWindow->displayRect();
-            int width = core::GameWindow::Instance().getWidth();
-            int height = core::GameWindow::Instance().getHeight();
+            int width = renderer->getMainCamera()->getWidth();
+            int height = renderer->getMainCamera()->getHeight();
             optionsWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
             optionsWindow->setVisible(true); });
         addObject(optionsButton);

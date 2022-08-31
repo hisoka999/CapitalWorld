@@ -42,7 +42,7 @@ namespace scenes
     {
     public:
         WorldScene(core::Renderer *pRenderer,
-                   core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState);
+                   core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings);
         ~WorldScene();
         void render();
         bool handleEvents(core::Input *pInput);
@@ -55,6 +55,7 @@ namespace scenes
         void renderHUD();
         void renderCursor();
         bool handleMouseEvents(core::Input *pInput);
+        void calcCursorPosition(core::Input *pInput);
         std::shared_ptr<world::Building> createBuilding();
 
         core::SceneManager *sceneManager;
@@ -85,6 +86,7 @@ namespace scenes
         std::shared_ptr<world::Building> selectedBuilding2Build;
         int buildMessageRefId;
         graphics::Rect miniMapRect;
+        bool dragBuildActive = false;
     };
 }
 #endif // WORLDSCENE_H

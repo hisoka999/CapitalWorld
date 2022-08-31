@@ -278,7 +278,8 @@ namespace scenes
 
         auto gameState = std::make_shared<world::GameState>(companies, player, gameMap, cities, difficulty);
 
-        auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState);
+        auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState, m_gameWindow->getSettings());
+        worldScene->setGameWindow(m_gameWindow);
         sceneManager->addScene("world", worldScene);
         sceneManager->setCurrentScene("world");
     }
