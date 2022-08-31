@@ -83,6 +83,10 @@ namespace world
         bool requireResource(world::RawResource rawResource);
         void addResource(world::RawResource rawResource);
         Balance &getBalance();
+        bool canDragBuild();
+
+    protected:
+        bool m_dragBuild = false;
 
     private:
         std::string name;

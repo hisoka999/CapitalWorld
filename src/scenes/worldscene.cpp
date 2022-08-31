@@ -19,16 +19,17 @@ namespace scenes
 {
 
     WorldScene::WorldScene(core::Renderer *pRenderer,
-                           core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState)
+                           core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings)
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0), researchWindow(gameState), console(gameState), playerWindow(gameState)
+          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0, settings), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
+        cursorBuildingRect = {0.f, 0.f, 1.f, 1.f};
 
         renderer->setZoomFactor(1);
 
@@ -42,7 +43,7 @@ namespace scenes
         winMgr->addWindow(&buildingWindow);
         winMgr->addWindow(&console);
 
-        hud = std::make_shared<UI::HUDContainer>(thread.get(), aiThread.get(), gameState, &optionsWindow, &researchWindow, &playerWindow);
+        hud = std::make_shared<UI::HUDContainer>(renderer, thread.get(), aiThread.get(), gameState, &optionsWindow, &researchWindow, &playerWindow);
         winMgr->addContainer(hud.get());
         winMgr->addWindow(&optionsWindow);
         winMgr->addWindow(&researchWindow);
@@ -53,7 +54,7 @@ namespace scenes
         optionsWindow.setGameState(gameState);
         optionsWindow.connect("stateChanged", [&](std::shared_ptr<world::GameState> state)
                               {
-                                  auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state);
+                                  auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state,settings);
                                   core::SceneManager::Instance().changeScene("world", worldScene); });
 
         buildMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [this]([[maybe_unused]] bool dummy)
@@ -128,13 +129,15 @@ namespace scenes
         float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
         auto camera = renderer->getMainCamera();
-        for (float y = 0; y < cursorBuildingRect.height; y++)
+        graphics::Rect elementRect;
+
+        for (float y = 0; y != cursorBuildingRect.height; y += std::copysign(1.0, cursorBuildingRect.height))
         {
-            for (float x = 0; x < cursorBuildingRect.width; x++)
+            for (float x = 0; x != cursorBuildingRect.width; x += std::copysign(1.0, cursorBuildingRect.width))
             {
 
-                float tx = float(cursorPosition.getX() + x) * mapRenderer->getTileWidth() / 2.0f;
-                float ty = float(cursorPosition.getY() + y) * mapRenderer->getTileHeight();
+                float tx = float(cursorBuildingRect.x + x) * mapRenderer->getTileWidth() / 2.0f;
+                float ty = float(cursorBuildingRect.y + y) * mapRenderer->getTileHeight();
                 utils::Vector2 vec(tx, ty);
                 const auto &pos = iso::twoDToIso(vec);
 
@@ -150,6 +153,24 @@ namespace scenes
                 destRect.y = ((pos.getY() + (mapRenderer->getTileHeight() - srcRect.height) - tileYOffset) * factor) - camera->getY();
                 destRect.width = srcRect.width * factor;
                 destRect.height = srcRect.height * factor;
+
+                elementRect = {cursorBuildingRect.x + x, cursorBuildingRect.y + y, 1, 1};
+
+                if (selectedBuilding2Build != nullptr && selectedBuilding2Build->canBuild(gameState->getPlayer()->getCash()) && gameState->getGameMap()->canBuild(elementRect))
+                {
+                    cursorTexture->setColorKey(0, 255, 0);
+                }
+                else if (selectedBuilding2Build != nullptr)
+                {
+
+                    cursorTexture->setColorKey(255, 0, 0);
+                }
+                else
+                {
+
+                    cursorTexture->setColorKey(255, 255, 255);
+                }
+
                 cursorTexture->render(renderer, srcRect, destRect);
                 SDL_Color red = {255, 0, 0, 255};
 
@@ -188,7 +209,6 @@ namespace scenes
 
         mapRenderer->render(renderer);
 
-        auto &win = core::GameWindow::Instance();
         renderCursor();
         renderHUD();
 
@@ -196,7 +216,7 @@ namespace scenes
 
         if (optionsWindow.getVisible() && previewSurface == nullptr)
         {
-            previewSurface = SDL_CreateRGBSurface(0, win.getWidth(), win.getHeight(), 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+            previewSurface = SDL_CreateRGBSurface(0, renderer->getMainCamera()->getWidth(), renderer->getMainCamera()->getHeight(), 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
             SDL_RenderReadPixels(renderer->getRenderer(), NULL, SDL_PIXELFORMAT_ARGB8888, previewSurface->pixels, previewSurface->pitch);
 
             optionsWindow.setPreview(previewSurface);
@@ -209,6 +229,45 @@ namespace scenes
 
         bool eventHandled = false;
         if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
+        {
+            auto action = buildWindow.getCurrentAction();
+
+            if (action == world::BuildAction::Build && selectedBuilding2Build->canDragBuild())
+            {
+                calcCursorPosition(pInput);
+                if (!dragBuildActive)
+                {
+                    cursorBuildingRect.x = cursorPosition.getX();
+                    cursorBuildingRect.y = cursorPosition.getY();
+                    cursorBuildingRect.width = 1;
+                    cursorBuildingRect.height = 1;
+                    dragBuildActive = true;
+                    return true;
+                }
+                else
+                {
+                }
+                eventHandled = true;
+            }
+            else
+            {
+                const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
+                auto building = gameMap->getBuilding2D(sourceBuilding);
+                std::shared_ptr<world::Company> company = nullptr;
+                if (gameState->getPlayer()->hasBuilding(building))
+                {
+                    company = gameState->getPlayer();
+                }
+                auto rect = buildingWindow.displayRect();
+                int width = renderer->getMainCamera()->getWidth();
+                int height = renderer->getMainCamera()->getHeight();
+                buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+
+                buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
+                eventHandled = true;
+            }
+        }
+        else if (pInput->isMouseButtonUp(SDL_BUTTON_LEFT))
         {
             auto action = buildWindow.getCurrentAction();
             if (action == world::BuildAction::Destroy)
@@ -242,39 +301,53 @@ namespace scenes
             {
                 if (!selectedBuilding2Build)
                     return eventHandled;
-                auto building = createBuilding();
-                building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
-                if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                if (selectedBuilding2Build->canDragBuild())
                 {
-                    if (building->hasComponent("SalesComponent"))
+                    for (float y = 0; y != cursorBuildingRect.height; y += std::copysign(1.0, cursorBuildingRect.height))
                     {
-                        auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
-                        sales->setGameMap(gameMap.get());
+                        for (float x = 0; x != cursorBuildingRect.width; x += std::copysign(1.0, cursorBuildingRect.width))
+                        {
+                            auto building = createBuilding();
+                            building->setPosition(cursorBuildingRect.x + x, cursorBuildingRect.y + y);
+
+                            if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                            {
+                                if (building->hasComponent("SalesComponent"))
+                                {
+                                    auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                                    sales->setGameMap(gameMap.get());
+                                }
+                                gameMap->addBuilding(building);
+                                gameState->getPlayer()->addBuilding(building);
+                                gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
+                            }
+                        }
                     }
-                    gameMap->addBuilding(building);
-                    gameState->getPlayer()->addBuilding(building);
-                    gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
                     mapRenderer->clearCache();
                     eventHandled = true;
+                    dragBuildActive = false;
                 }
-            }
-            else
-            {
-                const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
-                auto building = gameMap->getBuilding2D(sourceBuilding);
-                std::shared_ptr<world::Company> company = nullptr;
-                if (gameState->getPlayer()->hasBuilding(building))
+                else
                 {
-                    company = gameState->getPlayer();
-                }
-                auto rect = buildingWindow.displayRect();
-                int width = core::GameWindow::Instance().getWidth();
-                int height = core::GameWindow::Instance().getHeight();
-                buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                    auto building = createBuilding();
+                    building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
-                buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
-                eventHandled = true;
+                    if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                    {
+                        if (building->hasComponent("SalesComponent"))
+                        {
+                            auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                            sales->setGameMap(gameMap.get());
+                        }
+                        gameMap->addBuilding(building);
+                        gameState->getPlayer()->addBuilding(building);
+                        gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
+                        mapRenderer->clearCache();
+                        eventHandled = true;
+                        dragBuildActive = false;
+                    }
+                }
             }
         }
         else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
@@ -303,22 +376,7 @@ namespace scenes
         }
         if (pInput->isMouseMoving())
         {
-            float camX = renderer->getMainCamera()->getX();
-            float camY = renderer->getMainCamera()->getY();
-
-            float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
-
-            float mouse_x = pInput->getMousePostion().getX() + camX;
-            float mouse_y = pInput->getMousePostion().getY() + camY;
-            float tile_height = float(mapRenderer->getTileHeight()) * factor;
-            float tile_width = float(mapRenderer->getTileWidth()) * factor;
-
-            mouse_x -= tile_width / 2;
-            mouse_y -= tile_height / 2;
-
-            float mouse_grid_x = floor((mouse_y / tile_height) + (mouse_x / tile_width));
-            float mouse_grid_y = floor((-mouse_x / tile_width) + (mouse_y / tile_height));
-            cursorPosition = utils::Vector2(mouse_grid_x, mouse_grid_y);
+            calcCursorPosition(pInput);
 
             auto building = selectedBuilding2Build;
             if (building != nullptr)
@@ -326,24 +384,46 @@ namespace scenes
 
             cursorTexture->setBlendMode(SDL_BLENDMODE_BLEND);
             cursorTexture->setAlphaMod(150);
-            if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+
+            if (building != nullptr && building->canDragBuild() && dragBuildActive)
             {
-                cursorBuildingRect = building->get2DPosition();
-                cursorTexture->setColorKey(0, 255, 0);
+
+                cursorBuildingRect.width = cursorPosition.getX() - cursorBuildingRect.x;
+                if (cursorBuildingRect.width == 0.0f)
+                    cursorBuildingRect.width = 1.0f;
+                cursorBuildingRect.height = cursorPosition.getY() - cursorBuildingRect.y;
+                if (cursorBuildingRect.height == 0.0f)
+                    cursorBuildingRect.height = 1.0f;
             }
+
             else if (building != nullptr)
-            {
                 cursorBuildingRect = building->get2DPosition();
-                cursorTexture->setColorKey(255, 0, 0);
-            }
             else
-            {
                 cursorBuildingRect = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
-                cursorTexture->setColorKey(255, 255, 255);
-            }
+
             eventHandled = true;
         }
         return eventHandled;
+    }
+
+    void WorldScene::calcCursorPosition(core::Input *pInput)
+    {
+        float camX = renderer->getMainCamera()->getX();
+        float camY = renderer->getMainCamera()->getY();
+
+        float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+
+        float mouse_x = pInput->getMousePostion().getX() + camX;
+        float mouse_y = pInput->getMousePostion().getY() + camY;
+        float tile_height = float(mapRenderer->getTileHeight()) * factor;
+        float tile_width = float(mapRenderer->getTileWidth()) * factor;
+
+        mouse_x -= tile_width / 2;
+        mouse_y -= tile_height / 2;
+
+        float mouse_grid_x = floor((mouse_y / tile_height) + (mouse_x / tile_width));
+        float mouse_grid_y = floor((-mouse_x / tile_width) + (mouse_y / tile_height));
+        cursorPosition = utils::Vector2(mouse_grid_x, mouse_grid_y);
     }
 
     bool WorldScene::handleEvents(core::Input *pInput)

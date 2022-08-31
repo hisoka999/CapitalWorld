@@ -26,7 +26,7 @@ class SettingsWindow : public UI::Window
 {
 public:
     /** Default constructor */
-    SettingsWindow();
+    SettingsWindow(std::shared_ptr<utils::IniBase> &settings);
 
     /** Default destructor */
     virtual ~SettingsWindow();
@@ -45,6 +45,7 @@ private:
     std::shared_ptr<graphics::Text> uiText;
     std::shared_ptr<graphics::Text> uiIconText;
     std::vector<DisplayMode> displayModes;
+    std::shared_ptr<utils::IniBase> m_settings;
 };
 
 #endif // SETTINGSWINDOW_H

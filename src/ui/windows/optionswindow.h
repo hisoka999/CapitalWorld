@@ -13,7 +13,7 @@ namespace UI
     private:
         /* data */
     public:
-        OptionsWindow(int x, int y);
+        OptionsWindow(int x, int y, std::shared_ptr<utils::IniBase> settings);
         ~OptionsWindow();
 
         virtual void render(core::Renderer *pRender);
@@ -25,11 +25,11 @@ namespace UI
     private:
         void saveGame();
         void loadGame();
-        SettingsWindow settingsWindow;
         std::shared_ptr<world::GameState> gameState;
         UI::SaveGameWindow saveWindow;
         UI::SaveGameWindow loadWindow;
         SDL_Surface *previewSurface;
+        SettingsWindow settingsWindow;
     };
 
 } // namespace UI

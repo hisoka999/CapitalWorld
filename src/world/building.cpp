@@ -80,7 +80,10 @@ namespace world
     {
         return buildPrice <= money;
     }
-
+    bool Building::canDragBuild()
+    {
+        return m_dragBuild;
+    }
     const graphics::Rect &Building::getDisplayRect()
     {
         return displayRect;

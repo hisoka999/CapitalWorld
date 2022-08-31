@@ -8,8 +8,8 @@
 #include "magic_enum.hpp"
 #include <functional>
 
-SettingsWindow::SettingsWindow()
-    : UI::Window(50, 50, 620, 400)
+SettingsWindow::SettingsWindow(std::shared_ptr<utils::IniBase> &settings)
+    : UI::Window(50, 50, 620, 400), m_settings(settings)
 {
     tabBar = std::make_shared<UI::TabBar>(this);
     tabBar->setPos(5, 5);
@@ -55,7 +55,6 @@ SettingsWindow::SettingsWindow()
                                     { return val.toString(); });
     resolutions->setPos(30, 70);
     resolutions->setWidth(200);
-    auto settings = core::GameWindow::Instance().getSettings();
 
     constexpr auto &modes = magic_enum::enum_values<core::FullScreenMode>();
 
@@ -187,9 +186,8 @@ SettingsWindow::SettingsWindow()
 
     saveButton->connect(UI::Button::buttonClickCallback(), [=]()
                         {
-        auto settings = core::GameWindow::Instance().getSettings();
         settings->setAttrI("Base", "Fullscreen", int(fullscreen->getSelectionText()));
-        core::GameWindow::Instance().setFullScreen(fullscreen->getSelectionText());
+        //core::GameWindow::Instance().setFullScreen(fullscreen->getSelectionText());
         settings->setAttrB("Base", "VSync", vsync->isChecked());
         int i = resolutions->getSelection();
 
