@@ -59,12 +59,14 @@ namespace scenes
 
         buildMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [this]([[maybe_unused]] bool dummy)
                                                                                      { refresh(); });
-        notifications::Event event = {notifications::EventType::Research, "Test Research", "A new thing was researched"};
-        eventQueue.add(event);
+
+        eventQueueRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::Event, [this](notifications::Event event)
+                                                                                   { eventQueue.add(event); });
     }
     WorldScene::~WorldScene()
     {
         core::MessageSystem<MessageTypes>::get().deregister(buildMessageRefId);
+        core::MessageSystem<MessageTypes>::get().deregister(eventQueueRefId);
         thread->stop();
         aiThread->stop();
         if (previewSurface != nullptr)

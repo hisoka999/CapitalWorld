@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <magic_enum.hpp>
 #include "translate.h"
+#include "messages.h"
+#include "notifications/EventQueue.h"
 
 namespace world
 {
@@ -502,8 +504,10 @@ namespace world
         currentResearch->reduceCosts(getResearchPerMonth());
         if (currentResearch->getResearched())
         {
+            notifications::Event event = {notifications::EventType::Research, "Research", currentResearch->getName() + " was researched."};
+            auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
+            core::MessageSystem<MessageTypes>::get().sendMessage(msg);
             researchQueue.erase(researchQueue.begin());
         }
     }
-
 }

@@ -8,6 +8,7 @@ enum class MessageTypes
     NewMonth,
     ObjectHasBuild,
     ShipHasBuild,
+    Event,
 };
 
 #endif // MESSAGETYPES_H
