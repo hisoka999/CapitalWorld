@@ -21,6 +21,7 @@
 #include <engine/core/SceneManager.h>
 #include <map>
 #include <world/gamemap.h>
+#include "notifications/EventQueue.h"
 
 namespace scenes
 {
@@ -87,6 +88,7 @@ namespace scenes
         int buildMessageRefId;
         graphics::Rect miniMapRect;
         bool dragBuildActive = false;
+        notifications::EventQueue eventQueue;
     };
 }
 #endif // WORLDSCENE_H
