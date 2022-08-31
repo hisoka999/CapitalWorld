@@ -9,14 +9,14 @@
 #include "translate.h"
 namespace UI
 {
-    OptionsWindow::OptionsWindow(int x, int y, std::shared_ptr<utils::IniBase> settings) : UI::Window(x, y, 200, 300), saveWindow(false), loadWindow(true), previewSurface(nullptr), settingsWindow(settings)
+    OptionsWindow::OptionsWindow(int x, int y, std::shared_ptr<utils::IniBase> settings) : UI::Window(x, y, 250, 300), saveWindow(false), loadWindow(true), previewSurface(nullptr), settingsWindow(settings)
     {
 
         setTitle(_("Options"));
 
         auto layout = std::make_shared<UI::layout::GridLayout>(this, 1);
         layout->setPadding(utils::Vector2(20, 10));
-
+        setLayout(layout);
         auto loadButton = std::make_shared<UI::Button>(this);
         loadButton->setFont("fonts/arial.ttf", 12);
         loadButton->setLabel(_("Load Game"));
@@ -46,10 +46,6 @@ namespace UI
         addObject(mainMenuButton);
         mainMenuButton->connect(UI::Button::buttonClickCallback(), []
                                 { core::SceneManager::Instance().setCurrentScene("main"); });
-
-        graphics::Rect bounds = {10, 10, float(getWidth()), float(getHeight())};
-
-        layout->updateLayout(bounds);
 
         loadWindow.connect("saveAction", [&](std::string fileName)
                            {
@@ -90,6 +86,8 @@ namespace UI
                                previewPath.replace_extension(extention);
                                APP_LOG_INFO("preview path: " + previewPath.string());
                                IMG_SavePNG(previewSurface, previewPath.string().c_str()); });
+
+        needsRefresh();
     }
 
     OptionsWindow::~OptionsWindow()

@@ -249,7 +249,7 @@ namespace scenes
                 }
                 eventHandled = true;
             }
-            else
+            else if (action == world::BuildAction::None)
             {
                 const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
                 auto building = gameMap->getBuilding2D(sourceBuilding);

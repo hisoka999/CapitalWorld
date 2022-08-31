@@ -32,12 +32,13 @@ namespace UI
         companyButton->setColor(utils::color::WHITE);
         companyButton->setPos(xLeft, yLeft);
         companyButton->setBorderless(true);
-        companyButton->connect("buttonClick", [&]()
+
+        companyButton->connect("buttonClick", [=]()
                                {
                                    auto rect = playerWindow->displayRect();
                                    int width = renderer->getMainCamera()->getWidth();
                                    int height = renderer->getMainCamera()->getHeight();
-                                   playerWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                                   playerWindow->setPos((width / 2) - (rect.width / 2), (height / 2) - (rect.height / 2));
                                    playerWindow->setVisible(true); });
         xLeft += 170;
 
@@ -68,13 +69,13 @@ namespace UI
         researchButton->setColor(utils::color::WHITE);
         researchButton->setPos(xLeft, yLeft);
         researchButton->setBorderless(true);
-        researchButton->connect("buttonClick", [&]()
+        researchButton->connect("buttonClick", [=]()
                                 {
-            auto rect = researchWindow->displayRect();
-            int width = renderer->getMainCamera()->getWidth();
-            int height = renderer->getMainCamera()->getHeight();
-            researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
-            researchWindow->setVisible(true); });
+                                    auto rect = researchWindow->displayRect();
+                                    int width = renderer->getMainCamera()->getWidth();
+                                    int height = renderer->getMainCamera()->getHeight();
+                                    researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                                    researchWindow->setVisible(true); });
         xLeft += 200;
         addObject(companyButton);
         addObject(cashButton);
@@ -89,13 +90,14 @@ namespace UI
         optionsButton->setLabel(" ");
         optionsButton->setPos(10, yLeft);
         optionsButton->setBorderless(true);
-        optionsButton->connect("buttonClick", [&]()
+        optionsButton->connect("buttonClick", [=]()
                                {
-            auto rect = optionsWindow->displayRect();
-            int width = renderer->getMainCamera()->getWidth();
-            int height = renderer->getMainCamera()->getHeight();
-            optionsWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
-            optionsWindow->setVisible(true); });
+                                   auto rect = optionsWindow->displayRect();
+                                   int width = renderer->getMainCamera()->getWidth();
+                                   int height = renderer->getMainCamera()->getHeight();
+                                   optionsWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                                   optionsWindow->setVisible(true);
+                               });
         addObject(optionsButton);
 
         timeButton = std::make_shared<UI::IconButton>();
