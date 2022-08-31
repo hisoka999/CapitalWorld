@@ -29,6 +29,7 @@ namespace scenes
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
         mapRenderer = std::make_shared<GameMapRenderer>(gameState);
+        cursorBuildingRect = {0.f, 0.f, 1.f, 1.f};
 
         renderer->setZoomFactor(1);
 
@@ -130,9 +131,9 @@ namespace scenes
         auto camera = renderer->getMainCamera();
         graphics::Rect elementRect;
 
-        for (float y = 0; y < cursorBuildingRect.height; y++)
+        for (float y = 0; y != cursorBuildingRect.height; y += std::copysign(1.0, cursorBuildingRect.height))
         {
-            for (float x = 0; x < cursorBuildingRect.width; x++)
+            for (float x = 0; x != cursorBuildingRect.width; x += std::copysign(1.0, cursorBuildingRect.width))
             {
 
                 float tx = float(cursorBuildingRect.x + x) * mapRenderer->getTileWidth() / 2.0f;
@@ -300,22 +301,52 @@ namespace scenes
             {
                 if (!selectedBuilding2Build)
                     return eventHandled;
-                auto building = createBuilding();
-                building->setPosition(cursorPosition.getX(), cursorPosition.getY());
 
-                if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                if (selectedBuilding2Build->canDragBuild())
                 {
-                    if (building->hasComponent("SalesComponent"))
+                    for (float y = 0; y != cursorBuildingRect.height; y += std::copysign(1.0, cursorBuildingRect.height))
                     {
-                        auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
-                        sales->setGameMap(gameMap.get());
+                        for (float x = 0; x != cursorBuildingRect.width; x += std::copysign(1.0, cursorBuildingRect.width))
+                        {
+                            auto building = createBuilding();
+                            building->setPosition(cursorBuildingRect.x + x, cursorBuildingRect.y + y);
+
+                            if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                            {
+                                if (building->hasComponent("SalesComponent"))
+                                {
+                                    auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                                    sales->setGameMap(gameMap.get());
+                                }
+                                gameMap->addBuilding(building);
+                                gameState->getPlayer()->addBuilding(building);
+                                gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
+                            }
+                        }
                     }
-                    gameMap->addBuilding(building);
-                    gameState->getPlayer()->addBuilding(building);
-                    gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
                     mapRenderer->clearCache();
                     eventHandled = true;
                     dragBuildActive = false;
+                }
+                else
+                {
+                    auto building = createBuilding();
+                    building->setPosition(cursorPosition.getX(), cursorPosition.getY());
+
+                    if (building != nullptr && building->canBuild(gameState->getPlayer()->getCash()) && gameMap->canBuild(building->get2DPosition()))
+                    {
+                        if (building->hasComponent("SalesComponent"))
+                        {
+                            auto sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                            sales->setGameMap(gameMap.get());
+                        }
+                        gameMap->addBuilding(building);
+                        gameState->getPlayer()->addBuilding(building);
+                        gameState->getPlayer()->incCash(building->getBuildPrice() * -1);
+                        mapRenderer->clearCache();
+                        eventHandled = true;
+                        dragBuildActive = false;
+                    }
                 }
             }
         }
@@ -357,9 +388,14 @@ namespace scenes
             if (building != nullptr && building->canDragBuild() && dragBuildActive)
             {
 
-                cursorBuildingRect.width = std::max(cursorPosition.getX() - cursorBuildingRect.x, 1.0f);
-                cursorBuildingRect.height = std::max(cursorPosition.getY() - cursorBuildingRect.y, 1.0f);
+                cursorBuildingRect.width = cursorPosition.getX() - cursorBuildingRect.x;
+                if (cursorBuildingRect.width == 0.0f)
+                    cursorBuildingRect.width = 1.0f;
+                cursorBuildingRect.height = cursorPosition.getY() - cursorBuildingRect.y;
+                if (cursorBuildingRect.height == 0.0f)
+                    cursorBuildingRect.height = 1.0f;
             }
+
             else if (building != nullptr)
                 cursorBuildingRect = building->get2DPosition();
             else
