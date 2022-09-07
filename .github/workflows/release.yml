@@ -71,44 +71,34 @@ jobs:
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld
       - name: version linux
-        run: echo "::set-output name=version::$(./${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
+        run: echo "::set-output name=version::$(/${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
         id: version-linux
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
-        run: echo "::set-output name=version::$(.\${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
+        run: echo "::set-output name=version::$(\${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
         id: version-windows
         if: matrix.os == 'windows-latest'
       - name: Build Packages
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
           make package
-      - name: upload linux artifact (deb)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload linux artifact 
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
-          asset_name: captialworld.linux-amd64.deb
-          asset_content_type: application/vnd.debian.binary-package
-        if: matrix.os == 'ubuntu-latest'
-      - name: upload linux artifact (tgz)
-        uses: actions/upload-release-asset@v1
+          files: |
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
+          token: ${{ github.token }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
-          asset_name: captialworld.linux-amd64.tar.gz
-          asset_content_type: application/gzip
+          GITHUB_REPOSITORY: hisoka999/CapitalWorld
         if: matrix.os == 'ubuntu-latest'
       - name: upload windows artifact (zip)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
-          asset_name: captialworld.windows-amd64.zip
-          asset_content_type: application/zip
-        if: matrix.os == 'ubuntu-latest'
+          files: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
+          token: ${{ github.token }}
+        env:
+          GITHUB_REPOSITORY: hisoka999/CapitalWorld
+        if: matrix.os == 'windows-latest'
+
