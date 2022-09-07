@@ -98,7 +98,7 @@ namespace world
                 iter = m_activeLoans.erase(iter);
                 if (player)
                 {
-                    notifications::Event event = {notifications::EventType::Loan, "Loan", "Loan has been repayed."};
+                    notifications::Event event = {notifications::EventType::Loan, _("Loan"), _("Loan has been repayed.")};
                     auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
                     core::MessageSystem<MessageTypes>::get().sendMessage(msg);
                 }
@@ -116,7 +116,7 @@ namespace world
 
         if (getCash() < 0 && player)
         {
-            notifications::Event event = {notifications::EventType::Balance, "Cash", "Your cash balance is negative."};
+            notifications::Event event = {notifications::EventType::Balance, _("Cash"), _("Your cash balance is negative.")};
             auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
             core::MessageSystem<MessageTypes>::get().sendMessage(msg);
         }
@@ -519,7 +519,7 @@ namespace world
         {
             if (player)
             {
-                notifications::Event event = {notifications::EventType::Research, "Research", currentResearch->getName() + " was researched."};
+                notifications::Event event = {notifications::EventType::Research, _("Research"), utils::string_format(_("%s was researched."), currentResearch->getName())};
                 auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
                 core::MessageSystem<MessageTypes>::get().sendMessage(msg);
             }
@@ -527,7 +527,7 @@ namespace world
 
             if (researchQueue.empty() && player)
             {
-                notifications::Event event = {notifications::EventType::Research, "Research", "Research queue is empty."};
+                notifications::Event event = {notifications::EventType::Research, _("Research"), _("Research queue is empty.")};
                 auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
                 core::MessageSystem<MessageTypes>::get().sendMessage(msg);
             }
