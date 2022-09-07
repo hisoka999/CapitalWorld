@@ -93,6 +93,7 @@ jobs:
           GITHUB_REPOSITORY: hisoka999/CapitalWorld
         if: matrix.os == 'ubuntu-latest'
       - name: upload windows artifact (zip)
+        uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
           token: ${{ github.token }}
