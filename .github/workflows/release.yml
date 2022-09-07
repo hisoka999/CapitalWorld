@@ -71,25 +71,23 @@ jobs:
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld
       - name: version linux
-        run: echo "::set-output name=version::$(./CapitalWorld --version)"
+        run: echo "::set-output name=version::$(./${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
         id: version-linux
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
-        run: echo "::set-output name=version::$(./CapitalWorld.exe --version)"
+        run: echo "::set-output name=version::$(.\${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
         id: version-windows
         if: matrix.os == 'windows-latest'
-      - name: Build Linux Packages
+      - name: Build Packages
         run: |
-          cpack
-          cpack -G TGZ
-        if: matrix.os == 'ubuntu-latest'
+          make package
       - name: upload linux artifact (deb)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
+          asset_path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
           asset_name: captialworld.linux-amd64.deb
           asset_content_type: application/vnd.debian.binary-package
         if: matrix.os == 'ubuntu-latest'
@@ -99,7 +97,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
+          asset_path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
           asset_name: captialworld.linux-amd64.tar.gz
           asset_content_type: application/gzip
         if: matrix.os == 'ubuntu-latest'
@@ -109,7 +107,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: CapitalWorld-${{ steps.version-linux.outputs.version }}-Windows.zip
+          asset_path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
           asset_name: captialworld.windows-amd64.zip
           asset_content_type: application/zip
         if: matrix.os == 'ubuntu-latest'
