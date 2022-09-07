@@ -76,11 +76,13 @@
     },
     "TextItem": {
         "BackgroundColor": "#222222FF",
-        "BorderColor": "#5D676CFF"
+        "BorderColor": "#5D676CFF",
+        "HoverColor": "#AD676CFF"
     },
     "NumberTextItem": {
         "BackgroundColor": "#222222FF",
-        "BorderColor": "#5D676CFF"
+        "BorderColor": "#5D676CFF",
+        "HoverColor": "#AD676CFF"
     },
     "ProgressBar": {
         "BackgroundColor": "#222222FF",

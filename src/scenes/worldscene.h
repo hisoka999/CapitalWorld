@@ -21,6 +21,7 @@
 #include <engine/core/SceneManager.h>
 #include <map>
 #include <world/gamemap.h>
+#include "notifications/EventQueue.h"
 
 namespace scenes
 {
@@ -85,8 +86,10 @@ namespace scenes
         SDL_Surface *previewSurface = nullptr;
         std::shared_ptr<world::Building> selectedBuilding2Build;
         int buildMessageRefId;
+        int eventQueueRefId;
         graphics::Rect miniMapRect;
         bool dragBuildActive = false;
+        notifications::EventQueue eventQueue;
     };
 }
 #endif // WORLDSCENE_H

@@ -59,10 +59,14 @@ namespace scenes
 
         buildMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [this]([[maybe_unused]] bool dummy)
                                                                                      { refresh(); });
+
+        eventQueueRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::Event, [this](notifications::Event event)
+                                                                                   { eventQueue.add(event); });
     }
     WorldScene::~WorldScene()
     {
         core::MessageSystem<MessageTypes>::get().deregister(buildMessageRefId);
+        core::MessageSystem<MessageTypes>::get().deregister(eventQueueRefId);
         thread->stop();
         aiThread->stop();
         if (previewSurface != nullptr)
@@ -122,6 +126,8 @@ namespace scenes
 
         buildWindow.render(renderer);
         buildWindow.postRender(renderer);
+
+        eventQueue.render(renderer);
     }
 
     void WorldScene::renderCursor()
@@ -633,6 +639,7 @@ namespace scenes
     {
 
         hud->update();
+        eventQueue.updateEvents(delta);
     }
 
     std::shared_ptr<world::GameState> &WorldScene::getGameState()
