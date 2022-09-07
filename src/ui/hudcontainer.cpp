@@ -96,8 +96,8 @@ namespace UI
                                    int width = renderer->getMainCamera()->getWidth();
                                    int height = renderer->getMainCamera()->getHeight();
                                    optionsWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
-                                   optionsWindow->setVisible(true);
-                               });
+                                   optionsWindow->setVisible(true); 
+                                   optionsWindow->needsRefresh(); });
         addObject(optionsButton);
 
         timeButton = std::make_shared<UI::IconButton>();
