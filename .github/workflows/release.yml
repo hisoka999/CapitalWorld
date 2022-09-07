@@ -80,6 +80,7 @@ jobs:
         if: matrix.os == 'windows-latest'
       - name: Build Packages
         run: |
+          cd ${{ env.CMAKE_BUILD_DIR }}
           make package
       - name: upload linux artifact (deb)
         uses: actions/upload-release-asset@v1
