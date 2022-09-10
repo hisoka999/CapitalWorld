@@ -10,6 +10,7 @@
 #include <engine/utils/os.h>
 #include <random>
 #include <engine/utils/logger.h>
+#include <cmath>
 
 namespace world
 {
@@ -144,7 +145,7 @@ namespace world
         // baseDemand[world::ProductType::Resource] = 0.3f;
 
         generateStreetTree(seed);
-        fillStreetsByTree(root);
+        fillStreetsByLines();
 
         for (auto street : streets)
         {
@@ -162,12 +163,13 @@ namespace world
             house->setSubTexture(subTexture);
 
             float distance = housePosition.distance(this->position);
+            distance = (distance == 0) ? 1 : distance;
+            int residents = (numberOfCitizen / numberOfBuildings) * (4 / std::sqrt(distance));
 
-            int residents = (numberOfCitizen / numberOfBuildings) * ((distance == 0) ? 1 : (5.f / distance));
-
-            std::shared_ptr<world::buildings::BuildingComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(residents, baseDemand, houseId);
-            houseComponent->updateProduction(0, 0, house.get());
-            house->addComponent(houseComponent);
+            std::shared_ptr<world::buildings::HouseComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(residents, baseDemand, houseId);
+            houseComponent->updateTexture(house.get());
+            auto component = std::dynamic_pointer_cast<world::buildings::BuildingComponent>(houseComponent);
+            house->addComponent(component);
             int stopKey = 0;
             while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)
             {
@@ -242,191 +244,166 @@ namespace world
             font->render(renderer, name, utils::color::WHITE, isoPos2.getX(), isoPos2.getY());
     }
 
-    void City::fillStreetsByTree(std::shared_ptr<TreeNode> node)
+    void City::fillStreetsByLines()
     {
         graphics::Rect srcRect;
 
         auto street = std::make_shared<world::buildings::Street>();
         // todo change position, or move to new class
         groundTexture->getSourceRect("street1", &srcRect);
-        street->setSourceRect(srcRect);
-        street->setOffset(0, 0);
-        utils::Vector2 streetPosition = node->position;
 
-        street->setPosition(streetPosition.getX(), streetPosition.getY());
-        street->setSubTexture("street1");
-
-        if (!isBlocked(street->get2DPosition(), gameMap))
-            streets.push_back(street);
-
-        auto street2 = std::make_shared<world::buildings::Street>();
-        // todo change position, or move to new class
-
-        groundTexture->getSourceRect("street1", &srcRect);
-        street2->setSourceRect(srcRect);
-
-        street2->setOffset(0, 0);
-        streetPosition = node->position;
-        switch (node->direction)
+        for (auto child : streetLines)
         {
-        case 1: // north
-            streetPosition += utils::Vector2(0, 1);
-            break;
-        case 2: // south
-            streetPosition -= utils::Vector2(0, 1);
-            break;
-        case 3: // east
-            streetPosition = streetPosition + utils::Vector2(1, 0);
-            break;
-        case 4: // west
-            streetPosition = streetPosition - utils::Vector2(1, 0);
-            break;
+            int xOffset = 0;
+            int yOffset = 0;
+            if (child.start.getY() < child.end.getY())
+            { // North
+                yOffset = 1;
+            }
+            else if (child.start.getY() > child.end.getY())
+            { // south
+                yOffset = -1;
+            }
+            else if (child.start.getX() < child.end.getX())
+            { // east
+                xOffset = 1;
+            }
+            else if (child.start.getX() > child.end.getX())
+            { // west
+                xOffset = -1;
+            }
+
+            for (int posY = child.start.getY(); posY != child.end.getY() || !yOffset; posY += yOffset)
+            {
+                for (int posX = child.start.getX(); posX != child.end.getX() || !xOffset; posX += xOffset)
+                {
+                    auto street2 = std::make_shared<world::buildings::Street>();
+                    // todo change position, or move to new class
+
+                    street2->setSourceRect(srcRect);
+
+                    street2->setOffset(0, 0);
+
+                    street2->setPosition(posX, posY);
+                    street2->setSubTexture("street1");
+                    if (!isBlocked(street2->get2DPosition(), gameMap))
+                        streets.push_back(street2);
+
+                    if (!xOffset)
+                        break;
+                }
+
+                if (!yOffset)
+                    break;
+            }
         }
 
-        street2->setPosition(streetPosition.getX(), streetPosition.getY());
-        street2->setSubTexture("street1");
-        if (!isBlocked(street2->get2DPosition(), gameMap))
-            streets.push_back(street2);
+        // for (auto child : node->children)
+        // {
+        //     fillStreetsByTree(child);
+        // }
+    }
 
-        for (auto child : node->children)
+    void City::addChildStreets(std::mt19937 generator, StreetLine &baseLine, bool addFurther)
+    {
+
+        int xOffset = 0;
+        int yOffset = 0;
+        std::uniform_int_distribution<int> lineGen(4, 20);
+
+        if (baseLine.start.getY() < baseLine.end.getY())
+        { // North
+            yOffset = 4;
+        }
+        else if (baseLine.start.getY() > baseLine.end.getY())
+        { // south
+            yOffset = -4;
+        }
+        else if (baseLine.start.getX() < baseLine.end.getX())
+        { // east
+            xOffset = 4;
+        }
+        else if (baseLine.start.getX() > baseLine.end.getX())
+        { // west
+            xOffset = -4;
+        }
+        APP_LOG_INFO("xOffset = " + std::to_string(xOffset));
+        APP_LOG_INFO("yOffset = " + std::to_string(yOffset));
+
+        for (int posY = baseLine.start.getY(); posY != baseLine.end.getY() || !yOffset; posY += yOffset)
         {
-            fillStreetsByTree(child);
+            for (int posX = baseLine.start.getX(); posX != baseLine.end.getX() || !xOffset; posX += xOffset)
+            {
+
+                utils::Vector2 start = {float(posX), float(posY)};
+                // first Direction
+                {
+                    utils::Vector2 end = start;
+                    if (yOffset != 0)
+                        end += utils::Vector2(lineGen(generator), 0);
+                    else
+                        end += utils::Vector2(0, lineGen(generator));
+
+                    StreetLine line = {start, end};
+                    streetLines.push_back(line);
+                    if (addFurther)
+                        addChildStreets(generator, line, false);
+                }
+
+                // second direction
+                {
+                    utils::Vector2 end = start;
+                    if (yOffset != 0)
+                        end += utils::Vector2(lineGen(generator) * -1, 0);
+                    else
+                        end += utils::Vector2(0, lineGen(generator) * -1);
+                    StreetLine line = {start, end};
+                    streetLines.push_back(line);
+                    if (addFurther)
+                        addChildStreets(generator, line, false);
+                }
+                if (!xOffset || ((posX > baseLine.end.getX() && xOffset > 0) || (posX < baseLine.end.getX() && xOffset < 0)))
+                    break;
+            }
+
+            if (!yOffset || ((posY > baseLine.end.getY() && yOffset > 0) || (yOffset < 0 && posY < baseLine.end.getY())))
+                break;
         }
     }
 
     void City::generateStreetTree(unsigned int seed)
     {
-        root = std::make_shared<TreeNode>(position, 0);
         std::mt19937 gen(seed);
         long numberOfBuildings = long(std::round(float(numberOfCitizen) / 200.0f));
-        // numberOfBuildings /= 2.0;
-        fillNode(gen, root, &numberOfBuildings, 0);
-    }
+        APP_LOG_ERROR(name + " numberOfBuildings = " + std::to_string(numberOfBuildings));
+        int maxStreetLength = std::max(numberOfBuildings / 25L, 4L);
+        int minStreetLegnth = maxStreetLength * 0.75;
+        ;
+        std::uniform_int_distribution<int> lineGen(minStreetLegnth, maxStreetLength);
 
-    bool City::existsNode(std::shared_ptr<TreeNode> node, utils::Vector2 &pos)
-    {
-
-        if (node->position == pos)
-            return true;
-        for (auto child : node->children)
+        for (int direction = 1; direction <= 4; direction++)
         {
-            if (existsNode(child, pos))
+            utils::Vector2 streetPosition = position;
+            int distance = lineGen(gen);
+            switch (direction)
             {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    void City::fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft, int depth)
-    {
-
-        int base = 4;
-        int max = 4;
-        if (root->children.size() > 0)
-        {
-            base = 2;
-            max = 3;
-        }
-
-        if ((*nodesLeft) <= 0)
-            return;
-
-        if (node == root)
-        {
-            APP_LOG_WARN("depth = " + std::to_string(depth));
-            APP_LOG_ERROR("node is root node");
-        }
-
-        std::uniform_int_distribution<int> directionGen(base, max);
-        std::uniform_int_distribution<int> noDirectionGen(1, 100);
-
-        int directions = directionGen(gen);
-
-        if (root->children.size() > 0)
-        {
-            if (noDirectionGen(gen) <= 1)
-            {
-                APP_LOG_ERROR(" no direction found");
-                return;
-            }
-        }
-        std::vector<std::shared_ptr<TreeNode>> children;
-
-        std::vector<int> usedDirections;
-        for (int i = 1; i <= 4; ++i)
-        {
-            if (i != node->direction)
-            {
-                usedDirections.push_back(i);
-            }
-        }
-        std::shuffle(usedDirections.begin(), usedDirections.end(), gen);
-
-        for (int i = 1; i <= directions; ++i)
-        {
-            if ((*nodesLeft) == 0)
+            case 1: // north
+                streetPosition += utils::Vector2(0, distance);
                 break;
-            size_t directionNodes = 2;
-            int direction = usedDirections[i - 1];
-
-            for (size_t dn = 0; dn < directionNodes; ++dn)
-            {
-                utils::Vector2 streetPosition = node->position;
-
-                if ((*nodesLeft) == 0)
-                    break;
-                switch (direction)
-                {
-                case 1: // north
-                    streetPosition -= utils::Vector2(0.f, 2.f + float(dn));
-                    break;
-                case 2: // south
-                    streetPosition += utils::Vector2(0.f, 2.f + float(dn));
-                    break;
-                case 3: // east
-                    streetPosition -= utils::Vector2(2.f + float(dn), 0.f);
-                    break;
-                case 4: // west
-                    streetPosition += utils::Vector2(2.f + float(dn), 0.f);
-                    break;
-                }
-                // don't fill existing childs
-
-                // std::cout << "street pos:" << streetPosition.getX() << " y : " << streetPosition.getY() << std::endl;
-
-                graphics::Rect buildRect{streetPosition.getX(), streetPosition.getY(), 1, 1};
-                if (gameMap->canBuild(buildRect))
-                {
-                    auto child = std::make_shared<TreeNode>(streetPosition, direction);
-                    child->lastNode = dn + 1 == directionNodes;
-                    (*nodesLeft)--;
-
-                    children.push_back(child);
-                    if ((*nodesLeft) == 0)
-                        break;
-                }
-
-                // first check if you can build a street
-                //  }
-                //  else
-                //  {
-                //      if (directions < 4)
-                //          directions++;
-                //  }
+            case 2: // south
+                streetPosition -= utils::Vector2(0, distance);
+                break;
+            case 3: // east
+                streetPosition = streetPosition + utils::Vector2(distance, 0);
+                break;
+            case 4: // west
+                streetPosition = streetPosition - utils::Vector2(distance, 0);
+                break;
             }
-        }
-        for (auto child : children)
-        {
-            if (!existsNode(root, child->position) && child->lastNode)
-            {
-                node->children.push_back(child);
-                fillNode(gen, child, nodesLeft, depth + 1);
-            }
-            else
-            {
-                node->children.push_back(child);
-            }
+            StreetLine line = {position, streetPosition};
+            streetLines.push_back(line);
+            APP_LOG_INFO("distance = " + std::to_string(distance));
+            addChildStreets(gen, line, distance >= 4);
         }
     }
 

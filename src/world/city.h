@@ -22,23 +22,10 @@ namespace world
         Metropolis
     };
 
-    class TreeNode
+    struct StreetLine
     {
-    public:
-        TreeNode(utils::Vector2 &pos, int direction) : position(pos), direction(direction)
-        {
-        }
-
-        virtual ~TreeNode()
-        {
-            children.clear();
-        }
-
-        utils::Vector2 position;
-        int direction;
-
-        std::vector<std::shared_ptr<TreeNode>> children;
-        bool lastNode = false;
+        utils::Vector2 start;
+        utils::Vector2 end;
     };
 
     class City
@@ -67,9 +54,8 @@ namespace world
         bool isOverlapStreet(std::shared_ptr<Building> &building);
         bool isBorderingStreet(std::shared_ptr<Building> &building);
         void generateStreetTree(unsigned int seed);
-        void fillStreetsByTree(std::shared_ptr<TreeNode> node);
-        void fillNode(std::mt19937 &gen, std::shared_ptr<TreeNode> node, long *nodesLeft, int depth);
-        bool existsNode(std::shared_ptr<TreeNode> node, utils::Vector2 &pos);
+        void fillStreetsByLines();
+        void addChildStreets(std::mt19937 generator, StreetLine &baseLine, bool addFurther);
 
         utils::Vector2 position;
         std::string name;
@@ -78,7 +64,7 @@ namespace world
         std::shared_ptr<GameMap> gameMap;
         std::shared_ptr<graphics::TextureMap> groundTexture;
 
-        std::shared_ptr<TreeNode> root;
+        std::vector<StreetLine> streetLines;
         std::shared_ptr<graphics::Text> font;
     };
 }
