@@ -52,6 +52,8 @@ public:
 
     std::shared_ptr<utils::JSON::Object> toJson();
     static std::shared_ptr<GameMap> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
+    std::vector<utils::Vector2> &getChangedTiles();
+    void clearChangedTiles();
 
 private:
     size_t make_pos(const uint16_t x, const uint16_t y) const;
@@ -63,6 +65,7 @@ private:
     std::vector<TileType> mapDecoration;
     std::vector<world::RawResource> mapResources;
     std::vector<std::shared_ptr<world::Building>> buildings;
+    std::vector<utils::Vector2> changedTiles;
 };
 
 #endif // GAMEMAP_H
