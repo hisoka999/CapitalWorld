@@ -310,6 +310,7 @@ namespace world
         int xOffset = 0;
         int yOffset = 0;
         std::uniform_int_distribution<int> lineGen(4, 20);
+        std::uniform_int_distribution<int> chanceGen(0, 100);
 
         if (baseLine.start.getY() < baseLine.end.getY())
         { // North
@@ -337,6 +338,7 @@ namespace world
 
                 utils::Vector2 start = {float(posX), float(posY)};
                 // first Direction
+                if (chanceGen(generator) >= 50)
                 {
                     utils::Vector2 end = start;
                     if (yOffset != 0)
@@ -351,6 +353,7 @@ namespace world
                 }
 
                 // second direction
+                if (chanceGen(generator) >= 50)
                 {
                     utils::Vector2 end = start;
                     if (yOffset != 0)
