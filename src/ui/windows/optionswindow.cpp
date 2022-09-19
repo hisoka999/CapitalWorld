@@ -49,7 +49,7 @@ namespace UI
 
         loadWindow.connect("saveAction", [&](std::string fileName)
                            {
-                               std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/saves/" + fileName + ".save";
+                               std::string saveGameFile = utils::os::get_pref_dir("", "capitalworld") + "/saves/" + fileName + ".save";
                                std::ifstream file;
                                std::istringstream is;
                                std::string s;
@@ -73,7 +73,7 @@ namespace UI
         saveWindow.connect("saveAction", [&](std::string fileName)
                            {
                                setlocale(LC_ALL, "C");
-                               std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/saves/" + fileName + ".save";
+                               std::string saveGameFile = utils::os::get_pref_dir("", "capitalworld") + "/saves/" + fileName + ".save";
                                APP_LOG_INFO("savegame: "+ saveGameFile);
                                std::ofstream ostream(saveGameFile, std::ios::trunc | std::ios::out);
 

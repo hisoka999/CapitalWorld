@@ -33,7 +33,6 @@ namespace UI
         auto nameLabel = std::make_shared<UI::Label>(this);
 
         previewImageButton->setPos(5, 5);
-        // previewImageButton->loadImage("/home/stefan/.local/share/captialworld/screenshot_1626293817153250530.bmp"); //test
         nameLabel->setPos(110, 5);
         nameTextItem->setPos(150, 5);
         fileDateLabel->setPos(110, 30);
