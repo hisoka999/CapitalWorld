@@ -146,6 +146,7 @@ namespace world
         obj->setAttribute("name", getName());
         obj->setAttribute("cash", getCash());
         obj->setAttribute("maxBuildingIndex", getMaxBuildingIndex());
+        obj->setAttribute("player", player);
 
         utils::JSON::JsonArray jsonBuildings;
         for (auto &building : buildings)
@@ -179,8 +180,9 @@ namespace world
     {
         std::string name = object->getStringValue("name");
         float cash = object->getFloatValue("cash");
+        bool player = object->getBoolValue("player");
         // int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
-        auto company = std::make_shared<Company>(name, cash, true);
+        auto company = std::make_shared<Company>(name, cash, player);
         auto buildings = object->getArray("buildings");
 
         for (auto val : buildings)

@@ -50,7 +50,7 @@ namespace UI
 
     void SaveGameWindow::updateSaveGames()
     {
-        std::string saveGameFolder = utils::os::get_pref_dir("captialworld", "") + "/saves/";
+        std::string saveGameFolder = utils::os::get_pref_dir("capitalworld", "") + "/saves/";
         std::filesystem::path p(saveGameFolder);
 
         if (!std::filesystem::exists(p))

@@ -172,7 +172,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
                 if (surf != 0)
                 {
-                    std::string fileName = utils::os::get_pref_dir("", "captialworld") + "screenshot_" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count()) + ".png";
+                    std::string fileName = utils::os::get_pref_dir("", "capitalworld") + "screenshot_" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count()) + ".png";
                     std::cout << "screenshot: " << fileName << std::endl;
                     IMG_SavePNG(surf, fileName.c_str());
                     SDL_FreeSurface(surf);
