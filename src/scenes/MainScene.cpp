@@ -87,7 +87,7 @@ namespace scenes
 
                 loadWindow.connect("saveAction", [&](std::string fileName)
                                    {
-                               std::string saveGameFile = utils::os::get_pref_dir("", "captialworld") + "/saves/" + fileName + ".save";
+                               std::string saveGameFile = utils::os::get_pref_dir("", "capitalworld") + "/saves/" + fileName + ".save";
                                std::ifstream file;
                                std::istringstream is;
                                std::string s;

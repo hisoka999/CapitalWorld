@@ -209,6 +209,15 @@ float GameMapRenderer::getTileYOffset(size_t tileX, size_t tileY)
 void GameMapRenderer::clearCache()
 {
     fillCache = true;
+    for (auto change : gameState->getGameMap()->getChangedTiles())
+    {
+        int x = int(change.getX());
+        int y = int(change.getY());
+        const TileType tile = gameState->getGameMap()->getTile(x, y);
+        size_t source = getSourceTile(tile, x, y);
+        tileData[x + (y * gameState->getGameMap()->getWidth())] = source;
+    }
+    gameState->getGameMap()->clearChangedTiles();
 }
 
 void GameMapRenderer::refreshMiniMap()

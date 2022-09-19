@@ -147,6 +147,12 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
         {
             size_t pos = x + (y * height);
             buildings[pos] = building;
+
+            if (getTile(x, y) > 12)
+            {
+                mapData[pos] = 12;
+                changedTiles.push_back({float(x), float(y)});
+            }
         }
     }
     building->update(this);
@@ -440,6 +446,16 @@ std::shared_ptr<GameMap> GameMap::fromJson(const std::shared_ptr<utils::JSON::Ob
     }
 
     return std::make_shared<GameMap>(width, height, tiles, decoration, resources);
+}
+
+std::vector<utils::Vector2> &GameMap::getChangedTiles()
+{
+    return changedTiles;
+}
+
+void GameMap::clearChangedTiles()
+{
+    changedTiles.clear();
 }
 
 std::string tileTypeToString(const TileType tile)

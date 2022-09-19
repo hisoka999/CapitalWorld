@@ -75,7 +75,9 @@ jobs:
         id: version-linux
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
-        run: echo "::set-output name=version::$(\${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
+        run: |
+        cd ${{ env.CMAKE_BUILD_DIR }}
+        echo "::set-output name=version::$(CapitalWorld.exe --version)"
         id: version-windows
         if: matrix.os == 'windows-latest'
       - name: Build Packages
