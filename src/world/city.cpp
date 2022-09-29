@@ -50,7 +50,7 @@ namespace world
                 }
             }
         }
-        if (!gameMap->canBuild(rect))
+        if (!blocked && !gameMap->canBuild(rect))
         {
             blocked = true;
         }
@@ -184,8 +184,8 @@ namespace world
                     continue;
             }
 
-            house->setOffset(0, house->getSourceRect().height - (height * house->get2DPosition().height));
-
+            auto offset = groundTexture->getOffset(subTexture);
+            house->setOffset(offset.getX(), offset.getY());
             float distance = housePosition.distance(this->position);
             distance = (distance == 0) ? 1 : distance;
             int residents = (numberOfCitizen / numberOfBuildings) * (4 / std::sqrt(distance)) * factor;
@@ -403,7 +403,7 @@ namespace world
             } while (!isBorderingStreet(house) && stopKey < 10);
             stopKey++;
         }
-        return stopKey < 10 && !isBlocked(house->get2DPosition(), gameMap);
+        return !isBlocked(house->get2DPosition(), gameMap);
     }
 
     void City::generateStreetTree(unsigned int seed)
