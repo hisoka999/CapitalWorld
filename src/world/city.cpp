@@ -137,7 +137,6 @@ namespace world
         }
         utils::Vector2 startPosition = position;
 
-        int height = 32;
         world::buildings::DemandMap baseDemand;
         baseDemand[world::ProductType::Food] = 0.7f;
         // baseDemand[world::ProductType::Resource] = 0.3f;
@@ -183,7 +182,6 @@ namespace world
                 if (!findHousePosition(house, street, gen))
                     continue;
             }
-
             auto offset = groundTexture->getOffset(subTexture);
             house->setOffset(offset.getX(), offset.getY());
             float distance = housePosition.distance(this->position);
