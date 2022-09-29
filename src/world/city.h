@@ -56,6 +56,7 @@ namespace world
         void generateStreetTree(unsigned int seed);
         void fillStreetsByLines();
         void addChildStreets(std::mt19937 generator, StreetLine &baseLine, bool addFurther);
+        bool findHousePosition(std::shared_ptr<Building> &house, std::shared_ptr<world::buildings::Street> &street, std::mt19937 &gen);
 
         utils::Vector2 position;
         std::string name;

@@ -41,42 +41,99 @@
             "x": 0.0,
             "y": 96.0,
             "width": 64.0,
-            "height": 32.0
+            "height": 32.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0
+            }
+        },
+        {
+            "name": "house_2x2_1",
+            "x": 512.0,
+            "y": 160.0,
+            "width": 128.0,
+            "height": 96.0,
+            "offset": {
+                "x": 32.0,
+                "y": 32.0
+            }
+        },
+        {
+            "name": "medhouse_2x2_1",
+            "x": 256.0,
+            "y": 160.0,
+            "width": 128.0,
+            "height": 96.0,
+            "offset": {
+                "x": 32.0,
+                "y": 32.0
+            }
+        },
+        {
+            "name": "bighouse_2x2_1",
+            "x": 384.0,
+            "y": 160.0,
+            "width": 128.0,
+            "height": 96.0,
+            "offset": {
+                "x": 32.0,
+                "y": 32.0
+            }
         },
         {
             "name": "medhouse_1",
             "x": 64.0,
             "y": 96.0,
             "width": 64.0,
-            "height": 64.0
+            "height": 64.0,
+            "offset": {
+                "x": 0.0,
+                "y": 32.0
+            }
         },
         {
             "name": "medhouse_2",
             "x": 256.0,
             "y": 96.0,
             "width": 64.0,
-            "height": 64.0
+            "height": 64.0,
+            "offset": {
+                "x": 0.0,
+                "y": 32.0
+            }
         },
         {
             "name": "house_2",
             "x": 0.0,
             "y": 64.0,
             "width": 64.0,
-            "height": 32.0
+            "height": 32.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0
+            }
         },
         {
             "name": "bighouse_1",
             "x": 128.0,
             "y": 96.0,
             "width": 64.0,
-            "height": 64.0
+            "height": 64.0,
+            "offset": {
+                "x": 0.0,
+                "y": 32.0
+            }
         },
         {
             "name": "bighouse_2",
             "x": 320.0,
             "y": 96.0,
             "width": 64.0,
-            "height": 64.0
+            "height": 64.0,
+            "offset": {
+                "x": 0.0,
+                "y": 32.0
+            }
         },
         {
             "name": "street_corner_left",

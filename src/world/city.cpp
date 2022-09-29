@@ -50,7 +50,7 @@ namespace world
                 }
             }
         }
-        if (!gameMap->canBuild(rect))
+        if (!blocked && !gameMap->canBuild(rect))
         {
             blocked = true;
         }
@@ -62,11 +62,11 @@ namespace world
         bool isBordering = false;
         auto pos = building->get2DPosition();
         auto posNorth = pos;
-        posNorth.y -= 1;
+        posNorth.y -= pos.height;
         auto posEast = pos;
         posEast.x -= 1;
         auto posWest = pos;
-        posWest.x += 1;
+        posWest.x += pos.width;
         auto posSouth = pos;
         posSouth.y += 1;
         for (auto &street : streets)
@@ -137,9 +137,6 @@ namespace world
         }
         utils::Vector2 startPosition = position;
 
-        std::uniform_int_distribution<int> directionGen(1, 4);
-
-        int height = 32;
         world::buildings::DemandMap baseDemand;
         baseDemand[world::ProductType::Food] = 0.7f;
         // baseDemand[world::ProductType::Resource] = 0.3f;
@@ -149,56 +146,54 @@ namespace world
 
         for (auto street : streets)
         {
-            auto house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
+            std::shared_ptr<Building> house = nullptr;
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);
+
             // change it in the real version
-            int houseId = houseGen(gen);
+            int houseId = 1;
             std::string subTexture = "house_" + std::to_string(houseId);
             graphics::Rect srcRect;
-            groundTexture->getSourceRect(subTexture, &srcRect);
-            house->setSourceRect(srcRect);
-            house->setPosition(housePosition.getX(), housePosition.getY());
-            house->setOffset(0, house->getSourceRect().height - height);
 
-            house->setSubTexture(subTexture);
+            bool tryBiggerHouse = true;
+            float factor = 4;
+            {
+                house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House, 2, 2);
+                house->setPosition(housePosition.getX(), housePosition.getY());
 
+                subTexture = "house_2x2_" + std::to_string(houseId);
+                house->setSubTexture(subTexture);
+
+                groundTexture->getSourceRect(subTexture, &srcRect);
+                house->setSourceRect(srcRect);
+
+                tryBiggerHouse = findHousePosition(house, street, gen);
+            }
+            if (!tryBiggerHouse)
+            {
+                houseId = houseGen(gen);
+                factor = 1;
+                house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House);
+                house->setPosition(housePosition.getX(), housePosition.getY());
+
+                subTexture = "house_" + std::to_string(houseId);
+                house->setSubTexture(subTexture);
+                groundTexture->getSourceRect(subTexture, &srcRect);
+                house->setSourceRect(srcRect);
+                if (!findHousePosition(house, street, gen))
+                    continue;
+            }
+            auto offset = groundTexture->getOffset(subTexture);
+            house->setOffset(offset.getX(), offset.getY());
             float distance = housePosition.distance(this->position);
             distance = (distance == 0) ? 1 : distance;
-            int residents = (numberOfCitizen / numberOfBuildings) * (4 / std::sqrt(distance));
+            int residents = (numberOfCitizen / numberOfBuildings) * (4 / std::sqrt(distance)) * factor;
 
             std::shared_ptr<world::buildings::HouseComponent> houseComponent = std::make_shared<world::buildings::HouseComponent>(residents, baseDemand, houseId);
             houseComponent->updateTexture(house.get());
             auto component = std::dynamic_pointer_cast<world::buildings::BuildingComponent>(houseComponent);
             house->addComponent(component);
-            int stopKey = 0;
-            while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)
-            {
-                housePosition = utils::Vector2(street->getDisplayRect().x, street->getDisplayRect().y);
 
-                do
-                {
-
-                    switch (directionGen(gen))
-                    {
-                    case 1: // north
-                        housePosition = housePosition - utils::Vector2(0, 1);
-                        break;
-                    case 2: // south
-                        housePosition = housePosition + utils::Vector2(0, 1);
-                        break;
-                    case 3: // east
-                        housePosition = housePosition - utils::Vector2(1, 0);
-                        break;
-                    case 4: // west
-                        housePosition = housePosition + utils::Vector2(1, 0);
-                        break;
-                    }
-                    house->setPosition(housePosition.getX(), housePosition.getY());
-                } while (!isBorderingStreet(house) && stopKey < 10);
-                stopKey++;
-            }
-            if (stopKey < 10)
-                buildings.push_back(house);
+            buildings.push_back(house);
         }
 
         std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2)
@@ -225,9 +220,9 @@ namespace world
         {
             gameMap->addBuilding(street);
         }
-        for (auto &street : buildings)
+        for (auto &building : buildings)
         {
-            gameMap->addBuilding(street);
+            gameMap->addBuilding(building);
         }
     }
 
@@ -372,6 +367,41 @@ namespace world
             if (!yOffset || ((posY > baseLine.end.getY() && yOffset > 0) || (yOffset < 0 && posY < baseLine.end.getY())))
                 break;
         }
+    }
+
+    bool City::findHousePosition(std::shared_ptr<Building> &house, std::shared_ptr<world::buildings::Street> &street, std::mt19937 &gen)
+    {
+        int stopKey = 0;
+        utils::Vector2 housePosition;
+        std::uniform_int_distribution<int> directionGen(1, 4);
+
+        while (isBlocked(house->get2DPosition(), gameMap) && stopKey < 10)
+        {
+            housePosition = utils::Vector2(street->getDisplayRect().x, street->getDisplayRect().y);
+
+            do
+            {
+
+                switch (directionGen(gen))
+                {
+                case 1: // north
+                    housePosition = housePosition - utils::Vector2(0, 1);
+                    break;
+                case 2: // south
+                    housePosition = housePosition + utils::Vector2(0, 1);
+                    break;
+                case 3: // east
+                    housePosition = housePosition - utils::Vector2(1, 0);
+                    break;
+                case 4: // west
+                    housePosition = housePosition + utils::Vector2(1, 0);
+                    break;
+                }
+                house->setPosition(housePosition.getX(), housePosition.getY());
+            } while (!isBorderingStreet(house) && stopKey < 10);
+            stopKey++;
+        }
+        return !isBlocked(house->get2DPosition(), gameMap);
     }
 
     void City::generateStreetTree(unsigned int seed)

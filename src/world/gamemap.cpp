@@ -188,6 +188,9 @@ bool GameMap::canBuild(graphics::Rect buildRect)
     if (buildRect.x < 0 || buildRect.y < 0)
         return false;
 
+    if (make_pos(buildRect.x, buildRect.y) > buildings.size())
+        return false;
+
     for (int y = buildRect.y - buildRect.height; y <= buildRect.y + buildRect.height; ++y)
     {
         for (int x = buildRect.x - buildRect.width; x <= buildRect.x + buildRect.width; ++x)

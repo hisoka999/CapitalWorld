@@ -106,23 +106,34 @@ namespace world
 
         void HouseComponent::updateTexture(Building *building)
         {
-            if (residents >= 2000)
+
+            std::string size = "";
+
+            unsigned int factor = 1;
+            auto &buildingPosition = building->get2DPosition();
+            if (buildingPosition.width > 1)
             {
-                building->setSubTexture("bighouse_" + std::to_string(houseId));
+                size = "2x2_";
+                factor = 4;
             }
-            else if (residents >= 1000)
+            if (residents >= 2000 * factor)
             {
-                building->setSubTexture("medhouse_" + std::to_string(houseId));
+                building->setSubTexture("bighouse_" + size + std::to_string(houseId));
+            }
+            else if (residents >= 1000 * factor)
+            {
+                building->setSubTexture("medhouse_" + size + std::to_string(houseId));
             }
             else
             {
-                building->setSubTexture("house_" + std::to_string(houseId));
+                building->setSubTexture("house_" + size + std::to_string(houseId));
             }
             auto textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
             graphics::Rect srcRect;
             textureMap->getSourceRect(building->getSubTextureHash(), &srcRect);
+            auto &offset = textureMap->getOffset(building->getSubTextureHash());
             building->setSourceRect(srcRect);
-            building->setOffset(0, building->getSourceRect().height - 32);
+            building->setOffset(offset.getX(), offset.getY());
         }
 
         std::shared_ptr<BuildingComponent> HouseComponent::clone()
