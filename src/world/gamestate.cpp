@@ -4,6 +4,8 @@
 #include <world/buildings/SalesComponent.h>
 #include <future>
 #include <iostream>
+#include "engine/utils/PerformanceLogger.h"
+
 namespace world
 {
 
@@ -60,30 +62,25 @@ namespace world
 
     void GameState::update()
     {
-        auto start = std::chrono::high_resolution_clock::now();
+        utils::PerformanceLogger perf("updateGameState");
 
         for (auto &city : cities)
         {
 
             for (auto &building : city->getBuildings())
             {
-                if (building->getType() != world::BuildingType::Street)
-                    building->updateProduction(time.getMonth(), time.getYear());
+                building->updateProduction(time.getMonth(), time.getYear());
             }
+            perf.step("city_" + city->getName());
         }
-        auto elapsed = std::chrono::high_resolution_clock::now() - start;
-        long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-        std::cout << "update cities time: " << milliseconds << "ms" << std::endl;
-        start = std::chrono::high_resolution_clock::now();
+
         // update cities
         for (auto &company : companies)
         {
             company->updateBalance(time.getMonth(), time.getYear());
         }
-
-        elapsed = std::chrono::high_resolution_clock::now() - start;
-        milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
-        std::cout << "update companies time: " << milliseconds << "ms" << std::endl;
+        perf.step("companys");
+        perf.end();
     }
 
     std::shared_ptr<GameState> GameState::fromJson(std::shared_ptr<utils::JSON::Object> &object)

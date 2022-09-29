@@ -13,7 +13,7 @@ namespace UI
         addObject(labelNumberOfWorker);
 
         auto cbxNumberOfWorker = std::make_shared<UI::ComboBox<int>>(this);
-        auto component = building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+        const auto &component = building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
 
         for (int i = 0; i <= component->getMaxWorkers(); ++i)
         {

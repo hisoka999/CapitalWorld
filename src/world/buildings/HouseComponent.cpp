@@ -50,8 +50,8 @@ namespace world
 
                 for (auto &shop : shops)
                 {
-                    auto storage = shop->getComponent<buildings::StorageComponent>("StorageComponent");
-                    auto sales = shop->getComponent<buildings::SalesComponent>("SalesComponent");
+                    const auto &storage = shop->getComponent<buildings::StorageComponent>("StorageComponent");
+                    const auto &sales = shop->getComponent<buildings::SalesComponent>("SalesComponent");
 
                     for (auto &[storedProduct, entry] : storage->getEntries())
                     {

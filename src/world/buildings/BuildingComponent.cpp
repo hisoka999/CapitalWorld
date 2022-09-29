@@ -56,14 +56,14 @@ namespace world
 
         std::shared_ptr<world::GameState> BuildingComponent::getGameState()
         {
-            auto worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
+            const auto &worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
 
             return worldScene->getGameState();
         }
 
         bool BuildingComponent::isGameRunning()
         {
-            auto worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
+            const auto &worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
             return worldScene != nullptr && worldScene->getGameState() != nullptr;
         }
 

@@ -11,6 +11,7 @@
 #include <random>
 #include <engine/utils/logger.h>
 #include <cmath>
+#include "engine/utils/PerformanceLogger.h"
 
 namespace world
 {
@@ -29,56 +30,17 @@ namespace world
 
     bool City::isBlocked(graphics::Rect rect, const std::shared_ptr<GameMap> &gameMap)
     {
-        bool blocked = false;
-
-        for (auto &street : streets)
-        {
-            if (street->get2DPosition().intersectsNoLine(rect))
-            {
-                blocked = true;
-                break;
-            }
-        }
-        if (!blocked)
-        {
-            for (auto &building : buildings)
-            {
-                if (building->get2DPosition().intersectsNoLine(rect))
-                {
-                    blocked = true;
-                    break;
-                }
-            }
-        }
-        if (!blocked && !gameMap->canBuild(rect))
-        {
-            blocked = true;
-        }
-
-        return blocked;
+        return !gameMap->canBuild(rect);
     }
     bool City::isBorderingStreet(std::shared_ptr<Building> &building)
     {
-        bool isBordering = false;
         auto pos = building->get2DPosition();
-        auto posNorth = pos;
-        posNorth.y -= pos.height;
-        auto posEast = pos;
-        posEast.x -= 1;
-        auto posWest = pos;
-        posWest.x += pos.width;
-        auto posSouth = pos;
-        posSouth.y += 1;
-        for (auto &street : streets)
-        {
-            if (street->get2DPosition().intersectsNoLine(posNorth) || street->get2DPosition().intersectsNoLine(posEast) || street->get2DPosition().intersectsNoLine(posWest) || street->get2DPosition().intersectsNoLine(posSouth))
-            {
-                isBordering = true;
-                break;
-            }
-        }
+        auto north = gameMap->getBuilding(pos.x, pos.y - pos.height);
+        auto east = gameMap->getBuilding(pos.x - 1, pos.y);
+        auto west = gameMap->getBuilding(pos.x + pos.width, pos.y - pos.height);
+        auto south = gameMap->getBuilding(pos.x, pos.y + 1);
 
-        return isBordering;
+        return north != nullptr || east != nullptr || west != nullptr || south != nullptr;
     }
 
     bool City::isOverlapStreet(std::shared_ptr<Building> &building)
@@ -110,6 +72,8 @@ namespace world
 
     void City::generate(unsigned int seed, std::shared_ptr<GameMap> gameMap, long people)
     {
+        utils::PerformanceLogger perf("generate" + name);
+
         this->gameMap = gameMap;
         std::mt19937 gen(seed);
         if (people == 0)
@@ -142,8 +106,14 @@ namespace world
         // baseDemand[world::ProductType::Resource] = 0.3f;
 
         generateStreetTree(seed);
+        perf.step("generateStreetTree");
         fillStreetsByLines();
-
+        perf.step("fillStreetsByLines");
+        for (auto &street : streets)
+        {
+            gameMap->addBuilding(street);
+        }
+        perf.step("addStreets");
         for (auto street : streets)
         {
             std::shared_ptr<Building> house = nullptr;
@@ -195,36 +165,10 @@ namespace world
             house->addComponent(component);
 
             buildings.push_back(house);
+            gameMap->addBuilding(house);
         }
-
-        std::sort(streets.begin(), streets.end(), [&](std::shared_ptr<world::buildings::Street> &o1, std::shared_ptr<world::buildings::Street> &o2)
-                  {
-                      utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-                      auto v11 = iso::twoDToIso(v1);
-
-                      utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-                      auto v22 = iso::twoDToIso(v2);
-
-                      return v11.getY() < v22.getY(); });
-
-        std::sort(buildings.begin(), buildings.end(), [&](std::shared_ptr<world::Building> o1, std::shared_ptr<world::Building> o2)
-                  {
-                      utils::Vector2 v1(o1->get2DPosition().x, o1->get2DPosition().y);
-                      auto v11 = iso::twoDToIso(v1);
-
-                      utils::Vector2 v2(o2->get2DPosition().x, o2->get2DPosition().y);
-                      auto v22 = iso::twoDToIso(v2);
-
-                      return v11.getY() < v22.getY(); });
-
-        for (auto &street : streets)
-        {
-            gameMap->addBuilding(street);
-        }
-        for (auto &building : buildings)
-        {
-            gameMap->addBuilding(building);
-        }
+        perf.step("added houses");
+        perf.end();
     }
 
     void City::renderCity(core::Renderer *renderer)
@@ -293,11 +237,6 @@ namespace world
                     break;
             }
         }
-
-        // for (auto child : node->children)
-        // {
-        //     fillStreetsByTree(child);
-        // }
     }
 
     void City::addChildStreets(std::mt19937 generator, StreetLine &baseLine, bool addFurther)
@@ -324,8 +263,8 @@ namespace world
         { // west
             xOffset = -4;
         }
-        APP_LOG_INFO("xOffset = " + std::to_string(xOffset));
-        APP_LOG_INFO("yOffset = " + std::to_string(yOffset));
+        // APP_LOG_INFO("xOffset = " + std::to_string(xOffset));
+        // APP_LOG_INFO("yOffset = " + std::to_string(yOffset));
 
         for (int posY = baseLine.start.getY(); posY != baseLine.end.getY() || !yOffset; posY += yOffset)
         {

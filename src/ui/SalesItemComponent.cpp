@@ -32,7 +32,7 @@ namespace UI
         addObject(nameLabel);
 
         auto productCombobox = std::make_shared<UI::ComboBox<std::string>>(this);
-        auto storage = building->getComponent<world::buildings::StorageComponent>("StorageComponent");
+        const auto &storage = building->getComponent<world::buildings::StorageComponent>("StorageComponent");
         for (auto product : storage->getStoredProducts())
         {
             productCombobox->addElement(product);

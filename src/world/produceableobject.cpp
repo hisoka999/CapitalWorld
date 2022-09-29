@@ -8,17 +8,17 @@ ProduceableObject::~ProduceableObject()
 {
 }
 
-std::string ProduceableObject::getLocalisedName() const
+const std::string &ProduceableObject::getLocalisedName() const
 {
     return m_localizedName;
 }
 
-std::string ProduceableObject::getName() const
+const std::string &ProduceableObject::getName() const
 {
     return m_name;
 }
 
-std::string ProduceableObject::getImage() const
+const std::string &ProduceableObject::getImage() const
 {
     return m_image;
 }

@@ -10,9 +10,9 @@ public:
     ProduceableObject(const std::string &localizedName, const std::string &name, const std::string &image);
     ~ProduceableObject();
 
-    std::string getLocalisedName() const;
-    std::string getName() const;
-    std::string getImage() const;
+    const std::string &getLocalisedName() const;
+    const std::string &getName() const;
+    const std::string &getImage() const;
 
 private:
     std::string m_localizedName;

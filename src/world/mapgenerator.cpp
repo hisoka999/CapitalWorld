@@ -6,6 +6,7 @@
 #include <fstream>
 #include <random>
 #include <engine/utils/logger.h>
+#include "engine/utils/PerformanceLogger.h"
 
 namespace world
 {
@@ -60,6 +61,8 @@ namespace world
     }
     std::shared_ptr<GameMap> MapGenerator::generateMap(size_t width, size_t height, int numberOfCities, CityNames cityName, unsigned long seed)
     {
+        utils::PerformanceLogger perf("generateMap");
+
         APP_LOG_INFO("seed: " + std::to_string(seed));
         auto definitions = getCityDefinitions(cityName);
 
@@ -80,6 +83,7 @@ namespace world
         std::fill(mapData.begin(), mapData.end(), 10);
         std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
         std::fill(mapResources.begin(), mapResources.end(), RawResource::None);
+        perf.step("init");
 
         // Visit every pixel of the image and assign a color generated with Perlin noise
         for (unsigned int i = 0; i < height; ++i)
@@ -116,6 +120,7 @@ namespace world
             }
         }
         // 8 ... 11 = grass
+        perf.step("noise");
 
         auto map = std::make_shared<GameMap>(width, height, mapData, mapDecoration, mapResources);
 
@@ -127,8 +132,10 @@ namespace world
             auto city = std::make_shared<world::City>(definitions[i].name, cityPos);
             city->generate(seed, map, definitions[i].size);
             cities.push_back(city);
+            perf.step("cities " + definitions[i].name);
         }
-
+        perf.step("cities");
+        perf.end();
         return map;
     }
 

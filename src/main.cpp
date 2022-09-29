@@ -68,7 +68,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         generateEnumPot(fileName);
 #endif
         std::filesystem::path loggingFolder = std::filesystem::path(utils::os::get_pref_dir("", "capitalworld")) / "logs";
-        g_appLogger.init(loggingFolder, utils::LogLevel::trace);
+        g_appLogger.init(loggingFolder, utils::LogLevel::warn);
         g_sglLogger.init(loggingFolder, utils::LogLevel::trace);
 
         core::GameWindow win(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "capitalworld");
