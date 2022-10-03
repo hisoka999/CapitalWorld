@@ -156,6 +156,7 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
         }
     }
     building->update(this);
+    initParents(building);
     std::shared_ptr<core::Message<MessageTypes, bool>> message = std::make_shared<core::Message<MessageTypes, bool>>(MessageTypes::ObjectHasBuild, true);
     core::MessageSystem<MessageTypes>::get().sendMessage(message);
 }
@@ -323,6 +324,42 @@ void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding,
     }
 }
 
+void GameMap::initStreetGraph()
+{
+
+    streetGraph.clear();
+    for (auto &building : buildings)
+    {
+        if (building == nullptr)
+            continue;
+
+        initParents(building);
+    }
+}
+
+void GameMap::initParents(const std::shared_ptr<world::Building> &building)
+{
+    if (building->getType() == world::BuildingType::Street)
+    {
+        utils::Vector2 parentPos = {building->get2DPosition().x, building->get2DPosition().y};
+
+        size_t parentIndex = make_pos(parentPos.getX(), parentPos.getY());
+        paths::Neighbor neighbor(parentIndex, parentPos, 1.0);
+
+        for (size_t y = parentPos.getY() - 1; y <= parentPos.getY() + 1; y++)
+        {
+            for (size_t x = parentPos.getX() - 1; x <= parentPos.getX() + 1; x++)
+            {
+                if (x != parentPos.getX() && y != parentPos.getY())
+                    continue;
+                size_t index = make_pos(x, y);
+                if (index != parentIndex)
+                    streetGraph[index].push_back(neighbor);
+            }
+        }
+    }
+}
+
 std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company)
 {
     // Schritt 1 Suche Straße neben dem Startgebäude
@@ -459,6 +496,16 @@ std::vector<utils::Vector2> &GameMap::getChangedTiles()
 void GameMap::clearChangedTiles()
 {
     changedTiles.clear();
+}
+
+paths::Graph &GameMap::getStreetGraph()
+{
+    return streetGraph;
+}
+
+size_t GameMap::make_pos(const utils::Vector2 &pos)
+{
+    return make_pos(pos.getX(), pos.getY());
 }
 
 std::string tileTypeToString(const TileType tile)

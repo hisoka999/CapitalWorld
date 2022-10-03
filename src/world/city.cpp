@@ -85,6 +85,7 @@ namespace world
         std::uniform_int_distribution<long> peopleGen(people * 0.5, people * 1.5);
 
         std::uniform_int_distribution<long> houseGen(1, 2);
+        std::uniform_int_distribution<long> houseSizeGen(1, 2);
 
         numberOfCitizen = peopleGen(gen);
         long numberOfBuildings = static_cast<long>(std::round(static_cast<float>(numberOfCitizen) / 1000.0f));
@@ -124,8 +125,10 @@ namespace world
             std::string subTexture = "house_" + std::to_string(houseId);
             graphics::Rect srcRect;
 
-            bool tryBiggerHouse = true;
             float factor = 4;
+            int houseSize = houseSizeGen(gen);
+            bool tryBiggerHouse = houseSize != 1;
+            if (houseSize == 2)
             {
                 house = std::make_shared<Building>("House", _("House"), "", 100, BuildingType::House, 2, 2);
                 house->setPosition(housePosition.getX(), housePosition.getY());

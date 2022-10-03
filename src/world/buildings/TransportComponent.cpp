@@ -6,6 +6,11 @@
 #include "world/company.h"
 #include "world/product.h"
 #include <future>
+#include "world/gamestate.h"
+#include "world/GameStateMutex.h"
+#include "messages.h"
+#include "world/AnimatedMovement.h"
+#include <engine/graphics/TextureManager.h>
 
 namespace world
 {
@@ -79,6 +84,8 @@ namespace world
 
         void TransportComponent::clearRoutes()
         {
+            std::lock_guard<std::mutex> guard(gGameStateMutex);
+
             routes.clear();
         }
 
@@ -86,7 +93,7 @@ namespace world
         {
             if (routes.size() == MAX_ROUTES)
                 return;
-            TransportRoute tmp = {startBuilding, endBuilding, "", "", product, quantity, false};
+            TransportRoute tmp = {startBuilding, endBuilding, startBuilding->getDisplayName(), endBuilding->getDisplayName(), product, quantity, false};
             std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>(tmp);
             routes.push_back(route);
         }
@@ -101,9 +108,15 @@ namespace world
 
         void TransportComponent::updateProduction(int month, int year, [[maybe_unused]] Building *building)
         {
+            std::lock_guard<std::mutex> guard(gGameStateMutex);
             for (auto &route : routes)
             {
+                if (route == nullptr)
+                    continue;
                 if (!route->active || route->product == nullptr || route->endBuilding == nullptr || route->startBuilding == nullptr)
+                    continue;
+
+                if (route->transportActive)
                     continue;
 
                 auto startStorage = route->startBuilding->getComponent<world::buildings::StorageComponent>("StorageComponent");
@@ -115,6 +128,36 @@ namespace world
                     endStorage->addEntry(route->product->getName(), amount);
 
                     route->endBuilding->getBalance().addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
+                }
+
+                // find path
+                auto graph = getGameState()->getGameMap()->getStreetGraph();
+                auto startStreets = getGameState()->getGameMap()->borderingBuilding(route->startBuilding, world::BuildingType::Street, false);
+                auto endStreets = getGameState()->getGameMap()->borderingBuilding(route->endBuilding, world::BuildingType::Street, false);
+
+                if (startStreets.size() == 0 || endStreets.size() == 0)
+                    continue;
+                auto startPosition = startStreets[0]->getPosition();
+                size_t startIndex = getGameState()->getGameMap()->make_pos(startPosition);
+                size_t targetIndex = getGameState()->getGameMap()->make_pos(endStreets[0]->getPosition());
+                if (targetIndex != 0)
+                {
+                    std::map<int, double> minimumDistances;
+                    std::map<int, int> previousVertices;
+                    std::map<int, utils::Vector2> vertexPositions;
+                    vertexPositions[startIndex] = startStreets[0]->getPosition();
+                    paths::ComputeShortestPathsByDijkstra(startIndex, graph, minimumDistances, previousVertices, vertexPositions);
+                    auto path = paths::GetShortestPathTo(targetIndex, previousVertices, vertexPositions);
+                    route->transportActive = true;
+                    std::cout << "path:" << path.size() << std::endl;
+
+                    if (path.size() > 0)
+                    {
+
+                        AnimatedMovementData data = {path, route};
+                        std::shared_ptr<core::Message<MessageTypes, AnimatedMovementData>> message = std::make_shared<core::Message<MessageTypes, AnimatedMovementData>>(MessageTypes::AnimationStart, data);
+                        core::MessageSystem<MessageTypes>::get().sendMessage(message);
+                    }
                 }
             }
         }

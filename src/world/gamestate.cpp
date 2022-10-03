@@ -1,3 +1,4 @@
+#include "world/GameStateMutex.h"
 #include "gamestate.h"
 #include <engine/utils/json/object.h>
 #include <magic_enum.hpp>
@@ -62,6 +63,8 @@ namespace world
 
     void GameState::update()
     {
+        std::lock_guard<std::mutex> guard(gGameStateMutex);
+
         utils::PerformanceLogger perf("updateGameState");
 
         for (auto &city : cities)

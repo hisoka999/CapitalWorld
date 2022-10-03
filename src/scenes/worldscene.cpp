@@ -14,6 +14,7 @@
 #include <iostream>
 #include <random>
 #include "messages.h"
+#include "world/buildings/TransportComponent.h"
 
 namespace scenes
 {
@@ -62,11 +63,24 @@ namespace scenes
 
         eventQueueRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::Event, [this](notifications::Event event)
                                                                                    { eventQueue.add(event); });
+
+        animationMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::AnimationStart, [this](world::AnimatedMovementData movement)
+                                                                                         { 
+                                                            auto texture = ::graphics::TextureManager::Instance().loadTexture("images/sprites/black_vehicles.png");
+                                                            auto sprite = std::make_shared<world::graphics::Sprite>(texture, world::graphics::SpriteDirection::LeftDown, 8, 0);
+                                                            std::shared_ptr<world::AnimatedMovement>  animation = std::make_shared<world::AnimatedMovement>(movement.path, sprite);
+
+                                                            animation->setFinishCallback([=](){
+                                                                movement.route->transportActive = false;
+                                                            });
+
+                                                            currentAnimations.push_back(animation); });
     }
     WorldScene::~WorldScene()
     {
         core::MessageSystem<MessageTypes>::get().deregister(buildMessageRefId);
         core::MessageSystem<MessageTypes>::get().deregister(eventQueueRefId);
+        core::MessageSystem<MessageTypes>::get().deregister(animationMessageRefId);
         thread->stop();
         aiThread->stop();
         if (previewSurface != nullptr)
@@ -214,6 +228,10 @@ namespace scenes
     {
 
         mapRenderer->render(renderer);
+        for (auto &animation : currentAnimations)
+        {
+            animation->render(renderer);
+        }
 
         renderCursor();
         renderHUD();
@@ -571,7 +589,6 @@ namespace scenes
 
         if (direction.top)
         {
-            // if (viewPort.y > 0)
             moveY -= speed;
         }
         else if (direction.bottom)
@@ -581,7 +598,6 @@ namespace scenes
 
         if (direction.left)
         {
-            // if (viewPort.x > 0)
             moveX -= speed;
         }
         else if (direction.right)
@@ -619,11 +635,6 @@ namespace scenes
             moveY = 0;
             wasMoving = true;
 
-            // if (renderer->getMainCamera()->getY() < 0)
-            // {
-            //     moveY = renderer->getMainCamera()->getY() * -1;
-            // }
-
             renderer->getMainCamera()->move(moveX, moveY);
         }
         updateDelta += renderer->getTimeDelta();
@@ -640,6 +651,13 @@ namespace scenes
 
         hud->update();
         eventQueue.updateEvents(delta);
+
+        for (auto it = currentAnimations.begin(); it != currentAnimations.end(); ++it)
+        {
+            (*it)->update(delta);
+            if ((*it)->isFinished())
+                it = currentAnimations.erase(it);
+        }
     }
 
     std::shared_ptr<world::GameState> &WorldScene::getGameState()

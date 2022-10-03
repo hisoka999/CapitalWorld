@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <world/company.h>
+#include <engine/paths/dijkstra.h>
 
 typedef uint16_t TileType;
 
@@ -54,18 +55,22 @@ public:
     static std::shared_ptr<GameMap> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
     std::vector<utils::Vector2> &getChangedTiles();
     void clearChangedTiles();
+    paths::Graph &getStreetGraph();
+    size_t make_pos(const utils::Vector2 &pos);
+    std::vector<std::shared_ptr<world::Building>> borderingBuilding(const std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType);
 
 private:
     size_t make_pos(const uint16_t x, const uint16_t y) const;
-    std::vector<std::shared_ptr<world::Building>> borderingBuilding(const std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType);
     void findStreets(const std::shared_ptr<world::Building> &startBuilding, std::vector<std::shared_ptr<world::Building>> &streets, const std::shared_ptr<world::Building> &excludeStreet);
-
+    void initStreetGraph();
+    void initParents(const std::shared_ptr<world::Building> &building);
     size_t width, height;
     TileType *mapData;
     std::vector<TileType> mapDecoration;
     std::vector<world::RawResource> mapResources;
     std::vector<std::shared_ptr<world::Building>> buildings;
     std::vector<utils::Vector2> changedTiles;
+    paths::Graph streetGraph;
 };
 
 #endif // GAMEMAP_H

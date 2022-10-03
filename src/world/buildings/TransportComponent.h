@@ -3,6 +3,9 @@
 
 #include "BuildingComponent.h"
 
+#include <list>
+#include <engine/utils/vector2.h>
+
 class Product;
 
 namespace world
@@ -22,6 +25,7 @@ namespace world
             std::shared_ptr<Product> product;
             unsigned quantity;
             bool active;
+            bool transportActive = false;
         };
 
         class TransportComponent : public world::buildings::BuildingComponent
@@ -46,6 +50,12 @@ namespace world
         };
 
     } // namespace buildings
+
+    struct AnimatedMovementData
+    {
+        std::list<utils::Vector2> path;
+        std::shared_ptr<buildings::TransportRoute> route;
+    };
 
 } // namespace world
 #endif // __TRANSPORTCOMPONENT_H__

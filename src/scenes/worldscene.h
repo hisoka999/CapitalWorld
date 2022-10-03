@@ -22,7 +22,7 @@
 #include <map>
 #include <world/gamemap.h>
 #include "notifications/EventQueue.h"
-
+#include "world/AnimatedMovement.h"
 namespace scenes
 {
 
@@ -68,6 +68,7 @@ namespace scenes
         UI::ResearchWindow researchWindow;
         UI::Console console;
         UI::PlayerWindow playerWindow;
+        std::vector<std::shared_ptr<world::AnimatedMovement>> currentAnimations;
 
         graphics::Texture uiTexture;
 
@@ -87,6 +88,7 @@ namespace scenes
         std::shared_ptr<world::Building> selectedBuilding2Build;
         int buildMessageRefId;
         int eventQueueRefId;
+        int animationMessageRefId;
         graphics::Rect miniMapRect;
         bool dragBuildActive = false;
         notifications::EventQueue eventQueue;

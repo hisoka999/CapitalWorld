@@ -9,6 +9,7 @@
 #include "translate.h"
 #include "messages.h"
 #include "notifications/EventQueue.h"
+#include <cassert>
 
 namespace world
 {
@@ -53,6 +54,7 @@ namespace world
     }
     void Company::addBuilding(std::shared_ptr<Building> building)
     {
+        assert(building != nullptr);
         buildings.push_back(building);
     }
     bool Company::hasBuilding(std::shared_ptr<Building> building)
@@ -75,14 +77,20 @@ namespace world
         income = 0;
         for (auto &building : buildings)
         {
+            if (building == nullptr)
+                continue;
             building->getBalance().calculateBalance(month, year, building->getProducts());
             building->updateProduction(month, year);
             if (building->isAutoSellActive())
                 building->autoSell(month, year);
 
-            costs += building->getBalance().getCostsPerMonth(month, year);
+            if (building != nullptr)
+            {
 
-            income += building->getBalance().getIncomePerMonth(month, year);
+                costs += building->getBalance().getCostsPerMonth(month, year);
+
+                income += building->getBalance().getIncomePerMonth(month, year);
+            }
         }
         auto iter = m_activeLoans.begin();
         while (iter != m_activeLoans.end())

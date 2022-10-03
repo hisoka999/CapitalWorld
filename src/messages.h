@@ -9,6 +9,7 @@ enum class MessageTypes
     ObjectHasBuild,
     ShipHasBuild,
     Event,
+    AnimationStart
 };
 
 #endif // MESSAGETYPES_H

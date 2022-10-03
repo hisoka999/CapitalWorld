@@ -372,4 +372,9 @@ namespace world
         return m_balance;
     }
 
+    utils::Vector2 Building::getPosition()
+    {
+        return {twoDRect.x,twoDRect.y};
+    }
+
 }

@@ -84,6 +84,7 @@ namespace world
         void addResource(world::RawResource rawResource);
         Balance &getBalance();
         bool canDragBuild();
+        utils::Vector2 getPosition();
 
     protected:
         bool m_dragBuild = false;
