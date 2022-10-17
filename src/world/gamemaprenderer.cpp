@@ -320,28 +320,28 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
         {
             if (tempX > gameState->getGameMap()->getWidth() - 1 || tempY > height - 1)
                 continue;
-            float x = tempX;
-            float y = tempY;
+            float x = float(tempX);
+            float y = float(tempY);
 
             const auto &iso = iso::twoDToIso(x, y);
-            const TileType tileType = gameState->getGameMap()->getTile(x, y);
+            const TileType tileType = gameState->getGameMap()->getTile(tempX, tempY);
             const std::shared_ptr<world::Building> &building = gameState->getGameMap()->getBuilding(tempX, tempY);
 
             if (building != nullptr)
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {255, 255, 255, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {255, 255, 255, 255});
             }
             else if (tileType > 8)
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {125, 139, 46, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {125, 139, 46, 255});
             }
             else if (tileType == 8)
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {246, 226, 197, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {246, 226, 197, 255});
             }
             else
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {46, 80, 125, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {46, 80, 125, 255});
             }
         }
     }

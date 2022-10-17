@@ -36,9 +36,9 @@ namespace UI
         companyButton->connect("buttonClick", [=]()
                                {
                                    auto rect = playerWindow->displayRect();
-                                   int width = renderer->getMainCamera()->getWidth();
-                                   int height = renderer->getMainCamera()->getHeight();
-                                   playerWindow->setPos((width / 2) - (rect.width / 2), (height / 2) - (rect.height / 2));
+                                   float width = renderer->getMainCamera()->getWidth();
+                                   float height = renderer->getMainCamera()->getHeight();
+                                   playerWindow->setPos(int((width / 2.0f) - (rect.width / 2.0f)), int((height / 2.0f) - (rect.height / 2.0f)));
                                    playerWindow->setVisible(true); });
         xLeft += 170;
 
@@ -72,9 +72,9 @@ namespace UI
         researchButton->connect("buttonClick", [=]()
                                 {
                                     auto rect = researchWindow->displayRect();
-                                    int width = renderer->getMainCamera()->getWidth();
-                                    int height = renderer->getMainCamera()->getHeight();
-                                    researchWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                                    float width = renderer->getMainCamera()->getWidth();
+                                    float height = renderer->getMainCamera()->getHeight();
+                                    researchWindow->setPos(int((width / 2.0f) - (rect.width / 2.0f)), int((height / 2.0f) - (rect.height / 2.0f)));
                                     researchWindow->setVisible(true); });
         xLeft += 200;
         addObject(companyButton);
@@ -93,9 +93,9 @@ namespace UI
         optionsButton->connect("buttonClick", [=]()
                                {
                                    auto rect = optionsWindow->displayRect();
-                                   int width = renderer->getMainCamera()->getWidth();
-                                   int height = renderer->getMainCamera()->getHeight();
-                                   optionsWindow->setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                                   float width = renderer->getMainCamera()->getWidth();
+                                   float height = renderer->getMainCamera()->getHeight();
+                                   optionsWindow->setPos(int((width / 2.0f) - (rect.width / 2.0f)), int((height / 2.0f) - (rect.height / 2.0f)));
                                    optionsWindow->setVisible(true); 
                                    optionsWindow->needsRefresh(); });
         addObject(optionsButton);

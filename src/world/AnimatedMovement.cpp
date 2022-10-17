@@ -36,7 +36,7 @@ namespace world
     {
         if (isFinished())
             return;
-        assert(m_nextTargetIndex != 0 and "target needs to be positive");
+        // assert(m_nextTargetIndex != 0 and "target needs to be positive");
         m_sprite->update(deltaTime);
         m_progress += 0.05 * deltaTime / speed;
         auto &current = m_path[m_nextTargetIndex - 1];

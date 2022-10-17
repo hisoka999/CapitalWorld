@@ -51,10 +51,8 @@ void GameMap::initEmtyMap()
             mapData[i] = 10;
     }
     buildings.clear();
-    // mapData.resize(width * height);
     buildings.resize(width * height);
     mapDecoration.resize(width * height);
-    // std::fill(mapData.begin(), mapData.end(), 10);
     std::fill(buildings.begin(), buildings.end(), nullptr);
     std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
 }
@@ -71,12 +69,12 @@ TileType GameMap::getTile(const int x, const int y) const
 
 TileType GameMap::getTile(const utils::Vector2 &pos)
 {
-    return getTile(pos.getX(), pos.getY());
+    return getTile(int(pos.getX()), int(pos.getY()));
 }
 
 TileType GameMap::getDecoration(const utils::Vector2 &pos)
 {
-    return getDecoration(pos.getX(), pos.getY());
+    return getDecoration(int(pos.getX()), int(pos.getY()));
 }
 
 TileType GameMap::getDecoration(const int x, const int y) const

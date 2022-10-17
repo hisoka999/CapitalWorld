@@ -281,7 +281,7 @@ namespace scenes
                 auto rect = buildingWindow.displayRect();
                 int width = renderer->getMainCamera()->getWidth();
                 int height = renderer->getMainCamera()->getHeight();
-                buildingWindow.setPos(width / 2 - (rect.width / 2), height / 2 - (rect.height / 2));
+                buildingWindow.setPos(width / 2.f - (rect.width / 2.f), height / 2.f - (rect.height / 2.f));
 
                 buildingWindow.open(building, gameState, cursorPosition, gameMap.get());
                 eventHandled = true;
