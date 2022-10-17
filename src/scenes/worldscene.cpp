@@ -66,15 +66,15 @@ namespace scenes
 
         animationMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::AnimationStart, [this](world::AnimatedMovementData movement)
                                                                                          { 
-                                                            auto texture = ::graphics::TextureManager::Instance().loadTexture("images/sprites/black_vehicles.png");
+                                                            auto texture = ::graphics::TextureManager::Instance().loadTexture("images/sprites/"+movement.colorName+"_vehicles.png");
                                                             auto sprite = std::make_shared<world::graphics::Sprite>(texture, world::graphics::SpriteDirection::LeftDown, 8, 0);
-                                                            std::shared_ptr<world::AnimatedMovement>  animation = std::make_shared<world::AnimatedMovement>(movement.path, sprite);
+                                                            std::unique_ptr<world::AnimatedMovement>  animation = std::make_unique<world::AnimatedMovement>(movement.path, sprite);
 
                                                             animation->setFinishCallback([=](){
                                                                 movement.route->transportActive = false;
                                                             });
 
-                                                            currentAnimations.push_back(animation); });
+                                                            mapRenderer->addAnimation(std::move(animation)); });
     }
     WorldScene::~WorldScene()
     {
@@ -228,10 +228,6 @@ namespace scenes
     {
 
         mapRenderer->render(renderer);
-        for (auto &animation : currentAnimations)
-        {
-            animation->render(renderer);
-        }
 
         renderCursor();
         renderHUD();
@@ -651,13 +647,8 @@ namespace scenes
 
         hud->update();
         eventQueue.updateEvents(delta);
-
-        for (auto it = currentAnimations.begin(); it != currentAnimations.end(); ++it)
-        {
-            (*it)->update(delta);
-            if ((*it)->isFinished())
-                it = currentAnimations.erase(it);
-        }
+        if (!thread->getPaused())
+            mapRenderer->update(delta, thread->getSpeed());
     }
 
     std::shared_ptr<world::GameState> &WorldScene::getGameState()

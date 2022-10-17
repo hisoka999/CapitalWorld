@@ -14,8 +14,8 @@
 namespace world
 {
 
-    Company::Company(std::string name, float cash, bool player)
-        : name(name), cash(cash), player(player), income(0), costs(0)
+    Company::Company(std::string name, float cash, bool player, CompanyColor color)
+        : name(name), cash(cash), player(player), color(color), income(0), costs(0)
     {
     }
     Company::~Company()
@@ -80,6 +80,7 @@ namespace world
             if (building == nullptr)
                 continue;
             building->getBalance().calculateBalance(month, year, building->getProducts());
+            building->delayedUpdate(this);
             building->updateProduction(month, year);
             if (building->isAutoSellActive())
                 building->autoSell(month, year);
@@ -148,6 +149,11 @@ namespace world
         return buildings.size();
     }
 
+    CompanyColor Company::getColor()
+    {
+        return color;
+    }
+
     std::shared_ptr<utils::JSON::Object> Company::toJson()
     {
         std::shared_ptr<utils::JSON::Object> obj = std::make_shared<utils::JSON::Object>();
@@ -155,6 +161,7 @@ namespace world
         obj->setAttribute("cash", getCash());
         obj->setAttribute("maxBuildingIndex", getMaxBuildingIndex());
         obj->setAttribute("player", player);
+        obj->setAttribute("color", std::string(magic_enum::enum_name(getColor())));
 
         utils::JSON::JsonArray jsonBuildings;
         for (auto &building : buildings)
@@ -189,8 +196,9 @@ namespace world
         std::string name = object->getStringValue("name");
         float cash = object->getFloatValue("cash");
         bool player = object->getBoolValue("player");
+        CompanyColor color = magic_enum::enum_cast<world::CompanyColor>(object->getStringValue("color")).value();
         // int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
-        auto company = std::make_shared<Company>(name, cash, player);
+        auto company = std::make_shared<Company>(name, cash, player, color);
         auto buildings = object->getArray("buildings");
 
         for (auto val : buildings)

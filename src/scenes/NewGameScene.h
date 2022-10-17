@@ -1,6 +1,7 @@
 #pragma once
 #include <engine/core/Scene.h>
 #include "constants.h"
+#include "world/company.h"
 
 namespace core
 {
@@ -41,5 +42,6 @@ namespace scenes
         std::string playerName;
         int numberOfCompanys;
         int numberOfCities;
+        world::CompanyColor color;
     };
 }; // namespace scenes

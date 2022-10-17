@@ -11,6 +11,7 @@
 #include "messages.h"
 #include "world/AnimatedMovement.h"
 #include <engine/graphics/TextureManager.h>
+#include <magic_enum.hpp>
 
 namespace world
 {
@@ -131,7 +132,7 @@ namespace world
                 }
 
                 // find path
-                auto graph = getGameState()->getGameMap()->getStreetGraph();
+                const auto &graph = getGameState()->getGameMap()->getStreetGraph();
                 auto startStreets = getGameState()->getGameMap()->borderingBuilding(route->startBuilding, world::BuildingType::Street, false);
                 auto endStreets = getGameState()->getGameMap()->borderingBuilding(route->endBuilding, world::BuildingType::Street, false);
 
@@ -149,12 +150,11 @@ namespace world
                     paths::ComputeShortestPathsByDijkstra(startIndex, graph, minimumDistances, previousVertices, vertexPositions);
                     auto path = paths::GetShortestPathTo(targetIndex, previousVertices, vertexPositions);
                     route->transportActive = true;
-                    std::cout << "path:" << path.size() << std::endl;
 
                     if (path.size() > 0)
                     {
 
-                        AnimatedMovementData data = {path, route};
+                        AnimatedMovementData data = {path, route, route->companyColor};
                         std::shared_ptr<core::Message<MessageTypes, AnimatedMovementData>> message = std::make_shared<core::Message<MessageTypes, AnimatedMovementData>>(MessageTypes::AnimationStart, data);
                         core::MessageSystem<MessageTypes>::get().sendMessage(message);
                     }
@@ -173,6 +173,7 @@ namespace world
             {
                 route->startBuilding = company->findBuildingByDisplayName(route->startBuildingName);
                 route->endBuilding = company->findBuildingByDisplayName(route->endBuildingName);
+                route->companyColor = std::string(magic_enum::enum_name(company->getColor()));
             }
         }
     }

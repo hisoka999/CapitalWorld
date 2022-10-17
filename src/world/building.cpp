@@ -1,3 +1,4 @@
+#include "world/GameStateMutex.h"
 #include "building.h"
 #include "buildings/HouseComponent.h"
 #include "buildings/SalesComponent.h"
@@ -369,12 +370,14 @@ namespace world
 
     Balance &Building::getBalance()
     {
+        std::lock_guard<std::mutex> guard(gGameStateMutex);
+
         return m_balance;
     }
 
     utils::Vector2 Building::getPosition()
     {
-        return {twoDRect.x,twoDRect.y};
+        return {twoDRect.x, twoDRect.y};
     }
 
 }

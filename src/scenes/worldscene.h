@@ -68,7 +68,6 @@ namespace scenes
         UI::ResearchWindow researchWindow;
         UI::Console console;
         UI::PlayerWindow playerWindow;
-        std::vector<std::shared_ptr<world::AnimatedMovement>> currentAnimations;
 
         graphics::Texture uiTexture;
 

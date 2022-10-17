@@ -40,6 +40,9 @@ namespace world
             void update(double deltaTime);
             void render(core::Renderer *renderer);
             bool isMoving();
+            float getWidth();
+            float getHeight();
+            utils::Vector2 getCalulatedPos(core::Renderer *renderer);
         };
 
     } // namespace graphics

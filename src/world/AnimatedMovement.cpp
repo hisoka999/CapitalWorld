@@ -32,13 +32,13 @@ namespace world
         m_sprite->render(pRenderer);
     }
 
-    void AnimatedMovement::update(double deltaTime)
+    void AnimatedMovement::update(double deltaTime, double speed)
     {
         if (isFinished())
             return;
         assert(m_nextTargetIndex != 0 and "target needs to be positive");
         m_sprite->update(deltaTime);
-        m_progress += 0.05 * deltaTime / 100;
+        m_progress += 0.05 * deltaTime / speed;
         auto &current = m_path[m_nextTargetIndex - 1];
         auto &next = m_path[m_nextTargetIndex];
         auto pos = utils::lerp(current, next, m_progress);
@@ -77,5 +77,10 @@ namespace world
     bool AnimatedMovement::isFinished()
     {
         return m_finished;
+    }
+
+    const std::shared_ptr<world::graphics::Sprite> &AnimatedMovement::getSprite()
+    {
+        return m_sprite;
     }
 }

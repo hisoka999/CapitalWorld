@@ -29,15 +29,9 @@ namespace world
 
         void Sprite::render(core::Renderer *renderer)
         {
-            // float zoomFactor = renderer->getZoomFactor();
-            // const utils::Vector2 &pt = iso::isoTo2D(m_currentPosition);
             float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
-            float x = static_cast<float>(m_currentPosition.getX()) * 64.f / 2.0f;
-            float y = static_cast<float>(m_currentPosition.getY()) * 32.f;
-            utils::Vector2 vec(x, y);
-            auto isoPos = iso::twoDToIso(vec);
-            const utils::Vector2 pt((isoPos.getX() * factor) - renderer->getMainCamera()->getX(), (isoPos.getY() * factor) - renderer->getMainCamera()->getY());
+            const utils::Vector2 pt = getCalulatedPos(renderer);
 
             ::graphics::Rect src = {m_width * int(m_currentDirection), m_height * m_currentSprite, m_width, m_height};
             ::graphics::Rect dst = {pt.getX(), pt.getY(), m_width * factor, m_height * factor};
@@ -48,6 +42,28 @@ namespace world
         bool Sprite::isMoving()
         {
             return m_moving;
+        }
+
+        float Sprite::getWidth()
+        {
+            return m_width;
+        }
+
+        float Sprite::getHeight()
+        {
+            return m_height;
+        }
+
+        utils::Vector2 Sprite::getCalulatedPos(core::Renderer *renderer)
+        {
+            float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+
+            float y = static_cast<float>(m_currentPosition.getY()) * 32.f;
+            float x = static_cast<float>(m_currentPosition.getX()) * 64.f / 2.0f;
+            utils::Vector2 vec(x, y);
+            auto isoPos = iso::twoDToIso(vec);
+            const utils::Vector2 pt((isoPos.getX() * factor) - renderer->getMainCamera()->getX(), (isoPos.getY() * factor) - renderer->getMainCamera()->getY());
+            return pt;
         }
     }
 }

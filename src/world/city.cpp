@@ -341,8 +341,8 @@ namespace world
                     break;
                 }
                 house->setPosition(housePosition.getX(), housePosition.getY());
+                stopKey++;
             } while (!isBorderingStreet(house) && stopKey < 10);
-            stopKey++;
         }
         return !isBlocked(house->get2DPosition(), gameMap);
     }

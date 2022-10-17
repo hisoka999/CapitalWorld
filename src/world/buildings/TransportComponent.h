@@ -26,6 +26,7 @@ namespace world
             unsigned quantity;
             bool active;
             bool transportActive = false;
+            std::string companyColor = "black";
         };
 
         class TransportComponent : public world::buildings::BuildingComponent
@@ -55,6 +56,7 @@ namespace world
     {
         std::list<utils::Vector2> path;
         std::shared_ptr<buildings::TransportRoute> route;
+        std::string colorName;
     };
 
 } // namespace world

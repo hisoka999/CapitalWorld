@@ -28,8 +28,9 @@ namespace world
         AnimatedMovement &operator=(const AnimatedMovement &other) = default;
         void setFinishCallback(std::function<void()> callback);
         void render(core::Renderer *pRenderer);
-        void update(double deltaTime);
+        void update(double deltaTime, double speed);
         bool isFinished();
+        const std::shared_ptr<world::graphics::Sprite> &getSprite();
     };
 
 } // namespace world
