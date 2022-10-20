@@ -94,7 +94,13 @@ namespace world
         {
             if (routes.size() == MAX_ROUTES)
                 return;
-            TransportRoute tmp = {startBuilding, endBuilding, startBuilding->getDisplayName(), endBuilding->getDisplayName(), product, quantity, false};
+            TransportRoute tmp;
+            tmp.startBuilding = startBuilding;
+            tmp.endBuilding = endBuilding;
+            tmp.startBuildingName = startBuilding->getDisplayName();
+            tmp.endBuildingName = endBuilding->getDisplayName();
+            tmp.product = product;
+            tmp.quantity = quantity;
             std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>(tmp);
             routes.push_back(route);
         }
@@ -107,17 +113,26 @@ namespace world
                 routes.erase(it);
         }
 
-        void TransportComponent::updateProduction(int month, int year, [[maybe_unused]] Building *building)
+        void TransportComponent::updateProduction([[maybe_unused]] int month, [[maybe_unused]] int year, [[maybe_unused]] Building *building)
+        {
+        }
+
+        void TransportComponent::updateDaily([[maybe_unused]] uint16_t day, uint16_t month, uint16_t year, [[maybe_unused]] Building *building, Company *company)
         {
             std::lock_guard<std::mutex> guard(gGameStateMutex);
+
             for (auto &route : routes)
             {
+
                 if (route == nullptr)
                     continue;
                 if (!route->active || route->product == nullptr || route->endBuilding == nullptr || route->startBuilding == nullptr)
                     continue;
 
-                if (route->transportActive)
+                if (!route->transportActive)
+                    continue;
+
+                if (!route->transportFinished)
                     continue;
 
                 auto startStorage = route->startBuilding->getComponent<world::buildings::StorageComponent>("StorageComponent");
@@ -130,6 +145,19 @@ namespace world
 
                     route->endBuilding->getBalance().addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
                 }
+                route->transportActive = false;
+                route->transportFinished = false;
+            }
+
+            for (auto &route : routes)
+            {
+                if (route == nullptr)
+                    continue;
+                if (!route->active || route->product == nullptr || route->endBuilding == nullptr || route->startBuilding == nullptr)
+                    continue;
+
+                if (route->transportActive)
+                    continue;
 
                 // find path
                 const auto &graph = getGameState()->getGameMap()->getStreetGraph();
@@ -139,26 +167,42 @@ namespace world
                 if (startStreets.size() == 0 || endStreets.size() == 0)
                     continue;
                 auto startPosition = startStreets[0]->getPosition();
-                size_t startIndex = getGameState()->getGameMap()->make_pos(startPosition);
-                size_t targetIndex = getGameState()->getGameMap()->make_pos(endStreets[0]->getPosition());
+
+                size_t targetIndex = getGameState()->getGameMap()->getGraphIndex(endStreets[0]->getPosition());
                 if (targetIndex != 0)
                 {
-                    std::map<int, double> minimumDistances;
-                    std::map<int, int> previousVertices;
-                    std::map<int, utils::Vector2> vertexPositions;
-                    vertexPositions[startIndex] = startStreets[0]->getPosition();
-                    paths::ComputeShortestPathsByDijkstra(startIndex, graph, minimumDistances, previousVertices, vertexPositions);
-                    auto path = paths::GetShortestPathTo(targetIndex, previousVertices, vertexPositions);
-                    route->transportActive = true;
-
-                    if (path.size() > 0)
+                    if (route->path.size() == 0)
                     {
+                        size_t startIndex = getGameState()->getGameMap()->getGraphIndex(startPosition);
+                        std::vector<double> minimumDistances;
+                        std::vector<int> previousVertices;
+                        std::map<int, utils::Vector2> vertexPositions;
+                        vertexPositions[startIndex] = startStreets[0]->getPosition();
 
-                        AnimatedMovementData data = {path, route, route->companyColor};
+                        paths::ComputeShortestPathsByDijkstra(startIndex, graph, minimumDistances, previousVertices, vertexPositions);
+
+                        if (paths::maximumWeight != minimumDistances[targetIndex])
+                        {
+                            route->path = paths::GetShortestPathTo(targetIndex, previousVertices, vertexPositions);
+                            assert(route->path.front().getX() != 0.0);
+                        }
+                        else
+                            route->path.clear();
+                    }
+
+                    if (route->path.size() > 1)
+                    {
+                        route->transportActive = true;
+                        AnimatedMovementData data = {route, std::string(magic_enum::enum_name(company->getColor()))};
                         std::shared_ptr<core::Message<MessageTypes, AnimatedMovementData>> message = std::make_shared<core::Message<MessageTypes, AnimatedMovementData>>(MessageTypes::AnimationStart, data);
                         core::MessageSystem<MessageTypes>::get().sendMessage(message);
                     }
+                    else if (route->path.size() == 1)
+                    {
+                        route->transportActive = true;
+                    }
                 }
+                return;
             }
         }
 
@@ -173,7 +217,6 @@ namespace world
             {
                 route->startBuilding = company->findBuildingByDisplayName(route->startBuildingName);
                 route->endBuilding = company->findBuildingByDisplayName(route->endBuildingName);
-                route->companyColor = std::string(magic_enum::enum_name(company->getColor()));
             }
         }
     }

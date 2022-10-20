@@ -60,6 +60,7 @@ void UpdateThread::update()
             std::this_thread::sleep_for(std::chrono::milliseconds(speed));
             gameState->increaseTime();
             auto time = gameState->getTime();
+            gameState->updateDaily();
             if (time.getDay() == 1)
             {
                 gGameStateMutex.lock();

@@ -131,6 +131,17 @@ namespace world
         }
     }
 
+    void Company::updateDaily(int day, int month, int year)
+    {
+        for (auto &building : buildings)
+        {
+            if (building == nullptr)
+                continue;
+
+            building->updateDaily(day, month, year, this);
+        }
+    }
+
     std::vector<std::shared_ptr<Building>> Company::findProductionBuildings()
     {
         std::vector<std::shared_ptr<Building>> productionBuildings;

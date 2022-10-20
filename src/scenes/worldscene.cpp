@@ -68,10 +68,10 @@ namespace scenes
                                                                                          { 
                                                             auto texture = ::graphics::TextureManager::Instance().loadTexture("images/sprites/"+movement.colorName+"_vehicles.png");
                                                             auto sprite = std::make_shared<world::graphics::Sprite>(texture, world::graphics::SpriteDirection::LeftDown, 8, 0);
-                                                            std::unique_ptr<world::AnimatedMovement>  animation = std::make_unique<world::AnimatedMovement>(movement.path, sprite);
+                                                            std::unique_ptr<world::AnimatedMovement>  animation = std::make_unique<world::AnimatedMovement>(movement.route->path, sprite);
 
                                                             animation->setFinishCallback([=](){
-                                                                movement.route->transportActive = false;
+                                                                movement.route->transportFinished = true;
                                                             });
 
                                                             mapRenderer->addAnimation(std::move(animation)); });

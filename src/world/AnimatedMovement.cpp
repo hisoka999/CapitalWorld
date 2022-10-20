@@ -41,6 +41,7 @@ namespace world
         m_progress += 0.05 * deltaTime / speed;
         auto &current = m_path[m_nextTargetIndex - 1];
         auto &next = m_path[m_nextTargetIndex];
+        assert(next.getX() != 0.0f && next.getY() != 0.0f);
         auto pos = utils::lerp(current, next, m_progress);
         // calculate direction
         world::graphics::SpriteDirection direction = world::graphics::SpriteDirection::TopLeft;
@@ -67,7 +68,7 @@ namespace world
             m_progress = 0;
             m_nextTargetIndex++;
         }
-        m_finished = m_nextTargetIndex > m_path.size();
+        m_finished = m_nextTargetIndex >= m_path.size();
         if (m_finished && m_callback != nullptr)
         {
             m_callback();

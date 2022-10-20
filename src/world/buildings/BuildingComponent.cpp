@@ -39,6 +39,10 @@ namespace world
         {
         }
 
+        void BuildingComponent::updateDaily([[maybe_unused]] uint16_t day, [[maybe_unused]] uint16_t month, [[maybe_unused]] uint16_t year, [[maybe_unused]] Building *building, [[maybe_unused]] Company *company)
+        {
+        }
+
         std::shared_ptr<BuildingComponent> BuildingComponent::clone()
         {
             return std::make_shared<BuildingComponent>(this->getName());

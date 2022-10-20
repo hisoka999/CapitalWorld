@@ -86,6 +86,14 @@ namespace world
         perf.end();
     }
 
+    void GameState::updateDaily()
+    {
+        for (auto &company : companies)
+        {
+            company->updateDaily(time.getDay(), time.getMonth(), time.getYear());
+        }
+    }
+
     std::shared_ptr<GameState> GameState::fromJson(std::shared_ptr<utils::JSON::Object> &object)
     {
         std::shared_ptr<Company> player = Company::fromJson(object->getObjectValue("player"));

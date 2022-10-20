@@ -200,6 +200,14 @@ namespace world
         }
     }
 
+    void Building::updateDaily(uint16_t day, uint16_t month, uint16_t year, Company *company)
+    {
+        for (auto &component : components)
+        {
+            component.second->updateDaily(day, month, year, this, company);
+        }
+    }
+
     bool Building::isAutoSellActive()
     {
         return false; // type == BuildingType::Factory;

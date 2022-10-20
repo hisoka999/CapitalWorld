@@ -57,6 +57,7 @@ public:
     void clearChangedTiles();
     paths::Graph &getStreetGraph();
     size_t make_pos(const utils::Vector2 &pos);
+    size_t getGraphIndex(const utils::Vector2 &pos);
     std::vector<std::shared_ptr<world::Building>> borderingBuilding(const std::shared_ptr<world::Building> &startBuilding, world::BuildingType buildingType, bool inverseType);
 
 private:
@@ -71,6 +72,7 @@ private:
     std::vector<std::shared_ptr<world::Building>> buildings;
     std::vector<utils::Vector2> changedTiles;
     paths::Graph streetGraph;
+    std::map<size_t, size_t> graphIndices;
 };
 
 #endif // GAMEMAP_H

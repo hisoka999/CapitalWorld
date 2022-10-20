@@ -38,6 +38,7 @@ namespace world
         const std::vector<std::shared_ptr<world::Company>> &getCompanies();
         Difficulty getDifficulty() const;
         void update();
+        void updateDaily();
 
         std::string toJsonString();
         static std::shared_ptr<GameState> fromJson(std::shared_ptr<utils::JSON::Object> &object);

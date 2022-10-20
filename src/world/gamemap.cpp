@@ -326,6 +326,7 @@ void GameMap::initStreetGraph()
 {
 
     streetGraph.clear();
+    graphIndices.clear();
     for (auto &building : buildings)
     {
         if (building == nullptr)
@@ -342,7 +343,14 @@ void GameMap::initParents(const std::shared_ptr<world::Building> &building)
         utils::Vector2 parentPos = {building->get2DPosition().x, building->get2DPosition().y};
 
         size_t parentIndex = make_pos(parentPos.getX(), parentPos.getY());
-        paths::Neighbor neighbor(parentIndex, parentPos, 1.0);
+
+        std::vector<paths::Neighbor> neighbors;
+        std::vector<paths::Neighbor> empty;
+        if (graphIndices.count(parentIndex) == 0)
+        {
+            streetGraph.push_back(neighbors);
+            graphIndices[parentIndex] = streetGraph.size() - 1;
+        }
 
         for (size_t y = parentPos.getY() - 1; y <= parentPos.getY() + 1; y++)
         {
@@ -350,9 +358,20 @@ void GameMap::initParents(const std::shared_ptr<world::Building> &building)
             {
                 if (x != parentPos.getX() && y != parentPos.getY())
                     continue;
-                size_t index = make_pos(x, y);
-                if (index != parentIndex)
-                    streetGraph[index].push_back(neighbor);
+                size_t realIndex = make_pos(x, y);
+                if (realIndex != parentIndex)
+                {
+                    // size_t index = streetGraph.size();
+                    // graphIndices[realIndex] = index;
+                    if (graphIndices.count(realIndex) == 0)
+                    {
+                        streetGraph.push_back(empty);
+                        graphIndices[realIndex] = streetGraph.size() - 1;
+                    }
+
+                    paths::Neighbor neighbor(graphIndices[realIndex], utils::Vector2(x, y), 1.0);
+                    streetGraph[graphIndices[parentIndex]].push_back(neighbor);
+                }
             }
         }
     }
@@ -504,6 +523,11 @@ paths::Graph &GameMap::getStreetGraph()
 size_t GameMap::make_pos(const utils::Vector2 &pos)
 {
     return make_pos(pos.getX(), pos.getY());
+}
+
+size_t GameMap::getGraphIndex(const utils::Vector2 &pos)
+{
+    return graphIndices.at(make_pos(pos));
 }
 
 std::string tileTypeToString(const TileType tile)

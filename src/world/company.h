@@ -58,6 +58,7 @@ namespace world
         bool hasBuilding(std::shared_ptr<Building> building);
         void removeBuilding(std::shared_ptr<Building> building);
         void updateBalance(int month, int year);
+        void updateDaily(int day, int month, int year);
         std::vector<std::shared_ptr<Building>> findProductionBuildings();
         int getMaxBuildingIndex();
         CompanyColor getColor();
