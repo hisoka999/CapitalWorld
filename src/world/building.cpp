@@ -1,3 +1,4 @@
+#include "world/GameStateMutex.h"
 #include "building.h"
 #include "buildings/HouseComponent.h"
 #include "buildings/SalesComponent.h"
@@ -199,6 +200,14 @@ namespace world
         }
     }
 
+    void Building::updateDaily(uint16_t day, uint16_t month, uint16_t year, Company *company)
+    {
+        for (auto &component : components)
+        {
+            component.second->updateDaily(day, month, year, this, company);
+        }
+    }
+
     bool Building::isAutoSellActive()
     {
         return false; // type == BuildingType::Factory;
@@ -369,7 +378,14 @@ namespace world
 
     Balance &Building::getBalance()
     {
+        std::lock_guard<std::mutex> guard(gGameStateMutex);
+
         return m_balance;
+    }
+
+    utils::Vector2 Building::getPosition()
+    {
+        return {twoDRect.x, twoDRect.y};
     }
 
 }

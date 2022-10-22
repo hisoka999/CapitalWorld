@@ -39,6 +39,10 @@ namespace world
         {
         }
 
+        void BuildingComponent::updateDaily([[maybe_unused]] uint16_t day, [[maybe_unused]] uint16_t month, [[maybe_unused]] uint16_t year, [[maybe_unused]] Building *building, [[maybe_unused]] Company *company)
+        {
+        }
+
         std::shared_ptr<BuildingComponent> BuildingComponent::clone()
         {
             return std::make_shared<BuildingComponent>(this->getName());
@@ -54,16 +58,16 @@ namespace world
             return result;
         }
 
-        std::shared_ptr<world::GameState> BuildingComponent::getGameState()
+        world::GameState *BuildingComponent::getGameState()
         {
-            auto worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
+            auto worldScene = dynamic_cast<scenes::WorldScene *>(core::SceneManager::Instance().getCurrentScene());
 
-            return worldScene->getGameState();
+            return worldScene->getGameState().get();
         }
 
         bool BuildingComponent::isGameRunning()
         {
-            auto worldScene = std::dynamic_pointer_cast<scenes::WorldScene>(core::SceneManager::Instance().getCurrentScene());
+            auto worldScene = dynamic_cast<scenes::WorldScene *>(core::SceneManager::Instance().getCurrentScene());
             return worldScene != nullptr && worldScene->getGameState() != nullptr;
         }
 

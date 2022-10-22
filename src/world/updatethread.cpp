@@ -1,3 +1,4 @@
+#include "GameStateMutex.h"
 #include "updatethread.h"
 #include <ctime>
 #include <iostream>
@@ -59,13 +60,17 @@ void UpdateThread::update()
             std::this_thread::sleep_for(std::chrono::milliseconds(speed));
             gameState->increaseTime();
             auto time = gameState->getTime();
+            gameState->updateDaily();
             if (time.getDay() == 1)
             {
+                gGameStateMutex.lock();
                 // update game state
                 auto start = std::chrono::high_resolution_clock::now();
                 if (!running)
                     return;
                 gameState->update();
+
+                gGameStateMutex.unlock();
 
                 auto &msgSystem = core::MessageSystem<MessageTypes>::get();
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);

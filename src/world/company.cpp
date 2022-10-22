@@ -9,12 +9,13 @@
 #include "translate.h"
 #include "messages.h"
 #include "notifications/EventQueue.h"
+#include <cassert>
 
 namespace world
 {
 
-    Company::Company(std::string name, float cash, bool player)
-        : name(name), cash(cash), player(player), income(0), costs(0)
+    Company::Company(std::string name, float cash, bool player, CompanyColor color)
+        : name(name), cash(cash), player(player), color(color), income(0), costs(0)
     {
     }
     Company::~Company()
@@ -53,6 +54,7 @@ namespace world
     }
     void Company::addBuilding(std::shared_ptr<Building> building)
     {
+        assert(building != nullptr);
         buildings.push_back(building);
     }
     bool Company::hasBuilding(std::shared_ptr<Building> building)
@@ -75,14 +77,21 @@ namespace world
         income = 0;
         for (auto &building : buildings)
         {
+            if (building == nullptr)
+                continue;
             building->getBalance().calculateBalance(month, year, building->getProducts());
+            building->delayedUpdate(this);
             building->updateProduction(month, year);
             if (building->isAutoSellActive())
                 building->autoSell(month, year);
 
-            costs += building->getBalance().getCostsPerMonth(month, year);
+            if (building != nullptr)
+            {
 
-            income += building->getBalance().getIncomePerMonth(month, year);
+                costs += building->getBalance().getCostsPerMonth(month, year);
+
+                income += building->getBalance().getIncomePerMonth(month, year);
+            }
         }
         auto iter = m_activeLoans.begin();
         while (iter != m_activeLoans.end())
@@ -122,6 +131,17 @@ namespace world
         }
     }
 
+    void Company::updateDaily(int day, int month, int year)
+    {
+        for (auto &building : buildings)
+        {
+            if (building == nullptr)
+                continue;
+
+            building->updateDaily(day, month, year, this);
+        }
+    }
+
     std::vector<std::shared_ptr<Building>> Company::findProductionBuildings()
     {
         std::vector<std::shared_ptr<Building>> productionBuildings;
@@ -140,6 +160,11 @@ namespace world
         return buildings.size();
     }
 
+    CompanyColor Company::getColor()
+    {
+        return color;
+    }
+
     std::shared_ptr<utils::JSON::Object> Company::toJson()
     {
         std::shared_ptr<utils::JSON::Object> obj = std::make_shared<utils::JSON::Object>();
@@ -147,6 +172,7 @@ namespace world
         obj->setAttribute("cash", getCash());
         obj->setAttribute("maxBuildingIndex", getMaxBuildingIndex());
         obj->setAttribute("player", player);
+        obj->setAttribute("color", std::string(magic_enum::enum_name(getColor())));
 
         utils::JSON::JsonArray jsonBuildings;
         for (auto &building : buildings)
@@ -181,8 +207,9 @@ namespace world
         std::string name = object->getStringValue("name");
         float cash = object->getFloatValue("cash");
         bool player = object->getBoolValue("player");
+        CompanyColor color = magic_enum::enum_cast<world::CompanyColor>(object->getStringValue("color")).value();
         // int maxBuildingIndex = object->getIntValue("maxBuildingIndex");
-        auto company = std::make_shared<Company>(name, cash, player);
+        auto company = std::make_shared<Company>(name, cash, player, color);
         auto buildings = object->getArray("buildings");
 
         for (auto val : buildings)

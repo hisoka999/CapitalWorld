@@ -42,13 +42,13 @@ namespace world
         utils::time::Date installmentDate = m_startDay;
         if (m_startDay.getDay() > 1)
         {
-            size_t lastDayOfMonth = utils::time::lastDayOfMonth(m_startDay.getYear(), m_startDay.getMonth());
+            uint16_t lastDayOfMonth = utils::time::lastDayOfMonth(m_startDay.getYear(), m_startDay.getMonth());
             installmentDate.addDay(lastDayOfMonth - m_startDay.getDay());
         }
         double repaymentAmount = m_amount;
         for (size_t i = 0; i < numberOfInstallments; ++i)
         {
-            size_t lastDayOfMonth = utils::time::lastDayOfMonth(installmentDate.getYear(), installmentDate.getMonth());
+            uint16_t lastDayOfMonth = utils::time::lastDayOfMonth(installmentDate.getYear(), installmentDate.getMonth());
             installmentDate.addDay(lastDayOfMonth);
             double installmentAmount = std::round(m_amount / double(numberOfInstallments) * 100.0) / 100.0;
             repaymentAmount -= installmentAmount;

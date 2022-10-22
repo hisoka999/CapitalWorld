@@ -29,10 +29,22 @@ struct KeyValue
 namespace world
 {
 
+    enum class CompanyColor
+    {
+        black,
+        blue,
+        green,
+        grey,
+        orange,
+        red,
+        white,
+        yellow
+    };
+
     class Company
     {
     public:
-        Company(std::string name, float cash, bool player);
+        Company(std::string name, float cash, bool player, CompanyColor color);
         ~Company();
 
         std::string getName();
@@ -46,8 +58,10 @@ namespace world
         bool hasBuilding(std::shared_ptr<Building> building);
         void removeBuilding(std::shared_ptr<Building> building);
         void updateBalance(int month, int year);
+        void updateDaily(int day, int month, int year);
         std::vector<std::shared_ptr<Building>> findProductionBuildings();
         int getMaxBuildingIndex();
+        CompanyColor getColor();
 
         std::shared_ptr<utils::JSON::Object> toJson();
         static std::shared_ptr<Company> fromJson(const std::shared_ptr<utils::JSON::Object> &object);
@@ -79,6 +93,7 @@ namespace world
         std::string name;
         float cash;
         bool player;
+        CompanyColor color;
         float income;
         float costs;
         std::vector<std::shared_ptr<world::Building>> buildings;

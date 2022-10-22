@@ -17,7 +17,7 @@ namespace UI
         addButton->setPos(10, parent->getHeight() - 50);
         addButton->connect(UI::Button::buttonClickCallback(), [&]()
                            {
-                               auto component = this->building->getComponent<world::buildings::SalesComponent>("SalesComponent");
+                               const auto& component = this->building->getComponent<world::buildings::SalesComponent>("SalesComponent");
                                component->addSalesItem("", 0);
                                refreshUI(); });
         addObject(addButton);

@@ -2,6 +2,7 @@
 #define GAMEMAPRENDERER_H
 
 #include "world/gamestate.h"
+#include "world/AnimatedMovement.h"
 #include <engine/core/renderer.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/graphics/texture.h>
@@ -38,6 +39,9 @@ public:
     std::shared_ptr<graphics::TextureMap> &getTextureMap();
     void toggleDebug();
 
+    void update(double deltaTime, int gameSpeed);
+    void addAnimation(std::unique_ptr<world::AnimatedMovement> animation);
+
 private:
     void renderMiniMap(core::Renderer *renderer);
     void generateTileDataFromMap();
@@ -56,8 +60,8 @@ private:
     std::shared_ptr<graphics::Texture> groundTexture;
     std::shared_ptr<graphics::Text> debugText;
     std::shared_ptr<graphics::TextureMap> textureMap;
+    std::vector<std::unique_ptr<world::AnimatedMovement>> currentAnimations;
 
-    std::shared_ptr<graphics::Texture> cacheTexture;
     std::shared_ptr<graphics::Texture> miniMap;
     bool updateMiniMap = true;
     size_t tileWidth;

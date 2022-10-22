@@ -6,10 +6,35 @@
 #include <algorithm>
 #include <engine/utils/color.h>
 #include <engine/utils/logger.h>
+#include <cassert>
+#include <list>
 
 Uint32 ColourToUint(int R, int G, int B)
 {
     return (Uint32)((R << 16) + (G << 8) + (B << 0));
+}
+
+struct RenderCommand
+{
+    size_t hashId;
+    graphics::Rect dstRect;
+    graphics::Rect srcRect;
+    std::shared_ptr<world::graphics::Sprite> sprite;
+};
+
+bool compareRenderCommand(const RenderCommand &c1, const RenderCommand &c2)
+{
+    int y1 = c1.dstRect.y + c1.dstRect.height;
+    int y2 = c2.dstRect.y + c2.dstRect.height;
+    if (y1 < y2)
+    {
+        return true;
+    }
+    else if (y1 == y2)
+    {
+        return c1.dstRect.x < c2.dstRect.x;
+    }
+    return false;
 }
 
 GameMapRenderer::GameMapRenderer(std::shared_ptr<world::GameState> gameState)
@@ -19,7 +44,6 @@ GameMapRenderer::GameMapRenderer(std::shared_ptr<world::GameState> gameState)
     debugText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 10);
 
     textureMap = graphics::TextureManager::Instance().loadTextureMap(utils::os::combine("images", "tiles", "iso_tiles.json"));
-    cacheTexture = nullptr;
 
     grassHash = hasher("grass");
     grass1Hash = hasher("grass1");
@@ -240,6 +264,41 @@ void GameMapRenderer::toggleDebug()
     debugRender = !debugRender;
 }
 
+void GameMapRenderer::update(double deltaTime, int gameSpeed)
+{
+    int i = 0;
+    for (auto it = currentAnimations.begin(); it != currentAnimations.end(); ++it)
+    {
+        i++;
+        if ((*it) == nullptr)
+        {
+            APP_LOG_ERROR("animation irterator is null");
+            it = currentAnimations.erase(it);
+        }
+        else
+        {
+            (*it)->update(deltaTime, gameSpeed / 2);
+        }
+    }
+    auto it = currentAnimations.begin();
+    while (it != currentAnimations.end())
+    {
+        if ((*it)->isFinished())
+        {
+            it = currentAnimations.erase(it);
+        }
+        else
+        {
+            it++;
+        }
+    }
+}
+
+void GameMapRenderer::addAnimation(std::unique_ptr<world::AnimatedMovement> animation)
+{
+    currentAnimations.push_back(std::move(animation));
+}
+
 void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
 {
 
@@ -261,28 +320,28 @@ void GameMapRenderer::renderMiniMap(core::Renderer *renderer)
         {
             if (tempX > gameState->getGameMap()->getWidth() - 1 || tempY > height - 1)
                 continue;
-            float x = tempX;
-            float y = tempY;
+            float x = float(tempX);
+            float y = float(tempY);
 
             const auto &iso = iso::twoDToIso(x, y);
-            const TileType tileType = gameState->getGameMap()->getTile(x, y);
+            const TileType tileType = gameState->getGameMap()->getTile(tempX, tempY);
             const std::shared_ptr<world::Building> &building = gameState->getGameMap()->getBuilding(tempX, tempY);
 
             if (building != nullptr)
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {255, 255, 255, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {255, 255, 255, 255});
             }
             else if (tileType > 8)
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {125, 139, 46, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {125, 139, 46, 255});
             }
             else if (tileType == 8)
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {246, 226, 197, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {246, 226, 197, 255});
             }
             else
             {
-                miniMap->setPixel(iso.getX() + gameState->getGameMap()->getWidth(), iso.getY(), {46, 80, 125, 255});
+                miniMap->setPixel(int(iso.getX()) + gameState->getGameMap()->getWidth(), int(iso.getY()), {46, 80, 125, 255});
             }
         }
     }
@@ -382,20 +441,6 @@ void GameMapRenderer::render(core::Renderer *renderer)
     auto startTime = std::chrono::high_resolution_clock::now();
     float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
     auto &font = graphics::TextureManager::Instance().loadFont("fonts/arial.ttf", 12);
-    if (!fillCache && cacheTexture != nullptr)
-    {
-        cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
-        // cacheBuildingTexture->render(renderer, 0, 0);
-        return;
-    }
-    fillCache = false;
-
-    if (cacheTexture == nullptr)
-        cacheTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
-    // cacheBuildingTexture = std::make_shared<graphics::Texture>(renderer, viewPort.width, viewPort.height);
-    renderer->setRenderTarget(cacheTexture.get());
-
-    renderer->clear();
 
     int gameMapWidth = gameState->getGameMap()->getWidth();
     int gameMapHeight = gameState->getGameMap()->getHeight();
@@ -459,6 +504,9 @@ void GameMapRenderer::render(core::Renderer *renderer)
 
     const std::vector<std::shared_ptr<world::Building>> &buildings = gameState->getGameMap()->getBuildings();
 
+    std::list<RenderCommand> renderCommands;
+    std::list<RenderCommand> renderStreetCommands;
+
     for (int y = std::max(startY, 0); y < endY; ++y)
 
     {
@@ -501,19 +549,71 @@ void GameMapRenderer::render(core::Renderer *renderer)
             displayRect.x -= camera->getX();
             displayRect.y -= camera->getY();
 
-            if (building->getSubTextureHash())
-            {
-                textureMapPtr->render(building->getSubTextureHash(), displayRect, renderer);
-            }
+            RenderCommand command = {building->getSubTextureHash(), displayRect, building->getSourceRect(), nullptr};
+            if (building->getType() == world::BuildingType::Street)
+                renderStreetCommands.emplace_back(command);
             else
-            {
-                groundTexture->render(renderer, building->getSourceRect(), displayRect);
-            }
+                renderCommands.emplace_back(command);
+
+            // if (building->getSubTextureHash())
+            // {
+            //     textureMapPtr->render(building->getSubTextureHash(), displayRect, renderer);
+            // }
+            // else
+            // {
+            //     groundTexture->render(renderer, building->getSourceRect(), displayRect);
+            // }
             if (debugRender)
             {
                 std::string text = utils::string_format("x: %d | y: %d", x, y);
                 font->render(renderer, text, utils::color::RED, displayRect.x + (displayRect.width / 2), displayRect.y + (displayRect.height / 2));
             }
+        }
+    }
+
+    for (auto &animation : currentAnimations)
+    {
+        utils::Vector2 pos = animation->getSprite()->getCalulatedPos(renderer);
+        graphics::Rect displayRect = {pos.getX(), pos.getY(), animation->getSprite()->getWidth() * factor, animation->getSprite()->getHeight() * factor};
+        graphics::Rect srcRect;
+        RenderCommand command = {0, displayRect, srcRect, animation->getSprite()};
+        renderCommands.emplace_back(command);
+    }
+
+    renderCommands.sort(compareRenderCommand);
+    renderStreetCommands.sort(compareRenderCommand);
+
+    for (auto &command : renderStreetCommands)
+    {
+        // assert(command.sprite != nullptr && command.hashId == 0);
+        if (command.sprite != nullptr)
+        {
+            command.sprite->render(renderer);
+        }
+        else if (command.hashId)
+        {
+            textureMapPtr->render(command.hashId, command.dstRect, renderer);
+        }
+        else
+        {
+            groundTexture->render(renderer, command.srcRect, command.dstRect);
+        }
+    }
+
+    for (auto &command : renderCommands)
+    {
+        // assert(command.sprite != nullptr && command.hashId == 0);
+        if (command.sprite != nullptr)
+        {
+            command.sprite->render(renderer);
+        }
+        else if (command.hashId)
+        {
+            textureMapPtr->render(command.hashId, command.dstRect, renderer);
+        }
+        else
+        {
+            groundTexture->render(renderer, command.srcRect, command.dstRect);
         }
     }
 
@@ -523,8 +623,6 @@ void GameMapRenderer::render(core::Renderer *renderer)
     {
         city->renderCity(renderer);
     }
-    renderer->setRenderTarget(nullptr);
-    cacheTexture->render(renderer, 0, 0, camera->getWidth(), camera->getHeight(), 0, 0);
     auto elapsed = std::chrono::high_resolution_clock::now() - startTime;
     int64_t milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
     int64_t milliBuildings = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedBuildings).count();

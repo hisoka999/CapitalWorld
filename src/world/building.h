@@ -52,6 +52,7 @@ namespace world
         std::vector<std::shared_ptr<Product>> getProducts();
 
         virtual void updateProduction(unsigned int month, unsigned int year);
+        void updateDaily(uint16_t day, uint16_t month, uint16_t year, Company *company);
 
         bool isAutoSellActive();
         void autoSell(int month, int year);
@@ -84,6 +85,7 @@ namespace world
         void addResource(world::RawResource rawResource);
         Balance &getBalance();
         bool canDragBuild();
+        utils::Vector2 getPosition();
 
     protected:
         bool m_dragBuild = false;

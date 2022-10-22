@@ -51,10 +51,8 @@ void GameMap::initEmtyMap()
             mapData[i] = 10;
     }
     buildings.clear();
-    // mapData.resize(width * height);
     buildings.resize(width * height);
     mapDecoration.resize(width * height);
-    // std::fill(mapData.begin(), mapData.end(), 10);
     std::fill(buildings.begin(), buildings.end(), nullptr);
     std::fill(mapDecoration.begin(), mapDecoration.end(), 0);
 }
@@ -71,12 +69,12 @@ TileType GameMap::getTile(const int x, const int y) const
 
 TileType GameMap::getTile(const utils::Vector2 &pos)
 {
-    return getTile(pos.getX(), pos.getY());
+    return getTile(int(pos.getX()), int(pos.getY()));
 }
 
 TileType GameMap::getDecoration(const utils::Vector2 &pos)
 {
-    return getDecoration(pos.getX(), pos.getY());
+    return getDecoration(int(pos.getX()), int(pos.getY()));
 }
 
 TileType GameMap::getDecoration(const int x, const int y) const
@@ -156,6 +154,7 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
         }
     }
     building->update(this);
+    initParents(building);
     std::shared_ptr<core::Message<MessageTypes, bool>> message = std::make_shared<core::Message<MessageTypes, bool>>(MessageTypes::ObjectHasBuild, true);
     core::MessageSystem<MessageTypes>::get().sendMessage(message);
 }
@@ -323,6 +322,61 @@ void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding,
     }
 }
 
+void GameMap::initStreetGraph()
+{
+
+    streetGraph.clear();
+    graphIndices.clear();
+    for (auto &building : buildings)
+    {
+        if (building == nullptr)
+            continue;
+
+        initParents(building);
+    }
+}
+
+void GameMap::initParents(const std::shared_ptr<world::Building> &building)
+{
+    if (building->getType() == world::BuildingType::Street)
+    {
+        utils::Vector2 parentPos = {building->get2DPosition().x, building->get2DPosition().y};
+
+        size_t parentIndex = make_pos(parentPos.getX(), parentPos.getY());
+
+        std::vector<paths::Neighbor> neighbors;
+        std::vector<paths::Neighbor> empty;
+        if (graphIndices.count(parentIndex) == 0)
+        {
+            streetGraph.push_back(neighbors);
+            graphIndices[parentIndex] = streetGraph.size() - 1;
+        }
+
+        for (size_t y = parentPos.getY() - 1; y <= parentPos.getY() + 1; y++)
+        {
+            for (size_t x = parentPos.getX() - 1; x <= parentPos.getX() + 1; x++)
+            {
+                if (x != parentPos.getX() && y != parentPos.getY())
+                    continue;
+                size_t realIndex = make_pos(x, y);
+                if (realIndex != parentIndex)
+                {
+                    // size_t index = streetGraph.size();
+                    // graphIndices[realIndex] = index;
+                    if (graphIndices.count(realIndex) == 0)
+                    {
+                        streetGraph.push_back(empty);
+                        graphIndices[realIndex] = streetGraph.size() - 1;
+                    }
+
+                    paths::Neighbor neighbor(graphIndices[realIndex], utils::Vector2(x, y), 1.0);
+                    streetGraph[graphIndices[parentIndex]].push_back(neighbor);
+                }
+            }
+        }
+    }
+}
+
 std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company)
 {
     // Schritt 1 Suche Straße neben dem Startgebäude
@@ -459,6 +513,21 @@ std::vector<utils::Vector2> &GameMap::getChangedTiles()
 void GameMap::clearChangedTiles()
 {
     changedTiles.clear();
+}
+
+paths::Graph &GameMap::getStreetGraph()
+{
+    return streetGraph;
+}
+
+size_t GameMap::make_pos(const utils::Vector2 &pos)
+{
+    return make_pos(pos.getX(), pos.getY());
+}
+
+size_t GameMap::getGraphIndex(const utils::Vector2 &pos)
+{
+    return graphIndices.at(make_pos(pos));
 }
 
 std::string tileTypeToString(const TileType tile)

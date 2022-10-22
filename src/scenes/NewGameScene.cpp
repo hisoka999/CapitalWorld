@@ -60,9 +60,33 @@ namespace scenes
         nameEdit->setFont("fonts/arial.ttf", 14);
         playerName = "Player";
         nameEdit->setText(playerName);
-
         nameEdit->connect("textChanged", [&](std::string data)
                           { playerName = data; });
+        container->addObject(nameEdit);
+
+        auto colorLabel = std::make_shared<UI::Label>(nullptr);
+        colorLabel->setFont("fonts/arial.ttf", 14);
+        colorLabel->setText(_("Company color: "));
+        colorLabel->setPos(20, y);
+        container->addObject(colorLabel);
+
+        auto colorCombobox = std::make_shared<UI::ComboBox<world::CompanyColor>>();
+        colorCombobox->setPos(200, y);
+        colorCombobox->setFont("fonts/arial.ttf", 14);
+        color = world::CompanyColor::black;
+        colorCombobox->setSelectionByText(world::CompanyColor::black);
+
+        constexpr auto &colors = magic_enum::enum_values<world::CompanyColor>();
+
+        for (auto &value : colors)
+        {
+            colorCombobox->addElement(value);
+        }
+        colorCombobox->connect("valueChanged", [&](world::CompanyColor data)
+                               { color = data; });
+
+        colorCombobox->setElementFunction([](world::CompanyColor val) -> std::string
+                                          { return _(std::string(magic_enum::enum_name(val))); });
 
         container->addObject(nameEdit);
 
@@ -263,15 +287,17 @@ namespace scenes
         auto gameMap = gen.generateMap(size, size, numberOfCities, cityName, seed);
         auto cities = gen.getGeneratedCities();
         int cash = 1000000 * int(difficulty);
-        auto player = std::make_shared<world::Company>(playerName, cash, true);
+        auto player = std::make_shared<world::Company>(playerName, cash, true, color);
         player->setAvailableResearch(services::ResearchService::Instance().getData());
 
         std::vector<std::shared_ptr<world::Company>> companies;
 
         world::CompanyNameGenerator nameGen("data/company_names.json", seed);
+        constexpr auto &colors = magic_enum::enum_values<world::CompanyColor>();
+
         for (int i = 1; i <= numberOfCompanys; ++i)
         {
-            auto company = std::make_shared<world::Company>(nameGen.generateName(), 1000000, false);
+            auto company = std::make_shared<world::Company>(nameGen.generateName(), 1000000, false, colors[i]);
             company->setAvailableResearch(services::ResearchService::Instance().getData());
             companies.push_back(company);
         }

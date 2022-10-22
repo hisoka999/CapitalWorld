@@ -25,13 +25,14 @@ namespace world
             virtual void fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company);
             std::string &getName();
             virtual void updateProduction(int month, int year, Building *building);
+            virtual void updateDaily(uint16_t day, uint16_t month, uint16_t year, Building *building, Company *company);
             virtual std::shared_ptr<BuildingComponent> clone();
 
             virtual void delayedUpdate(Company *company);
             virtual std::map<std::string, std::string> displayData();
 
         protected:
-            std::shared_ptr<world::GameState> getGameState();
+            world::GameState *getGameState();
             bool isGameRunning();
         };
 

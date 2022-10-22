@@ -37,7 +37,7 @@ jobs:
       #VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
 
@@ -76,10 +76,10 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
         run: |
-        cd ${{ env.CMAKE_BUILD_DIR }}
-        echo "::set-output name=version::$(CapitalWorld.exe --version)"
-        id: version-windows
-        if: matrix.os == 'windows-latest'
+          cd ${{ env.CMAKE_BUILD_DIR }}
+          echo "::set-output name=version::$(CapitalWorld.exe --version)"
+          id: version-windows
+          if: matrix.os == 'windows-latest'
       - name: Build Packages
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}

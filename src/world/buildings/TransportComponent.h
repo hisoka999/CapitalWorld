@@ -3,6 +3,9 @@
 
 #include "BuildingComponent.h"
 
+#include <list>
+#include <engine/utils/vector2.h>
+
 class Product;
 
 namespace world
@@ -22,6 +25,9 @@ namespace world
             std::shared_ptr<Product> product;
             unsigned quantity;
             bool active;
+            bool transportActive = false;
+            bool transportFinished = false;
+            std::list<utils::Vector2> path;
         };
 
         class TransportComponent : public world::buildings::BuildingComponent
@@ -40,12 +46,19 @@ namespace world
             void clearRoutes();
             void addRoute(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Building> &endBuilding, const std::shared_ptr<Product> &product, const unsigned quantity);
             void removeRoute(const size_t position);
-            void updateProduction(int month, int year, Building *building);
+            void updateProduction(int month, int year, Building *building) override;
+            void updateDaily(uint16_t day, uint16_t month, uint16_t year, Building *building, Company *company) override;
             virtual std::shared_ptr<BuildingComponent> clone();
             virtual void delayedUpdate(Company *company);
         };
 
     } // namespace buildings
+
+    struct AnimatedMovementData
+    {
+        std::shared_ptr<buildings::TransportRoute> route;
+        std::string colorName;
+    };
 
 } // namespace world
 #endif // __TRANSPORTCOMPONENT_H__
