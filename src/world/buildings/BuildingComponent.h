@@ -32,7 +32,7 @@ namespace world
             virtual std::map<std::string, std::string> displayData();
 
         protected:
-            std::shared_ptr<world::GameState> getGameState();
+            world::GameState *getGameState();
             bool isGameRunning();
         };
 

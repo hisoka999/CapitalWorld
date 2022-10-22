@@ -1,4 +1,5 @@
 #include "worldscene.h"
+#include "world/GameStateMutex.h"
 #include "../translate.h"
 #include "../world/buildings/street.h"
 #include "../world/mapgenerator.h"
@@ -81,12 +82,16 @@ namespace scenes
         core::MessageSystem<MessageTypes>::get().deregister(buildMessageRefId);
         core::MessageSystem<MessageTypes>::get().deregister(eventQueueRefId);
         core::MessageSystem<MessageTypes>::get().deregister(animationMessageRefId);
+        gGameStateMutex.unlock();
+
         thread->stop();
         aiThread->stop();
         if (previewSurface != nullptr)
         {
             SDL_FreeSurface(previewSurface);
         }
+        aiThread = nullptr;
+        thread = nullptr;
     }
 
     void WorldScene::renderHUD()
