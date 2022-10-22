@@ -487,13 +487,13 @@ namespace scenes
 
         eventHandled = handleMouseEvents(pInput);
 
-        if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
+        if (pInput->isKeyDown("MOVE_DOWN"))
         {
             direction.bottom = true;
             direction.top = false;
             eventHandled = true;
         }
-        else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
+        else if (pInput->isKeyDown("MOVE_UP"))
         {
             direction.top = true;
             direction.bottom = false;
@@ -506,13 +506,13 @@ namespace scenes
             eventHandled = true;
         }
 
-        if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
+        if (pInput->isKeyDown("MOVE_LEFT"))
         {
             direction.left = true;
             direction.right = false;
             eventHandled = true;
         }
-        else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
+        else if (pInput->isKeyDown("MOVE_RIGHT"))
         {
             direction.left = false;
             direction.right = true;
@@ -547,13 +547,13 @@ namespace scenes
             direction.bottom = true;
         }
 
-        if (pInput->isKeyDown(SDLK_PAGEDOWN))
+        if (pInput->isKeyDown("CONSOLE"))
         {
             console.setVisible(true);
             eventHandled = true;
         }
 
-        if (pInput->isKeyDown(SDLK_ESCAPE))
+        if (pInput->isKeyDown("MENU"))
         {
             // create preview image
             if (previewSurface != nullptr)
@@ -565,7 +565,7 @@ namespace scenes
             optionsWindow.setVisible(true);
             eventHandled = true;
         }
-        else if (pInput->isKeyDown(SDLK_r) && !pInput->isTextInputActive())
+        else if (pInput->isKeyDown("RESEARCH") && !pInput->isTextInputActive())
         {
             auto rect = researchWindow.displayRect();
             researchWindow.setPos(renderer->getViewPort().width / 2 - (rect.width / 2), renderer->getViewPort().height / 2 - (rect.height / 2));

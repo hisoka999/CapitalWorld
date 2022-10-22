@@ -90,7 +90,25 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         core::Renderer ren;
         graphics::TextureManager::Instance().setRenderer(&ren);
         graphics::TextureManager::Instance().loadTheme("data/theme.json", true);
-        core::Input input;
+
+        core::KeyMap keyMap;
+        keyMap.emplace("MOVE_LEFT", SDLK_a);
+        keyMap.emplace("MOVE_LEFT", SDLK_LEFT);
+
+        keyMap.emplace("MOVE_RIGHT", SDLK_d);
+        keyMap.emplace("MOVE_RIGHT", SDLK_RIGHT);
+
+        keyMap.emplace("MOVE_UP", SDLK_w);
+        keyMap.emplace("MOVE_UP", SDLK_UP);
+
+        keyMap.emplace("MOVE_DOWN", SDLK_s);
+        keyMap.emplace("MOVE_DOWN", SDLK_DOWN);
+
+        keyMap.emplace("MENU", SDLK_ESCAPE);
+        keyMap.emplace("CONSOLE", SDLK_c);
+        keyMap.emplace("RESEARCH", SDLK_r);
+
+        core::Input input(keyMap);
         auto &sceneManager = core::SceneManager::Instance();
 
         ren.open(&win, win.getSettings()->getValueB("Base", "VSync"));
