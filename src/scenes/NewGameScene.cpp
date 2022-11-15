@@ -267,6 +267,7 @@ namespace scenes
 
     bool NewGameScene::handleEvents(core::Input *pInput)
     {
+        input = pInput;
         return winMgr->handleInput(pInput);
     }
 
@@ -304,7 +305,7 @@ namespace scenes
 
         auto gameState = std::make_shared<world::GameState>(companies, player, gameMap, cities, difficulty);
 
-        auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState, m_gameWindow->getSettings());
+        auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState, m_gameWindow->getSettings(), input);
         worldScene->setGameWindow(m_gameWindow);
         sceneManager->addScene("world", worldScene);
         sceneManager->setCurrentScene("world");

@@ -43,7 +43,7 @@ namespace scenes
     {
     public:
         WorldScene(core::Renderer *pRenderer,
-                   core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings);
+                   core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings, core::Input *input);
         ~WorldScene();
         void render();
         bool handleEvents(core::Input *pInput);

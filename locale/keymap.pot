@@ -1,0 +1,21 @@
+msgid "CONSOLE"
+msgstr ""
+
+msgid "MENU"
+msgstr ""
+
+msgid "MOVE_DOWN"
+msgstr ""
+
+msgid "MOVE_LEFT"
+msgstr ""
+
+msgid "MOVE_RIGHT"
+msgstr ""
+
+msgid "MOVE_UP"
+msgstr ""
+
+msgid "RESEARCH"
+msgstr ""
+
