@@ -21,11 +21,11 @@ namespace scenes
 {
 
     WorldScene::WorldScene(core::Renderer *pRenderer,
-                           core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings)
+                           core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings, core::Input *input)
 
         : core::Scene(pRenderer), sceneManager(
                                       pSceneManager),
-          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0, settings), researchWindow(gameState), console(gameState), playerWindow(gameState)
+          buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0, settings, input), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
@@ -56,7 +56,7 @@ namespace scenes
         optionsWindow.setGameState(gameState);
         optionsWindow.connect("stateChanged", [&](std::shared_ptr<world::GameState> state)
                               {
-                                  auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state,settings);
+                                  auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, state,settings,input);
                                   core::SceneManager::Instance().changeScene("world", worldScene); });
 
         buildMessageRefId = core::MessageSystem<MessageTypes>::get().registerForType(MessageTypes::ObjectHasBuild, [this]([[maybe_unused]] bool dummy)

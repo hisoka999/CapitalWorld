@@ -47,7 +47,56 @@ void generateEnumPot(std::string fileName)
     os.flush();
     os.close();
 }
+
+void writeKeyMapPot(core::KeyMap &keyMap, std::string fileName)
+{
+    std::ofstream os(fileName, std::ios::trunc | std::ios::out);
+
+    std::vector<std::string> keyList;
+    for (auto &[key, value] : keyMap)
+    {
+        if (std::find(keyList.begin(), keyList.end(), key) == keyList.end())
+        {
+            keyList.emplace_back(key);
+        }
+    }
+    for (auto &key : keyList)
+    {
+        os << "msgid \"" << key << "\"\n";
+        os << "msgstr \"\"\n\n";
+    }
+
+    os.flush();
+    os.close();
+}
+
 #endif
+
+core::KeyMap initKeyMap(utils::IniBase *settings)
+{
+
+    core::KeyMap keyMap;
+    keyMap.emplace("MOVE_LEFT", settings->getValueI("keys", "MOVE_LEFT_1", SDLK_a));
+    keyMap.emplace("MOVE_LEFT", settings->getValueI("keys", "MOVE_LEFT_2", SDLK_LEFT));
+
+    keyMap.emplace("MOVE_RIGHT", settings->getValueI("keys", "MOVE_RIGHT_1", SDLK_d));
+    keyMap.emplace("MOVE_RIGHT", settings->getValueI("keys", "MOVE_RIGHT_2", SDLK_RIGHT));
+
+    keyMap.emplace("MOVE_UP", settings->getValueI("keys", "MOVE_UP_1", SDLK_w));
+    keyMap.emplace("MOVE_UP", settings->getValueI("keys", "MOVE_UP_2", SDLK_UP));
+
+    keyMap.emplace("MOVE_DOWN", settings->getValueI("keys", "MOVE_DOWN_1", SDLK_s));
+    keyMap.emplace("MOVE_DOWN", settings->getValueI("keys", "MOVE_DOWN_2", SDLK_DOWN));
+
+    keyMap.emplace("MENU", settings->getValueI("keys", "MENU_1", SDLK_ESCAPE));
+    keyMap.emplace("MENU", settings->getValueI("keys", "MENU_2", 0));
+    keyMap.emplace("CONSOLE", settings->getValueI("keys", "CONSOLE_1", SDLK_c));
+    keyMap.emplace("CONSOLE", settings->getValueI("keys", "CONSOLE_2", 0));
+    keyMap.emplace("RESEARCH", settings->getValueI("keys", "RESEARCH_1", SDLK_r));
+    keyMap.emplace("RESEARCH", settings->getValueI("keys", "RESEARCH_2", 0));
+
+    return keyMap;
+}
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
@@ -67,23 +116,34 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         std::string fileName = "locale/enum.pot";
         generateEnumPot(fileName);
 #endif
+
         std::filesystem::path loggingFolder = std::filesystem::path(utils::os::get_pref_dir("", "capitalworld")) / "logs";
         g_appLogger.init(loggingFolder, utils::LogLevel::warn);
         g_sglLogger.init(loggingFolder, utils::LogLevel::trace);
 
         core::GameWindow win(utils::string_format("CapitalWorld %d.%d", GAME_VERSION_MAJOR, GAME_VERSION_MINOR), 1280, 720, "capitalworld");
         win.setWindowIcon("logo.png");
+
+        auto keyMap = initKeyMap(win.getSettings().get());
+        core::Input input(keyMap);
+
+#ifdef GAME_DEBUG
+        writeKeyMapPot(keyMap, "locale/keymap.pot");
+#endif
+
         auto lang = win.getSettings()->getValue("Base", "Lang");
         if (!lang.empty())
         {
             Language lng = magic_enum::enum_cast<Language>(lang).value();
             Localisation::Instance().loadLanguage(lng, "capitalworld");
             Localisation::Instance().loadLanguage(lng, "enum");
+            Localisation::Instance().loadLanguage(lng, "keymap");
         }
         else
         {
             Localisation::Instance().detectLanguage("capitalworld");
             Localisation::Instance().detectLanguage("enum");
+            Localisation::Instance().detectLanguage("keymap");
         }
         setlocale(LC_ALL, Localisation::Instance().getLocale().name().c_str());
 
@@ -91,24 +151,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         graphics::TextureManager::Instance().setRenderer(&ren);
         graphics::TextureManager::Instance().loadTheme("data/theme.json", true);
 
-        core::KeyMap keyMap;
-        keyMap.emplace("MOVE_LEFT", SDLK_a);
-        keyMap.emplace("MOVE_LEFT", SDLK_LEFT);
-
-        keyMap.emplace("MOVE_RIGHT", SDLK_d);
-        keyMap.emplace("MOVE_RIGHT", SDLK_RIGHT);
-
-        keyMap.emplace("MOVE_UP", SDLK_w);
-        keyMap.emplace("MOVE_UP", SDLK_UP);
-
-        keyMap.emplace("MOVE_DOWN", SDLK_s);
-        keyMap.emplace("MOVE_DOWN", SDLK_DOWN);
-
-        keyMap.emplace("MENU", SDLK_ESCAPE);
-        keyMap.emplace("CONSOLE", SDLK_c);
-        keyMap.emplace("RESEARCH", SDLK_r);
-
-        core::Input input(keyMap);
         auto &sceneManager = core::SceneManager::Instance();
 
         ren.open(&win, win.getSettings()->getValueB("Base", "VSync"));
@@ -121,7 +163,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         services::BuildingService::Instance().loadData("data/buildings.json");
         services::ResearchService::Instance().loadData("data/research.json");
 
-        auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager, win.getSettings());
+        auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager, win.getSettings(), &input);
         mainScene->setGameWindow(&win);
         auto newGameScene = std::make_shared<scenes::NewGameScene>(&ren, &sceneManager);
         newGameScene->setGameWindow(&win);

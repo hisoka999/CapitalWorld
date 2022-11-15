@@ -8,22 +8,23 @@
 #include "magic_enum.hpp"
 #include <functional>
 
-SettingsWindow::SettingsWindow(std::shared_ptr<utils::IniBase> &settings)
-    : UI::Window(50, 50, 620, 400), m_settings(settings)
+SettingsWindow::SettingsWindow(std::shared_ptr<utils::IniBase> &settings, core::Input *input)
+    : UI::Window(50, 50, 720, 500), m_settings(settings)
 {
     tabBar = std::make_shared<UI::TabBar>(this);
     tabBar->setPos(5, 5);
-    tabBar->setWidth(500);
-    tabBar->setHeight(300);
+    tabBar->setWidth(600);
+    tabBar->setHeight(400);
     addObject(tabBar);
     auto generalTab = std::make_shared<UI::Tab>(tabBar.get(), _("General"));
     auto graphicsTab = std::make_shared<UI::Tab>(tabBar.get(), _("Graphics"));
     auto soundTab = std::make_shared<UI::Tab>(tabBar.get(), _("Sound"));
-    auto controlsTab = std::make_shared<UI::Tab>(tabBar.get(), _("Controls"));
+    m_controlsTab = std::make_shared<UI::ControlsTab>(tabBar.get(), _("Controls"), input, m_settings);
+
     tabBar->addTab(generalTab);
     tabBar->addTab(graphicsTab);
     tabBar->addTab(soundTab);
-    tabBar->addTab(controlsTab);
+    tabBar->addTab(m_controlsTab);
 
     auto layout = std::make_shared<UI::layout::GridLayout>(graphicsTab.get(), 2);
     layout->setPadding(utils::Vector2(20, 10));
@@ -41,10 +42,10 @@ SettingsWindow::SettingsWindow(std::shared_ptr<utils::IniBase> &settings)
     auto comboboxLanguage = std::make_shared<UI::ComboBox<Language>>(generalTab.get());
 
     saveButton->setLabel(_("Save"));
-    saveButton->setPos(30, 300);
+    saveButton->setPos(30, 420);
 
     cancelButton->setLabel(_("Cancel"));
-    cancelButton->setPos(200, 300);
+    cancelButton->setPos(200, 420);
     fullscreen->setPos(30, 50);
     fullscreen->setHeight(25);
     // fullscreen->setText(_("Fullscreen"));

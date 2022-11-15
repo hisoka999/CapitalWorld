@@ -13,7 +13,7 @@ namespace UI
     private:
         /* data */
     public:
-        OptionsWindow(int x, int y, std::shared_ptr<utils::IniBase> settings);
+        OptionsWindow(int x, int y, std::shared_ptr<utils::IniBase> settings, core::Input *input);
         ~OptionsWindow();
 
         virtual void render(core::Renderer *pRender);

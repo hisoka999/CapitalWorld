@@ -43,5 +43,6 @@ namespace scenes
         int numberOfCompanys;
         int numberOfCities;
         world::CompanyColor color;
+        core::Input *input = nullptr;
     };
 }; // namespace scenes

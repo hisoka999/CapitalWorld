@@ -22,8 +22,8 @@ namespace scenes
 {
 
         MainScene::MainScene(core::Renderer *pRenderer,
-                             core::SceneManager *pSceneManager, std::shared_ptr<utils::IniBase> settings)
-            : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow(settings), loadWindow(true)
+                             core::SceneManager *pSceneManager, std::shared_ptr<utils::IniBase> settings, core::Input *input)
+            : core::Scene(pRenderer), running(true), sceneManager(pSceneManager), settingsWindow(settings, input), loadWindow(true)
         {
 
                 bgTexture.loadTexture(renderer, "images/title_background.png");
@@ -106,7 +106,7 @@ namespace scenes
                                file.close();
 
                                auto gameState = world::GameState::fromJson(jsonObject);
-                               auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState,m_gameWindow->getSettings());
+                               auto worldScene = std::make_shared<scenes::WorldScene>(renderer, sceneManager, gameState,m_gameWindow->getSettings(),input);
                                sceneManager->addScene("world", worldScene);
                                sceneManager->setCurrentScene("world"); });
         }
