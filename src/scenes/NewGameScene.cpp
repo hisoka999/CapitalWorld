@@ -276,6 +276,8 @@ namespace scenes
         seed = std::chrono::system_clock::now().time_since_epoch().count();
 
         seedEdit->setText(std::to_string(seed));
+        music->loadMusic("music/Juhani Junkala [Retro Game Music Pack] Ending.wav");
+        music->play(-1);
     }
 
     void NewGameScene::startGame()
