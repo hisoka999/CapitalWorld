@@ -45,6 +45,7 @@ namespace scenes
         WorldScene(core::Renderer *pRenderer,
                    core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings, core::Input *input);
         ~WorldScene();
+        virtual void unload() override;
         void render();
         bool handleEvents(core::Input *pInput);
         virtual void update();
@@ -91,6 +92,8 @@ namespace scenes
         graphics::Rect miniMapRect;
         bool dragBuildActive = false;
         notifications::EventQueue eventQueue;
+        std::vector<std::string> playList;
+        int currentFile = -1;
     };
 }
 #endif // WORLDSCENE_H
