@@ -44,15 +44,16 @@ namespace world
     class Company
     {
     public:
-        Company(std::string name, float cash, bool player, CompanyColor color);
+        Company(std::string name, double cash, bool player, CompanyColor color);
+        Company(Company &other) = delete;
         ~Company();
 
         std::string getName();
-        float getCash();
-        float getProfit();
-        float getCosts();
-        float getIncome();
-        void incCash(float value);
+        double getCash();
+        double getProfit();
+        double getCosts();
+        double getIncome();
+        void incCash(double value);
         bool isPLayer();
         void addBuilding(std::shared_ptr<Building> building);
         bool hasBuilding(std::shared_ptr<Building> building);
@@ -91,11 +92,11 @@ namespace world
 
     private:
         std::string name;
-        float cash;
+        double cash;
         bool player;
         CompanyColor color;
-        float income;
-        float costs;
+        double income;
+        double costs;
         std::vector<std::shared_ptr<world::Building>> buildings;
         std::vector<std::shared_ptr<Research>> researchQueue;
         std::vector<std::shared_ptr<Research>> availableResearch;

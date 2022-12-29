@@ -11,9 +11,9 @@ namespace world
     {
     }
 
-    float Balance::getIncomePerMonth(int month, int year)
+    double Balance::getIncomePerMonth(int month, int year)
     {
-        float result = .0f;
+        double result = .0f;
         for (auto &b : m_balance)
         {
             if (b.month == month && b.year == year)
@@ -65,9 +65,9 @@ namespace world
         return balance;
     }
 
-    float Balance::getCostsPerMonth(int month, int year)
+    double Balance::getCostsPerMonth(int month, int year)
     {
-        float result = .0f;
+        double result = .0f;
         for (auto &b : m_balance)
         {
             if (b.month == month && b.year == year)
@@ -78,7 +78,7 @@ namespace world
         return result;
     }
 
-    void Balance::addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount)
+    void Balance::addCosts(int month, int year, const std::string &productName, BalanceAccount account, double amount)
     {
 
         bool found = false;
@@ -105,7 +105,7 @@ namespace world
         }
     }
 
-    void Balance::addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount)
+    void Balance::addIncome(int month, int year, const std::string &productName, BalanceAccount account, double amount)
     {
         bool found = false;
         // for (auto &b : m_balance)
