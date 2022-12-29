@@ -257,7 +257,7 @@ namespace scenes
         {
             auto action = buildWindow.getCurrentAction();
 
-            if (action == world::BuildAction::Build && selectedBuilding2Build->canDragBuild())
+            if (action == world::BuildAction::Build && selectedBuilding2Build != nullptr && selectedBuilding2Build->canDragBuild())
             {
                 calcCursorPosition(pInput);
                 if (!dragBuildActive)
