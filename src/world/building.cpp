@@ -5,6 +5,7 @@
 #include "buildings/StorageComponent.h"
 #include "buildings/TransportComponent.h"
 #include "buildings/WorkerComponent.h"
+#include "buildings/ProductionConponent.h"
 #include "services/productservice.h"
 #include <algorithm>
 #include <magic_enum.hpp>
@@ -153,46 +154,6 @@ namespace world
 
     void Building::updateProduction(unsigned int month, unsigned int year)
     {
-
-        if (hasComponent("StorageComponent"))
-        {
-            auto storage = getComponent<world::buildings::StorageComponent>("StorageComponent");
-
-            for (auto &product : products)
-            {
-
-                auto &cycle = product->getProductionCycle();
-                if (month >= cycle.startMonth && month <= cycle.endMonth)
-                {
-                    if (product->getBaseProducts().size() > 0)
-                    {
-                        bool requirementsFullfilled = true;
-                        for (auto &base : product->getBaseProducts())
-                        {
-                            int amount = storage->getEntry(base->product->getName());
-                            if (amount < base->amount)
-                            {
-                                requirementsFullfilled = false;
-                                break;
-                            }
-                        }
-                        if (requirementsFullfilled)
-                        {
-                            for (auto &base : product->getBaseProducts())
-                            {
-                                storage->addEntry(base->product->getName(), base->amount * -1);
-                            }
-                            storage->addEntry(product->getName(), cycle.amount);
-                            updateProduction(month, year);
-                        }
-                    }
-                    else if (product->getResources().size() > 0)
-                    {
-                        storage->addEntry(product->getName(), cycle.amount);
-                    }
-                }
-            }
-        }
 
         for (auto &component : components)
         {
@@ -351,6 +312,7 @@ namespace world
         Building::componentMap["StorageComponent"] = std::make_shared<world::buildings::StorageComponent>();
         Building::componentMap["HouseComponent"] = std::make_shared<world::buildings::HouseComponent>();
         Building::componentMap["WorkerComponent"] = std::make_shared<world::buildings::WorkerComponent>();
+        Building::componentMap["ProductionComponent"] = std::make_shared<world::buildings::ProductionComponent>();
     }
 
     std::shared_ptr<world::buildings::BuildingComponent> Building::createComponentByName(const std::string &name)

@@ -23,8 +23,8 @@ namespace world
             std::string startBuildingName;
             std::string endBuildingName;
             std::shared_ptr<Product> product;
-            unsigned quantity;
-            bool active;
+            unsigned quantity = 0;
+            bool active = false;
             bool transportActive = false;
             bool transportFinished = false;
             std::list<utils::Vector2> path;

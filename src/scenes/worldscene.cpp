@@ -27,6 +27,10 @@ namespace scenes
                                       pSceneManager),
           buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0, settings, input), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
+        playList.push_back("music/Juhani Junkala [Retro Game Music Pack] Level 1.wav");
+        playList.push_back("music/Juhani Junkala [Retro Game Music Pack] Level 2.wav");
+        playList.push_back("music/Juhani Junkala [Retro Game Music Pack] Level 3.wav");
+
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
 
@@ -79,13 +83,21 @@ namespace scenes
     }
     WorldScene::~WorldScene()
     {
+        unload();
+    }
+
+    void WorldScene::unload()
+    {
+        Scene::unload();
         core::MessageSystem<MessageTypes>::get().deregister(buildMessageRefId);
         core::MessageSystem<MessageTypes>::get().deregister(eventQueueRefId);
         core::MessageSystem<MessageTypes>::get().deregister(animationMessageRefId);
         gGameStateMutex.unlock();
 
-        thread->stop();
-        aiThread->stop();
+        if (thread)
+            thread->stop();
+        if (aiThread)
+            aiThread->stop();
         if (previewSurface != nullptr)
         {
             SDL_FreeSurface(previewSurface);
@@ -257,7 +269,7 @@ namespace scenes
         {
             auto action = buildWindow.getCurrentAction();
 
-            if (action == world::BuildAction::Build && selectedBuilding2Build->canDragBuild())
+            if (action == world::BuildAction::Build && selectedBuilding2Build != nullptr && selectedBuilding2Build->canDragBuild())
             {
                 calcCursorPosition(pInput);
                 if (!dragBuildActive)
@@ -644,6 +656,15 @@ namespace scenes
             mapRenderer->clearCache();
             wasMoving = false;
             updateDelta = 0;
+        }
+
+        if (!music->isMusicPlaying())
+        {
+            currentFile++;
+            if (currentFile > int(playList.size() - 1))
+                currentFile = -1;
+            music->loadMusic(playList[currentFile]);
+            music->play(0);
         }
     }
 

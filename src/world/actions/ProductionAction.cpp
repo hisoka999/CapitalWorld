@@ -6,6 +6,7 @@
 #include <world/buildings/SalesComponent.h>
 #include <world/buildings/StorageComponent.h>
 #include <world/buildings/TransportComponent.h>
+#include <world/buildings/WorkerComponent.h>
 #include <world/actions/BuildAction.h>
 
 namespace world
@@ -38,6 +39,9 @@ namespace world
                         auto resourceList = services::ResourceService::Instance().getResourcesByBuildingType(world::BuildingType::Resource, rawResource);
                     }
                 }
+
+                auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                workers->setCurrentWorkers(m_building->getProducts().size());
             }
             break;
             case world::BuildingType::Factory:
@@ -51,6 +55,10 @@ namespace world
                         {
                         case world::BuildingType::Factory:
                             m_building->addProduct(base->product);
+                            {
+                                auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                                workers->setCurrentWorkers(m_building->getProducts().size());
+                            }
                             /* code */
                             break;
                         case world::BuildingType::Resource:
@@ -65,6 +73,9 @@ namespace world
                                     {
                                         productionBuilding->addProduct(base->product);
                                         foundProduction = true;
+
+                                        auto workers = productionBuilding->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                                        workers->setCurrentWorkers(m_building->getProducts().size());
                                     }
                                 }
                             }
@@ -132,6 +143,8 @@ namespace world
                 {
                     route->active = true;
                 }
+                auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                workers->setCurrentWorkers(transport->getActiveRoutes().size());
                 break;
             }
             case world::BuildingType::Shop:

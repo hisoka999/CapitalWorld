@@ -48,29 +48,55 @@ namespace world
             {
                 auto shops = getGameState()->getGameMap()->findByComponentTypeInDistance("SalesComponent", building, 10);
 
-                for (auto &shop : shops)
+                struct Sale
                 {
-                    const auto &storage = shop->getComponent<buildings::StorageComponent>("StorageComponent");
-                    const auto &sales = shop->getComponent<buildings::SalesComponent>("SalesComponent");
+                    std::string product;
+                    float price;
+                    std::shared_ptr<buildings::StorageComponent> storage;
+                    std::shared_ptr<buildings::SalesComponent> sales;
+                    std::shared_ptr<world::Building> shop;
+                };
+                std::vector<Sale> sales;
 
-                    for (auto &[storedProduct, entry] : storage->getEntries())
+                for (auto &[type, d] : demand)
+                {
+                    for (auto &shop : shops)
                     {
-                        if (!sales->isSalesActive(storedProduct))
-                            continue;
+                        const auto &storage = shop->getComponent<buildings::StorageComponent>("StorageComponent");
+                        const auto &salesComponent = shop->getComponent<buildings::SalesComponent>("SalesComponent");
 
-                        int storedAmount = entry.amount;
-                        if (storedAmount > 0)
+                        for (auto &[storedProduct, entry] : storage->getEntries())
                         {
-                            auto product = services::ProductService::Instance().getProductByName(storedProduct);
-                            int demand = getCurrentDemand(product->getProductType());
-                            if (demand < storedAmount)
-                                storedAmount = demand;
-                            fullfillDemand(product->getProductType(), storedAmount);
+                            if (!salesComponent->isSalesActive(storedProduct))
+                                continue;
 
-                            storage->addEntry(storedProduct, storedAmount * -1);
-                            float orderAmount = storedAmount * sales->getSalesPrice(storedProduct);
-                            shop->getBalance().addIncome(month, year, storedProduct, world::BalanceAccount::Sales, orderAmount);
+                            int storedAmount = entry.amount;
+                            if (storedAmount > 0)
+                            {
+                                auto product = services::ProductService::Instance().getProductByName(storedProduct);
+                                if (product->getProductType() == type)
+                                {
+                                    sales.push_back({storedProduct, salesComponent->getSalesPrice(storedProduct), storage, salesComponent, shop});
+                                }
+                            }
                         }
+                    }
+                    std::sort(sales.begin(), sales.end(), [](Sale &lhs, Sale &rhs)
+                              { return lhs.price < rhs.price; });
+                    for (auto &sale : sales)
+                    {
+                        int demand = getCurrentDemand(type);
+                        if (demand <= 0)
+                            break;
+
+                        int amount = sale.storage->getEntry(sale.product);
+                        if (amount > demand)
+                            amount = demand;
+                        sale.storage->addEntry(sale.product, amount * -1);
+                        float orderAmount = amount * sale.price;
+                        fullfillDemand(type, amount);
+
+                        sale.shop->getBalance().addIncome(month, year, sale.product, world::BalanceAccount::Sales, orderAmount);
                     }
                 }
             }

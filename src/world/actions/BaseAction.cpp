@@ -6,6 +6,7 @@
 #include "ProductionAction.h"
 #include "ResearchAction.h"
 #include "LoanAction.h"
+#include "SalesPriceAction.h"
 
 namespace world
 {
@@ -117,6 +118,9 @@ namespace world
                 }
                 auto loanAction = std::make_shared<world::actions::LoanAction>(m_company);
                 setNextAction(loanAction);
+
+                auto salesPriceAction = std::make_shared<world::actions::SalesPriceAction>(m_company);
+                setNextAction(salesPriceAction);
             }
         }
     }

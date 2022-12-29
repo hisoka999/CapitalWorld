@@ -14,7 +14,7 @@
 namespace world
 {
 
-    Company::Company(std::string name, float cash, bool player, CompanyColor color)
+    Company::Company(std::string name, double cash, bool player, CompanyColor color)
         : name(name), cash(cash), player(player), color(color), income(0), costs(0)
     {
     }
@@ -26,25 +26,25 @@ namespace world
     {
         return name;
     }
-    float Company::getCash()
+    double Company::getCash()
     {
         return cash;
     }
-    float Company::getProfit()
+    double Company::getProfit()
     {
         return income - costs;
     }
 
-    float Company::getCosts()
+    double Company::getCosts()
     {
         return costs;
     }
 
-    float Company::getIncome()
+    double Company::getIncome()
     {
         return income;
     }
-    void Company::incCash(float value)
+    void Company::incCash(double value)
     {
         cash += value;
     }

@@ -21,7 +21,11 @@
             "y": 16
         },
         "components": {
-            "TransportComponent": null
+            "TransportComponent": null,
+            "WorkerComponent": {
+                "max_worker": 5,
+                "salary": 1200
+            }
         }
     },
     {
@@ -50,6 +54,7 @@
         },
         "components": {
             "StorageComponent": null,
+            "ProductionComponent": null,
             "WorkerComponent": {
                 "max_worker": 5,
                 "salary": 1500
@@ -82,6 +87,7 @@
         },
         "components": {
             "StorageComponent": null,
+            "ProductionComponent": null,
             "WorkerComponent": {
                 "max_worker": 5,
                 "salary": 2500
@@ -119,6 +125,7 @@
         },
         "components": {
             "StorageComponent": null,
+            "ProductionComponent": null,
             "WorkerComponent": {
                 "max_worker": 15,
                 "salary": 2000
@@ -147,7 +154,12 @@
             "y": 16
         },
         "components": {
-            "StorageComponent": null
+            "StorageComponent": null,
+            "ProductionComponent": null,
+            "WorkerComponent": {
+                "max_worker": 5,
+                "salary": 1300
+            }
         }
     },
     {

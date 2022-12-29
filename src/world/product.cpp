@@ -32,13 +32,13 @@ world::ProductType Product::getProductType()
     return productType;
 }
 
-float Product::calculateCostsPerMonth()
+double Product::calculateCostsPerMonth()
 {
     return calculateCostsPerPiece() * cycle.amount;
 }
-float Product::calculateCostsPerPiece()
+double Product::calculateCostsPerPiece()
 {
-    float result = 0.0f;
+    double result = 0.0f;
     for (auto &res : resources)
     {
         result += (res->resource->getCostPerMonth() * float(res->amount)) / this->cycle.amount;

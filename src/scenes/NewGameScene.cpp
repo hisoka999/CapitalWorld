@@ -276,6 +276,8 @@ namespace scenes
         seed = std::chrono::system_clock::now().time_since_epoch().count();
 
         seedEdit->setText(std::to_string(seed));
+        music->loadMusic("music/Juhani Junkala [Retro Game Music Pack] Ending.wav");
+        music->play(-1);
     }
 
     void NewGameScene::startGame()
@@ -296,9 +298,9 @@ namespace scenes
         world::CompanyNameGenerator nameGen("data/company_names.json", seed);
         constexpr auto &colors = magic_enum::enum_values<world::CompanyColor>();
 
-        for (int i = 1; i <= numberOfCompanys; ++i)
+        for (int i = 2; i <= numberOfCompanys; ++i)
         {
-            auto company = std::make_shared<world::Company>(nameGen.generateName(), 1000000, false, colors[i]);
+            auto company = std::make_shared<world::Company>(nameGen.generateName(), 1000000, false, colors[i - 1]);
             company->setAvailableResearch(services::ResearchService::Instance().getData());
             companies.push_back(company);
         }

@@ -48,8 +48,8 @@ public:
     bool needsProduct(std::shared_ptr<Product> product);
     ProductionCycle &getProductionCycle();
 
-    float calculateCostsPerMonth();
-    float calculateCostsPerPiece();
+    double calculateCostsPerMonth();
+    double calculateCostsPerPiece();
     world::BuildingType getBuildingType();
     world::ProductType getProductType();
 

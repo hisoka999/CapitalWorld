@@ -107,9 +107,20 @@ namespace UI
                 }
             }
         }
+        else if (productionBuildings.size() > 0)
+        {
+            route->startBuilding = productionBuildings[0];
+            route->startBuildingName = productionBuildings[0]->getDisplayName();
+            if (route->startBuilding != nullptr && route->startBuilding->getProducts().size() > 0)
+            {
+                route->product = route->startBuilding->getProducts()[0];
+            }
+        }
+
         startBuildings->connect("valueChanged", [&](std::shared_ptr<world::Building> b)
                                 {
                                     route->startBuilding = b;
+                                    route->startBuildingName = b->getDisplayName();
                                     fillProductListByBuilding(b);
                                     if (route->startBuilding != nullptr && route->startBuilding->getProducts().size() > 0)
                                     {
@@ -118,7 +129,8 @@ namespace UI
 
         finishBuildings->setElementFunction(elemFunction);
         finishBuildings->connect("valueChanged", [&](std::shared_ptr<world::Building> b)
-                                 { route->endBuilding = b; });
+                                 { route->endBuilding = b;
+                                 route->endBuildingName = b->getDisplayName(); });
         if (route->endBuilding != nullptr)
         {
             finishBuildings->setSelectionByText(route->endBuilding);

@@ -33,15 +33,15 @@ namespace world
     public:
         Balance(/* args */);
         ~Balance();
-        void addCosts(int month, int year, const std::string &productName, BalanceAccount account, int amount);
-        void addIncome(int month, int year, const std::string &productName, BalanceAccount account, int amount);
+        void addCosts(int month, int year, const std::string &productName, BalanceAccount account, double amount);
+        void addIncome(int month, int year, const std::string &productName, BalanceAccount account, double amount);
         std::vector<ProductBalance> getBalancePerYear(int year);
         std::vector<std::shared_ptr<ProductBalance>> getAccountBalanceForYear(int year);
 
         void addBalance(ProductBalance value);
         void calculateBalance(int month, int year, std::vector<std::shared_ptr<Product>> products);
-        float getCostsPerMonth(int month, int year);
-        float getIncomePerMonth(int month, int year);
+        double getCostsPerMonth(int month, int year);
+        double getIncomePerMonth(int month, int year);
         virtual std::shared_ptr<utils::JSON::Object> toJson();
         static Balance fromJson(const std::shared_ptr<utils::JSON::Object> &object);
 
