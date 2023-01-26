@@ -69,7 +69,14 @@ namespace world
 
         void WorkerComponent::setCurrentWorkers(int workers)
         {
-            currentWorkers = workers;
+            if (maxWorkers > workers)
+            {
+                currentWorkers = maxWorkers;
+            }
+            else
+            {
+                currentWorkers = workers;
+            }
         }
     }
 }

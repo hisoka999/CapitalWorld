@@ -101,6 +101,7 @@ namespace scenes
         if (previewSurface != nullptr)
         {
             SDL_FreeSurface(previewSurface);
+            previewSurface = nullptr;
         }
         aiThread = nullptr;
         thread = nullptr;
@@ -662,9 +663,14 @@ namespace scenes
         {
             currentFile++;
             if (currentFile > int(playList.size() - 1))
+            {
                 currentFile = -1;
-            music->loadMusic(playList[currentFile]);
-            music->play(0);
+            }
+            else
+            {
+                music->loadMusic(playList[currentFile]);
+                music->play(0);
+            }
         }
     }
 
