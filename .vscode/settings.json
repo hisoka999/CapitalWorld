@@ -98,6 +98,7 @@
     },
     "cmakeExplorer.buildDir": "build/",
     "editor.formatOnSave": true,
+    "cmake.parallelJobs": 12,
     "githubPullRequests.ignoredPullRequestBranches": [
         "master"
     ],

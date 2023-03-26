@@ -4,8 +4,8 @@
         "displayName": "Transport Office",
         "displayName_de": "Transportbüro",
         "buildingClass": "TransportOffice",
-        "description": "TODO",
-        "description_de": "TODO Deutsch",
+        "description": "A building to mange transport with cars between different production or sales buildings.",
+        "description_de": "Ein Gebäude zur Verwaltung von Transporten zwischen Produktions- oder Verkaufsgebäuden.",
         "type": "Transport",
         "buildCosts": 50000,
         "block_width": 2,
@@ -23,7 +23,7 @@
         "components": {
             "TransportComponent": null,
             "WorkerComponent": {
-                "max_worker": 5,
+                "max_worker": 10,
                 "salary": 1200
             }
         }
@@ -34,7 +34,7 @@
         "displayName_de": "Farm",
         "buildingClass": "Building",
         "description": "A building to produce fruits, raise life stock and grow produce.",
-        "description_de": "TODO Deutsch",
+        "description_de": "Ein Gebäude zum Anbauen von Pflanzen und für die Tierzucht.",
         "type": "Resource",
         "rawResources": [
             "None"
@@ -58,6 +58,39 @@
             "WorkerComponent": {
                 "max_worker": 5,
                 "salary": 1500
+            }
+        }
+    },
+    {
+        "name": "Big_Farm",
+        "displayName": "Big Farm",
+        "displayName_de": "Große Farm",
+        "buildingClass": "Building",
+        "description": "A building to produce fruits, raise life stock and grow produce.",
+        "description_de": "Ein Gebäude zum Anbauen von Pflanzen und für die Tierzucht.",
+        "type": "Resource",
+        "rawResources": [
+            "None"
+        ],
+        "buildCosts": 30000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 0,
+            "y": 384,
+            "width": 128,
+            "height": 96
+        },
+        "offset": {
+            "x": 32,
+            "y": 32
+        },
+        "components": {
+            "StorageComponent": null,
+            "ProductionComponent": null,
+            "WorkerComponent": {
+                "max_worker": 20,
+                "salary": 1400
             }
         }
     },
@@ -100,7 +133,7 @@
         "displayName_de": "Mine",
         "buildingClass": "Building",
         "description": "Building to dig up resources like iron or gold.",
-        "description_de": "Gebäude zur Förderung von Rohöl,",
+        "description_de": "Gebäude zur Förderung von Rohöl.",
         "type": "Resource",
         "rawResources": [
             "Iron",
@@ -137,8 +170,8 @@
         "displayName": "Factory",
         "displayName_de": "Fabrik",
         "buildingClass": "Building",
-        "description": "TODO",
-        "description_de": "TODO Deutsch",
+        "description": "A Building that produces products based on other products or resources.",
+        "description_de": "Ein Gebäude zur Herstellung von Produkten aus Vorprodukten und Rohstoffen.",
         "type": "Factory",
         "buildCosts": 20000,
         "block_width": 2,
@@ -159,6 +192,36 @@
             "WorkerComponent": {
                 "max_worker": 5,
                 "salary": 1300
+            }
+        }
+    },
+    {
+        "name": "Big_Factory",
+        "displayName": "Big Factory",
+        "displayName_de": "Große Fabrik",
+        "buildingClass": "Building",
+        "description": "A Building that produces products based on other products or resources.",
+        "description_de": "Ein Gebäude zur Herstellung von Produkten aus Vorprodukten und Rohstoffen.",
+        "type": "Factory",
+        "buildCosts": 60000,
+        "block_width": 2,
+        "block_height": 2,
+        "sourceRect": {
+            "x": 128,
+            "y": 384,
+            "width": 128,
+            "height": 96
+        },
+        "offset": {
+            "x": 32,
+            "y": 32
+        },
+        "components": {
+            "StorageComponent": null,
+            "ProductionComponent": null,
+            "WorkerComponent": {
+                "max_worker": 15,
+                "salary": 1200
             }
         }
     },

@@ -49,6 +49,9 @@ namespace world
                 if (m_product != nullptr)
                 {
                     m_building->addProduct(m_product);
+                    auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                    workers->setCurrentWorkers(m_building->getProducts().size());
+
                     for (auto base : m_product->getBaseProducts())
                     {
                         switch (base->product->getBuildingType())
@@ -56,7 +59,6 @@ namespace world
                         case world::BuildingType::Factory:
                             m_building->addProduct(base->product);
                             {
-                                auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
                                 workers->setCurrentWorkers(m_building->getProducts().size());
                             }
                             /* code */
@@ -75,7 +77,7 @@ namespace world
                                         foundProduction = true;
 
                                         auto workers = productionBuilding->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
-                                        workers->setCurrentWorkers(m_building->getProducts().size());
+                                        workers->setCurrentWorkers(productionBuilding->getProducts().size());
                                     }
                                 }
                             }
@@ -101,13 +103,15 @@ namespace world
 
                 for (auto &building : m_company->getBuildings())
                 {
+                    auto possibleBuildings = gameState->getGameMap()->findStorageBuildings(building, m_company);
+
                     if (building->getType() == BuildingType::Shop)
                     {
                         const auto &sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
                         for (auto &item : sales->getSalesItems())
                         {
 
-                            for (auto production : m_company->findProductionBuildings())
+                            for (auto production : possibleBuildings)
                             {
                                 for (auto product : production->getProducts())
                                 {
@@ -126,7 +130,7 @@ namespace world
                             for (auto &base : product->getBaseProducts())
                             {
 
-                                for (auto &startBuilding : m_company->getBuildings())
+                                for (auto &startBuilding : possibleBuildings)
                                 {
                                     if (startBuilding->hasProduct(base->product))
                                     {
@@ -141,8 +145,10 @@ namespace world
                 }
                 for (auto &route : transport->getAllRoutes())
                 {
+
                     route->active = true;
                 }
+                transport->delayedUpdate(m_company.get());
                 auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
                 workers->setCurrentWorkers(transport->getActiveRoutes().size());
                 break;

@@ -111,7 +111,15 @@ namespace world
             tmp.quantity = quantity;
             tmp.active = false;
             std::shared_ptr<TransportRoute> route = std::make_shared<TransportRoute>(tmp);
-            routes.push_back(route);
+            auto is_equal = [&](std::shared_ptr<TransportRoute> &r)
+            {
+                return r->endBuildingName == route->endBuildingName && r->startBuildingName == route->startBuildingName && r->product == route->product;
+            };
+
+            if (std::find_if(std::begin(routes), std::end(routes), is_equal) == std::end(routes))
+            {
+                routes.push_back(route);
+            }
         }
 
         void TransportComponent::removeRoute(const size_t position)
