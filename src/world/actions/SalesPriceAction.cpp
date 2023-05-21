@@ -30,7 +30,7 @@ namespace world
                         {
                             auto product = services::ProductService::Instance().getProductByName(item->product);
                             int entry = storage->getEntry(item->product);
-                            if (entry < 1000)
+                            if (entry < 1000 && item->price < product->calculateCostsPerPiece() * 10.0)
                             {
                                 item->price *= 1.1;
                             }

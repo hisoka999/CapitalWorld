@@ -18,6 +18,7 @@ namespace UI
         void render(core::Renderer *pRender);
 
         bool handleEvents(core::Input *pInput);
+        const std::shared_ptr<Research> &getResearch();
 
     private:
         std::shared_ptr<Research> research;

@@ -6,13 +6,13 @@
         "texture": "Pixel_Mart/egg_white.png",
         "building": "Resource",
         "baseResources": {
-            "Chicken": 10
+            "Chicken": 200
         },
         "productionCycle": {
             "start": 1,
             "end": 12,
             "time": 90,
-            "amount": 1000
+            "amount": 20000
         }
     },
     {
@@ -22,13 +22,13 @@
         "texture": "Pixel_Mart/flour.png",
         "building": "Resource",
         "baseResources": {
-            "Wheet": 30
+            "Wheet": 60
         },
         "productionCycle": {
             "start": 3,
             "end": 7,
             "time": 30,
-            "amount": 6000
+            "amount": 12000
         }
     },
     {
@@ -38,14 +38,14 @@
         "texture": "bread.png",
         "building": "Factory",
         "baseProducts": {
-            "Wheet": 70,
-            "Eggs": 30
+            "Wheet": 700,
+            "Eggs": 300
         },
         "productionCycle": {
             "start": 1,
             "end": 12,
             "time": 2,
-            "amount": 100
+            "amount": 1000
         }
     },
     {
@@ -55,13 +55,13 @@
         "texture": "beer.png",
         "building": "Factory",
         "baseProducts": {
-            "Wheet": 100
+            "Wheet": 1000
         },
         "productionCycle": {
             "start": 1,
             "end": 12,
             "time": 2,
-            "amount": 100
+            "amount": 1000
         }
     },
     {
@@ -173,7 +173,7 @@
             "start": 1,
             "end": 12,
             "time": 90,
-            "amount": 500
+            "amount": 1000
         }
     },
     {
@@ -240,7 +240,7 @@
             "start": 1,
             "end": 12,
             "time": 3,
-            "amount": 20
+            "amount": 50
         }
     }
 ]

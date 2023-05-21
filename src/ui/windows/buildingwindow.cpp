@@ -102,10 +102,10 @@ namespace UI
                 productionTab = std::make_shared<UI::ResourceProductionTab>(tabBar.get(), building, rawResource);
                 break;
             case world::BuildingType::Factory:
-                productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building, gameState->getPlayer());
+                productionTab = std::make_shared<UI::FactoryProductionTab>(tabBar.get(), building, owner);
                 break;
             case world::BuildingType::Transport:
-                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap, gameState->getPlayer());
+                productionTab = std::make_shared<UI::RoutesTab>(tabBar.get(), building, gameMap, owner);
                 break;
             case world::BuildingType::Shop:
                 productionTab = std::make_shared<UI::SalesTab>(tabBar.get(), building);

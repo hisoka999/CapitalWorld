@@ -52,12 +52,29 @@ namespace UI
 
             std::shared_ptr<UI::ResearchHint> hint = std::make_shared<UI::ResearchHint>(res);
             researchButton->setHint(hint);
-            if (res->getRequirements().size() > 0)
+
+            for (auto &requirement : res->getRequirements())
             {
-                utils::Vector2 start(x + researchButton->getWidth() - 300, y + (researchButton->getHeight() / 2));
-                utils::Vector2 endPos(x, y + (researchButton->getHeight() / 2));
-                auto line = std::make_shared<UI::Line>(scrollArea.get(), start, endPos);
-                scrollArea->addObject(line);
+                std::shared_ptr<ResearchButton> targetButton = nullptr;
+                for (size_t i = 0; i < scrollArea->size(); i++)
+                {
+                    auto button = std::dynamic_pointer_cast<ResearchButton>(scrollArea->get(i));
+                    if (button)
+                    {
+                        if (button->getResearch() == requirement)
+                        {
+                            targetButton = button;
+                            break;
+                        }
+                    }
+                }
+                if (targetButton)
+                {
+                    utils::Vector2 start(targetButton->getX() + targetButton->getWidth(), targetButton->getY() + (targetButton->getHeight() / 2));
+                    utils::Vector2 endPos(x, y + (researchButton->getHeight() / 2));
+                    auto line = std::make_shared<UI::Line>(scrollArea.get(), start, endPos);
+                    scrollArea->addObject(line);
+                }
             }
 
             scrollArea->addObject(researchButton);

@@ -83,6 +83,7 @@ namespace UI
             if (route->startBuilding == nullptr)
             {
                 route->startBuilding = building;
+                route->startBuildingName = building->getDisplayName();
             }
             i++;
         }

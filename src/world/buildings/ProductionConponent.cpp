@@ -27,6 +27,9 @@ namespace world
             int usedWorkers = 0;
             int maxWorkers = workerComp->getCurrentWorkers();
 
+            if (maxWorkers == 0)
+                return;
+
             for (auto &product : building->getProducts())
             {
 

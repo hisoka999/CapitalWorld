@@ -94,4 +94,9 @@ namespace UI
         return eventHandled;
     }
 
+    const std::shared_ptr<Research> &ResearchButton::getResearch()
+    {
+        return research;
+    }
+
 }

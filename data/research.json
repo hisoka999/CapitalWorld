@@ -77,5 +77,41 @@
             "Oil Extraction",
             "Mining"
         ]
+    },
+    {
+        "id": 5,
+        "name": "Farming",
+        "name_de": "Farming",
+        "icon": "\ue2cd",
+        "start_date": {
+            "year": 1900,
+            "month": 1
+        },
+        "description": "Allows bigger and more efficient farms.",
+        "description_de": "Erlaubt das Bauen von größeren und effizienteren Farmen.",
+        "costs": 100,
+        "enables": [
+            "Big_Farm"
+        ],
+        "requires": []
+    },
+    {
+        "id": 6,
+        "name": "Massproduction",
+        "name_de": "Massenproduktion",
+        "icon": "\uf275",
+        "start_date": {
+            "year": 1910,
+            "month": 1
+        },
+        "description": "Allows bigger and more efficient facories.",
+        "description_de": "Erlaubt das Bauen von größeren und effizienteren Fabriken.",
+        "costs": 100,
+        "enables": [
+            "Big_Factory"
+        ],
+        "requires": [
+            "Farming"
+        ]
     }
 ]
