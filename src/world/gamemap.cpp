@@ -270,12 +270,6 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const s
     auto pos = startBuilding->get2DPosition();
 
     std::vector<std::shared_ptr<world::Building>> result;
-
-    auto northBuilding = getBuilding2D({pos.x, pos.y - 1, pos.width, 1});
-    auto southBuilding = getBuilding2D({pos.x, pos.y + pos.height, 1, pos.height});
-    auto eastBuilding = getBuilding2D({pos.x + pos.width, pos.y, pos.width, 1});
-    auto westBuilding = getBuilding2D({pos.x - 1, pos.y, 1, pos.height});
-
     auto isType = [&](world::BuildingType type)
     {
         if (inverseType)
@@ -284,22 +278,16 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const s
         return type == buildingType;
     };
 
-    if (northBuilding != nullptr && isType(northBuilding->getType()))
+    for (float y = pos.y - 1; y <= pos.y + pos.height + 1; y++)
     {
-        result.push_back(northBuilding);
-    }
-
-    if (southBuilding != nullptr && isType(southBuilding->getType()))
-    {
-        result.push_back(southBuilding);
-    }
-    if (eastBuilding != nullptr && isType(eastBuilding->getType()))
-    {
-        result.push_back(eastBuilding);
-    }
-    if (westBuilding != nullptr && isType(westBuilding->getType()))
-    {
-        result.push_back(westBuilding);
+        for (float x = pos.x - 1; x <= pos.x + pos.width + 1; x++)
+        {
+            auto building = getBuilding2D({x, y, 1.f, 1.f});
+            if (building != nullptr && building != startBuilding && isType(building->getType()))
+            {
+                result.push_back(building);
+            }
+        }
     }
     return result;
 }
