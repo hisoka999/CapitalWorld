@@ -56,7 +56,7 @@ namespace scenes
         void refresh();
         void renderHUD();
         void renderCursor();
-        bool handleMouseEvents(core::Input *pInput);
+        bool handleMouseEvents(core::Input *pInput, bool windowEventHandled);
         void calcCursorPosition(core::Input *pInput);
         std::shared_ptr<world::Building> createBuilding();
 

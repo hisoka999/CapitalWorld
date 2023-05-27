@@ -261,12 +261,12 @@ namespace scenes
         }
     }
 
-    bool WorldScene::handleMouseEvents(core::Input *pInput)
+    bool WorldScene::handleMouseEvents(core::Input *pInput, bool windowEventHandled)
     {
         auto &gameMap = gameState->getGameMap();
 
-        bool eventHandled = false;
-        if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
+        bool eventHandled = windowEventHandled;
+        if (!eventHandled && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
         {
             auto action = buildWindow.getCurrentAction();
 
@@ -287,7 +287,7 @@ namespace scenes
                 }
                 eventHandled = true;
             }
-            else if (action == world::BuildAction::None)
+            else if (!eventHandled && action == world::BuildAction::None)
             {
                 const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
                 auto building = gameMap->getBuilding2D(sourceBuilding);
@@ -305,7 +305,7 @@ namespace scenes
                 eventHandled = true;
             }
         }
-        else if (pInput->isMouseButtonUp(SDL_BUTTON_LEFT))
+        else if (!eventHandled && pInput->isMouseButtonUp(SDL_BUTTON_LEFT))
         {
             auto action = buildWindow.getCurrentAction();
             if (action == world::BuildAction::Destroy)
@@ -388,7 +388,7 @@ namespace scenes
                 }
             }
         }
-        else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
+        else if (!eventHandled && pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT))
         {
             buildWindow.setCurrentAction(world::BuildAction::None);
             buildingSelectionWindow.setSelectedBuilding(nullptr);
@@ -471,12 +471,9 @@ namespace scenes
         //
 
         eventHandled = winMgr->handleInput(pInput);
-        if (eventHandled)
-            return true;
 
-        eventHandled = buildWindow.handleEvents(pInput);
-        if (eventHandled)
-            return true;
+        if (!eventHandled)
+            eventHandled = buildWindow.handleEvents(pInput);
 
         if (miniMapRect.intersects(pInput->getMousePostion()) && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
         {
@@ -498,7 +495,10 @@ namespace scenes
             return true;
         }
 
-        eventHandled = handleMouseEvents(pInput);
+        eventHandled = handleMouseEvents(pInput, eventHandled);
+
+        if (eventHandled)
+            return true;
 
         if (pInput->isKeyDown("MOVE_DOWN"))
         {
