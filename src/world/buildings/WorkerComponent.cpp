@@ -78,5 +78,9 @@ namespace world
                 currentWorkers = workers;
             }
         }
+        int WorkerComponent::getSalary()
+        {
+            return salary;
+        }
     }
 }
