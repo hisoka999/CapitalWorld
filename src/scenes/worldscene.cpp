@@ -394,7 +394,7 @@ namespace scenes
             buildingSelectionWindow.setSelectedBuilding(nullptr);
             eventHandled = true;
         }
-        if (pInput->isScrollWheel())
+        if (!eventHandled && pInput->isScrollWheel())
         {
             auto wheelPosition = pInput->getMouseWheelPosition();
             float offset = (wheelPosition.getY() / 10.f);
@@ -560,13 +560,13 @@ namespace scenes
             direction.bottom = true;
         }
 
-        if (pInput->isKeyDown("CONSOLE"))
+        if (pInput->isKeyDown("CONSOLE") && !pInput->isTextInputActive())
         {
             console.setVisible(true);
             eventHandled = true;
         }
 
-        if (pInput->isKeyDown("MENU"))
+        if (pInput->isKeyDown("MENU") && !pInput->isTextInputActive())
         {
             // create preview image
             if (previewSurface != nullptr)
