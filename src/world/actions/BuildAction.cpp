@@ -20,6 +20,19 @@ namespace world
         {
         }
 
+        std::shared_ptr<world::Building> filterBuilding(std::vector<std::shared_ptr<world::Building>> buildings)
+        {
+            std::shared_ptr<world::Building> result = nullptr;
+            for (auto &building : buildings)
+            {
+                if (!result)
+                    result = building;
+                if (building->getBuildPrice() > result->getBuildPrice())
+                    result = building;
+            }
+            return result;
+        }
+
         void BuildAction::execute(const std::shared_ptr<world::GameState> &gameState)
         {
             std::shared_ptr<world::Building> targetBuilding = nullptr;
@@ -37,7 +50,7 @@ namespace world
 
             for (auto type : magic_enum::enum_values<world::BuildingType>())
             {
-                if (type == world::BuildingType::Street || type == world::BuildingType::House || type == world::BuildingType::Other)
+                if (type == world::BuildingType::Street || type == world::BuildingType::House)
                     continue;
 
                 if (usage.count(type) == 0)
@@ -60,27 +73,27 @@ namespace world
             }
             else if (m_product != nullptr)
             {
-                targetBuilding = m_company->findAvailableBuildingsByType(m_buildingType)[0];
+                targetBuilding = filterBuilding(m_company->findAvailableBuildingsByType(m_buildingType));
             }
             else if (usage[world::BuildingType::Shop] == minUsage)
             {
-                targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Shop)[0];
+                targetBuilding = filterBuilding(m_company->findAvailableBuildingsByType(world::BuildingType::Shop));
             }
             else if (usage[world::BuildingType::Factory] == minUsage)
             {
-                targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Factory)[0];
+                targetBuilding = filterBuilding(m_company->findAvailableBuildingsByType(world::BuildingType::Factory));
             }
             else if (usage[world::BuildingType::Resource] == minUsage)
             {
-                targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Resource)[0];
+                targetBuilding = filterBuilding(m_company->findAvailableBuildingsByType(world::BuildingType::Resource));
             }
             else if (usage[world::BuildingType::Transport] == minUsage)
             {
-                targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Transport)[0];
+                targetBuilding = filterBuilding(m_company->findAvailableBuildingsByType(world::BuildingType::Transport));
             }
             else if (usage[world::BuildingType::Other] == minUsage && usage[world::BuildingType::Other] <= 2)
             {
-                targetBuilding = m_company->findAvailableBuildingsByType(world::BuildingType::Other)[0];
+                targetBuilding = filterBuilding(m_company->findAvailableBuildingsByType(world::BuildingType::Other));
             }
             if (!targetBuilding)
                 return;
@@ -100,6 +113,7 @@ namespace world
             {
                 foundPosition = false;
                 auto pos = street->get2DPosition();
+
                 auto northBuilding = gameState->getGameMap()->getBuilding2D({pos.x, pos.y - 1, pos.width, 1});
                 auto southBuilding = gameState->getGameMap()->getBuilding2D({pos.x, pos.y + pos.height, 1, pos.height});
                 auto eastBuilding = gameState->getGameMap()->getBuilding2D({pos.x + pos.width, pos.y, pos.width, 1});

@@ -7,6 +7,7 @@
 #include "ResearchAction.h"
 #include "LoanAction.h"
 #include "SalesPriceAction.h"
+#include "ResearchWorkerAction.h"
 
 namespace world
 {
@@ -105,6 +106,9 @@ namespace world
                             {
                                 setNextAction(researchAction);
                             }
+                            std::shared_ptr<Action> workers = std::make_shared<ResearchWorkerAction>(m_company);
+                            if (workers->canExecute(gameState))
+                                researchAction->setNextAction(workers);
                         }
                     }
                     default:

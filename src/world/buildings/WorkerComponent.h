@@ -23,6 +23,7 @@ namespace world
             virtual void setMetaData(std::shared_ptr<utils::JSON::Object> jsonData);
             int getCurrentWorkers();
             int getMaxWorkers();
+            int getSalary();
             void setCurrentWorkers(int workers);
 
         private:
