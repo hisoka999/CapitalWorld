@@ -16,7 +16,7 @@ namespace UI
 
     private:
         void initUI();
-        std::string executeCommand(std::string value);
+        std::vector<std::string> executeCommand(std::string value);
         std::shared_ptr<UI::TextItem> textItem;
         std::shared_ptr<UI::ScrollArea> scrollArea;
         std::shared_ptr<world::GameState> gameState;
