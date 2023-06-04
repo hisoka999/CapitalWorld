@@ -29,7 +29,7 @@ namespace world
 
         bool LoanAction::canExecute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
         {
-            return m_company->calculateCompanyValue() > 0 && m_company->getProfit() > 0 && m_company->numberOfLoans() <= 10;
+            return m_company->calculateCompanyValue() > 0 && m_company->getMonthlyProfit() > 0 && m_company->numberOfLoans() <= 10;
         }
     }
 }

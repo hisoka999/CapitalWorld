@@ -38,7 +38,7 @@ namespace world
             return;
         // assert(m_nextTargetIndex != 0 and "target needs to be positive");
         m_sprite->update(deltaTime);
-        m_progress += 0.05 * deltaTime / speed;
+        m_progress += 0.1 * deltaTime / speed;
         auto &current = m_path[m_nextTargetIndex - 1];
         auto &next = m_path[m_nextTargetIndex];
         assert(next.getX() != 0.0f && next.getY() != 0.0f);

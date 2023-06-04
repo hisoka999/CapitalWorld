@@ -113,6 +113,10 @@ namespace world
 
                             for (auto production : possibleBuildings)
                             {
+                                if (production->getType() == BuildingType::Shop)
+                                {
+                                    continue;
+                                }
                                 for (auto product : production->getProducts())
                                 {
                                     if (product->getName() == item->product)
@@ -132,7 +136,7 @@ namespace world
 
                                 for (auto &startBuilding : possibleBuildings)
                                 {
-                                    if (startBuilding->hasProduct(base->product))
+                                    if (startBuilding->hasProduct(base->product) && startBuilding->getDisplayName() != building->getDisplayName())
                                     {
 
                                         transport->addRoute(startBuilding, building, base->product, base->amount);

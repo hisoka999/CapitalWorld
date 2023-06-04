@@ -196,7 +196,7 @@ namespace UI
     void HUDContainer::update()
     {
         cashButton->setLabel(format_currency(gameState->getPlayer()->getCash()));
-        profitButton->setLabel(format_currency(gameState->getPlayer()->getProfit()));
+        profitButton->setLabel(format_currency(gameState->getPlayer()->getMonthlyProfit()));
         auto researchQueue = gameState->getPlayer()->getResearchQueue();
         if (researchQueue.size() == 0)
         {
@@ -219,7 +219,7 @@ namespace UI
         hintText += utils::string_format(_("Cash:   %s"), format_currency(gameState->getPlayer()->getCash())) + "\n";
         hintText += utils::string_format(_("Income: %s"), format_currency(gameState->getPlayer()->getIncome())) + "\n";
         hintText += utils::string_format(_("Costs:  %s"), format_currency(gameState->getPlayer()->getCosts())) + "\n";
-        hintText += utils::string_format(_("Profit: %s"), format_currency(gameState->getPlayer()->getProfit()));
+        hintText += utils::string_format(_("Profit: %s"), format_currency(gameState->getPlayer()->getMonthlyProfit()));
         cashButton->getHint()->setHintText(hintText);
 
         timeButton->setLabel(gameState->getTime().format());

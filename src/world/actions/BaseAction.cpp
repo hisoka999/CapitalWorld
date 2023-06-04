@@ -101,14 +101,16 @@ namespace world
                     {
                         if (building->getName() == "ResearchLab")
                         {
-                            std::shared_ptr<Action> researchAction = std::make_shared<world::actions::ResearchAction>(m_company, building);
-                            if (researchAction->canExecute(gameState))
-                            {
-                                setNextAction(researchAction);
-                            }
                             std::shared_ptr<Action> workers = std::make_shared<ResearchWorkerAction>(m_company);
                             if (workers->canExecute(gameState))
-                                researchAction->setNextAction(workers);
+                            {
+                                setNextAction(workers);
+                                std::shared_ptr<Action> researchAction = std::make_shared<world::actions::ResearchAction>(m_company, building);
+                                if (researchAction->canExecute(gameState))
+                                {
+                                    workers->setNextAction(researchAction);
+                                }
+                            }
                         }
                     }
                     default:

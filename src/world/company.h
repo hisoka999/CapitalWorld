@@ -50,7 +50,8 @@ namespace world
 
         std::string getName();
         double getCash();
-        double getProfit();
+        double getMonthlyProfit() const;
+        double getYearlyProfit(int year);
         double getCosts();
         double getIncome();
         void incCash(double value);

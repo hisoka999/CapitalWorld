@@ -58,7 +58,7 @@ namespace UI
         m_playerTable->setElementFunction(1, [](std::shared_ptr<world::Company> &c) -> std::string
                                           { return format_currency(c->getIncome()); });
         m_playerTable->setElementFunction(2, [](std::shared_ptr<world::Company> &c) -> std::string
-                                          { return format_currency(c->getProfit()); });
+                                          { return format_currency(c->getMonthlyProfit()); });
         m_playerTable->setElementFunction(3, [](std::shared_ptr<world::Company> &c) -> std::string
                                           { return format_currency(c->getCash()); });
         m_playerTable->setWidth(480);
