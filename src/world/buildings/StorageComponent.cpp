@@ -7,17 +7,17 @@ namespace world
         StorageComponent::StorageComponent()
             : BuildingComponent("StorageComponent")
         {
-            maximalAmount = 100000;
+            maximalAmount = 30000;
         }
 
         bool StorageComponent::canAdd([[maybe_unused]] const std::string &product, int amount)
         {
-            int usage = static_cast<int>(usedStorage());
+            int usage = static_cast<int>(usedStorage(product));
             return usage + amount < static_cast<int>(maximalAmount) && amount > 0;
         }
         void StorageComponent::addEntry(const std::string &product, int amount)
         {
-            int usage = static_cast<int>(usedStorage());
+            int usage = static_cast<int>(usedStorage(product));
             int newAmount = amount;
             if (usage + amount > static_cast<int>(maximalAmount))
             {
@@ -40,12 +40,13 @@ namespace world
                 // count storage usage
             }
         }
-        unsigned StorageComponent::usedStorage()
+        unsigned StorageComponent::usedStorage(const std::string &product)
         {
             unsigned usage = 0;
             for (auto it = entries.begin(); it != entries.end(); it++)
             {
-                usage += it->second.amount;
+                if (it->first == product)
+                    usage += it->second.amount;
             }
             return usage;
         }

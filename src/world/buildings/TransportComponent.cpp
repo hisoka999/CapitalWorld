@@ -161,10 +161,9 @@ namespace world
                 numberOfActiveRoutes--;
                 auto startStorage = route->startBuilding->getComponent<world::buildings::StorageComponent>("StorageComponent");
                 auto endStorage = route->endBuilding->getComponent<world::buildings::StorageComponent>("StorageComponent");
-                int amount = startStorage->getEntry(route->product->getName());
+                int amount = route->quantity;
                 if (endStorage->canAdd(route->product->getName(), amount))
                 {
-                    startStorage->addEntry(route->product->getName(), amount * -1);
                     endStorage->addEntry(route->product->getName(), amount);
 
                     route->endBuilding->getBalance().addCosts(month, year, route->product->getName(), world::BalanceAccount::Transport, amount * 0.1);
@@ -219,6 +218,8 @@ namespace world
 
                     if (route->path.size() > 1)
                     {
+                        route->quantity = std::min(amount, int(route->maxQuantity));
+                        startStorage->addEntry(route->product->getName(), route->quantity * -1);
                         route->transportActive = true;
                         AnimatedMovementData data = {route, std::string(magic_enum::enum_name(company->getColor()))};
                         std::shared_ptr<core::Message<MessageTypes, AnimatedMovementData>> message = std::make_shared<core::Message<MessageTypes, AnimatedMovementData>>(MessageTypes::AnimationStart, data);

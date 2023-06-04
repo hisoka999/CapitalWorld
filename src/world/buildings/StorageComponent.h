@@ -26,7 +26,7 @@ namespace world
             bool canAdd(const std::string &product, int amount);
             void addEntry(const std::string &product, int amount);
             int getEntry(const std::string &product);
-            unsigned usedStorage();
+            unsigned usedStorage(const std::string &product);
             std::vector<std::string> getStoredProducts();
             StorageMap &getEntries();
 

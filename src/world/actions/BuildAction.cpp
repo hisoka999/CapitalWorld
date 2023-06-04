@@ -25,6 +25,10 @@ namespace world
             std::shared_ptr<world::Building> result = nullptr;
             for (auto &building : buildings)
             {
+                // TODO unfinished
+                if (building->requireResources())
+                    continue;
+
                 if (!result)
                     result = building;
                 if (building->getBuildPrice() > result->getBuildPrice())

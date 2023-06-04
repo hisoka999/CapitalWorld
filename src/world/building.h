@@ -38,11 +38,11 @@ namespace world
 
         bool canBuild(float money);
 
-        const graphics::Rect &getDisplayRect();
-        graphics::Rect &getSourceRect();
-        void setSourceRect(graphics::Rect rect);
+        const ::graphics::Rect &getDisplayRect();
+        ::graphics::Rect &getSourceRect();
+        void setSourceRect(::graphics::Rect rect);
         void setPosition(float x, float y);
-        graphics::Rect &get2DPosition();
+        ::graphics::Rect &get2DPosition();
         int getXOffset();
         int getYOffset();
         void setOffset(int x, int y);
@@ -82,6 +82,7 @@ namespace world
 
         std::map<std::string, std::string> displayData();
         bool requireResource(world::RawResource rawResource);
+        bool requireResources();
         void addResource(world::RawResource rawResource);
         Balance &getBalance();
         bool canDragBuild();
@@ -96,9 +97,9 @@ namespace world
         BuildingType type;
         std::string description;
         int buildPrice;
-        graphics::Rect sourceRect;
-        graphics::Rect displayRect;
-        graphics::Rect twoDRect;
+        ::graphics::Rect sourceRect;
+        ::graphics::Rect displayRect;
+        ::graphics::Rect twoDRect;
         int blockWidth, blockHeight;
         int xOffset, yOffset;
         std::vector<std::shared_ptr<Product>> products;

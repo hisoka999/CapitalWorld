@@ -30,9 +30,20 @@ namespace world
     {
         return cash;
     }
-    double Company::getProfit()
+    double Company::getMonthlyProfit() const
     {
         return income - costs;
+    }
+
+    double Company::getYearlyProfit(int year)
+    {
+
+        double profit = 0.0;
+        for (auto balance : getAccountBalanceForYear(year))
+        {
+            profit += balance->income - balance->costs;
+        }
+        return profit;
     }
 
     double Company::getCosts()
@@ -501,7 +512,7 @@ namespace world
         {
             value += (building->getBuildPrice() * 0.5);
         }
-        value += getProfit();
+        value += getMonthlyProfit();
 
         for (auto &loan : m_activeLoans)
         {

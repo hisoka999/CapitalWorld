@@ -24,6 +24,7 @@ namespace world
             std::string endBuildingName;
             std::shared_ptr<Product> product;
             unsigned quantity = 0;
+            unsigned maxQuantity = 10000;
             bool active = false;
             bool transportActive = false;
             bool transportFinished = false;

@@ -13,7 +13,7 @@ namespace world
 
     double Balance::getIncomePerMonth(int month, int year)
     {
-        double result = .0f;
+        double result = 0.0;
         for (auto &b : m_balance)
         {
             if (b.month == month && b.year == year)
@@ -116,6 +116,10 @@ namespace world
             {
                 b.income += amount;
                 found = true;
+                break;
+            }
+            if (b.year < year)
+            {
                 break;
             }
         }

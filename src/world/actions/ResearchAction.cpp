@@ -22,7 +22,7 @@ namespace world
                 workers->setCurrentWorkers(0);
                 return;
             }
-            if (m_company->getProfit() > 0)
+            if (m_company->getMonthlyProfit() > 0)
             {
                 if (workers->getCurrentWorkers() + 1 < workers->getMaxWorkers())
                     workers->setCurrentWorkers(workers->getCurrentWorkers() + 1);
@@ -54,7 +54,7 @@ namespace world
             if (avialableResearch.empty() && workers->getCurrentWorkers() == 0)
                 return false;
 
-            return false;
+            return true;
         }
 
     }

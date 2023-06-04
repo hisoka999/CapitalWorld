@@ -333,6 +333,11 @@ namespace world
         auto it = std::find(rawResources.begin(), rawResources.end(), rawResource);
         return it != rawResources.end();
     }
+
+    bool Building::requireResources()
+    {
+        return !rawResources.empty() && rawResources[0] != RawResource::None;
+    }
     void Building::addResource(world::RawResource rawResource)
     {
         rawResources.push_back(rawResource);
