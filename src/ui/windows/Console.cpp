@@ -22,31 +22,51 @@ namespace UI
         textItem->setPos(5, 140);
         textItem->connect("inputSubmit", [&](std::string value)
                           {
-                              textItem->setText("");
-                              auto result = executeCommand(value);
+                            textItem->setText("");
+                            auto result = executeCommand(value);
 
-                              auto label = std::make_shared<UI::Label>(scrollArea.get());
+                            for (auto& line : result)
+                            {
+                                auto label = std::make_shared<UI::Label>(scrollArea.get());
+                                
+                                label->setText(line);
 
-                              
-                              label->setText(result);
-
-                              label->setPos(0,scrollArea->size()*15);
-                              scrollArea->addObject(label); });
+                                label->setPos(0,scrollArea->size()*15);
+                                scrollArea->addObject(label);
+                            } });
         addObject(textItem);
     }
 
-    std::string Console::executeCommand(std::string value)
+    std::vector<std::string> Console::executeCommand(std::string value)
     {
         auto values = utils::split(value, " ");
 
         if (values[0] == "cash")
         {
-            gameState->getPlayer()->incCash(1000000);
-            return "added 1 million to player";
+            // gameState->getPlayer()->incCash(1000000);
+            for (auto &company : gameState->getCompanies())
+            {
+                company->incCash(1000000);
+            }
+            return {"added 1 million to player"};
         }
+        else if (values[0] == "lr")
+        {
+            std::vector<std::string> result;
+            for (auto &company : gameState->getCompanies())
+            {
+                result.push_back("company: " + company->getName());
+                for (auto &research : company->getResearchQueue())
+                {
+                    result.push_back(" - " + research->getName());
+                }
+            }
+            return result;
+        }
+
         else
         {
-            return "command \"" + values[0] + "\" not found.";
+            return {"command \"" + values[0] + "\" not found."};
         }
     }
 }
