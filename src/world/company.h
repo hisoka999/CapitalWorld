@@ -80,6 +80,7 @@ namespace world
         std::vector<std::shared_ptr<Research>> getResearchQueue() const;
         void addResearchToQueue(const std::shared_ptr<Research> &research);
         std::vector<std::shared_ptr<Research>> &getAvailableResearch();
+        std::vector<std::shared_ptr<Research>> getUnresearchedResearch();
         void setAvailableResearch(const std::vector<std::shared_ptr<Research>> &list);
         int getResearchPerMonth();
 
