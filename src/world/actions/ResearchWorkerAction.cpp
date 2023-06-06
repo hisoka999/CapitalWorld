@@ -14,7 +14,7 @@ namespace world::actions
 
     void ResearchWorkerAction::execute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
     {
-        int profit = m_company->getYearlyProfit(gameState->getTime().getYear() - 1);
+        int profit = m_company->getYearlyProfit(gameState->getTime().getYear());
         for (auto &building : m_company->findBuildingsByType(world::BuildingType::Other))
         {
             if (building->hasComponent("WorkerComponent"))

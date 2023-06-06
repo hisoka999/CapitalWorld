@@ -13,7 +13,7 @@ namespace world
         void ResearchAction::execute([[maybe_unused]] const std::shared_ptr<world::GameState> &gameState)
         {
 
-            auto &avialableResearch = m_company->getAvailableResearch();
+            auto avialableResearch = m_company->getUnresearchedResearch();
 
             auto workers = m_building->getComponent<buildings::WorkerComponent>("WorkerComponent");
 
@@ -22,7 +22,7 @@ namespace world
                 workers->setCurrentWorkers(0);
                 return;
             }
-            if (m_company->getMonthlyProfit() > 0)
+            if (m_company->getYearlyProfit(gameState->getTime().getYear()) > 0)
             {
                 if (workers->getCurrentWorkers() + 1 < workers->getMaxWorkers())
                     workers->setCurrentWorkers(workers->getCurrentWorkers() + 1);
