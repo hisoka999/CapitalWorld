@@ -170,6 +170,7 @@ namespace world
                 }
                 route->transportActive = false;
                 route->transportFinished = false;
+                route->quantity = 0;
             }
 
             for (auto &route : routes)

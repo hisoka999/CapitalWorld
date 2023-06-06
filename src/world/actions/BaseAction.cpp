@@ -105,11 +105,11 @@ namespace world
                             if (workers->canExecute(gameState))
                             {
                                 setNextAction(workers);
-                                std::shared_ptr<Action> researchAction = std::make_shared<world::actions::ResearchAction>(m_company, building);
-                                if (researchAction->canExecute(gameState))
-                                {
-                                    workers->setNextAction(researchAction);
-                                }
+                            }
+                            std::shared_ptr<Action> researchAction = std::make_shared<world::actions::ResearchAction>(m_company, building);
+                            if (researchAction->canExecute(gameState))
+                            {
+                                setNextAction(researchAction);
                             }
                         }
                     }

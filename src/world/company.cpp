@@ -455,6 +455,17 @@ namespace world
         return availableResearch;
     }
 
+    std::vector<std::shared_ptr<Research>> Company::getUnresearchedResearch()
+    {
+        std::vector<std::shared_ptr<Research>> result;
+        for (auto &res : availableResearch)
+        {
+            if (!res->getResearched())
+                result.push_back(res);
+        }
+        return result;
+    }
+
     void Company::setAvailableResearch(const std::vector<std::shared_ptr<Research>> &list)
     {
         this->availableResearch.clear();

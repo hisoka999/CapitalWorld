@@ -99,7 +99,6 @@ namespace world
             case world::BuildingType::Transport:
             {
                 const auto &transport = m_building->getComponent<world::buildings::TransportComponent>("TransportComponent");
-                transport->clearRoutes();
 
                 for (auto &building : m_company->getBuildings())
                 {
@@ -136,7 +135,7 @@ namespace world
 
                                 for (auto &startBuilding : possibleBuildings)
                                 {
-                                    if (startBuilding->hasProduct(base->product) && startBuilding->getDisplayName() != building->getDisplayName())
+                                    if (startBuilding->hasProduct(base->product) && startBuilding->getDisplayName() != building->getDisplayName() && startBuilding->getType() != building->getType())
                                     {
 
                                         transport->addRoute(startBuilding, building, base->product, base->amount);
