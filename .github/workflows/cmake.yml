@@ -73,10 +73,7 @@ jobs:
       # Build the whole project with Ninja (which is spawn by CMake).
       - name: Build
         run: |
-          cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld
-      - name: Show content of workspace at its completion
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+          cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
       - name: version linux
         run: echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
         id: version-linux
@@ -84,20 +81,19 @@ jobs:
       - name: version windows
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
-          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld.exe --version)"
+          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/Debug/CapitalWorld.exe --version)"
         id: version-windows
         if: matrix.os == 'windows-latest'
       - name: Build Packages Linux
+        working-directory: build
         run: |
-          cd ${{ env.CMAKE_BUILD_DIR }}
-          cpack -G DEB
           cpack -G TGZ
         if: matrix.os == 'ubuntu-latest'
       - name: Build Packages Windows
+        working-directory: build
         run: |
-          cd ${{ env.CMAKE_BUILD_DIR }}
           cpack -G ZIP
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'windows-latest'
       - name: Upload artifacts - Linux
         uses: actions/upload-artifact@v3
         if: matrix.os == 'ubuntu-latest'
