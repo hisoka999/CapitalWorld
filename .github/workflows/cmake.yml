@@ -77,3 +77,30 @@ jobs:
       - name: Show content of workspace at its completion
         run: find $RUNNER_WORKSPACE
         shell: bash
+      - name: version linux
+        run: echo "::set-output name=version::$(/${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
+        id: version-linux
+        if: matrix.os == 'ubuntu-latest'
+      - name: version windows
+        run: |
+          cd ${{ env.CMAKE_BUILD_DIR }}
+          echo "::set-output name=version::$(CapitalWorld.exe --version)"
+          id: version-windows
+          if: matrix.os == 'windows-latest'
+      - name: Build Packages
+        run: |
+          cd ${{ env.CMAKE_BUILD_DIR }}
+          make package
+      - name: Upload artifacts - Linux
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          files: |
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
+
+      - name: Upload artifacts - Windows
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'windows-latest'
+        with:
+          files: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
