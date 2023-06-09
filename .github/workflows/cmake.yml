@@ -84,13 +84,20 @@ jobs:
       - name: version windows
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
-          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
+          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld.exe --version)"
         id: version-windows
         if: matrix.os == 'windows-latest'
-      - name: Build Packages
+      - name: Build Packages Linux
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
-          make package
+          cpack -G DEB
+          cpack -G TGZ
+        if: matrix.os == 'ubuntu-latest'
+      - name: Build Packages Windows
+        run: |
+          cd ${{ env.CMAKE_BUILD_DIR }}
+          cpack -G ZIP
+        if: matrix.os == 'ubuntu-latest'
       - name: Upload artifacts - Linux
         uses: actions/upload-artifact@v3
         if: matrix.os == 'ubuntu-latest'
