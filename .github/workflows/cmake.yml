@@ -78,15 +78,15 @@ jobs:
         run: find $RUNNER_WORKSPACE
         shell: bash
       - name: version linux
-        run: echo "::set-output name=version::$(/${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
+        run: echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
         id: version-linux
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
-          echo "::set-output name=version::$(CapitalWorld.exe --version)"
-          id: version-windows
-          if: matrix.os == 'windows-latest'
+          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
+        id: version-windows
+        if: matrix.os == 'windows-latest'
       - name: Build Packages
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}

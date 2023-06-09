@@ -71,15 +71,15 @@ jobs:
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld
       - name: version linux
-        run: echo "::set-output name=version::$(/${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
+        run: echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
         id: version-linux
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
-          echo "::set-output name=version::$(CapitalWorld.exe --version)"
-          id: version-windows
-          if: matrix.os == 'windows-latest'
+          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}\CapitalWorld.exe --version)"
+        id: version-windows
+        if: matrix.os == 'windows-latest'
       - name: Build Packages
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
@@ -97,7 +97,7 @@ jobs:
       - name: upload windows artifact (zip)
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
+          files: ${{ env.CMAKE_BUILD_DIR }}\CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
           token: ${{ github.token }}
         env:
           GITHUB_REPOSITORY: hisoka999/CapitalWorld
