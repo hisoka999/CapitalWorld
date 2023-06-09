@@ -89,7 +89,8 @@ configure_file (
   "${PROJECT_BINARY_DIR}/config.h"
   )
 
-
+set(BOX2D_BUILD_UNIT_TESTS OFF)
+set(BOX2D_BUILD_TESTBED  OFF)
 set (ENGINE_ROOT "deps/libsgl")
 set (ENGINE_SRC "deps/libsgl" )
 option(ENGINE_TESTS off)
