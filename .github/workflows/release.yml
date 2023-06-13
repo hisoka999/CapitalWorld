@@ -81,14 +81,13 @@ jobs:
         id: version-windows
         if: matrix.os == 'windows-latest'
       - name: Build Packages Linux
+        working-directory: build
         run: |
-          cd ${{ env.CMAKE_BUILD_DIR }}
-          cpack -G DEB
-          cpack -G TGZ
+          make package
         if: matrix.os == 'ubuntu-latest'
       - name: Build Packages Windows
+        working-directory: build
         run: |
-          cd ${{ env.CMAKE_BUILD_DIR }}
           cpack -G ZIP
         if: matrix.os == 'windows-latest'
       - name: upload linux artifact 
