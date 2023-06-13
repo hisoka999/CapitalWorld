@@ -73,7 +73,7 @@ jobs:
       # Build the whole project with Ninja (which is spawn by CMake).
       - name: Build
         run: |
-          cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
+          cmake -DBOX2D_BUILD_TESTBED=OFF -DBOX2D_BUILD_UNIT_TESTS=OFF --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
       - name: version linux
         run: echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
         id: version-linux
@@ -88,6 +88,7 @@ jobs:
         working-directory: build
         run: |
           make package
+        if: matrix.os == 'ubuntu-latest'
       - name: Upload artifacts - Linux
         uses: actions/upload-artifact@v3
         if: matrix.os == 'ubuntu-latest'
