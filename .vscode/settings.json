@@ -96,10 +96,15 @@
         "semaphore": "cpp",
         "span": "cpp"
     },
+    "terminal.integrated.shellArgs.windows": [
+        "/K",
+        "chcp 65001"
+    ],
     "cmakeExplorer.buildDir": "build/",
     "editor.formatOnSave": true,
     "cmake.parallelJobs": 12,
     "githubPullRequests.ignoredPullRequestBranches": [
         "master"
     ],
+    "cmake.configureOnOpen": true,
 }

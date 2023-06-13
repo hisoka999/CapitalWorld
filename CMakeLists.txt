@@ -216,9 +216,15 @@ add_custom_command(TARGET CapitalWorld PRE_BUILD
                           COMMAND ${CMAKE_COMMAND} -E copy_directory
                               ${CMAKE_SOURCE_DIR}/music/ $<TARGET_FILE_DIR:CapitalWorld>/music/)
 if(WIN32)
-    add_custom_command(TARGET CapitalWorld POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/ $<TARGET_FILE_DIR:CapitalWorld>)    
+    if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "x64")
+        add_custom_command(TARGET CapitalWorld PRE_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/ $<TARGET_FILE_DIR:CapitalWorld>/libs)    
+    else()
+        add_custom_command(TARGET CapitalWorld PRE_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x86/ $<TARGET_FILE_DIR:CapitalWorld>/libs)
+    endif()
 endif()
 INSTALL(TARGETS CapitalWorld DESTINATION capitalworld)
 INSTALL(TARGETS sgl DESTINATION capitalworld)
@@ -226,6 +232,24 @@ INSTALL(DIRECTORY fonts DESTINATION capitalworld )
 INSTALL(DIRECTORY images DESTINATION capitalworld )
 INSTALL(DIRECTORY locale DESTINATION capitalworld )
 INSTALL(DIRECTORY music DESTINATION capitalworld )
+INSTALL(DIRECTORY data DESTINATION capitalworld )
+if(WIN32)
+    if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "x64")
+        install(
+            DIRECTORY
+            ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x64/
+            DESTINATION
+            capitalworld
+        )
+    else()
+    install(
+        DIRECTORY
+        ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/lib/x86/
+        DESTINATION
+        capitalworld
+    )
+    endif()
+endif()
 set(CPACK_COMPONENTS_ALL "CapitalWorld")
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsdl2-2.0-0 (>= 2.0), libsdl2-ttf-2.0-0 (>= 2.0), libsdl2-image-2.0-0 (>= 2.0), libsdl2-gfx-1.0-0 (>= 1.0), libsdl2-mixer-2.0-0 (>= 2.0)")
