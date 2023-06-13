@@ -75,25 +75,30 @@ jobs:
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
       - name: version linux
-        run: echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)"
+        run: echo "name=version::$(${{ env.CMAKE_BUILD_DIR }}/CapitalWorld --version)" >> $GITHUB_OUTPUT
         id: version-linux
         if: matrix.os == 'ubuntu-latest'
       - name: version windows
         run: |
           cd ${{ env.CMAKE_BUILD_DIR }}
-          echo "::set-output name=version::$(${{ env.CMAKE_BUILD_DIR }}/Debug/CapitalWorld.exe --version)"
+          echo "name=version::$(${{ env.CMAKE_BUILD_DIR }}/Debug/CapitalWorld.exe --version)" >> $GITHUB_OUTPUT
         id: version-windows
         if: matrix.os == 'windows-latest'
-      - name: Build Packages
+      - name: Build Packages Linux
         working-directory: build
         run: |
           make package
         if: matrix.os == 'ubuntu-latest'
+      - name: Build Packages Windows
+        working-directory: build
+        run: |
+          cpack -G ZIP
+        if: matrix.os == 'windows-latest'
       - name: Upload artifacts - Linux
         uses: actions/upload-artifact@v3
         if: matrix.os == 'ubuntu-latest'
         with:
-          files: |
+          path: |
               ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
               ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
 
@@ -101,4 +106,4 @@ jobs:
         uses: actions/upload-artifact@v3
         if: matrix.os == 'windows-latest'
         with:
-          files: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
+          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
