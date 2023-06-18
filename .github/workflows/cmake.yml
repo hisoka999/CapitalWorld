@@ -77,7 +77,7 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
       - name: version
         working-directory: build
-        run: echo "version=$(cat VERSION.TXT)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat ${{ env.CMAKE_BUILD_DIR }}VERSION.TXT)" >> $GITHUB_OUTPUT
         id: version
       - name: Build Packages Linux
         working-directory: build
