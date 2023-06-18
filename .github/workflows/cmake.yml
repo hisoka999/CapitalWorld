@@ -14,11 +14,13 @@ jobs:
             triplet: x64-windows
             arch: x64
             experimental: false
+            winarch: win64
           - name: Windows (x86)
             os: windows-latest
             triplet: x86-windows
             experimental: false
             arch: Win32
+            winarch: win32
           - name: Ubuntu (GCC)
             os: ubuntu-latest
             triplet: x64-linux
@@ -109,4 +111,4 @@ jobs:
         uses: actions/upload-artifact@v3
         if: matrix.os == 'windows-latest'
         with:
-          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
+          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-${{matrix.winarch}}.zip
