@@ -94,11 +94,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           path: |
-              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
-              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version.outputs.version }}-Linux.deb
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version.outputs.version }}-Linux.tar.gz
 
       - name: Upload artifacts - Windows
         uses: actions/upload-artifact@v3
         if: matrix.os == 'windows-latest'
         with:
-          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
+          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version.outputs.version }}-Windows.zip
