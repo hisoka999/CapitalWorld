@@ -67,7 +67,6 @@ jobs:
           cmake -B "${{ env.CMAKE_BUILD_DIR }}"
         if: matrix.os == 'ubuntu-latest'
       - name: Install dependencies and generate project files (Windows)
-        working-directory: build
         run: |
           cmake -DBOX2D_BUILD_TESTBED=OFF -DBOX2D_BUILD_UNIT_TESTS=OFF  -B "${{ env.CMAKE_BUILD_DIR }}"  -A ${{matrix.arch}}
         if: matrix.os == 'windows-latest'
