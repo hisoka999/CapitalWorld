@@ -67,15 +67,18 @@ jobs:
           cmake -B "${{ env.CMAKE_BUILD_DIR }}"
         if: matrix.os == 'ubuntu-latest'
       - name: Install dependencies and generate project files (Windows)
+        working-directory: build
         run: |
           cmake -DBOX2D_BUILD_TESTBED=OFF -DBOX2D_BUILD_UNIT_TESTS=OFF  -B "${{ env.CMAKE_BUILD_DIR }}"  -A ${{matrix.arch}}
         if: matrix.os == 'windows-latest'
       # Build the whole project with Ninja (which is spawn by CMake).
       - name: Build
+        working-directory: build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
       - name: version
-        run: echo "version=$(cat ${{ env.CMAKE_BUILD_DIR }}/VERSION.TXT)" >> $GITHUB_OUTPUT
+        working-directory: build
+        run: echo "version=$(cat VERSION.TXT)" >> $GITHUB_OUTPUT
         id: version
       - name: Build Packages Linux
         working-directory: build
