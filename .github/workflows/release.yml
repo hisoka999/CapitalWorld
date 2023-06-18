@@ -17,11 +17,13 @@ jobs:
             triplet: x64-windows
             arch: x64
             experimental: false
+            winarch: win64
           - name: Windows (x86)
             os: windows-latest
             triplet: x86-windows
             experimental: false
             arch: Win32
+            winarch: win32
           - name: Ubuntu (GCC)
             os: ubuntu-latest
             triplet: x64-linux
@@ -106,7 +108,7 @@ jobs:
       - name: upload windows artifact (zip)
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ env.CMAKE_BUILD_DIR }}\CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
+          files: ${{ env.CMAKE_BUILD_DIR }}\CapitalWorld-${{ steps.version-windows.outputs.version }}-${{matrix.winarch}}.zip
           token: ${{ github.token }}
         env:
           GITHUB_REPOSITORY: hisoka999/CapitalWorld
