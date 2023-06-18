@@ -75,10 +75,18 @@ jobs:
         working-directory: build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target CapitalWorld -j 8
-      - name: version
+      - name: version linux
         working-directory: build
-        run: echo "version=$(cat ${{ env.CMAKE_BUILD_DIR }}VERSION.TXT)" >> $GITHUB_OUTPUT
-        id: version
+        run: echo "version=$(cat ${{ env.CMAKE_BUILD_DIR }}/VERSION.TXT)" >> $GITHUB_OUTPUT
+        id: version-linux
+        if: matrix.os == 'ubuntu-latest'
+      - name: version windows
+        working-directory: build
+        run: |
+          cd ${{ env.CMAKE_BUILD_DIR }}
+          echo "version=$(cat ${{ env.CMAKE_BUILD_DIR }}/VERSION.TXT)" >> $Env:GITHUB_OUTPUT
+        id: version-windows
+        if: matrix.os == 'windows-latest'
       - name: Build Packages Linux
         working-directory: build
         run: |
@@ -87,18 +95,18 @@ jobs:
       - name: Build Packages Windows
         working-directory: build
         run: |
-          cpack -G ZIP -C Debug
+          cpack -G ZIP
         if: matrix.os == 'windows-latest'
       - name: Upload artifacts - Linux
         uses: actions/upload-artifact@v3
         if: matrix.os == 'ubuntu-latest'
         with:
           path: |
-              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version.outputs.version }}-Linux.deb
-              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version.outputs.version }}-Linux.tar.gz
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.deb
+              ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-linux.outputs.version }}-Linux.tar.gz
 
       - name: Upload artifacts - Windows
         uses: actions/upload-artifact@v3
         if: matrix.os == 'windows-latest'
         with:
-          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version.outputs.version }}-Windows.zip
+          path: ${{ env.CMAKE_BUILD_DIR }}/CapitalWorld-${{ steps.version-windows.outputs.version }}-Windows.zip
