@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(CapitalWorld VERSION 0.2 DESCRIPTION "Capital World is a 2d isometric economy simulation game.")
+project(CapitalWorld VERSION 0.3 DESCRIPTION "Capital World is a 2d isometric economy simulation game.")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
