@@ -24,25 +24,31 @@
 #include <magic_enum.hpp>
 #ifdef GAME_DEBUG
 template <size_t SIZE>
-void writeEnumArray(std::array<std::string_view, SIZE> names, std::ofstream &stream)
+void writeEnumArray(std::array<std::string_view, SIZE> enums, std::map<std::string, std::string> &names)
 {
-    for (auto name : names)
+    for (auto name : enums)
     {
-        stream << "msgid \"" << name << "\"\n";
-        stream << "msgstr \"\"\n\n";
+        names.insert(std::pair<std::string, std::string>(name, ""));
     }
 }
 
 void generateEnumPot(std::string fileName)
 {
     std::ofstream os(fileName, std::ios::trunc | std::ios::out);
+    std::map<std::string, std::string> names;
+    writeEnumArray(magic_enum::enum_names<world::BuildingType>(), names);
+    writeEnumArray(magic_enum::enum_names<world::CityType>(), names);
+    writeEnumArray(magic_enum::enum_names<world::BalanceAccount>(), names);
+    writeEnumArray(magic_enum::enum_names<WorldSize>(), names);
+    writeEnumArray(magic_enum::enum_names<Difficulty>(), names);
+    writeEnumArray(magic_enum::enum_names<world::RawResource>(), names);
+    writeEnumArray(magic_enum::enum_names<core::FullScreenMode>(), names);
 
-    writeEnumArray(magic_enum::enum_names<world::BuildingType>(), os);
-    writeEnumArray(magic_enum::enum_names<world::CityType>(), os);
-    writeEnumArray(magic_enum::enum_names<world::BalanceAccount>(), os);
-    writeEnumArray(magic_enum::enum_names<WorldSize>(), os);
-    writeEnumArray(magic_enum::enum_names<Difficulty>(), os);
-    writeEnumArray(magic_enum::enum_names<world::RawResource>(), os);
+    for (auto [name, dummy] : names)
+    {
+        os << "msgid \"" << name << "\"\n";
+        os << "msgstr \"\"\n\n";
+    }
 
     os.flush();
     os.close();

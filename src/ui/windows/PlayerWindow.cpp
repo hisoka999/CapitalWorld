@@ -33,7 +33,7 @@ namespace UI
         std::vector<std::string> accountTableNames = {_("Account"), _("Costs"), _("Income")};
         m_balanceTable->setHeaderNames(accountTableNames);
         m_balanceTable->setElementFunction(0, [](std::shared_ptr<world::ProductBalance> &c) -> std::string
-                                           { return std::string(magic_enum::enum_name<world::BalanceAccount>(c->account)); });
+                                           { return _(std::string(magic_enum::enum_name<world::BalanceAccount>(c->account))); });
 
         m_balanceTable->setElementFunction(1, [](std::shared_ptr<world::ProductBalance> &c) -> std::string
                                            { return format_currency(c->costs); });

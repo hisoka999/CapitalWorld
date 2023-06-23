@@ -94,7 +94,8 @@
         "stop_token": "cpp",
         "numbers": "cpp",
         "semaphore": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "csignal": "cpp"
     },
     "terminal.integrated.shellArgs.windows": [
         "/K",
