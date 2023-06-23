@@ -81,7 +81,7 @@
     {
         "id": 5,
         "name": "Farming",
-        "name_de": "Farming",
+        "name_de": "Landwirtschaft",
         "icon": "\ue2cd",
         "start_date": {
             "year": 1900,

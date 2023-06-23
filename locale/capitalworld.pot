@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-07 20:39+0200\n"
+"POT-Creation-Date: 2023-06-23 16:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/world/company.cpp:522
+#: src/world/company.cpp:522 src/world/company.cpp:573
 #, c-format
 msgid "%s was researched."
 msgstr ""
@@ -70,15 +70,17 @@ msgid "Build"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:40 src/ui/windows/SettingsWindow.cpp:54
-#: src/ui/windows/SettingsWindow.cpp:46
+#: src/ui/windows/SettingsWindow.cpp:46 src/ui/windows/SettingsWindow.cpp:47
 msgid "Cancel"
 msgstr ""
 
 #: src/ui/windows/PlayerWindow.cpp:53 src/world/company.cpp:119
+#: src/world/company.cpp:139
 msgid "Cash"
 msgstr ""
 
 #: src/world/company.cpp:489 src/world/company.cpp:504
+#: src/world/company.cpp:555
 msgid "Cash: "
 msgstr ""
 
@@ -88,6 +90,7 @@ msgid "Cash:   %s"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:187 src/scenes/NewGameScene.cpp:188
+#: src/scenes/NewGameScene.cpp:212
 msgid "City Names: "
 msgstr ""
 
@@ -96,11 +99,17 @@ msgid "Company"
 msgstr ""
 
 #: src/world/company.cpp:488 src/world/company.cpp:503
+#: src/world/company.cpp:554
 msgid "Company Name: "
 msgstr ""
 
 #: src/world/company.cpp:490 src/world/company.cpp:505
+#: src/world/company.cpp:556
 msgid "Company Value: "
+msgstr ""
+
+#: src/scenes/NewGameScene.cpp:69
+msgid "Company color: "
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:52 src/scenes/NewGameScene.cpp:54
@@ -128,7 +137,7 @@ msgstr ""
 msgid "Costs:  %s"
 msgstr ""
 
-#: src/ui/SaveGameComponent.cpp:56
+#: src/ui/SaveGameComponent.cpp:56 src/ui/SaveGameComponent.cpp:55
 msgid "Delete"
 msgstr ""
 
@@ -137,7 +146,7 @@ msgid "Destroy"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:162 src/scenes/NewGameScene.cpp:164
-#: src/scenes/NewGameScene.cpp:165
+#: src/scenes/NewGameScene.cpp:165 src/scenes/NewGameScene.cpp:189
 msgid "Difficultiy: "
 msgstr ""
 
@@ -179,7 +188,7 @@ msgid "Graphics"
 msgstr ""
 
 #: src/world/gamemap.cpp:338 src/world/gamemap.cpp:430
-#: src/world/gamemap.cpp:462
+#: src/world/gamemap.cpp:462 src/world/gamemap.cpp:538
 msgid "Grass"
 msgstr ""
 
@@ -193,7 +202,8 @@ msgid "Help"
 msgstr ""
 
 #: src/world/city.cpp:136 src/world/city.cpp:432 src/world/city.cpp:435
-#: src/world/city.cpp:151 src/world/city.cpp:492
+#: src/world/city.cpp:151 src/world/city.cpp:492 src/world/city.cpp:133
+#: src/world/city.cpp:148 src/world/city.cpp:445
 msgid "House"
 msgstr ""
 
@@ -202,7 +212,7 @@ msgid "Income"
 msgstr ""
 
 #: src/ui/hudcontainer.cpp:216 src/ui/hudcontainer.cpp:218
-msgid "Income Balance\n"
+msgid "Income Balance"
 msgstr ""
 
 #: src/ui/hudcontainer.cpp:218 src/ui/hudcontainer.cpp:220
@@ -230,15 +240,15 @@ msgstr ""
 #: src/scenes/MainScene.cpp:44 src/scenes/MainScene.cpp:48
 #: src/ui/SaveGameComponent.cpp:70 src/scenes/MainScene.cpp:50
 #: src/scenes/MainScene.cpp:51 src/ui/windows/optionswindow.cpp:22
-#: src/scenes/MainScene.cpp:52
+#: src/scenes/MainScene.cpp:52 src/ui/SaveGameComponent.cpp:69
 msgid "Load Game"
 msgstr ""
 
-#: src/ui/LoanTab.cpp:71 src/world/company.cpp:101
+#: src/ui/LoanTab.cpp:71 src/world/company.cpp:101 src/world/company.cpp:121
 msgid "Loan"
 msgstr ""
 
-#: src/world/company.cpp:101
+#: src/world/company.cpp:101 src/world/company.cpp:121
 msgid "Loan has been repayed."
 msgstr ""
 
@@ -251,7 +261,7 @@ msgid "Loans"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:137 src/scenes/NewGameScene.cpp:139
-#: src/scenes/NewGameScene.cpp:140
+#: src/scenes/NewGameScene.cpp:140 src/scenes/NewGameScene.cpp:164
 msgid "Map size: "
 msgstr ""
 
@@ -260,7 +270,7 @@ msgstr ""
 msgid "Music Volume"
 msgstr ""
 
-#: src/ui/SaveGameComponent.cpp:57
+#: src/ui/SaveGameComponent.cpp:57 src/ui/SaveGameComponent.cpp:56
 msgid "Name"
 msgstr ""
 
@@ -280,6 +290,7 @@ msgid "No active research"
 msgstr ""
 
 #: src/world/company.cpp:491 src/world/company.cpp:506
+#: src/world/company.cpp:557
 msgid "Number of Buildings: "
 msgstr ""
 
@@ -362,10 +373,11 @@ msgid "Requirements:"
 msgstr ""
 
 #: src/world/company.cpp:522 src/world/company.cpp:530
+#: src/world/company.cpp:573 src/world/company.cpp:581
 msgid "Research"
 msgstr ""
 
-#: src/world/company.cpp:530
+#: src/world/company.cpp:530 src/world/company.cpp:581
 msgid "Research queue is empty."
 msgstr ""
 
@@ -373,6 +385,10 @@ msgstr ""
 #: src/ui/ResearchHint.cpp:39
 #, c-format
 msgid "Researchtime: %d months"
+msgstr ""
+
+#: src/world/buildings/HouseComponent.cpp:201
+msgid "Residents:"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:96 src/ui/windows/SettingsWindow.cpp:123
@@ -397,19 +413,22 @@ msgid "Sales"
 msgstr ""
 
 #: src/world/gamemap.cpp:427 src/world/gamemap.cpp:459
+#: src/world/gamemap.cpp:535
 msgid "Sand"
 msgstr ""
 
 #: src/ui/SettingsWindow.cpp:25 src/ui/windows/SettingsWindow.cpp:37
-#: src/ui/windows/SettingsWindow.cpp:43
+#: src/ui/windows/SettingsWindow.cpp:43 src/ui/windows/SettingsWindow.cpp:44
 msgid "Save"
 msgstr ""
 
 #: src/ui/SaveGameComponent.cpp:74 src/ui/windows/optionswindow.cpp:29
+#: src/ui/SaveGameComponent.cpp:73
 msgid "Save Game"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:70 src/scenes/NewGameScene.cpp:72
+#: src/scenes/NewGameScene.cpp:96
 msgid "Seed: "
 msgstr ""
 
@@ -418,6 +437,7 @@ msgstr ""
 #: src/scenes/MainScene.cpp:61 src/ui/windows/SettingsWindow.cpp:59
 #: src/scenes/MainScene.cpp:63 src/ui/windows/SettingsWindow.cpp:51
 #: src/scenes/MainScene.cpp:64 src/scenes/MainScene.cpp:65
+#: src/ui/windows/SettingsWindow.cpp:52
 msgid "Settings"
 msgstr ""
 
@@ -485,7 +505,7 @@ msgid "Transport routes"
 msgstr ""
 
 #: src/world/gamemap.cpp:335 src/world/gamemap.cpp:423
-#: src/world/gamemap.cpp:455
+#: src/world/gamemap.cpp:455 src/world/gamemap.cpp:531
 msgid "Trees"
 msgstr ""
 
@@ -500,7 +520,7 @@ msgid "VSync"
 msgstr ""
 
 #: src/world/gamemap.cpp:331 src/world/gamemap.cpp:419
-#: src/world/gamemap.cpp:451
+#: src/world/gamemap.cpp:451 src/world/gamemap.cpp:527
 msgid "Water"
 msgstr ""
 
@@ -516,7 +536,7 @@ msgstr ""
 msgid "Workers: "
 msgstr ""
 
-#: src/world/company.cpp:119
+#: src/world/company.cpp:119 src/world/company.cpp:139
 msgid "Your cash balance is negative."
 msgstr ""
 
@@ -529,11 +549,12 @@ msgid "is active"
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:113 src/scenes/NewGameScene.cpp:115
-#: src/scenes/NewGameScene.cpp:116
+#: src/scenes/NewGameScene.cpp:116 src/scenes/NewGameScene.cpp:140
 msgid "number of cities: "
 msgstr ""
 
 #: src/scenes/NewGameScene.cpp:88 src/scenes/NewGameScene.cpp:90
+#: src/scenes/NewGameScene.cpp:114
 msgid "number of companies: "
 msgstr ""
 

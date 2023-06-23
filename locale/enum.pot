@@ -1,99 +1,105 @@
-msgid "Resource"
-msgstr ""
-
-msgid "Factory"
-msgstr ""
-
-msgid "Shop"
-msgstr ""
-
-msgid "Street"
-msgstr ""
-
-msgid "House"
-msgstr ""
-
-msgid "Transport"
-msgstr ""
-
-msgid "Other"
-msgstr ""
-
-msgid "Village"
-msgstr ""
-
-msgid "SmallTown"
-msgstr ""
-
-msgid "City"
-msgstr ""
-
-msgid "Metropolis"
-msgstr ""
-
-msgid "Production"
-msgstr ""
-
-msgid "Transport"
-msgstr ""
-
-msgid "Import"
-msgstr ""
-
-msgid "Research"
-msgstr ""
-
-msgid "Sales"
-msgstr ""
-
-msgid "Interest"
-msgstr ""
-
-msgid "Repayment"
-msgstr ""
-
-msgid "Small"
-msgstr ""
-
-msgid "Medium"
+msgid "Aluminum"
 msgstr ""
 
 msgid "Big"
 msgstr ""
 
-msgid "Huge"
-msgstr ""
-
-msgid "Hard"
-msgstr ""
-
-msgid "Normal"
-msgstr ""
-
-msgid "Easy"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Oil"
-msgstr ""
-
-msgid "Iron"
+msgid "City"
 msgstr ""
 
 msgid "Coal"
 msgstr ""
 
-msgid "Aluminum"
+msgid "Copper"
+msgstr ""
+
+msgid "Easy"
+msgstr ""
+
+msgid "Factory"
+msgstr ""
+
+msgid "Fullscreen"
+msgstr ""
+
+msgid "FullscreenDesktop"
 msgstr ""
 
 msgid "Gold"
 msgstr ""
 
-msgid "Copper"
+msgid "Hard"
+msgstr ""
+
+msgid "House"
+msgstr ""
+
+msgid "Huge"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Interest"
+msgstr ""
+
+msgid "Iron"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Metropolis"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Oil"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+msgid "Repayment"
+msgstr ""
+
+msgid "Research"
+msgstr ""
+
+msgid "Resource"
+msgstr ""
+
+msgid "Sales"
+msgstr ""
+
+msgid "Shop"
 msgstr ""
 
 msgid "Silicon"
+msgstr ""
+
+msgid "Small"
+msgstr ""
+
+msgid "SmallTown"
+msgstr ""
+
+msgid "Street"
+msgstr ""
+
+msgid "Transport"
+msgstr ""
+
+msgid "Village"
+msgstr ""
+
+msgid "Windowed"
 msgstr ""
 

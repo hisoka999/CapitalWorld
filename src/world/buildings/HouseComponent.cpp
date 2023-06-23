@@ -7,6 +7,8 @@
 #include "SalesComponent.h"
 #include "StorageComponent.h"
 #include "services/productservice.h"
+#include "translate.h"
+
 namespace world
 {
     namespace buildings
@@ -196,7 +198,7 @@ namespace world
         std::map<std::string, std::string> HouseComponent::displayData()
         {
             std::map<std::string, std::string> result;
-            result["residents"] = std::to_string(residents);
+            result[_("Residents:")] = std::to_string(residents);
             return result;
         }
 

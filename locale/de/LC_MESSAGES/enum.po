@@ -9,98 +9,113 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid "Resource"
-msgstr "Ressource"
-
-msgid "Factory"
-msgstr "Fabrik"
-
-msgid "Shop"
-msgstr "Laden"
-
-msgid "Street"
-msgstr "Straße"
-
-msgid "House"
-msgstr "Haus"
-
-msgid "Transport"
-msgstr "Transport"
-
-msgid "Other"
-msgstr "Sonstiges"
-
-msgid "Village"
-msgstr "Dorf"
-
-msgid "SmallTown"
-msgstr "Kleinstadt"
-
-msgid "City"
-msgstr "Stadt"
-
-msgid "Metropolis"
-msgstr "Metropole"
-
-msgid "Production"
-msgstr "Produktion"
-
-msgid "Import"
-msgstr "Import"
-
-msgid "Research"
-msgstr "Forschung"
-
-msgid "Sales"
-msgstr "Verkauf"
-
-msgid "Small"
-msgstr "Klein"
-
-msgid "Medium"
-msgstr "Mittel"
-
-msgid "Big"
-msgstr "Groß"
-
-msgid "Huge"
-msgstr "Riesig"
-
-msgid "Hard"
-msgstr "Schwer"
-
-msgid "Normal"
-msgstr "Normal"
-
-msgid "Easy"
-msgstr "Einfach"
-
-msgid "None"
-msgstr "Nichts"
-
-msgid "Oil"
-msgstr "Öl"
-
-msgid "Iron"
-msgstr "Eisen"
-
-msgid "Coal"
-msgstr "Kohle"
+"X-Generator: Poedit 3.0.1\n"
 
 msgid "Aluminum"
 msgstr "Aluminum"
 
-msgid "Gold"
-msgstr "Gold"
+msgid "Big"
+msgstr "Groß"
+
+msgid "City"
+msgstr "Stadt"
+
+msgid "Coal"
+msgstr "Kohle"
 
 msgid "Copper"
 msgstr "Kupfer"
 
+msgid "Easy"
+msgstr "Einfach"
+
+msgid "Factory"
+msgstr "Fabrik"
+
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+msgid "FullscreenDesktop"
+msgstr "Desktopvollbild"
+
+msgid "Gold"
+msgstr "Gold"
+
+msgid "Hard"
+msgstr "Schwer"
+
+msgid "House"
+msgstr "Haus"
+
+msgid "Huge"
+msgstr "Riesig"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Interest"
+msgstr "Zinsen"
+
+msgid "Iron"
+msgstr "Eisen"
+
+msgid "Medium"
+msgstr "Mittel"
+
+msgid "Metropolis"
+msgstr "Metropole"
+
+msgid "None"
+msgstr "Nichts"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Oil"
+msgstr "Öl"
+
+msgid "Other"
+msgstr "Sonstiges"
+
+msgid "Production"
+msgstr "Produktion"
+
+msgid "Repayment"
+msgstr "Rückzahlungen"
+
+msgid "Research"
+msgstr "Forschung"
+
+msgid "Resource"
+msgstr "Ressource"
+
+msgid "Sales"
+msgstr "Verkauf"
+
+msgid "Shop"
+msgstr "Laden"
+
 msgid "Silicon"
 msgstr "Silizium"
+
+msgid "Small"
+msgstr "Klein"
+
+msgid "SmallTown"
+msgstr "Kleinstadt"
+
+msgid "Street"
+msgstr "Straße"
+
+msgid "Transport"
+msgstr "Transport"
+
+msgid "Village"
+msgstr "Dorf"
+
+msgid "Windowed"
+msgstr "Fenstermodus"
 
 #~ msgid "Farm"
 #~ msgstr "Farm"

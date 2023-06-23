@@ -215,7 +215,7 @@ namespace UI
             researchButton->setHint(researchHint);
         }
 
-        std::string hintText = _("Income Balance\n");
+        std::string hintText = _("Income Balance") + "\n";
         hintText += utils::string_format(_("Cash:   %s"), format_currency(gameState->getPlayer()->getCash())) + "\n";
         hintText += utils::string_format(_("Income: %s"), format_currency(gameState->getPlayer()->getIncome())) + "\n";
         hintText += utils::string_format(_("Costs:  %s"), format_currency(gameState->getPlayer()->getCosts())) + "\n";
