@@ -155,8 +155,7 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
     }
     building->update(this);
     initParents(building);
-    std::shared_ptr<core::Message<MessageTypes, bool>> message = std::make_shared<core::Message<MessageTypes, bool>>(MessageTypes::ObjectHasBuild, true);
-    core::MessageSystem<MessageTypes>::get().sendMessage(message);
+    core::MessageSystem<MessageTypes>::get().sendMessage<bool>(MessageTypes::ObjectHasBuild, true);
 }
 const std::vector<std::shared_ptr<world::Building>> &GameMap::getBuildings() const
 {

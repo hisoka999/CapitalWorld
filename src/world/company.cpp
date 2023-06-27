@@ -118,9 +118,8 @@ namespace world
                 iter = m_activeLoans.erase(iter);
                 if (player)
                 {
-                    notifications::Event event = {notifications::EventType::Loan, _("Loan"), _("Loan has been repayed.")};
-                    auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
-                    core::MessageSystem<MessageTypes>::get().sendMessage(msg);
+                    const notifications::Event event = {notifications::EventType::Loan, _("Loan"), _("Loan has been repayed.")};
+                    core::MessageSystem<MessageTypes>::get().sendMessage<notifications::Event>(MessageTypes::Event, event);
                 }
             }
             else
@@ -137,8 +136,7 @@ namespace world
         if (getCash() < 0 && player)
         {
             notifications::Event event = {notifications::EventType::Balance, _("Cash"), _("Your cash balance is negative.")};
-            auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
-            core::MessageSystem<MessageTypes>::get().sendMessage(msg);
+            core::MessageSystem<MessageTypes>::get().sendMessage<notifications::Event>(MessageTypes::Event, event);
         }
     }
 
@@ -571,16 +569,16 @@ namespace world
             if (player)
             {
                 notifications::Event event = {notifications::EventType::Research, _("Research"), utils::string_format(_("%s was researched."), currentResearch->getName())};
-                auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
-                core::MessageSystem<MessageTypes>::get().sendMessage(msg);
+                auto msg = std::make_unique<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
+                core::MessageSystem<MessageTypes>::get().sendMessage<notifications::Event>(MessageTypes::Event, event);
             }
             researchQueue.erase(researchQueue.begin());
 
             if (researchQueue.empty() && player)
             {
                 notifications::Event event = {notifications::EventType::Research, _("Research"), _("Research queue is empty.")};
-                auto msg = std::make_shared<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
-                core::MessageSystem<MessageTypes>::get().sendMessage(msg);
+                auto msg = std::make_unique<core::Message<MessageTypes, notifications::Event>>(MessageTypes::Event, event);
+                core::MessageSystem<MessageTypes>::get().sendMessage<notifications::Event>(MessageTypes::Event, event);
             }
         }
     }

@@ -99,7 +99,7 @@ namespace world
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
                 long long aiExecTime = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
                 if (aiExecTime > 100)
-                    std::cout << "ai thread time: " << aiExecTime << "ms" << std::endl;
+                    APP_LOG_ERROR("ai thread time: %d ms", aiExecTime);
             }
         }
     }
