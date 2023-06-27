@@ -73,8 +73,7 @@ void UpdateThread::update()
                 gGameStateMutex.unlock();
 
                 auto &msgSystem = core::MessageSystem<MessageTypes>::get();
-                std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
-                msgSystem.sendMessage(msg);
+                msgSystem.sendMessage<int>(MessageTypes::NewMonth, 0);
                 auto elapsed = std::chrono::high_resolution_clock::now() - start;
                 long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
                 if (milliseconds > 100)

@@ -222,9 +222,8 @@ namespace world
                         route->quantity = std::min(amount, int(route->maxQuantity));
                         startStorage->addEntry(route->product->getName(), route->quantity * -1);
                         route->transportActive = true;
-                        AnimatedMovementData data = {route, std::string(magic_enum::enum_name(company->getColor()))};
-                        std::shared_ptr<core::Message<MessageTypes, AnimatedMovementData>> message = std::make_shared<core::Message<MessageTypes, AnimatedMovementData>>(MessageTypes::AnimationStart, data);
-                        core::MessageSystem<MessageTypes>::get().sendMessage(message);
+                        const AnimatedMovementData data = {route, std::string(magic_enum::enum_name(company->getColor()))};
+                        core::MessageSystem<MessageTypes>::get().sendMessage<AnimatedMovementData>(MessageTypes::AnimationStart, data);
                     }
                     else if (route->path.size() == 1)
                     {
