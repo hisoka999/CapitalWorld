@@ -80,7 +80,7 @@ file(GLOB_RECURSE SRC
     src/*.cpp)
 
 set (GAME_VERSION_MAJOR 0)
-set (GAME_VERSION_MINOR 2)
+set (GAME_VERSION_MINOR 4)
 write_file("${PROJECT_BINARY_DIR}/VERSION.TXT" "${GAME_VERSION_MAJOR}.${GAME_VERSION_MINOR}")
 
 # configure a header file to pass some of the CMake settings
