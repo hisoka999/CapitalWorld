@@ -33,29 +33,30 @@ namespace scenes
         bool top = false;
         bool bottom = false;
 
-        bool isMoving()
-        {
+        bool isMoving() const {
             return left || right || top || bottom;
         }
     };
 
-    class WorldScene : public core::Scene
+    class WorldScene final : public core::Scene
     {
     public:
         WorldScene(core::Renderer *pRenderer,
                    core::SceneManager *pSceneManager, std::shared_ptr<world::GameState> gameState, std::shared_ptr<utils::IniBase> settings, core::Input *input);
-        ~WorldScene();
-        virtual void unload() override;
-        void render();
-        bool handleEvents(core::Input *pInput);
-        virtual void update();
-        virtual void fixedUpdate(uint32_t delta);
+        ~WorldScene() override;
+        void unload() override;
+        void render() override;
+        bool handleEvents(core::Input *pInput) override;
+
+        void update() override;
+
+        void fixedUpdate(uint32_t delta) override;
         std::shared_ptr<world::GameState> &getGameState();
 
     private:
         void refresh();
         void renderHUD();
-        void renderCursor();
+        void renderCursor() const;
         bool handleMouseEvents(core::Input *pInput, bool windowEventHandled);
         void calcCursorPosition(core::Input *pInput);
         std::shared_ptr<world::Building> createBuilding();

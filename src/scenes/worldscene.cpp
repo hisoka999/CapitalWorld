@@ -27,9 +27,9 @@ namespace scenes
                                       pSceneManager),
           buildingSelectionWindow(200, 100, gameState->getPlayer()), buildWindow(0, static_cast<int>(pRenderer->getViewPort().height / 2.0f), &buildingSelectionWindow), buildingWindow(100, 100), gameState(gameState), optionsWindow(0, 0, settings, input), researchWindow(gameState), console(gameState), playerWindow(gameState)
     {
-        playList.push_back("music/Juhani Junkala [Retro Game Music Pack] Level 1.wav");
-        playList.push_back("music/Juhani Junkala [Retro Game Music Pack] Level 2.wav");
-        playList.push_back("music/Juhani Junkala [Retro Game Music Pack] Level 3.wav");
+        playList.emplace_back("music/Juhani Junkala [Retro Game Music Pack] Level 1.wav");
+        playList.emplace_back("music/Juhani Junkala [Retro Game Music Pack] Level 2.wav");
+        playList.emplace_back("music/Juhani Junkala [Retro Game Music Pack] Level 3.wav");
 
         cursorTexture = graphics::TextureManager::Instance().loadTexture(utils::os::combine("images", "cursor.png"));
         hudFont = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "arial.ttf"), 16);
@@ -144,8 +144,8 @@ namespace scenes
         // render camera position
         auto cameraRect = renderer->getMainCamera()->getViewPortRect();
         // map site
-        int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
-        int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
+        const int mapWidth = mapRenderer->getTileWidth() * gameState->getGameMap()->getWidth();
+        const int mapHeight = mapRenderer->getTileHeight() * gameState->getGameMap()->getHeight();
 
         float relativeX = miniMapRect.width / renderer->getZoomFactor() / float(mapWidth);
         float relativeY = miniMapRect.height / renderer->getZoomFactor() / float(mapHeight);
@@ -162,12 +162,11 @@ namespace scenes
         eventQueue.render(renderer);
     }
 
-    void WorldScene::renderCursor()
-    {
-        float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+    void WorldScene::renderCursor() const {
+        const float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
-        auto camera = renderer->getMainCamera();
-        graphics::Rect elementRect;
+        const auto camera = renderer->getMainCamera();
+        graphics::Rect elementRect = {};
 
         for (float y = 0; y != cursorBuildingRect.height; y += std::copysign(1.0, cursorBuildingRect.height))
         {
@@ -255,13 +254,13 @@ namespace scenes
         if (optionsWindow.getVisible() && previewSurface == nullptr)
         {
             previewSurface = SDL_CreateRGBSurface(0, renderer->getMainCamera()->getWidth(), renderer->getMainCamera()->getHeight(), 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-            SDL_RenderReadPixels(renderer->getRenderer(), NULL, SDL_PIXELFORMAT_ARGB8888, previewSurface->pixels, previewSurface->pitch);
+            SDL_RenderReadPixels(renderer->getRenderer(), nullptr, SDL_PIXELFORMAT_ARGB8888, previewSurface->pixels, previewSurface->pitch);
 
             optionsWindow.setPreview(previewSurface);
         }
     }
 
-    bool WorldScene::handleMouseEvents(core::Input *pInput, bool windowEventHandled)
+    bool WorldScene::handleMouseEvents(core::Input *pInput, const bool windowEventHandled)
     {
         auto &gameMap = gameState->getGameMap();
 
@@ -313,7 +312,7 @@ namespace scenes
                 // check if building exists and then destroy it
                 const graphics::Rect &sourceBuilding = {cursorPosition.getX(), cursorPosition.getY(), 1, 1};
 
-                auto building = gameMap->getBuilding2D(sourceBuilding);
+                const auto building = gameMap->getBuilding2D(sourceBuilding);
                 if (building != nullptr)
                 {
                     // remove it
@@ -449,12 +448,12 @@ namespace scenes
         float camX = renderer->getMainCamera()->getX();
         float camY = renderer->getMainCamera()->getY();
 
-        float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
+        const float factor = ceilf(renderer->getZoomFactor() * 100) / 100;
 
         float mouse_x = pInput->getMousePostion().getX() + camX;
         float mouse_y = pInput->getMousePostion().getY() + camY;
-        float tile_height = float(mapRenderer->getTileHeight()) * factor;
-        float tile_width = float(mapRenderer->getTileWidth()) * factor;
+        const float tile_height = static_cast<float>(mapRenderer->getTileHeight()) * factor;
+        const float tile_width = static_cast<float>(mapRenderer->getTileWidth()) * factor;
 
         mouse_x -= tile_width / 2;
         mouse_y -= tile_height / 2;
@@ -466,11 +465,7 @@ namespace scenes
 
     bool WorldScene::handleEvents(core::Input *pInput)
     {
-        bool eventHandled = false;
-
-        //
-
-        eventHandled = winMgr->handleInput(pInput);
+        bool eventHandled = winMgr->handleInput(pInput);
 
         if (!eventHandled)
             eventHandled = buildWindow.handleEvents(pInput);
@@ -487,8 +482,8 @@ namespace scenes
             float relativeY = miniMapRect.height / renderer->getZoomFactor() / float(mapHeight);
 
             // new position  = -(half of camera size) + (mouse position  - minimap position) / relative size - (half of map size)
-            int newX = (renderer->getMainCamera()->getWidth() / 2.0f * -1.0f) + ((pInput->getMousePostion().getX() - miniMapRect.x) / relativeX) - (mapWidth / 2.0f * renderer->getZoomFactor());
-            int newY = (renderer->getMainCamera()->getHeight() / 2.0f * -1.0f) + (pInput->getMousePostion().getY() - miniMapRect.y) / relativeY;
+            const int newX = (renderer->getMainCamera()->getWidth() / 2.0f * -1.0f) + ((pInput->getMousePostion().getX() - miniMapRect.x) / relativeX) - (mapWidth / 2.0f * renderer->getZoomFactor());
+            const int newY = (renderer->getMainCamera()->getHeight() / 2.0f * -1.0f) + (pInput->getMousePostion().getY() - miniMapRect.y) / relativeY;
             renderer->getMainCamera()->reset();
             renderer->getMainCamera()->move(newX, newY);
             mapRenderer->clearCache();

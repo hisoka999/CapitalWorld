@@ -115,7 +115,7 @@ namespace world
             gameMap->addBuilding(street);
         }
         perf.step("addStreets");
-        for (auto street : streets)
+        for (auto &street : streets)
         {
             std::shared_ptr<Building> house = nullptr;
             utils::Vector2 housePosition(street->getDisplayRect().x, street->getDisplayRect().y);

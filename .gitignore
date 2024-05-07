@@ -1,7 +1,10 @@
 stuff/ 
 CMakeLists.txt.user
 .directory
-
+/.cache
+/.fleet
+/.idea
 *.user
 build/
 heaptrack.*
+/cmake-build-debug

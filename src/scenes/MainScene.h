@@ -20,19 +20,19 @@
 namespace scenes
 {
 
-        class MainScene : public core::Scene
+        class MainScene final : public core::Scene
         {
         public:
                 MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager, std::shared_ptr<utils::IniBase> settings, core::Input *input);
-                virtual ~MainScene();
-                void render();
-                bool handleEvents(core::Input *pInput);
-                bool isRunning()
-                {
+
+                ~MainScene() override;
+                void render() override;
+                bool handleEvents(core::Input *pInput) override;
+                bool isRunning() const {
                         return running;
                 }
 
-                virtual void load();
+                void load() override;
 
         private:
                 bool running;
