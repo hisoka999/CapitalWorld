@@ -47,7 +47,7 @@ namespace UI
         {
             auto researchButton = std::make_shared<UI::ResearchButton>(res, gameState, scrollArea.get());
             researchButton->setPos(x, y);
-            researchButton->connect("buttonClicked", [=]()
+            researchButton->connect("buttonClicked", [this,res]()
                                     { gameState->getPlayer()->addResearchToQueue(res); });
 
             std::shared_ptr<UI::ResearchHint> hint = std::make_shared<UI::ResearchHint>(res);

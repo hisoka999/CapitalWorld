@@ -185,7 +185,7 @@ SettingsWindow::SettingsWindow(std::shared_ptr<utils::IniBase> &settings, core::
     layout->updateLayout(bounds);
     soundTabLayout->updateLayout(bounds);
 
-    saveButton->connect(UI::Button::buttonClickCallback(), [=]()
+    saveButton->connect(UI::Button::buttonClickCallback(), [this,settings,musicVolumeProgress,comboboxLanguage,soundVolumeProgress]()
                         {
         settings->setAttrI("Base", "Fullscreen", int(fullscreen->getSelectionText()));
         //core::GameWindow::Instance().setFullScreen(fullscreen->getSelectionText());

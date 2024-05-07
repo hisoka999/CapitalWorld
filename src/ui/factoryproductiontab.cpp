@@ -120,7 +120,7 @@ namespace UI
         for (auto product : building->getProducts())
         {
             std::shared_ptr<UI::ProductComponent> pc = std::make_shared<UI::ProductComponent>(product, this);
-            pc->connect("imageClicked", [=](void)
+            pc->connect("imageClicked", [this,product]()
                         {
                             resourceSelectionBox->setSelectionByText(product->getBaseProducts().at(0)->product);
                             productSelectionBox->setSelectionByText(product); });

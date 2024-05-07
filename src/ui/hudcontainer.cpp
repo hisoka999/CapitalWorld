@@ -33,7 +33,7 @@ namespace UI
         companyButton->setPos(xLeft, yLeft);
         companyButton->setBorderless(true);
 
-        companyButton->connect("buttonClick", [=]()
+        companyButton->connect("buttonClick", [this,renderer]()
                                {
                                    auto rect = playerWindow->displayRect();
                                    float width = renderer->getMainCamera()->getWidth();
@@ -69,7 +69,7 @@ namespace UI
         researchButton->setColor(utils::color::WHITE);
         researchButton->setPos(xLeft, yLeft);
         researchButton->setBorderless(true);
-        researchButton->connect("buttonClick", [=]()
+        researchButton->connect("buttonClick", [this,renderer]()
                                 {
                                     auto rect = researchWindow->displayRect();
                                     float width = renderer->getMainCamera()->getWidth();
@@ -90,7 +90,7 @@ namespace UI
         optionsButton->setLabel(" ");
         optionsButton->setPos(10, yLeft);
         optionsButton->setBorderless(true);
-        optionsButton->connect("buttonClick", [=]()
+        optionsButton->connect("buttonClick", [this,renderer]()
                                {
                                    auto rect = optionsWindow->displayRect();
                                    float width = renderer->getMainCamera()->getWidth();
@@ -207,7 +207,7 @@ namespace UI
         {
             int resPerMonth = (gameState->getPlayer()->getResearchPerMonth() == 0) ? 1 : gameState->getPlayer()->getResearchPerMonth();
             auto researchTime = researchQueue.at(0)->getCurrentCosts() / resPerMonth;
-            researchButton->setLabel(utils::string_format(u8"%s (%i months)", researchQueue.at(0)->getLocalisedName(), researchTime));
+            researchButton->setLabel(utils::string_format("%s (%i months)", researchQueue.at(0)->getLocalisedName(), researchTime));
 
             auto pos = (researchButton->getHint() != nullptr) ? researchButton->getHint()->getPosition() : utils::Vector2(0.f, 0.f);
             auto researchHint = std::make_shared<UI::ResearchHint>(researchQueue.at(0));

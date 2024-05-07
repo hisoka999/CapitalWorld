@@ -42,14 +42,14 @@ public:
     size_t getWidth() const;
     size_t getHeight() const;
 
-    std::shared_ptr<world::Building> getBuilding2D(const graphics::Rect &sourceBuilding);
+    std::shared_ptr<world::Building> getBuilding2D(const graphics::Rect &sourceBuilding) const;
     bool canBuild(graphics::Rect buildRect);
     void addBuilding(std::shared_ptr<world::Building> building);
     void removeBuilding(std::shared_ptr<world::Building> building);
     const std::vector<std::shared_ptr<world::Building>> &getBuildings() const;
     const std::shared_ptr<world::Building> &getBuilding(const int x, const int y) const;
     std::vector<std::shared_ptr<world::Building>> findStorageBuildings(const std::shared_ptr<world::Building> &startBuilding, const std::shared_ptr<world::Company> &company);
-    std::vector<std::shared_ptr<world::Building>> findByComponentTypeInDistance(const std::string &componentType, world::Building *startBuilding, const int distance);
+    std::vector<std::shared_ptr<world::Building>> findByComponentTypeInDistance(const std::string &componentType, world::Building *startBuilding, const int distance) const;
 
     std::shared_ptr<utils::JSON::Object> toJson();
     static std::shared_ptr<GameMap> fromJson(const std::shared_ptr<utils::JSON::Object> &object);

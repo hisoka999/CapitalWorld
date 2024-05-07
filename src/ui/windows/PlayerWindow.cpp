@@ -67,7 +67,7 @@ namespace UI
 
         auto &msgSystem = core::MessageSystem<MessageTypes>::get();
 
-        m_messageId = msgSystem.registerForType(MessageTypes::NewMonth, [=]()
+        m_messageId = msgSystem.registerForType(MessageTypes::NewMonth, [this]()
                                                 { needsRefresh(); });
 
         refresh();

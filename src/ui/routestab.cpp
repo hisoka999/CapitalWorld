@@ -55,7 +55,7 @@ namespace UI
         {
             std::shared_ptr<RouteComponent> routeComp = std::make_shared<RouteComponent>(scrollArea.get(), route, gameMap, building, player);
             const size_t value = i;
-            routeComp->closeButton->connect(UI::Button::buttonClickCallback(), [=]()
+            routeComp->closeButton->connect(UI::Button::buttonClickCallback(), [this,transportComp,value]()
                                             {
                                                 transportComp->removeRoute(value);
                                                 needsRefresh(); });

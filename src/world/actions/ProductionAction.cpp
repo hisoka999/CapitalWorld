@@ -31,7 +31,7 @@ namespace world
                 }
                 else
                 {
-                    auto position2D = m_building->get2DPosition().toVecto2();
+                    auto position2D = m_building->get2DPosition().toVector2();
                     // TileType tile = gameState->getGameMap()->getTile(position2D);
                     world::RawResource rawResource = gameState->getGameMap()->getRawResource(position2D.getX(), position2D.getY());
                     if (m_building->requireResource(rawResource))
@@ -52,7 +52,7 @@ namespace world
                     auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
                     workers->setCurrentWorkers(m_building->getProducts().size());
 
-                    for (auto base : m_product->getBaseProducts())
+                    for (const auto& base : m_product->getBaseProducts())
                     {
                         switch (base->product->getBuildingType())
                         {
@@ -107,16 +107,16 @@ namespace world
                     if (building->getType() == BuildingType::Shop)
                     {
                         const auto &sales = building->getComponent<world::buildings::SalesComponent>("SalesComponent");
-                        for (auto &item : sales->getSalesItems())
+                        for (const auto &item : sales->getSalesItems())
                         {
 
-                            for (auto production : possibleBuildings)
+                            for (const auto& production : possibleBuildings)
                             {
                                 if (production->getType() == BuildingType::Shop)
                                 {
                                     continue;
                                 }
-                                for (auto product : production->getProducts())
+                                for (const auto& product : production->getProducts())
                                 {
                                     if (product->getName() == item->product)
                                     {
@@ -128,9 +128,9 @@ namespace world
                     }
                     else
                     {
-                        for (auto &product : building->getProducts())
+                        for (const auto &product : building->getProducts())
                         {
-                            for (auto &base : product->getBaseProducts())
+                            for (const auto &base : product->getBaseProducts())
                             {
 
                                 for (auto &startBuilding : possibleBuildings)
@@ -152,7 +152,7 @@ namespace world
                     route->active = true;
                 }
                 transport->delayedUpdate(m_company.get());
-                auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
+                const auto workers = m_building->getComponent<world::buildings::WorkerComponent>("WorkerComponent");
                 workers->setCurrentWorkers(transport->getActiveRoutes().size());
                 break;
             }
@@ -169,7 +169,7 @@ namespace world
                     }
                     std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
                     std::shuffle(products.begin(), products.end(), gen);
-                    if (products.size() > 0)
+                    if (!products.empty())
                     {
                         auto product = products[0];
                         auto sales = m_building->getComponent<world::buildings::SalesComponent>("SalesComponent");

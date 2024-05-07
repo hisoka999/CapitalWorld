@@ -41,7 +41,7 @@ namespace world
                     float minDistance = std::numeric_limits<float>::max();
                     for (auto &city : gameState->getCities())
                     {
-                        float distance = pos.toVecto2().distance(city->getPosition());
+                        float distance = pos.toVector2().distance(city->getPosition());
                         if (minDistance > distance)
                         {
                             minDistance = distance;
@@ -60,7 +60,7 @@ namespace world
                 float minDistance = std::numeric_limits<float>::max();
                 for (auto &city : gameState->getCities())
                 {
-                    float distance = pos.toVecto2().distance(city->getPosition());
+                    float distance = pos.toVector2().distance(city->getPosition());
                     if (minDistance > distance)
                     {
                         minDistance = distance;

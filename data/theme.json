@@ -43,6 +43,10 @@
         "BackgroundColor": "#222222FF",
         "ForgroundColor": "#FFFFFFFF"
     },
+    "verticalscrollbar": {
+        "BackgroundColor": "#222222FF",
+        "ForgroundColor": "#FFFFFFFF"
+    },
     "label": {
         "FontName": "fonts/arial.ttf",
         "FontSize": 12,

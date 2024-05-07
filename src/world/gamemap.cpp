@@ -108,8 +108,7 @@ size_t GameMap::getHeight() const
     return height;
 }
 
-std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &sourceBuilding)
-{
+std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &sourceBuilding) const {
     std::shared_ptr<world::Building> result = nullptr;
     // auto iso = twoDToIso(pt);
     for (int y = sourceBuilding.y - sourceBuilding.height; y <= sourceBuilding.y + sourceBuilding.height; ++y)
@@ -121,13 +120,12 @@ std::shared_ptr<world::Building> GameMap::getBuilding2D(const graphics::Rect &so
                 continue;
             if (building->get2DPosition().intersectsNoLine(sourceBuilding))
             {
-                result = building;
-                break;
+               return building;
             }
         }
     }
 
-    return result;
+    return nullptr;
 }
 bool compareBuilding(std::shared_ptr<world::Building> b1, std::shared_ptr<world::Building> b2)
 {
@@ -138,7 +136,7 @@ void GameMap::addBuilding(std::shared_ptr<world::Building> building)
 {
     std::lock_guard<std::mutex> guard(gGameMapMutex);
 
-    auto position = building->get2DPosition();
+  const auto position = building->get2DPosition();
     for (int x = position.x; x < position.x + position.width; ++x)
     {
         for (int y = position.y; y < position.y + position.height; ++y)
@@ -269,7 +267,7 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const s
     auto pos = startBuilding->get2DPosition();
 
     std::vector<std::shared_ptr<world::Building>> result;
-    auto isType = [&](world::BuildingType type)
+    auto isType = [&](const world::BuildingType type)
     {
         if (inverseType)
             return type != buildingType;
@@ -293,18 +291,29 @@ std::vector<std::shared_ptr<world::Building>> GameMap::borderingBuilding(const s
 
 void GameMap::findStreets(const std::shared_ptr<world::Building> &startBuilding, std::vector<std::shared_ptr<world::Building>> &streets, const std::shared_ptr<world::Building> &excludeStreet)
 {
+    std::vector<std::shared_ptr<world::Building>> streets2Check{startBuilding};
 
-    for (auto street : borderingBuilding(startBuilding, world::BuildingType::Street, false))
-    {
-        if (excludeStreet != nullptr && excludeStreet == street)
-            continue;
-
-        auto it = std::find(streets.begin(), streets.end(), street);
-
-        if (it == std::end(streets))
+    while(!streets2Check.empty()) {
+        auto& start = streets2Check.back();
+        streets2Check.pop_back();
+        for (const auto& street : borderingBuilding(start, world::BuildingType::Street, false))
         {
-            streets.push_back(street);
-            findStreets(street, streets, startBuilding);
+            if (excludeStreet != nullptr && excludeStreet == street)
+                continue;
+
+            bool found = false;
+            for(const auto& s : streets) {
+                if(s == street) {
+                    found=true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                streets.push_back(street);
+                //findStreets(street, streets, startBuilding);
+                streets2Check.emplace_back(street);
+            }
         }
     }
 }
@@ -371,7 +380,7 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(cons
 
     std::vector<std::shared_ptr<world::Building>> allStreets;
     // Schritt 2 suche alle Strassen zur Startstrasse
-    for (auto street : borderingBuilding(startBuilding, world::BuildingType::Street, false))
+    for (const auto& street : borderingBuilding(startBuilding, world::BuildingType::Street, false))
     {
         allStreets.push_back(street);
         findStreets(street, allStreets, street);
@@ -401,11 +410,11 @@ std::vector<std::shared_ptr<world::Building>> GameMap::findStorageBuildings(cons
     return targets;
 }
 
-std::vector<std::shared_ptr<world::Building>> GameMap::findByComponentTypeInDistance(const std::string &componentType, world::Building *startBuilding, const int distance)
+std::vector<std::shared_ptr<world::Building>> GameMap::findByComponentTypeInDistance(const std::string &componentType, world::Building *startBuilding, const int distance) const
 {
     std::vector<std::shared_ptr<world::Building>> result;
-    auto startRect = startBuilding->get2DPosition();
-    utils::Vector2 startPos(startRect.x, startRect.y);
+    const auto startRect = startBuilding->get2DPosition();
+
 
     for (int y = startRect.y - distance; y <= startRect.y + distance; ++y)
     {

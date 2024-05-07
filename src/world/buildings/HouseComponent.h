@@ -21,14 +21,16 @@ namespace world
         public:
             HouseComponent();
             HouseComponent(unsigned int residents, DemandMap baseDemand, int houseId);
-            ~HouseComponent();
+            ~HouseComponent() override;
             unsigned int getResidents();
 
-            virtual void fromJson(std::shared_ptr<utils::JSON::Object> &object, Company *company);
-            virtual void updateProduction(int month, int year, Building *building);
+            void fromJson(std::shared_ptr<utils::JSON::Object> &object,
+                          Company *company) override;
+            void updateProduction(int month, int year,
+                                  Building *building) override;
             void updateTexture(Building *building);
-            virtual std::shared_ptr<BuildingComponent> clone();
-            virtual std::shared_ptr<utils::JSON::Object> toJson();
+            std::shared_ptr<BuildingComponent> clone() override;
+            std::shared_ptr<utils::JSON::Object> toJson() override;
             int getCurrentDemand(world::ProductType type);
             int fullfillDemand(world::ProductType type, int value);
             virtual std::map<std::string, std::string> displayData();

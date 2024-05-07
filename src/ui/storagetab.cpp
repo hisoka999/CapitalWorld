@@ -69,7 +69,7 @@ namespace UI
             icon->loadImage(utils::os::combine("images", "products", product->getImage()));
             icon->setPos(offset + (x * size), offset + (y * size));
             icon->setHint(std::make_shared<UI::StringHint>(product->getLocalisedName()));
-            icon->connect(UI::Button::buttonClickCallback(), [=]()
+            icon->connect(UI::Button::buttonClickCallback(), [this,product,productAmount]()
                           { itemComponent->setProduct(product);
                           itemComponent->setAmount(productAmount) ;
                           lastProduct = product; });

@@ -72,10 +72,10 @@ namespace world
                             if (!salesComponent->isSalesActive(storedProduct))
                                 continue;
 
-                            int storedAmount = entry.amount;
+                            const int storedAmount = entry.amount;
                             if (storedAmount > 0)
                             {
-                                auto product = services::ProductService::Instance().getProductByName(storedProduct);
+                                const auto product = services::ProductService::Instance().getProductByName(storedProduct);
                                 if (product->getProductType() == type)
                                 {
                                     sales.push_back({storedProduct, salesComponent->getSalesPrice(storedProduct), storage, salesComponent, shop});
@@ -95,7 +95,7 @@ namespace world
                         if (amount > demand)
                             amount = demand;
                         sale.storage->addEntry(sale.product, amount * -1);
-                        float orderAmount = amount * sale.price;
+                        const float orderAmount = amount * sale.price;
                         fullfillDemand(type, amount);
 
                         sale.shop->getBalance().addIncome(month, year, sale.product, world::BalanceAccount::Sales, orderAmount);

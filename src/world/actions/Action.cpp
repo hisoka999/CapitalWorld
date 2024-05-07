@@ -28,7 +28,7 @@ namespace world
             float distance = std::numeric_limits<float>::max();
             for (auto &city : gameState->getCities())
             {
-                float currentDistance = city->getPosition().distance(building->get2DPosition().toVecto2());
+                float currentDistance = city->getPosition().distance(building->get2DPosition().toVector2());
                 if (currentDistance < distance)
                 {
                     distance = currentDistance;

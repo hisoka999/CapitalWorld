@@ -67,8 +67,8 @@ namespace world
         virtual std::shared_ptr<utils::JSON::Object> toJson();
         static std::shared_ptr<Building> fromJson(const std::shared_ptr<Building> &reference, const std::shared_ptr<utils::JSON::Object> &object, world::Company *company);
         void addComponent(std::shared_ptr<world::buildings::BuildingComponent> &component);
-        const std::shared_ptr<world::buildings::BuildingComponent> &getComponentByName(const std::string &name);
-        bool hasComponent(const std::string &name);
+        [[nodiscard]] std::shared_ptr<world::buildings::BuildingComponent> getComponentByName(const std::string &name) const;
+        [[nodiscard]] bool hasComponent(const std::string &name) const;
 
         template <typename T>
         std::shared_ptr<T> getComponent(const std::string &name)
@@ -78,7 +78,7 @@ namespace world
         static void initComponentMap();
         static std::shared_ptr<world::buildings::BuildingComponent> createComponentByName(const std::string &name);
 
-        void delayedUpdate(Company *company);
+        void delayedUpdate(Company *company) const;
 
         std::map<std::string, std::string> displayData();
         bool requireResource(world::RawResource rawResource);
@@ -104,7 +104,7 @@ namespace world
         int xOffset, yOffset;
         std::vector<std::shared_ptr<Product>> products;
         std::string subTexture;
-        std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> components;
+        std::vector<std::shared_ptr<world::buildings::BuildingComponent>> components;
         static std::map<std::string, std::shared_ptr<world::buildings::BuildingComponent>> componentMap;
         std::hash<std::string> hasher;
         size_t hashId = 0;

@@ -42,7 +42,7 @@ namespace UI
             itemComponent->setPos(0, yOffset);
             scrollArea->addObject(itemComponent);
             const size_t value = i;
-            itemComponent->closeButton->connect(UI::Button::buttonClickCallback(), [=]()
+            itemComponent->closeButton->connect(UI::Button::buttonClickCallback(), [this,component,value]()
                                                 {
                                                     component->removeSalesItem(value);
                                                     needsRefresh(); });

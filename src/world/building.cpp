@@ -36,7 +36,7 @@ namespace world
         this->hashId = copy.hashId;
         for (auto &component : copy.components)
         {
-            components[component.first] = component.second->clone();
+            components.push_back(component->clone());
         }
 
         for (auto res : copy.rawResources)
@@ -155,17 +155,17 @@ namespace world
     void Building::updateProduction(unsigned int month, unsigned int year)
     {
 
-        for (auto &component : components)
+        for (const auto &component : components)
         {
-            component.second->updateProduction(month, year, this);
+            component->updateProduction(month, year, this);
         }
     }
 
     void Building::updateDaily(uint16_t day, uint16_t month, uint16_t year, Company *company)
     {
-        for (auto &component : components)
+        for (const auto &component : components)
         {
-            component.second->updateDaily(day, month, year, this, company);
+            component->updateDaily(day, month, year, this, company);
         }
     }
 
@@ -196,9 +196,9 @@ namespace world
     std::map<std::string, std::string> Building::displayData()
     {
         std::map<std::string, std::string> result;
-        for (auto &component : components)
+        for (const auto &component : components)
         {
-            for (auto data : component.second->displayData())
+            for (const auto& data : component->displayData())
             {
                 result[data.first] = data.second;
             }
@@ -235,7 +235,7 @@ namespace world
         myBuilding->setAttribute("type", std::string(magic_enum::enum_name(type)));
 
         utils::JSON::JsonArray productsArray;
-        for (auto &product : products)
+        for (const auto &product : products)
         {
 
             utils::JSON::JsonValue value = product->getName();
@@ -245,9 +245,9 @@ namespace world
         myBuilding->setArrayAttribute("products", productsArray);
 
         utils::JSON::JsonArray componentsArray;
-        for (auto &component : components)
+        for (const auto &component : components)
         {
-            utils::JSON::JsonValue value = component.second->toJson();
+            utils::JSON::JsonValue value = component->toJson();
             componentsArray.push_back(value);
         }
         myBuilding->setArrayAttribute("components", componentsArray);
@@ -292,17 +292,23 @@ namespace world
 
     void Building::addComponent(std::shared_ptr<world::buildings::BuildingComponent> &component)
     {
-        components[component->getName()] = component;
+        components.emplace_back(component);
     }
 
-    const std::shared_ptr<world::buildings::BuildingComponent> &Building::getComponentByName(const std::string &name)
-    {
-        return components.at(name);
+    std::shared_ptr<world::buildings::BuildingComponent> Building::getComponentByName(const std::string &name) const {
+        for(const auto& component : components) {
+            if(component->getName() == name)
+                return component;
+        }
+        return nullptr;
     }
 
-    bool Building::hasComponent(const std::string &name)
-    {
-        return components.count(name) > 0;
+    bool Building::hasComponent(const std::string &name) const {
+        for(const auto& component : components) {
+            if(component->getName() == name)
+                return true;
+        }
+        return false;
     }
 
     void Building::initComponentMap()
@@ -320,11 +326,10 @@ namespace world
         return Building::componentMap.at(name)->clone();
     }
 
-    void Building::delayedUpdate(Company *company)
-    {
-        for (auto &component : components)
+    void Building::delayedUpdate(Company *company) const {
+        for (const auto &component : components)
         {
-            component.second->delayedUpdate(company);
+            component->delayedUpdate(company);
         }
     }
 
